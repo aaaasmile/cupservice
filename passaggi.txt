@@ -1,3 +1,7 @@
 == cup-service
 Un service della cuperativa in golang (web socket e rest)
 Client basic in react single file.
+
+== todo
+C'è da finire il file games-cup.js il quale va completato usando il games-cup-todo.js
+Poi andrebbe testato con una unit test, magari nella directory parallela dove uso node.
