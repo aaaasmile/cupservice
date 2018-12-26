@@ -7,8 +7,8 @@ class App extends React.Component {
     console.log("APP is build in constructor")
     this.onInfoClick = this.onInfoClick.bind(this)
     this.onNavigate = this.onNavigate.bind(this)
-    this.commanderRef = React.createRef();
-    history.pushState({ route: 'info' }, ``, `./#`)
+    this.commanderRef = React.createRef()
+    history.pushState({ route: 'home' }, `#`, `./#`)
     this.activateOnHistory()
   }
 
@@ -22,6 +22,11 @@ class App extends React.Component {
     this.setNewStateHist({ route: 'help' }, `help`, `./#help`)
   }
 
+  onHomeClick() {
+    console.log('Home')
+    this.setNewStateHist({ route: 'home' }, `#`, `./#`)
+  }
+
   activateOnHistory() {
     window.addEventListener('popstate', e => {
       console.log('browser go back')
@@ -33,8 +38,11 @@ class App extends React.Component {
     this.setState(obj, () => history.pushState(this.state, title, url))
   }
 
-  onNavigate(target){
-    switch(target){
+  onNavigate(target) {
+    switch (target) {
+      case 'home':
+        this.onHomeClick()
+        break
       case 'info':
         this.onInfoClick()
         break;
@@ -64,12 +72,24 @@ class App extends React.Component {
 }
 
 function MainMenu(props) {
-  let onInfoClick = function(){
+  let onInfoClick = function () {
     console.log('click on info button')
     props.onNav('info')
   }
+  let onHomeClick = function () {
+    console.log('click on Home button')
+    props.onNav('home')
+  }
+  let onHelpClick = function(){
+    console.log('Help click')
+    props.onNav('help')
+  }
   return (
-    <button className="ui right floated button icon" onClick={onInfoClick}><i className="info circle icon"></i></button>
+    <div>
+      <button className="ui right floated button icon" onClick={onHomeClick}><i className="home icon"></i></button>
+      <button className="ui right floated button icon" onClick={onInfoClick}><i className="info circle icon"></i></button>
+      <button className="ui right floated button icon" onClick={onHelpClick}><i className="question circle icon"></i></button>
+    </div>
   )
 }
 
