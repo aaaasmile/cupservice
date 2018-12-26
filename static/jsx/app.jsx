@@ -6,14 +6,20 @@ class App extends React.Component {
     };
     console.log("APP is build in constructor")
     this.onInfoClick = this.onInfoClick.bind(this)
+    this.onNavigate = this.onNavigate.bind(this)
     this.commanderRef = React.createRef();
-    history.pushState({ info: false }, ``, `./#`)
+    history.pushState({ route: 'info' }, ``, `./#`)
     this.activateOnHistory()
   }
 
   onInfoClick() {
     console.log("Info clicked in APP")
-    this.setNewStateHist({ info: true }, `info`, `./#info`)
+    this.setNewStateHist({ route: 'info' }, `info`, `./#info`)
+  }
+
+  onHelpClick() {
+    console.log("Help clicked in APP")
+    this.setNewStateHist({ route: 'help' }, `help`, `./#help`)
   }
 
   activateOnHistory() {
@@ -27,24 +33,60 @@ class App extends React.Component {
     this.setState(obj, () => history.pushState(this.state, title, url))
   }
 
+  onNavigate(target){
+    switch(target){
+      case 'info':
+        this.onInfoClick()
+        break;
+      case 'help':
+        this.onHelpClick()
+        break;
+    }
+  }
+
   render() {
     let detControl
-    if (this.state.info) {
-      detControl = <InfoControl info={this.state.info}></InfoControl>
+    switch (this.state.route) {
+      case 'info':
+        detControl = <InfoControl info={this.state.info}></InfoControl>
+        break;
+      case 'help':
+        detControl = <HelpControl></HelpControl>
+        break;
     }
     return (
       <div>
-        <button className="ui right floated button icon" onClick={this.onInfoClick}><i className="info circle icon"></i></button>
+        <MainMenu onNav={this.onNavigate}></MainMenu>
         {detControl}
       </div>
     )
   }
 }
 
+function MainMenu(props) {
+  let onInfoClick = function(){
+    console.log('click on info button')
+    props.onNav('info')
+  }
+  return (
+    <button className="ui right floated button icon" onClick={onInfoClick}><i className="info circle icon"></i></button>
+  )
+}
+
+function HelpControl(props) {
+  return (
+    <div>
+      <h3 className="ui dividing header">Aiuto</h3>
+      <p>In questa app basta collegarsi in rete con un nickname. Poi basta creare un nuovo gioco oppure partecipare ad un gioco in corso.</p>
+    </div>
+  )
+}
+
 function InfoControl(props) {
   return (
     <div>
-      <h2 className="ui dividing header">Info su...</h2>
+      <h3 className="ui dividing header">Info sulla cuperativa...</h3>
+      <p>App per giocare alle carte.</p>
     </div>
   )
 }
