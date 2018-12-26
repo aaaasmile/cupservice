@@ -34,6 +34,18 @@ class App extends React.Component {
       case 'help':
         this.setNewStateHist({ route: 'help' }, `help`, `./#help`)
         break;
+      case 'signup':
+        this.setNewStateHist({ route: 'signup' }, `signup`, `./#signup`)
+        break;
+      case 'games':
+        this.setNewStateHist({ route: 'games' }, `games`, `./#games`)
+        break;
+      case 'login':
+        this.setNewStateHist({ route: 'login' }, `login`, `./#login`)
+        break;
+      default:
+        console.warn('Target navigation ignored:', target)
+        break;
     }
   }
 
@@ -69,19 +81,32 @@ function MainMenu(props) {
     console.log('Help click')
     props.onNav('help')
   }
+  let onSignupClick = function () {
+    console.log('Signup click')
+    props.onNav('signup')
+  }
+  let onLoginClick = function () {
+    console.log('login click')
+    props.onNav('login')
+  }
+  let onGamesClick = function () {
+    console.log('games click')
+    props.onNav('games')
+  }
   let active = {
     login: props.state.route === 'login' ? ' ui active' : '',
     signup: props.state.route === 'signup' ? ' ui active' : '',
     home: props.state.route === 'home' ? ' ui active' : '',
+    games: props.state.route === 'games' ? ' ui active' : '',
   }
   return (
     <div>
       <div className="ui secondary pointing menu">
         <a className={"item" + active["home"]} onClick={onHomeClick}><i className="home icon"></i></a>
-        <a className="item"> Giochi</a>
+        <a className={"item" + active["games"]} onClick={onGamesClick}> Giochi</a>
         <div className="right menu">
-          <a className="ui item">Login</a>
-          <a className="ui item">Registra</a>
+          <a className={"item" + active["login"]} onClick={onLoginClick}>Login</a>
+          <a className={"item" + active["signup"]} onClick={onSignupClick}>Registra</a>
         </div>
       </div>
       <button className="ui right floated button icon" onClick={onInfoClick}><i className="info circle icon"></i></button>
