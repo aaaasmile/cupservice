@@ -7,6 +7,7 @@ class App extends React.Component {
     };
     console.log("APP is build in constructor")
     this.onNavigate = this.onNavigate.bind(this)
+    this.onNavGamesOffline = this.onNavGamesOffline.bind(this)
     history.pushState({ route: 'home' }, `#`, `./#`)
     this.activateOnHistory()
   }
@@ -49,6 +50,17 @@ class App extends React.Component {
     }
   }
 
+  onNavGamesOffline(target) {
+    console.log('Navigate to offline game: ', target)
+    switch (target) {
+      case 'off-briscindue':
+        this.setNewStateHist({ route: 'off-briscindue', gameName: 'Briscola in due' }, `off-briscindue`, `./#off-briscindue`)
+        break
+      default:
+        console.warn('Offline game not supported: ', target)
+    }
+  }
+
   render() {
     let detControl
     switch (this.state.route) {
@@ -57,6 +69,14 @@ class App extends React.Component {
         break;
       case 'help':
         detControl = <HelpControl></HelpControl>
+        break;
+      case 'games':
+        if (!this.state.isLoggedIn) {
+          detControl = <OfflineGamesCtrl onNavGamesOffline={this.onNavGamesOffline} state={this.state}></OfflineGamesCtrl>
+        }
+        break;
+      case 'off-briscindue':
+        detControl = <OfflineGame state={this.state}></OfflineGame>
         break;
     }
     return (
@@ -129,6 +149,33 @@ function InfoControl(props) {
     <div>
       <h3 className="ui header">Info sulla cuperativa...</h3>
       <p>App per giocare alle carte.</p>
+    </div>
+  )
+}
+
+function OfflineGamesCtrl(props) {
+  let onGoBriscDue = function () {
+    console.log('click Briscola in due offline')
+    props.onNavGamesOffline('off-briscindue')
+  }
+  return (
+    <div>
+      <h3 className="ui header">Giochi disponibili contro il computer</h3>
+      <ul>
+        <li><a className="item ui" onClick={onGoBriscDue}>Briscola in due</a></li>
+      </ul>
+    </div>
+  )
+}
+
+function OfflineGame(props) {
+  const gameName = props.state.gameName
+  return (
+    <div>
+      <h1>{gameName}</h1>
+      <div className="ui">
+        <canvas id="mainCanvas"></canvas>
+      </div>
     </div>
   )
 }
