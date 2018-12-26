@@ -1,0 +1,11 @@
+ServiceURL =  "127.0.0.1:5568"
+RootURLPattern = "/cup/"
+AlwaysReloadTempl = true
+UseProdTemplate = false
+
+[Database]
+Host = <host>
+Port  = 5432
+User  = <db user>
+Password  = <db password>
+DatabaseName  = <db name>

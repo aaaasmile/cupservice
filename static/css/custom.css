@@ -1,0 +1,35 @@
+#header_bottom {
+	height: 40px;
+	background: #ffffff url(../images/italia_down.gif) top left no-repeat;
+}
+
+#header{
+  height: 82px;
+  padding-left: 38px;
+  overflow: hidden;
+  background: url(../images/new_header_bg.gif) repeat-x;
+}
+
+#asterisk {
+  background: url(../images/italia_top.gif) no-repeat;
+    float: left;
+    width: 123px;
+    height: 82px;
+}
+
+#helpid{
+  padding: 1em 0em;
+}
+
+.postId{
+  padding: 1em 0em;
+}
+
+#respost{
+  /* max-width: 40em; */
+  padding: 1em 0em;
+}
+
+#errMsg{
+  padding: 1em 0em;
+}
