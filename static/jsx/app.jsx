@@ -5,26 +5,9 @@ class App extends React.Component {
       isLoggedIn: false
     };
     console.log("APP is build in constructor")
-    this.onInfoClick = this.onInfoClick.bind(this)
     this.onNavigate = this.onNavigate.bind(this)
-    this.commanderRef = React.createRef()
     history.pushState({ route: 'home' }, `#`, `./#`)
     this.activateOnHistory()
-  }
-
-  onInfoClick() {
-    console.log("Info clicked in APP")
-    this.setNewStateHist({ route: 'info' }, `info`, `./#info`)
-  }
-
-  onHelpClick() {
-    console.log("Help clicked in APP")
-    this.setNewStateHist({ route: 'help' }, `help`, `./#help`)
-  }
-
-  onHomeClick() {
-    console.log('Home')
-    this.setNewStateHist({ route: 'home' }, `#`, `./#`)
   }
 
   activateOnHistory() {
@@ -39,15 +22,16 @@ class App extends React.Component {
   }
 
   onNavigate(target) {
+    console.log('Navigate to target', target)
     switch (target) {
       case 'home':
-        this.onHomeClick()
+        this.setNewStateHist({ route: 'home' }, `#`, `./#`)
         break
       case 'info':
-        this.onInfoClick()
+        this.setNewStateHist({ route: 'info' }, `info`, `./#info`)
         break;
       case 'help':
-        this.onHelpClick()
+        this.setNewStateHist({ route: 'help' }, `help`, `./#help`)
         break;
     }
   }
@@ -64,7 +48,7 @@ class App extends React.Component {
     }
     return (
       <div>
-        <MainMenu onNav={this.onNavigate}></MainMenu>
+        <MainMenu onNav={this.onNavigate} state={this.state}></MainMenu>
         {detControl}
       </div>
     )
@@ -80,7 +64,7 @@ function MainMenu(props) {
     console.log('click on Home button')
     props.onNav('home')
   }
-  let onHelpClick = function(){
+  let onHelpClick = function () {
     console.log('Help click')
     props.onNav('help')
   }
