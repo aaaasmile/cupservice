@@ -2,7 +2,8 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoggedIn: false
+      isLoggedIn: false,
+      route: 'home'
     };
     console.log("APP is build in constructor")
     this.onNavigate = this.onNavigate.bind(this)
@@ -68,9 +69,21 @@ function MainMenu(props) {
     console.log('Help click')
     props.onNav('help')
   }
+  let active = {
+    login: props.state.route === 'login' ? ' ui active' : '',
+    signup: props.state.route === 'signup' ? ' ui active' : '',
+    home: props.state.route === 'home' ? ' ui active' : '',
+  }
   return (
     <div>
-      <button className="ui right floated button icon" onClick={onHomeClick}><i className="home icon"></i></button>
+      <div className="ui secondary pointing menu">
+        <a className={"item" + active["home"]} onClick={onHomeClick}><i className="home icon"></i></a>
+        <a className="item"> Giochi</a>
+        <div className="right menu">
+          <a className="ui item">Login</a>
+          <a className="ui item">Registra</a>
+        </div>
+      </div>
       <button className="ui right floated button icon" onClick={onInfoClick}><i className="info circle icon"></i></button>
       <button className="ui right floated button icon" onClick={onHelpClick}><i className="question circle icon"></i></button>
     </div>
@@ -80,7 +93,7 @@ function MainMenu(props) {
 function HelpControl(props) {
   return (
     <div>
-      <h3 className="ui dividing header">Aiuto</h3>
+      <h3 className="ui header">Aiuto</h3>
       <p>In questa app basta collegarsi in rete con un nickname. Poi basta creare un nuovo gioco oppure partecipare ad un gioco in corso.</p>
     </div>
   )
@@ -89,7 +102,7 @@ function HelpControl(props) {
 function InfoControl(props) {
   return (
     <div>
-      <h3 className="ui dividing header">Info sulla cuperativa...</h3>
+      <h3 className="ui header">Info sulla cuperativa...</h3>
       <p>App per giocare alle carte.</p>
     </div>
   )
