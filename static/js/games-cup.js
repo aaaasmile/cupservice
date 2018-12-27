@@ -326,7 +326,7 @@ const cup = {};
         }
         this._processor[name_hand].apply(this._processor, args);
       } else if (this.opt.log_missed || this.opt.log_all) {
-        console.log("%s ignored because handler %s is missed", event, name_hand);
+        console.warn("%s ignored because handler %s is missed", event, name_hand);
       }
     }
 
@@ -781,7 +781,9 @@ const cup = {};
       this._predefPlayerIx = -1
     }
     set_deck(cards){
-      this._predefCards = cards
+      if(cards){
+        this._predefCards = cards
+      }
     }
 
     get_deck(cards){
@@ -830,7 +832,7 @@ const cup = {};
       this._myOpt = {
         tot_num_players: 2, num_segni_match: 2
         , target_points_segno: 61, players: [], num_cards_onhand: 3
-        , predef_deck: []
+        , predef_deck: [], predef_ix: -1
       };
       this._core = _core
       this._numOfSegni = _numOfSegni
@@ -841,18 +843,20 @@ const cup = {};
       let that = this;
       this._notifyer = new cup.CoreSubjectNtfy(_core, that, { log_missed: true });
       this._deck_info.deck_info_dabriscola();
+      this._rnd_mgr = new cup.RndMgr()
     }
 
     StartNewMatch(options) {
       console.log("Start a new match");
       this._myOpt = options || {}
-      this._myOpt.predef_deck || [];
+      this._myOpt.predef_deck = this._myOpt.predef_deck || [];
+      this._myOpt.predef_ix = this._myOpt.predef_ix || -1;
       this._myOpt.tot_num_players = this._myOpt.tot_num_players || 2;
       this._myOpt.num_segni_match = this._myOpt.num_segni_match || this._numOfSegni;
       this._myOpt.target_points_segno = this._myOpt.target_points_segno || this._pointsForWin;
       this._myOpt.num_cards_onhand = this._myOpt.num_cards_onhand || 3;
       // var _game_core_recorder = mod_gamerepl.game_core_recorder_ctor();
-      // _rnd_mgr.set_predef_deck(this._myOpt.predef_deck);
+      this._rnd_mgr.set_deck(this._myOpt.predef_deck);
 
       this._core_data.start(this._myOpt.tot_num_players, this._myOpt.players, this._myOpt.num_cards_onhand);
       this._core.fire_all('ev_new_match', {
@@ -895,9 +899,8 @@ const cup = {};
     st_new_giocata() {
       this.set_state('st_new_giocata');
       let cards = this._deck_info.get_cards_on_game().slice();
-      //let first_player_ix = _rnd_mgr.get_first_player(_players.length);
-      // cards =_rnd_mgr.get_deck(cards);
-      let first_player_ix = 1;
+      cards = this._rnd_mgr.get_deck(cards);
+      let first_player_ix = this._rnd_mgr.get_first_player(this._core_data.players.length);
       this._core_data.start_new_giocata(first_player_ix, cards);
       this.distribute_cards();
       this._core_data.players.forEach(player => {
@@ -907,7 +910,6 @@ const cup = {};
         };
         this._core.fire_to_player(player, 'ev_brisc_new_giocata', data_newgioc);
       });
-
       this._core.submit_next_state('st_new_mano');
     }
 
@@ -994,14 +996,16 @@ const cup = {};
         that, { log_all: false, log_missed: true });
 
       this._player_name = _playerActor.Player.Name;
-      this._actorNotifier.subscribePlayer(this._player_name);
+      // _actorNotifier: serve per ricevere gli eventi del core in un handler automatico
+      // del tipo on_all_xxx. Mentre con subscribePlayer si hanno gli eventi on_pl_xxx
+      this._actorNotifier.subscribePlayer(this._player_name); 
     }
 
     on_all_ev_new_match(args) {
-      console.log("New match " + JSON.stringify(args));
+      //console.log("[%s]New match %s", this._player_name, JSON.stringify(args));
       this._players = args.players;
       this._target_points = args.target_segno;
-      console.log('New match, ' + this._player_name + '  is playing level ' + this._level_alg + ' ( game with ' + this._players.length + ' players)');
+      console.log("[%s] New match, " + this._player_name + '  is playing level ' + this._level_alg + ' ( game with ' + this._players.length + ' players)', this._player_name);
       this._opp_names = [];
       this._team_mates = [];
       this._points_segno = {};
@@ -1026,7 +1030,7 @@ const cup = {};
     }
 
     on_pl_ev_brisc_new_giocata(args) {
-      console.log("New giorcata " + JSON.stringify(args));
+      console.log("[%s] New giorcata " + JSON.stringify(args), this._player_name);
       let str_card = '';
       ["b", "d", "s", "c"].forEach(segno => {
         this._strozzi_on_suite[segno] = 2;
@@ -1040,20 +1044,35 @@ const cup = {};
     }
 
     on_all_ev_new_mano(args) {
-      console.log("New mano " + JSON.stringify(args));
+      console.log("[%s] New mano " + JSON.stringify(args), this._player_name);
       this._card_played = [];
     }
 
     on_all_ev_have_to_play(args) {
-      console.log("Have to play " + JSON.stringify(args));
+      console.log("[%s] Have to play " + JSON.stringify(args), this._player_name);
       if (args.player_on_turn === this._player_name) {
-        console.log("Play a card please");
+        console.log("[%s] Play a card please", this._player_name);
         if (this._options.use_delay_before_play) {
-          console.log('Delay before play ms: ' + this._options.timeout_haveplay);
+          console.log("[%s] Delay before play ms: " + this._options.timeout_haveplay, this._player_name);
           setTimeout(x => this.alg_play_acard(), this._options.timeout_haveplay);
         } else {
           this.alg_play_acard();
         }
+      }
+    }
+
+    on_all_ev_player_has_played(args) {
+      //args = {"cards_played":{"player_name":"Luigi","card_played":"_5c"}}
+      console.log("[%s] Player has played " + JSON.stringify(args), this._player_name);
+      const card = args.cards_played.card_played
+      if (args.cards_played.player_name === this._player_name){
+        this._cards_on_hand = this._cards_on_hand.filter(x => x !== card)
+      }else{
+        this._card_played.push(card)
+      }
+      const segno = card[2]
+      if(card[1] === 'A' || card[1] === '3'){
+        this._strozzi_on_suite[segno] -= 1
       }
     }
 
@@ -1081,7 +1100,7 @@ const cup = {};
     }
 
     alg_play_acard() {
-      console.log('alg on play: ' + this._player_name + ', cards N: ' + this._cards_on_hand.length + ' hand ' + this._cards_on_hand);
+      console.log("[%s] alg on play: " + this._player_name + ', cards N: ' + this._cards_on_hand.length + ' hand ' + this._cards_on_hand, this._player_name);
       let card = undefined;
       switch (this._level_alg) {
         case 'master':
@@ -1095,7 +1114,7 @@ const cup = {};
           break;
       }
       if (card) {
-        console.log('Want to play the card ' + card);
+        console.log("[%s] Want to play the card " + card, this._player_name);
         this._playerActor.play_card(card);
       } else if (this._level_alg !== 'predefined') {
         throw (new Error('alg_play_acard: Card to be played not found'));
@@ -1156,7 +1175,7 @@ const cup = {};
       }); // end weight
       // find a minimum
       min_item = Helper.MinOnWeightItem1(w_cards);
-      console.log('Play as first: best card ' + min_item[0] + ' (w_cards = ' + w_cards + ')');
+      console.log("[%s] " + 'Play as first: best card ' + min_item[0] + ' (w_cards = ' + w_cards + ')', this._player_name);
       return min_item[0];
     }
 
@@ -1332,7 +1351,7 @@ const cup = {};
         w_cards.push([card_lbl, curr_w]);
       });
       min_item = Helper.MinOnWeightItem1(w_cards);
-      console.log('Best card to play on best_taken_card is' + min_item[0] + ' w_cards = ' + w_cards);
+      console.log("[%s] " + 'Best card to play on best_taken_card is' + min_item[0] + ' w_cards = ' + w_cards, this._player_name);
       return min_item[0];
     }
 
