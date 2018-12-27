@@ -14,12 +14,13 @@ describe('core state event base test', function () {
 });
 
 describe('random manager test', function () {
-    let myCustomEquality = function(a,b){
-        return a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
-    }
+    // let myCustomEquality = function(a,b){
+    //     return a[0] === b[0] && a[1] === b[1] && a[2] === b[2]
+    // }
     // beforeEach(function () {
     //     jasmine.addCustomEqualityTester(myCustomEquality);
     // });
+    
 
     it('shuffle cards', () => {
         let deck_info = new cup.DeckInfo();
@@ -30,5 +31,17 @@ describe('random manager test', function () {
         expect(cards).not.toEqual(shuffled)
         expect(cards.length).toEqual(shuffled.length)
         console.log('cards shuffled ', shuffled)
+    })
+
+    it('first player', () => {
+        let rnd = new cup.RndMgr()
+        let stat = [0,0]
+        for(let i = 0; i < 1000; i++){
+            let ix = rnd.get_first_player(2)
+            stat[ix] ++
+        }
+        expect(stat[0] > 0).toBe(true,'primo elemento > 0')
+        expect(stat[1] > 0).toBe(true, 'secondo elemento > 0')
+        console.log('stat on ix ', stat)
     })
 });

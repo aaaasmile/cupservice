@@ -795,7 +795,7 @@ const cup = {};
       if (this._predefPlayerIx !== -1){
         return this._predefPlayerIx
       }
-      i = Math.floor(Math.random() * size);
+      let i = Math.floor(Math.random() * size);
       return i
     }
 
