@@ -1,15 +1,9 @@
-import { CoreStateEventBase } from '../../common/core/core-base'
-import { Player, PlayerActor } from '../../common/core/player'
-import { TableStateCore } from '../../common/core/table-core'
-import { CoreBriscolaBase } from './core-brisc-base'
-import { AlgBriscBase } from './alg-brisc-base'
-
 describe('brisc-base-core test', function () {
-  it('Simple game loop', () => {
+  it('Briscola base game loop', () => {
 
-    let coreStateEvent = new CoreStateEventBase('develop');
-    let b2core = new CoreBriscolaBase(coreStateEvent, 2, 61);
-    let tableStateCore = new TableStateCore(coreStateEvent, 2);
+    let coreStateEvent = new cup.CoreStateEventBase('develop');
+    let b2core = new cup.CoreBriscolaBase(coreStateEvent, 2, 61);
+    let tableStateCore = new cup.TableStateCore(coreStateEvent, 2);
     let subsc = tableStateCore.TableFullSub.subscribe(next => {
       b2core.StartNewMatch(next);
       subsc.unsubscribe();
@@ -17,10 +11,10 @@ describe('brisc-base-core test', function () {
     });
     
 
-    let playerActorErnesto = new PlayerActor(new Player('Ernesto'), coreStateEvent);
-    let playerActorLuigi = new PlayerActor(new Player('Luigi'), coreStateEvent);
-    new AlgBriscBase(playerActorErnesto);
-    new AlgBriscBase(playerActorLuigi);
+    let playerActorErnesto = new cup.PlayerActor(new cup.Player('Ernesto'), coreStateEvent);
+    let playerActorLuigi = new cup.PlayerActor(new cup.Player('Luigi'), coreStateEvent);
+    new cup.AlgBriscBase(playerActorErnesto);
+    new cup.AlgBriscBase(playerActorLuigi);
 
     playerActorErnesto.sit_down(0);
     playerActorLuigi.sit_down(1);
