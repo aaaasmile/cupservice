@@ -772,6 +772,51 @@ const cup = {};
 
   }
 
+  //////////////////////////////////////////
+  //////////////////////////////// RndMgr
+  //////////////////////////////////////////
+  cup.RndMgr = class RndMgr{
+    constructor(){
+      this._predefCards =[]
+      this._predefPlayerIx = -1
+    }
+    set_deck(cards){
+      this._predefCards = cards
+    }
+
+    get_deck(cards){
+      if(this._predefCards.length > 0){
+        return this._predefCards
+      } 
+      return this.shuffle(cards) 
+    }
+
+    get_first_player(size){
+      if (this._predefPlayerIx !== -1){
+        return this._predefPlayerIx
+      }
+      i = Math.floor(Math.random() * size);
+      return i
+    }
+
+    shuffle(source) {
+      //Knuth-Fisher-Yates shuffle algorithm.
+      let array = [...source]
+      let m = array.length, t, i;
+      // While there remain elements to shuffle…
+      while (m) {
+        // Pick a remaining element…
+        i = Math.floor(Math.random() * m--);
+        // And swap it with the current element.
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
+      }
+    
+      return array;
+    }
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////
   /// BRISCOLA in DUE
   ///////////////////////////////////////////////////////////////////////////////////////
@@ -794,7 +839,7 @@ const cup = {};
       this._core_data = new cup.CoreDataSupport();
       this._briscola_in_tav_lbl = '';
       let that = this;
-      let notifyer = new cup.CoreSubjectNtfy(_core, that, { log_missed: true });
+      this._notifyer = new cup.CoreSubjectNtfy(_core, that, { log_missed: true });
       this._deck_info.deck_info_dabriscola();
     }
 
@@ -831,15 +876,15 @@ const cup = {};
       let data_card_gioc = { player_name: player_name, card_played: lbl_card };
       if (pos !== -1) {
         //_game_core_recorder.store_player_action(player.name, 'cardplayed', player.name, lbl_card);
-        var old_size = this._core_data.carte_in_mano[player_name].length;
+        let old_size = this._core_data.carte_in_mano[player_name].length;
         this._core_data.carte_in_mano[player_name].splice(pos, 1);
         console.log('++' + this._core_data.mano_count + ',' + this._core_data.carte_gioc_mano_corr.length +
           ',Card ' + lbl_card + ' played from player ' + player_name);
         this._core_data.carte_gioc_mano_corr.push({ lbl_card: lbl_card, player: player_name });
         this._core.fire_all('ev_player_has_played', { cards_played: data_card_gioc });
         this._core_data.round_players.splice(0, 1);
-        //_log.debug('_carte_in_mano ' + player_name + ' size is ' + this._core_data.carte_in_mano[player.name].length + ' _round_players size is ' + this._core_data.round_players.length);
-        //_log.debug('*** new size is ' + this._core_data.carte_in_mano[player.name].length + ' old size is ' + old_size);
+        //console.log('_carte_in_mano ' + player_name + ' size is ' + this._core_data.carte_in_mano[player.name].length + ' _round_players size is ' + this._core_data.round_players.length);
+        //console.log('*** new size is ' + this._core_data.carte_in_mano[player.name].length + ' old size is ' + old_size);
         this._core.submit_next_state('st_continua_mano');
       } else {
         console.warn('Card ' + lbl_card + ' not allowed to be played from player ' + player_name);
@@ -905,6 +950,13 @@ const cup = {};
         //console.log(this._core_data.carte_in_mano,carte_player,this._core_data.num_of_cards_onhandplayer);
       }
       this._briscola_in_tav_lbl = this._core_data.mazzo_gioco.pop();
+    }
+
+    dispose() {
+      if (this._notifyer != null) {
+        this._notifyer.dispose();
+        this._notifyer = null;
+      }
     }
   }
 
