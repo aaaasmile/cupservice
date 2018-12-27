@@ -8,7 +8,7 @@ class App extends React.Component {
     console.log("APP is build in constructor")
     this.onNavigate = this.onNavigate.bind(this)
     this.onNavGamesOffline = this.onNavGamesOffline.bind(this)
-    history.pushState({ route: 'home' }, `#`, `./#`)
+    history.pushState({ route: 'home' }, ``, `./`)
     this.activateOnHistory()
   }
 
@@ -27,22 +27,22 @@ class App extends React.Component {
     console.log('Navigate to target', target)
     switch (target) {
       case 'home':
-        this.setNewStateHist({ route: 'home' }, `#`, `./#`)
+        this.setNewStateHist({ route: 'home' }, ``, `./`)
         break
       case 'info':
-        this.setNewStateHist({ route: 'info' }, `info`, `./#info`)
+        this.setNewStateHist({ route: 'info' }, `info`, `./info`)
         break;
       case 'help':
-        this.setNewStateHist({ route: 'help' }, `help`, `./#help`)
+        this.setNewStateHist({ route: 'help' }, `help`, `./help`)
         break;
       case 'signup':
-        this.setNewStateHist({ route: 'signup' }, `signup`, `./#signup`)
+        this.setNewStateHist({ route: 'signup' }, `signup`, `./signup`)
         break;
       case 'games':
-        this.setNewStateHist({ route: 'games' }, `games`, `./#games`)
+        this.setNewStateHist({ route: 'games' }, `games`, `./games`)
         break;
       case 'login':
-        this.setNewStateHist({ route: 'login' }, `login`, `./#login`)
+        this.setNewStateHist({ route: 'login' }, `login`, `./login`)
         break;
       default:
         console.warn('Target navigation ignored:', target)
@@ -54,7 +54,7 @@ class App extends React.Component {
     console.log('Navigate to offline game: ', target)
     switch (target) {
       case 'off-briscindue':
-        this.setNewStateHist({ route: 'off-briscindue', gameName: 'Briscola in due' }, `off-briscindue`, `./#off-briscindue`)
+        this.setNewStateHist({ route: 'off-briscindue', gameName: 'Briscola in due' }, `off-briscindue`, `./off-briscindue`)
         break
       default:
         console.warn('Offline game not supported: ', target)
