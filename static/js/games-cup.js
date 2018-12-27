@@ -308,7 +308,87 @@ const cup = {};
   }
 
   //////////////////////////////////////////
-  //////////////////////////////// CoreStateEventBase
+  //////////////////////////////// SubjectNtfy
+  //////////////////////////////////////////
+
+  cup.SubjectNtfy = class SubjectNtfy {
+    constructor(processor, opt) {
+      this._processor = processor
+      this.opt = opt
+      this._subscription = null
+    }
+
+    process_next(event, name_hand, args) {
+      if (this._processor[name_hand] != null) {
+        //console.log(args,args instanceof Array);
+        if (!(args instanceof Array)) {
+          args = [args];
+        }
+        this._processor[name_hand].apply(this._processor, args);
+      } else if (this.opt.log_missed || this.opt.log_all) {
+        console.log("%s ignored because handler %s is missed", event, name_hand);
+      }
+    }
+
+    dispose() {
+      if (this._subscription != null) {
+        this._subscription.unsubscribe();
+        this._subscription = null;
+      }
+    }
+  }
+
+  //////////////////////////////////////////
+  //////////////////////////////// CoreSubjectNtfy
+  //////////////////////////////////////////
+
+  cup.CoreSubjectNtfy = class CoreSubjectNtfy extends cup.SubjectNtfy {
+
+    constructor(core, processor, opt) {
+      super(processor, opt || { log_missed: false, log_all: false });
+      this._core = core;
+      this._processor = processor;
+      this.opt = opt;
+      this._subscription = core.get_subject_state_action().subscribe(next => {
+        try {
+          if (opt.log_all) { console.log(next); }
+          let name_hand = next.name;
+          if (next.is_action) {
+            name_hand = 'act_' + name_hand;
+          }
+          this.process_next(next.name, name_hand, next.args_arr);
+        } catch (e) {
+          console.error(e);
+        }
+
+      });
+    }
+  }
+
+  //////////////////////////////////////////
+  //////////////////////////////// CoreGameBase
+  //////////////////////////////////////////
+
+  cup.CoreGameBase = class CoreGameBase {
+    constructor() {
+      this._internal_state = '';
+    }
+
+    set_state(state_name) {
+      console.log(state_name);
+      this._internal_state = state_name;
+    }
+
+    check_state(state_name) {
+      if (this._internal_state !== state_name) {
+        throw (new Error('Event expected in state ' + state_name + ' but now is ' + this._internal_state));
+      }
+    }
+  }
+
+
+  //////////////////////////////////////////
+  //////////////////////////////// DeckInfo
   //////////////////////////////////////////
   cup.DeckInfoItem = class DeckInfoItem {
     constructor() {
@@ -556,6 +636,137 @@ const cup = {};
 
       this.set_rank_points(val_arr_rank, val_arr_points);
       console.log('Deck briscola created');
+    }
+
+  }
+
+  //////////////////////////////////////////
+  //////////////////////////////// Player
+  //////////////////////////////////////////
+  cup.Player = class Player {
+    constructor(name) {
+      this.Name = "Utente" + this.getUserId();
+      if (name != null) { this.Name = name; }
+      this.Position = 0
+    }
+
+    getUserId() {
+      return String(Math.random() * 999);
+    }
+  }
+
+  //////////////////////////////////////////
+  //////////////////////////////// PlayerActor
+  //////////////////////////////////////////
+  cup.PlayerActor = class PlayerActor {
+    constructor(pl, coreActor) {
+      this.Player = pl;
+      this._coreActor = coreActor
+    }
+
+    sit_down(pos) {
+      this._coreActor.submit_action('player_sit_down', [this.Player.Name, pos]);
+    }
+
+    play_card(card) {
+      this._coreActor.submit_action('alg_play_acard', [this.Player.Name, card])
+    }
+
+    getCore() { return this._coreActor; }
+  }
+
+  //////////////////////////////////////////
+  //////////////////////////////// ActorSubjectNtfy
+  //////////////////////////////////////////
+
+  cup.ActorSubjectNtfy = class ActorSubjectNtfy extends cup.SubjectNtfy {
+    
+    constructor(_core, _processor, opt) {
+      super(processor, opt || { log_missed: false, log_all: false });
+      this._processor = processor
+      this.opt = opt
+      this._playerSubject = null;
+      this._subscription = _core.get_subject_for_all_players().subscribe(next => {
+        try {
+          if (opt.log_all) { console.log(next); }
+          let name_hand = 'on_all_' + next.event;
+          this.process_next(next.event, name_hand, next.args);
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    }
+
+    subscribePlayer(player_name) {
+      this._playerSubject = this._core.get_subject_for_player(player_name).subscribe(next => {
+        try {
+          if (this.opt.log_all) { console.log(next); }
+          let name_hand = 'on_pl_' + next.event;
+          this.process_next(next.event, name_hand, next.args);
+        } catch (e) {
+          console.error(e);
+        }
+      });
+    }
+
+    dispose() {
+      if (this._playerSubject != null) {
+        this._playerSubject.unsubscribe();
+        this._playerSubject = null;
+      }
+      super.dispose();
+    }
+  }
+
+  //////////////////////////////////////////
+  //////////////////////////////// TableStateCore
+  //////////////////////////////////////////
+  cup.TableStateCore = class TableStateCore {
+    
+    constructor(core, numOfPlayers) {
+      this._core = core
+      this._currNumPlayers = 0
+      this._numOfPlayers = numOfPlayers
+      this._players = [];
+      this.TableFullSub = new rxjs.Subject();
+      let that = this;
+      this._notifyer = new cup.CoreSubjectNtfy(core, that, { log_missed: false });
+      this._core.submit_next_state('st_waiting_for_players');
+    }
+
+    st_waiting_for_players() {
+      console.log('Waiting for players');
+    }
+
+    st_table_partial() {
+      console.log('Table is filling');
+    }
+
+    st_table_full() {
+      console.log("Table is full with " + this._currNumPlayers + " players: " + this._players.join(','));
+      this.TableFullSub.next({ players: this._players })
+    }
+
+    act_player_sit_down(name, pos) {
+      console.log("Player " + name + " sit on pos " + pos);
+      this._currNumPlayers += 1;
+      while (this._players.length < pos) {
+        this._players.push('');
+      }
+      this._players[pos] = name;
+      if (this._currNumPlayers >= this._numOfPlayers) {
+        this._currNumPlayers = this._numOfPlayers;
+        this._core.submit_next_state('st_table_full');
+      } else {
+        this._core.submit_next_state('st_table_partial');
+      }
+    }
+
+    dispose() {
+      if (this._notifyer != null) {
+        this._notifyer.dispose();
+        this._notifyer = null;
+      }
     }
 
   }
