@@ -43,7 +43,6 @@ const cup = {};
       this.num_of_cards_onhandplayer = 3;
       this.player_on_turn = null;
     }
-    // var _carte_gioc_mano_corr = []
 
     start(num_of_players, players, hand_player_size) {
       this.match_state = 'Started';
@@ -359,6 +358,7 @@ const cup = {};
           this.process_next(next.name, name_hand, next.args_arr);
         } catch (e) {
           console.error(e);
+          //throw(e)
         }
 
       });
@@ -775,26 +775,26 @@ const cup = {};
   //////////////////////////////////////////
   //////////////////////////////// RndMgr
   //////////////////////////////////////////
-  cup.RndMgr = class RndMgr{
-    constructor(){
-      this._predefCards =[]
+  cup.RndMgr = class RndMgr {
+    constructor() {
+      this._predefCards = []
       this._predefPlayerIx = -1
     }
-    set_deck(cards){
-      if(cards){
+    set_deck(cards) {
+      if (cards) {
         this._predefCards = cards
       }
     }
 
-    get_deck(cards){
-      if(this._predefCards.length > 0){
+    get_deck(cards) {
+      if (this._predefCards.length > 0) {
         return this._predefCards
-      } 
-      return this.shuffle(cards) 
+      }
+      return this.shuffle(cards)
     }
 
-    get_first_player(size){
-      if (this._predefPlayerIx !== -1){
+    get_first_player(size) {
+      if (this._predefPlayerIx !== -1) {
         return this._predefPlayerIx
       }
       let i = Math.floor(Math.random() * size);
@@ -814,7 +814,7 @@ const cup = {};
         array[m] = array[i];
         array[i] = t;
       }
-    
+
       return array;
     }
   }
@@ -937,6 +937,52 @@ const cup = {};
 
     st_mano_end() {
       this.set_state('st_mano_end');
+      let wininfo = this.vincitore_mano(this._core_data.carte_gioc_mano_corr) //wininfo is {lbl_best: '_5c', player_best: 'Luigi'}
+      console.log('Mano vinta da ', wininfo.player_best)
+      this._core_data.mano_count += 1
+      throw("TODO da def mano_end...")
+    }
+
+    vincitore_mano(carte_giocate) {
+      let res = {
+        lbl_best: null,
+        player_best: null
+      }
+      carte_giocate.forEach(card_gioc => {
+        // card_gioc: { lbl_card: lbl_card, player: player_name }
+        let lbl_curr = card_gioc.lbl_card
+        let player_curr = card_gioc.player
+        if (!res.lbl_best) {
+          res.lbl_best = lbl_curr
+          res.player_best = player_curr
+          return
+        }
+        let info_cardhash_best = this._deck_info.get_card_info(res.lbl_best)
+        let info_cardhash_curr = this._deck_info.get_card_info(lbl_curr)
+        if (this.is_briscola(lbl_curr) && !this.is_briscola(res.lbl_best)) {
+          res.lbl_best = lbl_curr
+          res.player_best = player_curr
+        } else if (!this.is_briscola(lbl_curr) && this.is_briscola(res.lbl_best)) {
+          // nothing to do
+        } else {
+          if (info_cardhash_curr.segno === info_cardhash_best.segno) {
+            if (info_cardhash_curr.rank > info_cardhash_best.rank) {
+              res.lbl_best = lbl_curr
+              res.player_best = player_curr
+            }
+          }
+        }
+      })
+
+      return res
+    }
+
+    is_briscola(lbl_card) {
+      let card_info = this._deck_info.get_card_info(lbl_card)
+      let card_info_briscola = this._deck_info.get_card_info(this._briscola_in_tav_lbl)
+      let segno_card = card_info.segno
+      let segno_brisc = card_info_briscola.segno
+      return (segno_brisc === segno_card)
     }
 
     distribute_cards() {
@@ -998,7 +1044,7 @@ const cup = {};
       this._player_name = _playerActor.Player.Name;
       // _actorNotifier: serve per ricevere gli eventi del core in un handler automatico
       // del tipo on_all_xxx. Mentre con subscribePlayer si hanno gli eventi on_pl_xxx
-      this._actorNotifier.subscribePlayer(this._player_name); 
+      this._actorNotifier.subscribePlayer(this._player_name);
     }
 
     on_all_ev_new_match(args) {
@@ -1065,13 +1111,13 @@ const cup = {};
       //args = {"cards_played":{"player_name":"Luigi","card_played":"_5c"}}
       console.log("[%s] Player has played " + JSON.stringify(args), this._player_name);
       const card = args.cards_played.card_played
-      if (args.cards_played.player_name === this._player_name){
+      if (args.cards_played.player_name === this._player_name) {
         this._cards_on_hand = this._cards_on_hand.filter(x => x !== card)
-      }else{
+      } else {
         this._card_played.push(card)
       }
       const segno = card[2]
-      if(card[1] === 'A' || card[1] === '3'){
+      if (card[1] === 'A' || card[1] === '3') {
         this._strozzi_on_suite[segno] -= 1
       }
     }
