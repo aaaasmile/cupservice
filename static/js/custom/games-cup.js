@@ -1,6 +1,5 @@
 const cup = {};
-(function () {
-  "use strict";
+//(function () { // intellisense in vscode non funziona se metto pattern per isolare oggetti privati. Gli oggetti privati hanno la lettera iniziale minuscola
   //////////////////////////////////////////
   //////////////////////////////// MatchInfo
   //////////////////////////////////////////
@@ -119,7 +118,7 @@ const cup = {};
   //////////////////////////////////////////
   //////////////////////////////// coreQueue
   //////////////////////////////////////////
-  class coreQueue {
+  cup.coreQueue = class coreQueue {
     constructor(queue_name, coreStateManager) {
       this.registry = [];
       this._coreStateManager = coreStateManager
@@ -206,7 +205,7 @@ const cup = {};
     }
   }
 
-  class internalStateProc {
+  cup.internalStateProc = class internalStateProc {
 
     constructor(action_queued, proc_queue, env) {
       this._suspend_queue_proc = false;
@@ -265,13 +264,13 @@ const cup = {};
     // internalStateProc invece gestisce internamente le code e gli switch degli stai.
     constructor(_env) {
       let that = this;
-      this._alg_action_queue = new coreQueue("alg-action", that);
-      this._core_state_queue = new coreQueue("core-state", that);
+      this._alg_action_queue = new cup.coreQueue("alg-action", that);
+      this._core_state_queue = new cup.coreQueue("core-state", that);
       this._subjectStateAction = new rxjs.Subject();
       this.event_for_all = new rxjs.Subject();
 
       this.event_for_player = {};
-      this._internalStateProc = new internalStateProc(
+      this._internalStateProc = new cup.internalStateProc(
         this._alg_action_queue,
         this._core_state_queue,
         _env);
@@ -1260,7 +1259,7 @@ const cup = {};
     }
   }
 
-  class IDeckInfo40 {
+  cup.IDeckInfo40 = class IDeckInfo40 {
     constructor() {
       this._Ab = {};
       this._2b = {};
@@ -1305,7 +1304,7 @@ const cup = {};
     }
   }
 
-  class IDeckInfo52 extends IDeckInfo40 {
+  cup.IDeckInfo52 = class IDeckInfo52 extends cup.IDeckInfo40 {
     constructor() {
       super();
       this._8b = {};
@@ -1327,8 +1326,8 @@ const cup = {};
 
     constructor() {
 
-      this.deck_info_det52 = new IDeckInfo52()
-      this.deck_info_det = new IDeckInfo40()
+      this.deck_info_det52 = new cup.IDeckInfo52()
+      this.deck_info_det = new cup.IDeckInfo40()
       this.use_52deck = false
 
       this.cards_on_game = [
@@ -1496,6 +1495,4 @@ const cup = {};
     }
 
   }
-
-
-})();
+//})();
