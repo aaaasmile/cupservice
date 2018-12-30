@@ -62,18 +62,18 @@ describe('brisc-base-core test', function () {
 
     let coreStateManager = b2core._coreStateManager
     let coreStateStore = b2core._coreStateStore
+    let resProc = coreStateManager.process_next();
     let state = coreStateStore.get_internal_state();
-    let event_num = 1;
-    while (state !== 'st_new_mano' && event_num > 0) {
-      event_num = coreStateManager.process_next();
+    while (state !== 'st_new_mano' && resProc.value > 0) {
+      resProc = coreStateManager.process_next(); // use generators {done: false, value: 2}
       state = coreStateStore.get_internal_state();
-      console.log('Internal state ' + state + ' evnum ' + event_num);
+      console.log('Internal state ' + state + ' resProc ', resProc);
     }
 
     let carte_giocate = [{ lbl_card: '_Fs', player: 'Ernesto' }, { lbl_card: '_Cs', player: 'Luigi' }];
     let wininfo = b2core.vincitore_mano(carte_giocate)
-    //wininfo is {lbl_best: '_5c', player_best: 'Luigi'}        
-    expect(wininfo.player_best).toEqual('Deg');
+    //wininfo is for example {lbl_best: '_5c', player_best: 'Luigi'}        
+    expect(wininfo.player_best).toEqual('Luigi');
 
   })
 

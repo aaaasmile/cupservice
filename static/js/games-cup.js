@@ -168,8 +168,42 @@ const cup = {};
   //////////////////////////////////////////
   //////////////////////////////// internalStateProc
   //////////////////////////////////////////
-  let yeldProcess = function* () {
+  let yeldInternalProcess = function* (intStProc) {
+    // perpetual sequence with generator
+    // returns 
+    // { done: false, value: the sum of _action_queued and _proc_queue still pending }
+    //this._proc_queue.log_state();
+    //this._action_queued.log_state();
+    while (true) {
+      if (intStProc._suspend_queue_proc) {
+        yield 0;
+      }
+      while (intStProc._proc_queue.has_items() && !intStProc._suspend_queue_proc) {
+        intStProc._proc_queue.process_first();
+        yield intStProc._proc_queue.size() + intStProc._action_queued.size()
+      }
+      if (intStProc._suspend_queue_proc) {
+        yield 0;
+      }
+      if (intStProc._action_queued.has_items()) {
+        try {
+          intStProc._action_queued.process_first();
+        } catch (e) {
+          if (intStProc._env === 'develop') {
+            throw (new Error(e));
+          } else {
+            console.warn('Action ignored beacuse: ' + e);
+          }
+        }
+      }
+      if (intStProc._suspend_queue_proc) {
+        yield 0;
+      }
+      //this._proc_queue.log_state();
+      //this._action_queued.log_state();
 
+      yield intStProc._proc_queue.size() + intStProc._action_queued.size();
+    }
   }
 
   class internalStateProc {
@@ -213,37 +247,7 @@ const cup = {};
     }
 
     process_next() {
-      // returns the sum of _action_queued and _proc_queue still pending
-      //this._proc_queue.log_state();
-      //this._action_queued.log_state();
-      if (this._suspend_queue_proc) {
-        return 0;
-      }
-      while (this._proc_queue.has_items() && !this._suspend_queue_proc) {
-        this._proc_queue.process_first();
-        //yield this._proc_queue.size() + this._action_queued.size()
-      }
-      if (this._suspend_queue_proc) {
-        return 0;
-      }
-      if (this._action_queued.has_items()) {
-        try {
-          this._action_queued.process_first();
-        } catch (e) {
-          if (this._env === 'develop') {
-            throw (new Error(e));
-          } else {
-            console.warn('Action ignored beacuse: ' + e);
-          }
-        }
-      }
-      if (this._suspend_queue_proc) {
-        return 0;
-      }
-      //this._proc_queue.log_state();
-      //this._action_queued.log_state();
-
-      return this._proc_queue.size() + this._action_queued.size();
+      return yeldInternalProcess(this).next();
     }
   }
 
@@ -323,8 +327,8 @@ const cup = {};
 
     // other
     process_all() {
-      let numRemProc = 1
-      while (numRemProc > 0) {
+      let resProc = this._internalStateProc.process_next();
+      while (resProc.value > 0) {
         numRemProc = this._internalStateProc.process_next();
       }
     }
