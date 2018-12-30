@@ -30,7 +30,7 @@ const cup = {};
       this.segni_curr_match = { score: {}, segno_state: '' };
       this.match_state = '';
       this.match_info = new cup.MatchInfo();
-      this.players = [];
+      this.players = []; // use simple name
       this.carte_prese = {};
       this.carte_in_mano = {};
       this.carte_gioc_mano_corr = [];
@@ -45,6 +45,7 @@ const cup = {};
     }
 
     start(num_of_players, players, hand_player_size) {
+      // players: ["Luigi", "Ernesto"]
       this.match_state = 'Started';
       this.match_info.start();
       this.players = [];
@@ -88,7 +89,7 @@ const cup = {};
     }
 
     calc_round_players(first_ix) {
-      var ins_point = -1, round_players = [], onlast = true;
+      let ins_point = -1, round_players = [], onlast = true;
       for (let i = 0; i < this.players.length; i++) {
         if (i === first_ix) {
           ins_point = 0;
@@ -103,6 +104,15 @@ const cup = {};
         ins_point = onlast ? -1 : ins_point + 1;
       }
       return round_players;
+    }
+
+    round_players_by_player(player) {
+      // palyer = "Luigi"
+      let ix = this.players.indexOf(player)
+      if (ix < 0) {
+        throw ('Player not found', player)
+      }
+      this.round_players = this.calc_round_players(ix)
     }
   }
 
@@ -198,6 +208,7 @@ const cup = {};
     }
 
     process_next() {
+      // returns the sum of _action_queued and _proc_queue still pending
       //this._proc_queue.log_state();
       //this._action_queued.log_state();
       if (this._suspend_queue_proc) {
@@ -235,7 +246,7 @@ const cup = {};
   //////////////////////////////////////////
   cup.CoreStateEventBase = class CoreStateEventBase {
     // _env: 'develop', 'production'
-    constructor(_env) { // TODO: prova a vedere se riesci ad usare dei workflows, esempio standalone va subito allo start.
+    constructor(_env) { 
       let that = this;
       this._alg_action = new CoreQueue("alg-action", that);
       this._core_state = new CoreQueue("core-state", that);
@@ -303,7 +314,7 @@ const cup = {};
       while (numRemProc > 0) {
         numRemProc = this._processor.process_next();
       }
-    }
+    }    
   }
 
   //////////////////////////////////////////
@@ -383,6 +394,9 @@ const cup = {};
       if (this._internal_state !== state_name) {
         throw (new Error('Event expected in state ' + state_name + ' but now is ' + this._internal_state));
       }
+    }
+    get_internal_state() {
+      return this._internal_state
     }
   }
 
@@ -610,7 +624,7 @@ const cup = {};
     }
 
     get_cards_on_game() {
-      return this.cards_on_game;
+      return this.cards_on_game.slice();
     }
 
     set_rank_points(arr_rank, arr_points) {
@@ -780,7 +794,7 @@ const cup = {};
       this._predefCards = []
       this._predefPlayerIx = -1
     }
-    set_deck(cards) {
+    set_predefined_deck(cards) {
       if (cards) {
         this._predefCards = cards
       }
@@ -834,7 +848,7 @@ const cup = {};
         , target_points_segno: 61, players: [], num_cards_onhand: 3
         , predef_deck: [], predef_ix: -1
       };
-      this._core = _core
+      this._core = _core //CoreStateEventBase
       this._numOfSegni = _numOfSegni
       this._pointsForWin = _pointsForWin
       this._deck_info = new cup.DeckInfo();
@@ -856,7 +870,7 @@ const cup = {};
       this._myOpt.target_points_segno = this._myOpt.target_points_segno || this._pointsForWin;
       this._myOpt.num_cards_onhand = this._myOpt.num_cards_onhand || 3;
       // var _game_core_recorder = mod_gamerepl.game_core_recorder_ctor();
-      this._rnd_mgr.set_deck(this._myOpt.predef_deck);
+      this._rnd_mgr.set_predefined_deck(this._myOpt.predef_deck);
 
       this._core_data.start(this._myOpt.tot_num_players, this._myOpt.players, this._myOpt.num_cards_onhand);
       this._core.fire_all('ev_new_match', {
@@ -898,7 +912,7 @@ const cup = {};
 
     st_new_giocata() {
       this.set_state('st_new_giocata');
-      let cards = this._deck_info.get_cards_on_game().slice();
+      let cards = this._deck_info.get_cards_on_game();
       cards = this._rnd_mgr.get_deck(cards);
       let first_player_ix = this._rnd_mgr.get_first_player(this._core_data.players.length);
       this._core_data.start_new_giocata(first_player_ix, cards);
@@ -940,7 +954,18 @@ const cup = {};
       let wininfo = this.vincitore_mano(this._core_data.carte_gioc_mano_corr) //wininfo is {lbl_best: '_5c', player_best: 'Luigi'}
       console.log('Mano vinta da ', wininfo.player_best)
       this._core_data.mano_count += 1
-      throw("TODO da def mano_end...")
+
+      let carte_prese_mano = []
+      this._core_data.carte_gioc_mano_corr.forEach(hash_card => { //hash_card is { lbl_card: lbl_card, player: player_name }
+        this._core_data.carte_prese[wininfo.player_best].push(hash_card.lbl_card)
+        carte_prese_mano.push(hash_card.lbl_card)
+      })
+
+      this._core_data.round_players_by_player(wininfo.player_best)
+      let punti_presi = this.calc_punteggio(carte_prese_mano);
+
+
+      throw ("TODO da def mano_end...")
     }
 
     vincitore_mano(carte_giocate) {
