@@ -1,5 +1,6 @@
 const cup = {};
 //(function () { // intellisense in vscode non funziona se metto pattern per isolare oggetti privati. Gli oggetti privati hanno la lettera iniziale minuscola
+// Per avere poi l'intellisense anche nei miei fiels di spec (unit test di jasmine) ho messo la dir di test come sottodirectory di questa.
   //////////////////////////////////////////
   //////////////////////////////// MatchInfo
   //////////////////////////////////////////

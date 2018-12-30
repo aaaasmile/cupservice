@@ -12,7 +12,6 @@ describe('brisc-base-core test', function () {
       coreStateManager.process_all(); // play until the end
     });
 
-
     let playerActorErnesto = new cup.PlayerActor(new cup.Player('Ernesto'), coreStateManager);
     let playerActorLuigi = new cup.PlayerActor(new cup.Player('Luigi'), coreStateManager);
     new cup.AlgBriscBase(playerActorErnesto);
