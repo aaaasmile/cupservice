@@ -117,9 +117,9 @@ const cup = {};
   }
 
   //////////////////////////////////////////
-  //////////////////////////////// CoreQueue
+  //////////////////////////////// coreQueue
   //////////////////////////////////////////
-  class CoreQueue {
+  class coreQueue {
     constructor(queue_name, executer) {
       this.registry = [];
     }
@@ -165,9 +165,9 @@ const cup = {};
   }
 
   //////////////////////////////////////////
-  //////////////////////////////// StateActionProcessor
+  //////////////////////////////// internalStateProc
   //////////////////////////////////////////
-  class StateActionProcessor {
+  class internalStateProc {
 
     constructor(action_queued, proc_queue, env) {
       this._suspend_queue_proc = false;
@@ -242,26 +242,33 @@ const cup = {};
   }
 
   //////////////////////////////////////////
-  //////////////////////////////// CoreStateEventBase
+  //////////////////////////////// CoreStateManager
   //////////////////////////////////////////
-  cup.CoreStateEventBase = class CoreStateEventBase {
+  cup.CoreStateManager = class CoreStateManager {
     // _env: 'develop', 'production'
-    constructor(_env) { 
+    // Lo scopo di questa classe è quello di avere un unico processore di stati
+    // che viene usato attraverso diverse classi, come CoreBriscolaBase e TableStateCore.
+    // In CoreStateManager viene pubblicata una serie di funzioni che vengono usate
+    // anche per pubblicare eventi al player
+    // CoreBriscolaBase e TableStateCore non si cambiano stati e eventi, ma sono osservatori
+    // dell'unico oggetto che contiene lo stato attuale e le sue code di eventi. 
+    // internalStateProc invece gestisce internamente le code e gli switch degli stai.
+    constructor(_env) {
       let that = this;
-      this._alg_action = new CoreQueue("alg-action", that);
-      this._core_state = new CoreQueue("core-state", that);
+      this._alg_action = new coreQueue("alg-action", that);
+      this._core_state = new coreQueue("core-state", that);
       this._subStateAction = new rxjs.Subject();
       this.event_for_all = new rxjs.Subject();
 
       this.event_for_player = {};
-      this._processor = new StateActionProcessor(
+      this._internalStateProc = new internalStateProc(
         this._alg_action,
         this._core_state,
         _env);
     }
 
     // ICore
-    process_next() { return this._processor.process_next(); }
+    process_next() { return this._internalStateProc.process_next(); }
 
     get_subject_state_action() {
       return this._subStateAction;
@@ -283,12 +290,12 @@ const cup = {};
     }
 
     clear_gevent() {
-      this._processor.clear();
+      this._internalStateProc.clear();
     }
 
     // IActorHandler
-    suspend_proc_gevents(str) { this._processor.suspend_proc_gevents(str); }
-    continue_process_events(str) { this._processor.continue_process_events(str); }
+    suspend_proc_gevents(str) { this._internalStateProc.suspend_proc_gevents(str); }
+    continue_process_events(str) { this._internalStateProc.continue_process_events(str); }
 
     submit_action(action_name, act_args) {
       let that = this;
@@ -312,23 +319,24 @@ const cup = {};
     process_all() {
       let numRemProc = 1
       while (numRemProc > 0) {
-        numRemProc = this._processor.process_next();
+        numRemProc = this._internalStateProc.process_next();
       }
-    }    
+    }
   }
 
   //////////////////////////////////////////
-  //////////////////////////////// SubjectNtfy
+  //////////////////////////////// StateHandlerCaller
   //////////////////////////////////////////
-
-  cup.SubjectNtfy = class SubjectNtfy {
+  // Questa classe serve per chiamare le funzioni degli stati all'interno del processor
+  // Un processor è per esempio CoreBriscolaBase o TableStateCore
+  // Le funzioni chiamate sono del tipo st_mano_end e vengono chiamate direttamente tramite apply
+  cup.StateHandlerCaller = class StateHandlerCaller {
     constructor(processor, opt) {
-      this._processor = processor
+      this._processor = processor //CoreBriscolaBase o TableStateCore
       this.opt = opt
-      this._subscription = null
     }
 
-    process_next(event, name_hand, args) {
+    call(event, name_hand, args) {
       if (this._processor[name_hand] != null) {
         //console.log(args,args instanceof Array);
         if (!(args instanceof Array)) {
@@ -339,6 +347,38 @@ const cup = {};
         console.warn("%s ignored because handler %s is missed", event, name_hand);
       }
     }
+  }
+
+  //////////////////////////////////////////
+  //////////////////////////////// CoreStateSubjectSubscriber
+  //////////////////////////////////////////
+  // Serve per gestire eventi del tipo act_XXX che sono actions.
+  // Questi action handler sono del tipo act_player_sit_down e si trovano normalmente
+  // implementate nel core tipo CoreBriscolaBase. 
+  // In principio un evento nel Subject dell'oggetto CoreStateManager viene lanciato.
+  // In questa classe viene ricevuto quest'evento e chiamato automaticamante la funzione handler
+  // del core.
+  cup.CoreStateSubjectSubscriber = class CoreStateSubjectSubscriber {
+
+    constructor(coreStateManager, processor, opt) {
+      this.opt = opt || { log_missed: false, log_all: false }
+      this._coreStateManager = coreStateManager;
+      this._stateHandlerCaller = new cup.StateHandlerCaller(processor, opt)
+      this._subscription = coreStateManager.get_subject_state_action()
+        .subscribe(next => {
+          try {
+            if (opt.log_all) { console.log(next); }
+            let name_hand = next.name;
+            if (next.is_action) {
+              name_hand = 'act_' + name_hand;
+            }
+            this._stateHandlerCaller.call(next.name, name_hand, next.args_arr);
+          } catch (e) {
+            console.error(e);
+            //throw(e)
+          }
+        });
+    }
 
     dispose() {
       if (this._subscription != null) {
@@ -346,41 +386,14 @@ const cup = {};
         this._subscription = null;
       }
     }
+
   }
 
   //////////////////////////////////////////
-  //////////////////////////////// CoreSubjectNtfy
+  //////////////////////////////// CoreStateStore
   //////////////////////////////////////////
 
-  cup.CoreSubjectNtfy = class CoreSubjectNtfy extends cup.SubjectNtfy {
-
-    constructor(core, processor, opt) {
-      super(processor, opt || { log_missed: false, log_all: false });
-      this._core = core;
-      this._processor = processor;
-      this.opt = opt;
-      this._subscription = core.get_subject_state_action().subscribe(next => {
-        try {
-          if (opt.log_all) { console.log(next); }
-          let name_hand = next.name;
-          if (next.is_action) {
-            name_hand = 'act_' + name_hand;
-          }
-          this.process_next(next.name, name_hand, next.args_arr);
-        } catch (e) {
-          console.error(e);
-          //throw(e)
-        }
-
-      });
-    }
-  }
-
-  //////////////////////////////////////////
-  //////////////////////////////// CoreGameBase
-  //////////////////////////////////////////
-
-  cup.CoreGameBase = class CoreGameBase {
+  cup.CoreStateStore = class CoreStateStore {
     constructor() {
       this._internal_state = '';
     }
@@ -401,258 +414,6 @@ const cup = {};
   }
 
 
-  //////////////////////////////////////////
-  //////////////////////////////// DeckInfo
-  //////////////////////////////////////////
-  cup.DeckInfoItem = class DeckInfoItem {
-    constructor() {
-      this.ix;
-      this.nome;
-      this.symb;
-      this.segno;
-      this.seed_ix;
-      this.pos;
-      this.rank;
-      this.points;
-    }
-  }
-
-  class IDeckInfo40 {
-    constructor() {
-      this._Ab = {};
-      this._2b = {};
-      this._3b = {};
-      this._4b = {};
-      this._5b = {};
-      this._6b = {};
-      this._7b = {};
-      this._Fb = {};
-      this._Cb = {};
-      this._Rb = {};
-      this._Ac = {};
-      this._2c = {};
-      this._3c = {};
-      this._4c = {};
-      this._5c = {};
-      this._6c = {};
-      this._7c = {};
-      this._Fc = {};
-      this._Cc = {};
-      this._Rc = {};
-      this._Ad = {};
-      this._2d = {};
-      this._3d = {};
-      this._4d = {};
-      this._5d = {};
-      this._6d = {};
-      this._7d = {};
-      this._Fd = {};
-      this._Cd = {};
-      this._Rd = {};
-      this._As = {};
-      this._2s = {};
-      this._3s = {};
-      this._4s = {};
-      this._5s = {};
-      this._6s = {};
-      this._7s = {};
-      this._Fs = {};
-      this._Cs = {};
-      this._Rs = {};
-    }
-  }
-
-  class IDeckInfo52 extends IDeckInfo40 {
-    constructor() {
-      super();
-      this._8b = {};
-      this._9b = {};
-      this._db = {};
-      this._8c = {};
-      this._9c = {};
-      this._dc = {};
-      this._8d = {};
-      this._9d = {};
-      this._dd = {};
-      this._8s = {};
-      this._9s = {};
-      this._ds = {};
-    }
-  }
-
-  cup.DeckInfo = class DeckInfo {
-
-    constructor() {
-
-      this.deck_info_det52 = new IDeckInfo52()
-      this.deck_info_det = new IDeckInfo40()
-      this.use_52deck = false
-
-      this.cards_on_game = [
-        '_Ab', '_2b', '_3b', '_4b', '_5b', '_6b', '_7b', '_Fb', '_Cb', '_Rb',
-        '_Ac', '_2c', '_3c', '_4c', '_5c', '_6c', '_7c', '_Fc', '_Cc', '_Rc',
-        '_Ad', '_2d', '_3d', '_4d', '_5d', '_6d', '_7d', '_Fd', '_Cd', '_Rd',
-        '_As', '_2s', '_3s', '_4s', '_5s', '_6s', '_7s', '_Fs', '_Cs', '_Rs'];
-
-      this.setToDeck40()
-    }
-
-    setToDeck40() {
-      this.use_52deck = false
-      this.deck_info_det._Ab = { ix: 0, nome: 'asso bastoni', symb: 'asso', segno: 'B', seed_ix: 0, pos: 1, points: 0, rank: 0 }
-      this.deck_info_det._2b = { ix: 1, nome: 'due bastoni', symb: 'due', segno: 'B', seed_ix: 0, pos: 2, points: 0, rank: 0 }
-      this.deck_info_det._3b = { ix: 2, nome: 'tre bastoni', symb: 'tre', segno: 'B', seed_ix: 0, pos: 3, points: 0, rank: 0 }
-      this.deck_info_det._4b = { ix: 3, nome: 'quattro bastoni', symb: 'qua', segno: 'B', seed_ix: 0, pos: 4, points: 0, rank: 0 }
-      this.deck_info_det._5b = { ix: 4, nome: 'cinque bastoni', symb: 'cin', segno: 'B', seed_ix: 0, pos: 5, points: 0, rank: 0 }
-      this.deck_info_det._6b = { ix: 5, nome: 'sei bastoni', symb: 'sei', segno: 'B', seed_ix: 0, pos: 6, points: 0, rank: 0 }
-      this.deck_info_det._7b = { ix: 6, nome: 'sette bastoni', symb: 'set', segno: 'B', seed_ix: 0, pos: 7, points: 0, rank: 0 }
-      this.deck_info_det._Fb = { ix: 7, nome: 'fante bastoni', symb: 'fan', segno: 'B', seed_ix: 0, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det._Cb = { ix: 8, nome: 'cavallo bastoni', symb: 'cav', segno: 'B', seed_ix: 0, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det._Rb = { ix: 9, nome: 're bastoni', symb: 're', segno: 'B', seed_ix: 0, pos: 10, points: 0, rank: 0 }
-      this.deck_info_det._Ac = { ix: 10, nome: 'asso coppe', symb: 'asso', segno: 'C', seed_ix: 1, pos: 1, points: 0, rank: 0 }
-      this.deck_info_det._2c = { ix: 11, nome: 'due coppe', symb: 'due', segno: 'C', seed_ix: 1, pos: 2, points: 0, rank: 0 }
-      this.deck_info_det._3c = { ix: 12, nome: 'tre coppe', symb: 'tre', segno: 'C', seed_ix: 1, pos: 3, points: 0, rank: 0 }
-      this.deck_info_det._4c = { ix: 13, nome: 'quattro coppe', symb: 'qua', segno: 'C', seed_ix: 1, pos: 4, points: 0, rank: 0 }
-      this.deck_info_det._5c = { ix: 14, nome: 'cinque coppe', symb: 'cin', segno: 'C', seed_ix: 1, pos: 5, points: 0, rank: 0 }
-      this.deck_info_det._6c = { ix: 15, nome: 'sei coppe', symb: 'sei', segno: 'C', seed_ix: 1, pos: 6, points: 0, rank: 0 }
-      this.deck_info_det._7c = { ix: 16, nome: 'sette coppe', symb: 'set', segno: 'C', seed_ix: 1, pos: 7, points: 0, rank: 0 }
-      this.deck_info_det._Fc = { ix: 17, nome: 'fante coppe', symb: 'fan', segno: 'C', seed_ix: 1, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det._Cc = { ix: 18, nome: 'cavallo coppe', symb: 'cav', segno: 'C', seed_ix: 1, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det._Rc = { ix: 19, nome: 're coppe', symb: 're', segno: 'C', seed_ix: 1, pos: 10, points: 0, rank: 0 }
-      this.deck_info_det._Ad = { ix: 20, nome: 'asso denari', symb: 'asso', segno: 'D', seed_ix: 2, pos: 1, points: 0, rank: 0 }
-      this.deck_info_det._2d = { ix: 21, nome: 'due denari', symb: 'due', segno: 'D', seed_ix: 2, pos: 2, points: 0, rank: 0 }
-      this.deck_info_det._3d = { ix: 22, nome: 'tre denari', symb: 'tre', segno: 'D', seed_ix: 2, pos: 3, points: 0, rank: 0 }
-      this.deck_info_det._4d = { ix: 23, nome: 'quattro denari', symb: 'qua', segno: 'D', seed_ix: 2, pos: 4, points: 0, rank: 0 }
-      this.deck_info_det._5d = { ix: 24, nome: 'cinque denari', symb: 'cin', segno: 'D', seed_ix: 2, pos: 5, points: 0, rank: 0 }
-      this.deck_info_det._6d = { ix: 25, nome: 'sei denari', symb: 'sei', segno: 'D', seed_ix: 2, pos: 6, points: 0, rank: 0 }
-      this.deck_info_det._7d = { ix: 26, nome: 'sette denari', symb: 'set', segno: 'D', seed_ix: 2, pos: 7, points: 0, rank: 0 }
-      this.deck_info_det._Fd = { ix: 27, nome: 'fante denari', symb: 'fan', segno: 'D', seed_ix: 2, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det._Cd = { ix: 28, nome: 'cavallo denari', symb: 'cav', segno: 'D', seed_ix: 2, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det._Rd = { ix: 29, nome: 're denari', symb: 're', segno: 'D', seed_ix: 2, pos: 10, points: 0, rank: 0 }
-      this.deck_info_det._As = { ix: 30, nome: 'asso spade', symb: 'asso', segno: 'S', seed_ix: 3, pos: 1, points: 0, rank: 0 }
-      this.deck_info_det._2s = { ix: 31, nome: 'due spade', symb: 'due', segno: 'S', seed_ix: 3, pos: 2, points: 0, rank: 0 }
-      this.deck_info_det._3s = { ix: 32, nome: 'tre spade', symb: 'tre', segno: 'S', seed_ix: 3, pos: 3, points: 0, rank: 0 }
-      this.deck_info_det._4s = { ix: 33, nome: 'quattro spade', symb: 'qua', segno: 'S', seed_ix: 3, pos: 4, points: 0, rank: 0 }
-      this.deck_info_det._5s = { ix: 34, nome: 'cinque spade', symb: 'cin', segno: 'S', seed_ix: 3, pos: 5, points: 0, rank: 0 }
-      this.deck_info_det._6s = { ix: 35, nome: 'sei spade', symb: 'sei', segno: 'S', seed_ix: 3, pos: 6, points: 0, rank: 0 }
-      this.deck_info_det._7s = { ix: 36, nome: 'sette spade', symb: 'set', segno: 'S', seed_ix: 3, pos: 7, points: 0, rank: 0 }
-      this.deck_info_det._Fs = { ix: 37, nome: 'fante spade', symb: 'fan', segno: 'S', seed_ix: 3, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det._Cs = { ix: 38, nome: 'cavallo spade', symb: 'cav', segno: 'S', seed_ix: 3, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det._Rs = { ix: 39, nome: 're spade', symb: 're', segno: 'S', seed_ix: 3, pos: 10, points: 0, rank: 0 }
-    }
-
-
-    activateThe52deck() {
-      this.use_52deck = true
-      this.cards_on_game = [
-        '_Ab', '_2b', '_3b', '_4b', '_5b', '_6b', '_7b', '_8b', '_9b', '_10b', '_Fb', '_Cb', '_Rb',
-        '_Ac', '_2c', '_3c', '_4c', '_5c', '_6c', '_7c', '_8c', '_9c', '_10c', '_Fc', '_Cc', '_Rc',
-        '_Ad', '_2d', '_3d', '_4d', '_5d', '_6d', '_7d', '_8d', '_9d', '_10d', '_Fd', '_Cd', '_Rd',
-        '_As', '_2s', '_3s', '_4s', '_5s', '_6s', '_7s', '_8s', '_9s', '_10s', '_Fs', '_Cs', '_Rs'];
-
-      Object.keys(this.deck_info_det).forEach(key => this.deck_info_det52[key] = key);
-      // bastoni 
-      this.deck_info_det52._8b = { ix: 7, nome: 'otto bastoni', symb: 'ott', segno: 'B', seed_ix: 0, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det52._9b = { ix: 8, nome: 'nove bastoni', symb: 'nov', segno: 'B', seed_ix: 0, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det52._db = { ix: 9, nome: 'dieci bastoni', symb: 'die', segno: 'B', seed_ix: 0, pos: 10, points: 0, rank: 0 }
-      this.deck_info_det52._Fb = { ix: 10, nome: 'fante bastoni', symb: 'fan', segno: 'B', seed_ix: 0, pos: 11, points: 0, rank: 0 }
-      this.deck_info_det52._Cb = { ix: 11, nome: 'cavallo bastoni', symb: 'cav', segno: 'B', seed_ix: 0, pos: 12, points: 0, rank: 0 }
-      this.deck_info_det52._Rb = { ix: 12, nome: 're bastoni', symb: 're', segno: 'B', seed_ix: 0, pos: 13, points: 0, rank: 0 }
-      //coppe
-      this.deck_info_det52._Ac.ix = 13
-      this.deck_info_det52._2c.ix = 14
-      this.deck_info_det52._3c.ix = 15
-      this.deck_info_det52._4c.ix = 16
-      this.deck_info_det52._5c.ix = 17
-      this.deck_info_det52._6c.ix = 18
-      this.deck_info_det52._7c.ix = 19
-      this.deck_info_det52._8c = { ix: 20, nome: 'otto coppe', symb: 'ott', segno: 'C', seed_ix: 1, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det52._9c = { ix: 21, nome: 'nove coppe', symb: 'nov', segno: 'C', seed_ix: 1, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det52._dc = { ix: 22, nome: 'dieci coppe', symb: 'die', segno: 'C', seed_ix: 1, pos: 10, points: 0, rank: 0 }
-      this.deck_info_det52._Fc = { ix: 23, nome: 'fante coppe', symb: 'fan', segno: 'C', seed_ix: 1, pos: 11, points: 0, rank: 0 }
-      this.deck_info_det52._Cc = { ix: 24, nome: 'cavallo coppe', symb: 'cav', segno: 'C', seed_ix: 1, pos: 12, points: 0, rank: 0 }
-      this.deck_info_det52._Rc = { ix: 25, nome: 're coppe', symb: 're', segno: 'C', seed_ix: 1, pos: 13, points: 0, rank: 0 }
-      //denari
-      this.deck_info_det52._Ad.ix = 26
-      this.deck_info_det52._2d.ix = 27
-      this.deck_info_det52._3d.ix = 28
-      this.deck_info_det52._4d.ix = 29
-      this.deck_info_det52._5d.ix = 30
-      this.deck_info_det52._6d.ix = 31
-      this.deck_info_det52._7d.ix = 32
-      this.deck_info_det52._8d = { ix: 33, nome: 'otto denari', symb: 'ott', segno: 'D', seed_ix: 2, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det52._9d = { ix: 34, nome: 'nove denari', symb: 'nov', segno: 'D', seed_ix: 2, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det52._dd = { ix: 35, nome: 'dieci denari', symb: 'die', segno: 'D', seed_ix: 2, pos: 10, points: 0, rank: 0 }
-      this.deck_info_det52._Fd = { ix: 36, nome: 'fante denari', symb: 'fan', segno: 'D', seed_ix: 2, pos: 11, points: 0, rank: 0 }
-      this.deck_info_det52._Cd = { ix: 37, nome: 'cavallo denari', symb: 'cav', segno: 'D', seed_ix: 2, pos: 12, points: 0, rank: 0 }
-      this.deck_info_det52._Rd = { ix: 38, nome: 're denari', symb: 're', segno: 'D', seed_ix: 2, pos: 13, points: 0, rank: 0 }
-      //spade
-      this.deck_info_det52._As.ix = 39
-      this.deck_info_det52._2s.ix = 40
-      this.deck_info_det52._3s.ix = 41
-      this.deck_info_det52._4s.ix = 42
-      this.deck_info_det52._5s.ix = 43
-      this.deck_info_det52._6s.ix = 44
-      this.deck_info_det52._7s.ix = 45
-      this.deck_info_det52._8s = { ix: 46, nome: 'otto spade', symb: 'ott', segno: 'S', seed_ix: 3, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det52._9s = { ix: 47, nome: 'nove spade', symb: 'nov', segno: 'S', seed_ix: 3, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det52._ds = { ix: 48, nome: 'dieci spade', symb: 'die', segno: 'S', seed_ix: 3, pos: 10, points: 0, rank: 0 }
-      this.deck_info_det52._Fs = { ix: 49, nome: 'fante spade', symb: 'fan', segno: 'S', seed_ix: 3, pos: 11, points: 0, rank: 0 }
-      this.deck_info_det52._Cs = { ix: 50, nome: 'cavallo spade', symb: 'cav', segno: 'S', seed_ix: 3, pos: 12, points: 0, rank: 0 }
-      this.deck_info_det52._Rs = { ix: 51, nome: 're spade', symb: 're', segno: 'S', seed_ix: 3, pos: 13, points: 0, rank: 0 }
-    }
-
-    get_rank(card_lbl) {
-      if (this.use_52deck) {
-        return this.deck_info_det52[card_lbl].rank;
-      }
-      return this.deck_info_det[card_lbl].rank;
-    }
-
-    get_points(card_lbl) {
-      if (this.use_52deck) {
-        return this.deck_info_det52[card_lbl].points;
-      }
-      return this.deck_info_det[card_lbl].points;
-    }
-
-    get_card_info(card_lbl) {
-      if (this.use_52deck) {
-        return this.deck_info_det52[card_lbl];
-      }
-      return this.deck_info_det[card_lbl];
-    }
-
-    get_cards_on_game() {
-      return this.cards_on_game.slice();
-    }
-
-    set_rank_points(arr_rank, arr_points) {
-      var i, symb_card;
-      for (i = 0; i < this.cards_on_game.length; i++) {
-        var k = this.cards_on_game[i];
-        var card = this.deck_info_det[k];
-        if (this.use_52deck) {
-          card = this.deck_info_det52[k]
-        }
-        if (card == null) {
-          throw (new Error('Error on deck ' + k + ' not found'));
-        }
-        symb_card = card.symb;
-        card.rank = arr_rank[symb_card];
-        card.points = arr_points[symb_card];
-      }
-    }
-
-    deck_info_dabriscola() {
-      var val_arr_rank = { sei: 6, cav: 9, qua: 4, re: 10, set: 7, due: 2, cin: 5, asso: 12, fan: 8, tre: 11 };
-      var val_arr_points = { sei: 0, cav: 3, qua: 0, re: 4, set: 0, due: 0, cin: 0, asso: 11, fan: 2, tre: 10 };
-
-      this.set_rank_points(val_arr_rank, val_arr_points);
-      console.log('Deck briscola created');
-    }
-
-  }
 
   //////////////////////////////////////////
   //////////////////////////////// Player
@@ -690,38 +451,36 @@ const cup = {};
   }
 
   //////////////////////////////////////////
-  //////////////////////////////// ActorSubjectNtfy
+  //////////////////////////////// ActorStateSubjectSubscriber
   //////////////////////////////////////////
 
-  cup.ActorSubjectNtfy = class ActorSubjectNtfy extends cup.SubjectNtfy {
+  cup.ActorStateSubjectSubscriber = class ActorStateSubjectSubscriber {
 
-    constructor(_core, _processor, opt) {
-      super(_processor, opt || { log_missed: false, log_all: false });
-      this._processor = _processor
-      this.opt = opt
-      this._core = _core
+    constructor(coreStateManager, processor, opt, player_name) {
+      this.opt = opt || { log_missed: false, log_all: false }
+      this._coreStateManager = coreStateManager;
+      this._stateHandlerCaller = new cup.StateHandlerCaller(processor, opt)
       this._playerSubject = null;
-      this._subscription = _core.get_subject_for_all_players().subscribe(next => {
-        try {
-          if (opt.log_all) { console.log(next); }
-          let name_hand = 'on_all_' + next.event;
-          this.process_next(next.event, name_hand, next.args);
-        } catch (e) {
-          console.error(e);
-        }
-      });
-    }
-
-    subscribePlayer(player_name) {
-      this._playerSubject = this._core.get_subject_for_player(player_name).subscribe(next => {
-        try {
-          if (this.opt.log_all) { console.log(next); }
-          let name_hand = 'on_pl_' + next.event;
-          this.process_next(next.event, name_hand, next.args);
-        } catch (e) {
-          console.error(e);
-        }
-      });
+      this._subscription = coreStateManager.get_subject_for_all_players()
+        .subscribe(next => {
+          try {
+            if (opt.log_all) { console.log(next); }
+            let name_hand = 'on_all_' + next.event;
+            this._stateHandlerCaller.call(next.event, name_hand, next.args);
+          } catch (e) {
+            console.error(e);
+          }
+        });
+      this._playerSubject = this._coreStateManager.get_subject_for_player(player_name)
+        .subscribe(next => {
+          try {
+            if (this.opt.log_all) { console.log(next); }
+            let name_hand = 'on_pl_' + next.event;
+            this._stateHandlerCaller.call(next.event, name_hand, next.args);
+          } catch (e) {
+            console.error(e);
+          }
+        });
     }
 
     dispose() {
@@ -729,7 +488,10 @@ const cup = {};
         this._playerSubject.unsubscribe();
         this._playerSubject = null;
       }
-      super.dispose();
+      if (this._subscription != null) {
+        this._subscription.unsubscribe();
+        this._subscription = null;
+      }
     }
   }
 
@@ -738,15 +500,15 @@ const cup = {};
   //////////////////////////////////////////
   cup.TableStateCore = class TableStateCore {
 
-    constructor(core, numOfPlayers) {
-      this._core = core
+    constructor(coreStateManager, numOfPlayers) {
+      this._coreStateManager = coreStateManager 
       this._currNumPlayers = 0
       this._numOfPlayers = numOfPlayers
       this._players = [];
       this.TableFullSub = new rxjs.Subject();
       let that = this;
-      this._notifyer = new cup.CoreSubjectNtfy(core, that, { log_missed: false });
-      this._core.submit_next_state('st_waiting_for_players');
+      this._subscriber = new cup.CoreStateSubjectSubscriber(coreStateManager, that, { log_missed: false });
+      this._coreStateManager.submit_next_state('st_waiting_for_players');
     }
 
     st_waiting_for_players() {
@@ -771,16 +533,16 @@ const cup = {};
       this._players[pos] = name;
       if (this._currNumPlayers >= this._numOfPlayers) {
         this._currNumPlayers = this._numOfPlayers;
-        this._core.submit_next_state('st_table_full');
+        this._coreStateManager.submit_next_state('st_table_full');
       } else {
-        this._core.submit_next_state('st_table_partial');
+        this._coreStateManager.submit_next_state('st_table_partial');
       }
     }
 
     dispose() {
-      if (this._notifyer != null) {
-        this._notifyer.dispose();
-        this._notifyer = null;
+      if (this._subscriber != null) {
+        this._subscriber.dispose();
+        this._subscriber = null;
       }
     }
 
@@ -840,22 +602,22 @@ const cup = {};
   //////////////////////////////////////////
   //////////////////////////////// CoreBriscolaBase
   //////////////////////////////////////////
-  cup.CoreBriscolaBase = class CoreBriscolaBase extends cup.CoreGameBase {
-    constructor(_core, _numOfSegni, _pointsForWin) {
-      super();
+  cup.CoreBriscolaBase = class CoreBriscolaBase{
+    constructor(_coreStateManager, _numOfSegni, _pointsForWin) {
+      this._coreStateStore = new cup.CoreStateStore()
       this._myOpt = {
         tot_num_players: 2, num_segni_match: 2
         , target_points_segno: 61, players: [], num_cards_onhand: 3
         , predef_deck: [], predef_ix: -1
       };
-      this._core = _core //CoreStateEventBase
+      this._coreStateManager = _coreStateManager 
       this._numOfSegni = _numOfSegni
       this._pointsForWin = _pointsForWin
       this._deck_info = new cup.DeckInfo();
       this._core_data = new cup.CoreDataSupport();
       this._briscola_in_tav_lbl = '';
       let that = this;
-      this._notifyer = new cup.CoreSubjectNtfy(_core, that, { log_missed: true });
+      this._subscriber = new cup.CoreStateSubjectSubscriber(_coreStateManager, that, { log_missed: true });
       this._deck_info.deck_info_dabriscola();
       this._rnd_mgr = new cup.RndMgr()
     }
@@ -873,17 +635,17 @@ const cup = {};
       this._rnd_mgr.set_predefined_deck(this._myOpt.predef_deck);
 
       this._core_data.start(this._myOpt.tot_num_players, this._myOpt.players, this._myOpt.num_cards_onhand);
-      this._core.fire_all('ev_new_match', {
+      this._coreStateManager.fire_all('ev_new_match', {
         players: this._core_data.players
         , num_segni: this._myOpt.num_segni_match, target_segno: this._myOpt.target_points_segno
       });
-      this._core.submit_next_state('st_new_giocata');
+      this._coreStateManager.submit_next_state('st_new_giocata');
     }
 
     act_player_sit_down(name, pos) { }
 
     act_alg_play_acard(player_name, lbl_card) {
-      this.check_state('st_wait_for_play');
+      this._coreStateStore.check_state('st_wait_for_play');
       console.log('Player ' + player_name + ' played ' + lbl_card);
       if (this._core_data.player_on_turn !== player_name) {
         console.warn('Player ' + player_name + ' not allowed to play now');
@@ -899,19 +661,19 @@ const cup = {};
         console.log('++' + this._core_data.mano_count + ',' + this._core_data.carte_gioc_mano_corr.length +
           ',Card ' + lbl_card + ' played from player ' + player_name);
         this._core_data.carte_gioc_mano_corr.push({ lbl_card: lbl_card, player: player_name });
-        this._core.fire_all('ev_player_has_played', { cards_played: data_card_gioc });
+        this._coreStateManager.fire_all('ev_player_has_played', { cards_played: data_card_gioc });
         this._core_data.round_players.splice(0, 1);
         //console.log('_carte_in_mano ' + player_name + ' size is ' + this._core_data.carte_in_mano[player.name].length + ' _round_players size is ' + this._core_data.round_players.length);
         //console.log('*** new size is ' + this._core_data.carte_in_mano[player.name].length + ' old size is ' + old_size);
-        this._core.submit_next_state('st_continua_mano');
+        this._coreStateManager.submit_next_state('st_continua_mano');
       } else {
         console.warn('Card ' + lbl_card + ' not allowed to be played from player ' + player_name);
-        this._core.fire_to_player(player_name, 'ev_player_cardnot_allowed', { hand_player: cards, wrong_card: lbl_card });
+        this._coreStateManager.fire_to_player(player_name, 'ev_player_cardnot_allowed', { hand_player: cards, wrong_card: lbl_card });
       }
     }
 
     st_new_giocata() {
-      this.set_state('st_new_giocata');
+      this._coreStateStore.set_state('st_new_giocata');
       let cards = this._deck_info.get_cards_on_game();
       cards = this._rnd_mgr.get_deck(cards);
       let first_player_ix = this._rnd_mgr.get_first_player(this._core_data.players.length);
@@ -922,35 +684,35 @@ const cup = {};
           carte: this._core_data.carte_in_mano[player]
           , brisc: this._briscola_in_tav_lbl
         };
-        this._core.fire_to_player(player, 'ev_brisc_new_giocata', data_newgioc);
+        this._coreStateManager.fire_to_player(player, 'ev_brisc_new_giocata', data_newgioc);
       });
-      this._core.submit_next_state('st_new_mano');
+      this._coreStateManager.submit_next_state('st_new_mano');
     }
 
     st_new_mano() {
-      this.set_state('st_new_giocata');
-      this._core.fire_all('ev_new_mano', { mano_count: this._core_data.mano_count });
-      this._core.submit_next_state('st_continua_mano');
+      this._coreStateStore.set_state('st_new_giocata');
+      this._coreStateManager.fire_all('ev_new_mano', { mano_count: this._core_data.mano_count });
+      this._coreStateManager.submit_next_state('st_continua_mano');
     }
 
     st_continua_mano() {
-      this.set_state('st_continua_mano');
+      this._coreStateStore.set_state('st_continua_mano');
       let player = this._core_data.switch_player_on_turn();
       if (player) {
         console.log('Player on turn: ' + player);
-        this._core.fire_all('ev_have_to_play', { player_on_turn: player });
-        this._core.submit_next_state('st_wait_for_play');
+        this._coreStateManager.fire_all('ev_have_to_play', { player_on_turn: player });
+        this._coreStateManager.submit_next_state('st_wait_for_play');
       } else {
-        this._core.submit_next_state('st_mano_end');
+        this._coreStateManager.submit_next_state('st_mano_end');
       }
     }
 
     st_wait_for_play() {
-      this.set_state('st_wait_for_play');
+      this._coreStateStore.set_state('st_wait_for_play');
     }
 
     st_mano_end() {
-      this.set_state('st_mano_end');
+      this._coreStateStore.set_state('st_mano_end');
       let wininfo = this.vincitore_mano(this._core_data.carte_gioc_mano_corr) //wininfo is {lbl_best: '_5c', player_best: 'Luigi'}
       console.log('Mano vinta da ', wininfo.player_best)
       this._core_data.mano_count += 1
@@ -1026,9 +788,9 @@ const cup = {};
     }
 
     dispose() {
-      if (this._notifyer != null) {
-        this._notifyer.dispose();
-        this._notifyer = null;
+      if (this._subscriber != null) {
+        this._subscriber.dispose();
+        this._subscriber = null;
       }
     }
   }
@@ -1062,14 +824,15 @@ const cup = {};
         use_delay_before_play: false,
         timeout_haveplay: 300
       };
-      let that = this;
-      this._actorNotifier = new cup.ActorSubjectNtfy(_playerActor.getCore(),
-        that, { log_all: false, log_missed: true });
-
       this._player_name = _playerActor.Player.Name;
+      let that = this;
       // _actorNotifier: serve per ricevere gli eventi del core in un handler automatico
-      // del tipo on_all_xxx. Mentre con subscribePlayer si hanno gli eventi on_pl_xxx
-      this._actorNotifier.subscribePlayer(this._player_name);
+      // del tipo on_all_xxx e gli eventi on_pl_xxx
+      this._actorNotifier = new cup.ActorStateSubjectSubscriber(
+        _playerActor.getCore(),
+        that, { log_all: false, log_missed: true },
+        _playerActor.Player.Name);
+
     }
 
     on_all_ev_new_match(args) {
@@ -1437,6 +1200,258 @@ const cup = {};
 
   }
 
+  //////////////////////////////////////////
+  //////////////////////////////// DeckInfo
+  //////////////////////////////////////////
+  cup.DeckInfoItem = class DeckInfoItem {
+    constructor() {
+      this.ix;
+      this.nome;
+      this.symb;
+      this.segno;
+      this.seed_ix;
+      this.pos;
+      this.rank;
+      this.points;
+    }
+  }
+
+  class IDeckInfo40 {
+    constructor() {
+      this._Ab = {};
+      this._2b = {};
+      this._3b = {};
+      this._4b = {};
+      this._5b = {};
+      this._6b = {};
+      this._7b = {};
+      this._Fb = {};
+      this._Cb = {};
+      this._Rb = {};
+      this._Ac = {};
+      this._2c = {};
+      this._3c = {};
+      this._4c = {};
+      this._5c = {};
+      this._6c = {};
+      this._7c = {};
+      this._Fc = {};
+      this._Cc = {};
+      this._Rc = {};
+      this._Ad = {};
+      this._2d = {};
+      this._3d = {};
+      this._4d = {};
+      this._5d = {};
+      this._6d = {};
+      this._7d = {};
+      this._Fd = {};
+      this._Cd = {};
+      this._Rd = {};
+      this._As = {};
+      this._2s = {};
+      this._3s = {};
+      this._4s = {};
+      this._5s = {};
+      this._6s = {};
+      this._7s = {};
+      this._Fs = {};
+      this._Cs = {};
+      this._Rs = {};
+    }
+  }
+
+  class IDeckInfo52 extends IDeckInfo40 {
+    constructor() {
+      super();
+      this._8b = {};
+      this._9b = {};
+      this._db = {};
+      this._8c = {};
+      this._9c = {};
+      this._dc = {};
+      this._8d = {};
+      this._9d = {};
+      this._dd = {};
+      this._8s = {};
+      this._9s = {};
+      this._ds = {};
+    }
+  }
+
+  cup.DeckInfo = class DeckInfo {
+
+    constructor() {
+
+      this.deck_info_det52 = new IDeckInfo52()
+      this.deck_info_det = new IDeckInfo40()
+      this.use_52deck = false
+
+      this.cards_on_game = [
+        '_Ab', '_2b', '_3b', '_4b', '_5b', '_6b', '_7b', '_Fb', '_Cb', '_Rb',
+        '_Ac', '_2c', '_3c', '_4c', '_5c', '_6c', '_7c', '_Fc', '_Cc', '_Rc',
+        '_Ad', '_2d', '_3d', '_4d', '_5d', '_6d', '_7d', '_Fd', '_Cd', '_Rd',
+        '_As', '_2s', '_3s', '_4s', '_5s', '_6s', '_7s', '_Fs', '_Cs', '_Rs'];
+
+      this.setToDeck40()
+    }
+
+    setToDeck40() {
+      this.use_52deck = false
+      this.deck_info_det._Ab = { ix: 0, nome: 'asso bastoni', symb: 'asso', segno: 'B', seed_ix: 0, pos: 1, points: 0, rank: 0 }
+      this.deck_info_det._2b = { ix: 1, nome: 'due bastoni', symb: 'due', segno: 'B', seed_ix: 0, pos: 2, points: 0, rank: 0 }
+      this.deck_info_det._3b = { ix: 2, nome: 'tre bastoni', symb: 'tre', segno: 'B', seed_ix: 0, pos: 3, points: 0, rank: 0 }
+      this.deck_info_det._4b = { ix: 3, nome: 'quattro bastoni', symb: 'qua', segno: 'B', seed_ix: 0, pos: 4, points: 0, rank: 0 }
+      this.deck_info_det._5b = { ix: 4, nome: 'cinque bastoni', symb: 'cin', segno: 'B', seed_ix: 0, pos: 5, points: 0, rank: 0 }
+      this.deck_info_det._6b = { ix: 5, nome: 'sei bastoni', symb: 'sei', segno: 'B', seed_ix: 0, pos: 6, points: 0, rank: 0 }
+      this.deck_info_det._7b = { ix: 6, nome: 'sette bastoni', symb: 'set', segno: 'B', seed_ix: 0, pos: 7, points: 0, rank: 0 }
+      this.deck_info_det._Fb = { ix: 7, nome: 'fante bastoni', symb: 'fan', segno: 'B', seed_ix: 0, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det._Cb = { ix: 8, nome: 'cavallo bastoni', symb: 'cav', segno: 'B', seed_ix: 0, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det._Rb = { ix: 9, nome: 're bastoni', symb: 're', segno: 'B', seed_ix: 0, pos: 10, points: 0, rank: 0 }
+      this.deck_info_det._Ac = { ix: 10, nome: 'asso coppe', symb: 'asso', segno: 'C', seed_ix: 1, pos: 1, points: 0, rank: 0 }
+      this.deck_info_det._2c = { ix: 11, nome: 'due coppe', symb: 'due', segno: 'C', seed_ix: 1, pos: 2, points: 0, rank: 0 }
+      this.deck_info_det._3c = { ix: 12, nome: 'tre coppe', symb: 'tre', segno: 'C', seed_ix: 1, pos: 3, points: 0, rank: 0 }
+      this.deck_info_det._4c = { ix: 13, nome: 'quattro coppe', symb: 'qua', segno: 'C', seed_ix: 1, pos: 4, points: 0, rank: 0 }
+      this.deck_info_det._5c = { ix: 14, nome: 'cinque coppe', symb: 'cin', segno: 'C', seed_ix: 1, pos: 5, points: 0, rank: 0 }
+      this.deck_info_det._6c = { ix: 15, nome: 'sei coppe', symb: 'sei', segno: 'C', seed_ix: 1, pos: 6, points: 0, rank: 0 }
+      this.deck_info_det._7c = { ix: 16, nome: 'sette coppe', symb: 'set', segno: 'C', seed_ix: 1, pos: 7, points: 0, rank: 0 }
+      this.deck_info_det._Fc = { ix: 17, nome: 'fante coppe', symb: 'fan', segno: 'C', seed_ix: 1, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det._Cc = { ix: 18, nome: 'cavallo coppe', symb: 'cav', segno: 'C', seed_ix: 1, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det._Rc = { ix: 19, nome: 're coppe', symb: 're', segno: 'C', seed_ix: 1, pos: 10, points: 0, rank: 0 }
+      this.deck_info_det._Ad = { ix: 20, nome: 'asso denari', symb: 'asso', segno: 'D', seed_ix: 2, pos: 1, points: 0, rank: 0 }
+      this.deck_info_det._2d = { ix: 21, nome: 'due denari', symb: 'due', segno: 'D', seed_ix: 2, pos: 2, points: 0, rank: 0 }
+      this.deck_info_det._3d = { ix: 22, nome: 'tre denari', symb: 'tre', segno: 'D', seed_ix: 2, pos: 3, points: 0, rank: 0 }
+      this.deck_info_det._4d = { ix: 23, nome: 'quattro denari', symb: 'qua', segno: 'D', seed_ix: 2, pos: 4, points: 0, rank: 0 }
+      this.deck_info_det._5d = { ix: 24, nome: 'cinque denari', symb: 'cin', segno: 'D', seed_ix: 2, pos: 5, points: 0, rank: 0 }
+      this.deck_info_det._6d = { ix: 25, nome: 'sei denari', symb: 'sei', segno: 'D', seed_ix: 2, pos: 6, points: 0, rank: 0 }
+      this.deck_info_det._7d = { ix: 26, nome: 'sette denari', symb: 'set', segno: 'D', seed_ix: 2, pos: 7, points: 0, rank: 0 }
+      this.deck_info_det._Fd = { ix: 27, nome: 'fante denari', symb: 'fan', segno: 'D', seed_ix: 2, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det._Cd = { ix: 28, nome: 'cavallo denari', symb: 'cav', segno: 'D', seed_ix: 2, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det._Rd = { ix: 29, nome: 're denari', symb: 're', segno: 'D', seed_ix: 2, pos: 10, points: 0, rank: 0 }
+      this.deck_info_det._As = { ix: 30, nome: 'asso spade', symb: 'asso', segno: 'S', seed_ix: 3, pos: 1, points: 0, rank: 0 }
+      this.deck_info_det._2s = { ix: 31, nome: 'due spade', symb: 'due', segno: 'S', seed_ix: 3, pos: 2, points: 0, rank: 0 }
+      this.deck_info_det._3s = { ix: 32, nome: 'tre spade', symb: 'tre', segno: 'S', seed_ix: 3, pos: 3, points: 0, rank: 0 }
+      this.deck_info_det._4s = { ix: 33, nome: 'quattro spade', symb: 'qua', segno: 'S', seed_ix: 3, pos: 4, points: 0, rank: 0 }
+      this.deck_info_det._5s = { ix: 34, nome: 'cinque spade', symb: 'cin', segno: 'S', seed_ix: 3, pos: 5, points: 0, rank: 0 }
+      this.deck_info_det._6s = { ix: 35, nome: 'sei spade', symb: 'sei', segno: 'S', seed_ix: 3, pos: 6, points: 0, rank: 0 }
+      this.deck_info_det._7s = { ix: 36, nome: 'sette spade', symb: 'set', segno: 'S', seed_ix: 3, pos: 7, points: 0, rank: 0 }
+      this.deck_info_det._Fs = { ix: 37, nome: 'fante spade', symb: 'fan', segno: 'S', seed_ix: 3, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det._Cs = { ix: 38, nome: 'cavallo spade', symb: 'cav', segno: 'S', seed_ix: 3, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det._Rs = { ix: 39, nome: 're spade', symb: 're', segno: 'S', seed_ix: 3, pos: 10, points: 0, rank: 0 }
+    }
+
+
+    activateThe52deck() {
+      this.use_52deck = true
+      this.cards_on_game = [
+        '_Ab', '_2b', '_3b', '_4b', '_5b', '_6b', '_7b', '_8b', '_9b', '_10b', '_Fb', '_Cb', '_Rb',
+        '_Ac', '_2c', '_3c', '_4c', '_5c', '_6c', '_7c', '_8c', '_9c', '_10c', '_Fc', '_Cc', '_Rc',
+        '_Ad', '_2d', '_3d', '_4d', '_5d', '_6d', '_7d', '_8d', '_9d', '_10d', '_Fd', '_Cd', '_Rd',
+        '_As', '_2s', '_3s', '_4s', '_5s', '_6s', '_7s', '_8s', '_9s', '_10s', '_Fs', '_Cs', '_Rs'];
+
+      Object.keys(this.deck_info_det).forEach(key => this.deck_info_det52[key] = key);
+      // bastoni 
+      this.deck_info_det52._8b = { ix: 7, nome: 'otto bastoni', symb: 'ott', segno: 'B', seed_ix: 0, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det52._9b = { ix: 8, nome: 'nove bastoni', symb: 'nov', segno: 'B', seed_ix: 0, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det52._db = { ix: 9, nome: 'dieci bastoni', symb: 'die', segno: 'B', seed_ix: 0, pos: 10, points: 0, rank: 0 }
+      this.deck_info_det52._Fb = { ix: 10, nome: 'fante bastoni', symb: 'fan', segno: 'B', seed_ix: 0, pos: 11, points: 0, rank: 0 }
+      this.deck_info_det52._Cb = { ix: 11, nome: 'cavallo bastoni', symb: 'cav', segno: 'B', seed_ix: 0, pos: 12, points: 0, rank: 0 }
+      this.deck_info_det52._Rb = { ix: 12, nome: 're bastoni', symb: 're', segno: 'B', seed_ix: 0, pos: 13, points: 0, rank: 0 }
+      //coppe
+      this.deck_info_det52._Ac.ix = 13
+      this.deck_info_det52._2c.ix = 14
+      this.deck_info_det52._3c.ix = 15
+      this.deck_info_det52._4c.ix = 16
+      this.deck_info_det52._5c.ix = 17
+      this.deck_info_det52._6c.ix = 18
+      this.deck_info_det52._7c.ix = 19
+      this.deck_info_det52._8c = { ix: 20, nome: 'otto coppe', symb: 'ott', segno: 'C', seed_ix: 1, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det52._9c = { ix: 21, nome: 'nove coppe', symb: 'nov', segno: 'C', seed_ix: 1, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det52._dc = { ix: 22, nome: 'dieci coppe', symb: 'die', segno: 'C', seed_ix: 1, pos: 10, points: 0, rank: 0 }
+      this.deck_info_det52._Fc = { ix: 23, nome: 'fante coppe', symb: 'fan', segno: 'C', seed_ix: 1, pos: 11, points: 0, rank: 0 }
+      this.deck_info_det52._Cc = { ix: 24, nome: 'cavallo coppe', symb: 'cav', segno: 'C', seed_ix: 1, pos: 12, points: 0, rank: 0 }
+      this.deck_info_det52._Rc = { ix: 25, nome: 're coppe', symb: 're', segno: 'C', seed_ix: 1, pos: 13, points: 0, rank: 0 }
+      //denari
+      this.deck_info_det52._Ad.ix = 26
+      this.deck_info_det52._2d.ix = 27
+      this.deck_info_det52._3d.ix = 28
+      this.deck_info_det52._4d.ix = 29
+      this.deck_info_det52._5d.ix = 30
+      this.deck_info_det52._6d.ix = 31
+      this.deck_info_det52._7d.ix = 32
+      this.deck_info_det52._8d = { ix: 33, nome: 'otto denari', symb: 'ott', segno: 'D', seed_ix: 2, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det52._9d = { ix: 34, nome: 'nove denari', symb: 'nov', segno: 'D', seed_ix: 2, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det52._dd = { ix: 35, nome: 'dieci denari', symb: 'die', segno: 'D', seed_ix: 2, pos: 10, points: 0, rank: 0 }
+      this.deck_info_det52._Fd = { ix: 36, nome: 'fante denari', symb: 'fan', segno: 'D', seed_ix: 2, pos: 11, points: 0, rank: 0 }
+      this.deck_info_det52._Cd = { ix: 37, nome: 'cavallo denari', symb: 'cav', segno: 'D', seed_ix: 2, pos: 12, points: 0, rank: 0 }
+      this.deck_info_det52._Rd = { ix: 38, nome: 're denari', symb: 're', segno: 'D', seed_ix: 2, pos: 13, points: 0, rank: 0 }
+      //spade
+      this.deck_info_det52._As.ix = 39
+      this.deck_info_det52._2s.ix = 40
+      this.deck_info_det52._3s.ix = 41
+      this.deck_info_det52._4s.ix = 42
+      this.deck_info_det52._5s.ix = 43
+      this.deck_info_det52._6s.ix = 44
+      this.deck_info_det52._7s.ix = 45
+      this.deck_info_det52._8s = { ix: 46, nome: 'otto spade', symb: 'ott', segno: 'S', seed_ix: 3, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det52._9s = { ix: 47, nome: 'nove spade', symb: 'nov', segno: 'S', seed_ix: 3, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det52._ds = { ix: 48, nome: 'dieci spade', symb: 'die', segno: 'S', seed_ix: 3, pos: 10, points: 0, rank: 0 }
+      this.deck_info_det52._Fs = { ix: 49, nome: 'fante spade', symb: 'fan', segno: 'S', seed_ix: 3, pos: 11, points: 0, rank: 0 }
+      this.deck_info_det52._Cs = { ix: 50, nome: 'cavallo spade', symb: 'cav', segno: 'S', seed_ix: 3, pos: 12, points: 0, rank: 0 }
+      this.deck_info_det52._Rs = { ix: 51, nome: 're spade', symb: 're', segno: 'S', seed_ix: 3, pos: 13, points: 0, rank: 0 }
+    }
+
+    get_rank(card_lbl) {
+      if (this.use_52deck) {
+        return this.deck_info_det52[card_lbl].rank;
+      }
+      return this.deck_info_det[card_lbl].rank;
+    }
+
+    get_points(card_lbl) {
+      if (this.use_52deck) {
+        return this.deck_info_det52[card_lbl].points;
+      }
+      return this.deck_info_det[card_lbl].points;
+    }
+
+    get_card_info(card_lbl) {
+      if (this.use_52deck) {
+        return this.deck_info_det52[card_lbl];
+      }
+      return this.deck_info_det[card_lbl];
+    }
+
+    get_cards_on_game() {
+      return this.cards_on_game.slice();
+    }
+
+    set_rank_points(arr_rank, arr_points) {
+      var i, symb_card;
+      for (i = 0; i < this.cards_on_game.length; i++) {
+        var k = this.cards_on_game[i];
+        var card = this.deck_info_det[k];
+        if (this.use_52deck) {
+          card = this.deck_info_det52[k]
+        }
+        if (card == null) {
+          throw (new Error('Error on deck ' + k + ' not found'));
+        }
+        symb_card = card.symb;
+        card.rank = arr_rank[symb_card];
+        card.points = arr_points[symb_card];
+      }
+    }
+
+    deck_info_dabriscola() {
+      var val_arr_rank = { sei: 6, cav: 9, qua: 4, re: 10, set: 7, due: 2, cin: 5, asso: 12, fan: 8, tre: 11 };
+      var val_arr_points = { sei: 0, cav: 3, qua: 0, re: 4, set: 0, due: 0, cin: 0, asso: 11, fan: 2, tre: 10 };
+
+      this.set_rank_points(val_arr_rank, val_arr_points);
+      console.log('Deck briscola created');
+    }
+
+  }
 
 
 })();
