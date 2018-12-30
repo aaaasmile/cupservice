@@ -22,7 +22,6 @@ describe('CoreDataSupport test', function(){
         let deck_info = new cup.DeckInfo();
         let cards = deck_info.get_cards_on_game();
         coreData.start_new_giocata(0, cards)
-
         expect(coreData.round_players).toEqual(['Luigi', 'Ernesto'])
     })
     it('round table 2', () => {

@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+      "target": "es6"
+  },
+  "include": [
+      "static/js/custom/**/*"
+  ],
+  "typeAcquisition": {
+    "include": [
+        "cup"
+    ]
+  }
+}
