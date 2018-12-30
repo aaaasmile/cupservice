@@ -515,6 +515,7 @@ const cup = {};
       this._currNumPlayers = 0
       this._numOfPlayers = numOfPlayers
       this._players = [];
+      this._coreStateStore = new cup.CoreStateStore()
       this.TableFullSub = new rxjs.Subject();
       let that = this;
       this._subscriber = new cup.CoreStateSubjectSubscriber(coreStateManager, that, { log_missed: false });
@@ -527,14 +528,17 @@ const cup = {};
     }
 
     st_waiting_for_players() {
+      this._coreStateStore.set_state('st_waiting_for_players')
       console.log('Waiting for players');
     }
 
     st_table_partial() {
+      this._coreStateStore.set_state('st_table_partial')
       console.log('Table is filling');
     }
 
     st_table_full() {
+      this._coreStateStore.set_state('st_table_full')
       console.log("Table is full with " + this._currNumPlayers + " players: " + this._players.join(','));
       this.TableFullSub.next({ players: this._players })
     }
@@ -572,10 +576,12 @@ const cup = {};
       this._predefPlayerIx = -1
     }
 
-    set_predefined_deck(cards_str) {
-      if (cards_str && typeof (cards_str) === 'string') {
-        let deck_to_use = cards_str.split(",");
+    set_predefined_deck(card_obj) {
+      if (card_obj && typeof (card_obj) === 'string') {
+        let deck_to_use = card_obj.split(",");
         this._predefCards = deck_to_use
+      }else if(card_obj && Array.isArray(card_obj)){
+        this._predefCards = card_obj
       }
     }
 
@@ -585,7 +591,7 @@ const cup = {};
 
     get_deck(cards) {
       if (this._predefCards.length > 0) {
-        console.log('NOTE: using a presetted deck')
+        console.log('CAUTION: using a presetted deck')
         return [...this._predefCards]
       }
       return this.shuffle(cards)
@@ -593,7 +599,7 @@ const cup = {};
 
     get_first_player(size) {
       if (this._predefPlayerIx !== -1) {
-        console.log('NOTE: using a presetted first player')
+        console.log('CAUTION: using a presetted first player')
         return this._predefPlayerIx
       }
       let i = Math.floor(Math.random() * size);
