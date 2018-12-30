@@ -56,8 +56,8 @@ describe('brisc-base-core test', function () {
 
   it('Vincitore mano', () => {
     let rnd_mgr = new cup.RndMgr();
-    rnd_mgr.set_predefined_deck('_2d,_6b,_7s,_Fc,_Cd,_Rd,_Cb,_5d,_Ab,_4s,_Fb,_Cc,_7b,_As,_5s,_6d,_Fs,_Fd,_6c,_5b,_Cs,_6s,_3d,_3b,_4d,_3c,_2b,_7c,_Rs,_4c,_Rb,_2c,_4b,_2s,_Rc,_3s,_5c,_Ad,_7d,_Ac', 0);
-
+    rnd_mgr.set_predefined_deck('_2d,_6b,_7s,_Fc,_Cd,_Rd,_Cb,_5d,_Ab,_4s,_Fb,_Cc,_7b,_As,_5s,_6d,_Fs,_Fd,_6c,_5b,_Cs,_6s,_3d,_3b,_4d,_3c,_2b,_7c,_Rs,_4c,_Rb,_2c,_4b,_2s,_Rc,_3s,_5c,_Ad,_7d,_Ac');
+    rnd_mgr.set_predefined_player(0)
     let b2core = prepareGame(rnd_mgr)
 
     let coreStateManager = b2core._coreStateManager

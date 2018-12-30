@@ -1,6 +1,6 @@
 const cup = {};
 (function () {
-
+  "use strict";
   //////////////////////////////////////////
   //////////////////////////////// MatchInfo
   //////////////////////////////////////////
@@ -120,30 +120,31 @@ const cup = {};
   //////////////////////////////// coreQueue
   //////////////////////////////////////////
   class coreQueue {
-    constructor(queue_name, executer) {
+    constructor(queue_name, coreStateManager) {
       this.registry = [];
+      this._coreStateManager = coreStateManager
+      this._queue_name = queue_name
     }
-
 
     submit(func, args) {
       if (func == null) { throw (new Error('Handler is null')); }
       this.registry.push({ func: func, parameters: [args] });
-      //console.log("Item submitted, queue size: " + registry.length + ' on ' + queue_name);
+      //console.log("Item submitted, queue size: " + this.registry.length + ' on ' + this._queue_name);
     }
 
     process_first() {
-      //console.log('item process START, queue size: ' + registry.length + ' on ' + queue_name)
+      //console.log('item process START, queue size: ' + this.registry.length + ' on ' + this._queue_name)
       if (this.registry.length == 0) {
         return;
       }
       var funinfo = this.registry.shift();
       try {
-        funinfo.func.apply(this.executer, funinfo.parameters);
+        funinfo.func.apply(this._coreStateManager, funinfo.parameters);
       } catch (e) {
         console.error('Error on executing action handler process_first \nparam ' + JSON.stringify(funinfo.parameters) + '\nError: ' + e + '\n Stack: ' + e.stack);
         throw (e);
       }
-      //console.log('item process END, queue size: ' + registry.length + ' on ' + queue_name)
+      //console.log('item process END, queue size: ' + this.registry.length + ' on ' + this._queue_name)
     }
 
     has_items() {
@@ -167,6 +168,10 @@ const cup = {};
   //////////////////////////////////////////
   //////////////////////////////// internalStateProc
   //////////////////////////////////////////
+  let yeldProcess = function* () {
+
+  }
+
   class internalStateProc {
 
     constructor(action_queued, proc_queue, env) {
@@ -216,6 +221,7 @@ const cup = {};
       }
       while (this._proc_queue.has_items() && !this._suspend_queue_proc) {
         this._proc_queue.process_first();
+        //yield this._proc_queue.size() + this._action_queued.size()
       }
       if (this._suspend_queue_proc) {
         return 0;
@@ -255,15 +261,15 @@ const cup = {};
     // internalStateProc invece gestisce internamente le code e gli switch degli stai.
     constructor(_env) {
       let that = this;
-      this._alg_action = new coreQueue("alg-action", that);
-      this._core_state = new coreQueue("core-state", that);
-      this._subStateAction = new rxjs.Subject();
+      this._alg_action_queue = new coreQueue("alg-action", that);
+      this._core_state_queue = new coreQueue("core-state", that);
+      this._subjectStateAction = new rxjs.Subject();
       this.event_for_all = new rxjs.Subject();
 
       this.event_for_player = {};
       this._internalStateProc = new internalStateProc(
-        this._alg_action,
-        this._core_state,
+        this._alg_action_queue,
+        this._core_state_queue,
         _env);
     }
 
@@ -271,13 +277,13 @@ const cup = {};
     process_next() { return this._internalStateProc.process_next(); }
 
     get_subject_state_action() {
-      return this._subStateAction;
+      return this._subjectStateAction;
     }
 
     submit_next_state(name_st) {
       let that = this;
-      this._core_state.submit(function (args) {
-        that._subStateAction.next(args)
+      this._core_state_queue.submit(function (args) {
+        that._subjectStateAction.next(args)
       }, { is_action: false, name: name_st, args_arr: [] });
     }
 
@@ -299,8 +305,8 @@ const cup = {};
 
     submit_action(action_name, act_args) {
       let that = this;
-      this._alg_action.submit(function (args) {
-        that._subStateAction.next(args)
+      this._alg_action_queue.submit(function (args) {
+        that._subjectStateAction.next(args)
       }, { is_action: true, name: action_name, args_arr: act_args })
     }
 
@@ -344,7 +350,9 @@ const cup = {};
         }
         this._processor[name_hand].apply(this._processor, args);
       } else if (this.opt.log_missed || this.opt.log_all) {
-        console.warn("%s ignored because handler %s is missed", event, name_hand);
+        if (!this._processor.ignore_sate(name_hand)) {
+          console.warn(`${event} ignored because handler ${name_hand} is missed. Object is `, this._processor);
+        }
       }
     }
   }
@@ -413,8 +421,6 @@ const cup = {};
     }
   }
 
-
-
   //////////////////////////////////////////
   //////////////////////////////// Player
   //////////////////////////////////////////
@@ -434,20 +440,20 @@ const cup = {};
   //////////////////////////////// PlayerActor
   //////////////////////////////////////////
   cup.PlayerActor = class PlayerActor {
-    constructor(pl, coreActor) {
-      this.Player = pl;
-      this._coreActor = coreActor
+    constructor(pl, coreStateManager) {
+      this.Player = pl; // istance of cup.Player
+      this._coreStateManager = coreStateManager
     }
 
     sit_down(pos) {
-      this._coreActor.submit_action('player_sit_down', [this.Player.Name, pos]);
+      this._coreStateManager.submit_action('player_sit_down', [this.Player.Name, pos]);
     }
 
     play_card(card) {
-      this._coreActor.submit_action('alg_play_acard', [this.Player.Name, card])
+      this._coreStateManager.submit_action('alg_play_acard', [this.Player.Name, card])
     }
 
-    getCore() { return this._coreActor; }
+    getCoreStateManager() { return this._coreStateManager; }
   }
 
   //////////////////////////////////////////
@@ -501,7 +507,7 @@ const cup = {};
   cup.TableStateCore = class TableStateCore {
 
     constructor(coreStateManager, numOfPlayers) {
-      this._coreStateManager = coreStateManager 
+      this._coreStateManager = coreStateManager
       this._currNumPlayers = 0
       this._numOfPlayers = numOfPlayers
       this._players = [];
@@ -509,6 +515,11 @@ const cup = {};
       let that = this;
       this._subscriber = new cup.CoreStateSubjectSubscriber(coreStateManager, that, { log_missed: false });
       this._coreStateManager.submit_next_state('st_waiting_for_players');
+    }
+
+    ignore_sate(state) {
+      let ignored = [] // write here states if someone needs to be ignored
+      return ignored.indexOf(state) >= 0
     }
 
     st_waiting_for_players() {
@@ -556,21 +567,29 @@ const cup = {};
       this._predefCards = []
       this._predefPlayerIx = -1
     }
-    set_predefined_deck(cards) {
-      if (cards) {
-        this._predefCards = cards
+
+    set_predefined_deck(cards_str) {
+      if (cards_str && typeof (cards_str) === 'string') {
+        let deck_to_use = cards_str.split(",");
+        this._predefCards = deck_to_use
       }
+    }
+
+    set_predefined_player(ix) {
+      this._predefPlayerIx = ix
     }
 
     get_deck(cards) {
       if (this._predefCards.length > 0) {
-        return this._predefCards
+        console.log('NOTE: using a presetted deck')
+        return [...this._predefCards]
       }
       return this.shuffle(cards)
     }
 
     get_first_player(size) {
       if (this._predefPlayerIx !== -1) {
+        console.log('NOTE: using a presetted first player')
         return this._predefPlayerIx
       }
       let i = Math.floor(Math.random() * size);
@@ -602,7 +621,7 @@ const cup = {};
   //////////////////////////////////////////
   //////////////////////////////// CoreBriscolaBase
   //////////////////////////////////////////
-  cup.CoreBriscolaBase = class CoreBriscolaBase{
+  cup.CoreBriscolaBase = class CoreBriscolaBase {
     constructor(_coreStateManager, _numOfSegni, _pointsForWin) {
       this._coreStateStore = new cup.CoreStateStore()
       this._myOpt = {
@@ -610,7 +629,7 @@ const cup = {};
         , target_points_segno: 61, players: [], num_cards_onhand: 3
         , predef_deck: [], predef_ix: -1
       };
-      this._coreStateManager = _coreStateManager 
+      this._coreStateManager = _coreStateManager
       this._numOfSegni = _numOfSegni
       this._pointsForWin = _pointsForWin
       this._deck_info = new cup.DeckInfo();
@@ -632,7 +651,7 @@ const cup = {};
       this._myOpt.target_points_segno = this._myOpt.target_points_segno || this._pointsForWin;
       this._myOpt.num_cards_onhand = this._myOpt.num_cards_onhand || 3;
       // var _game_core_recorder = mod_gamerepl.game_core_recorder_ctor();
-      this._rnd_mgr.set_predefined_deck(this._myOpt.predef_deck);
+      //this._rnd_mgr.set_predefined_deck(this._myOpt.predef_deck);
 
       this._core_data.start(this._myOpt.tot_num_players, this._myOpt.players, this._myOpt.num_cards_onhand);
       this._coreStateManager.fire_all('ev_new_match', {
@@ -640,6 +659,11 @@ const cup = {};
         , num_segni: this._myOpt.num_segni_match, target_segno: this._myOpt.target_points_segno
       });
       this._coreStateManager.submit_next_state('st_new_giocata');
+    }
+
+    ignore_sate(state) {
+      let ignored = ['st_waiting_for_players', 'st_table_partial', 'st_table_full']
+      return ignored.indexOf(state) >= 0
     }
 
     act_player_sit_down(name, pos) { }
@@ -690,7 +714,7 @@ const cup = {};
     }
 
     st_new_mano() {
-      this._coreStateStore.set_state('st_new_giocata');
+      this._coreStateStore.set_state('st_new_mano');
       this._coreStateManager.fire_all('ev_new_mano', { mano_count: this._core_data.mano_count });
       this._coreStateManager.submit_next_state('st_continua_mano');
     }
@@ -728,6 +752,16 @@ const cup = {};
 
 
       throw ("TODO da def mano_end...")
+    }
+
+    calc_punteggio(carte_prese_mano) {
+      // carte_prese_mano = ['_Ab', '_4s']
+      let punti = 0, card_info;
+      carte_prese_mano.forEach((card_lbl) => {
+        card_info = this._deck_info.get_card_info(card_lbl);
+        punti += card_info.points;
+      });
+      return punti;
     }
 
     vincitore_mano(carte_giocate) {
@@ -829,7 +863,7 @@ const cup = {};
       // _actorNotifier: serve per ricevere gli eventi del core in un handler automatico
       // del tipo on_all_xxx e gli eventi on_pl_xxx
       this._actorNotifier = new cup.ActorStateSubjectSubscriber(
-        _playerActor.getCore(),
+        _playerActor.getCoreStateManager(),
         that, { log_all: false, log_missed: true },
         _playerActor.Player.Name);
 
