@@ -329,7 +329,7 @@ const cup = {};
     process_all() {
       let resProc = this._internalStateProc.process_next();
       while (resProc.value > 0) {
-        numRemProc = this._internalStateProc.process_next();
+        resProc = this._internalStateProc.process_next();
       }
     }
   }
