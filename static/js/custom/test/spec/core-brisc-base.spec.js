@@ -1,4 +1,6 @@
 describe('brisc-base-core test', function () {
+ 
+
   it('Briscola base game loop', () => {
 
     let coreStateManager = new cup.CoreStateManager('develop');

@@ -15,14 +15,15 @@
   <!-- <script src="src/Player.js"></script>
   <script src="src/Song.js"></script> -->
   <script src="../../rxjs.umd.min.js"></script>
-  <script src="../games-cup.js"></script>
 
   <!-- include spec files here... -->
-  <!-- <script src="spec/SpecHelper.js"></script>
-  <script src="spec/PlayerSpec.js"></script> -->
   <script src="spec/deck-info.spec.js"></script> 
-  <script src="spec/core-base.spec.js"></script> 
-  <script src="spec/core-brisc-base.spec.js"></script> 
+  <!-- <script src="spec/core-base.spec.js"></script>  -->
+  <!-- <script src="spec/core-brisc-base.spec.js"></script>  -->
+  <script type="module">
+    import { cup } from '../games-cup.js'
+    window.cup = cup
+  </script>
 
 </head>
 
