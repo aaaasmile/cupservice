@@ -8,7 +8,7 @@ import { PlayerActor } from './common/player-actor.js'
 import { CoreStateStore } from './common/core/core-state-store.js'
 import { CoreStateSubjectSubscriber } from './common/core/core-state-subject-subscriber.js'
 import { ActorStateSubjectSubscriber } from './common/actor-state-subject-subscriber.js'
-import { CoreBriscolaBase } from './games/brisc-base/core-briscola-base.js'
+import { CoreBriscolaBase } from './games/brisc-base/core-brisc-base.js'
 import { AlgBriscBase } from './games/brisc-base/alg-brisc-base.js'
 
 // A me servono gli oggetti esportati nei moduli anche nelle librerie stadard, come ad esempio gli spec

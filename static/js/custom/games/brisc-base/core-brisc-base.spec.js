@@ -35,6 +35,27 @@ describe('brisc-base-core test', function () {
     expect(state).toBe('st_game_end');
   });
 
+  it('Punteggio giocata end', () => {
+    let rnd_mgr = new cup.RndMgr();
+    rnd_mgr.set_predefined_deck( '_3s,_5c,_6b,_6c,_Ad,_Fb,_As,_3b,_Cd,_4c,_Fd,_5d,_4b,_6s,_5s,_2b,_Cs,_Fs,_7c,_Cb,_Rc,_7d,_2s,_5b,_7b,_Ab,_3d,_7s,_4d,_Rd,_2c,_2d,_Fc,_Ac,_3c,_Rb,_6d,_Rs,_4s,_Cc')
+    rnd_mgr.set_predefined_player(1)
+    let b2core = prepareGame(rnd_mgr)
+    let coreStateManager = b2core._coreStateManager
+    let coreStateStore = b2core._coreStateStore
+    let resProc = coreStateManager.process_next();
+    let state = coreStateStore.get_internal_state();
+    while (state !== 'st_giocata_end' && resProc.value > 0) {
+      resProc = coreStateManager.process_next(); // use generators {done: false, value: 2}
+      state = coreStateStore.get_internal_state();
+      console.log('Internal state ' + state + ' resProc ', resProc);
+    }
+    //let bestpoints_info = b2core.giocata_end_update_score() // {best: Array(2), is_match_end: false}
+    let bestpoints_info = b2core._core_data.segni_curr_match.bestpoints_info
+    //console.log(bestpoints_info)
+    let arr = bestpoints_info.best // arr = ["Ernesto", 85], ["Luigi", 35]
+    expect(arr[0][1] >= arr[1][1]).toBe(true)
+  })
+
   it('Vincitore mano', () => {
     let rnd_mgr = new cup.RndMgr();
     rnd_mgr.set_predefined_deck('_2d,_6b,_7s,_Fc,_Cd,_Rd,_Cb,_5d,_Ab,_4s,_Fb,_Cc,_7b,_As,_5s,_6d,_Fs,_Fd,_6c,_5b,_Cs,_6s,_3d,_3b,_4d,_3c,_2b,_7c,_Rs,_4c,_Rb,_2c,_4b,_2s,_Rc,_3s,_5c,_Ad,_7d,_Ac');

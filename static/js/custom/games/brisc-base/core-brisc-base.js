@@ -152,8 +152,7 @@ export class CoreBriscolaBase {
 
   st_pesca_carta() {
     console.log('st_pesca_carta');
-    let carte_player = [], brisc_tav_available = true;
-    let data_cartapesc, channel_name;
+    let brisc_tav_available = true;
     if (this._core_data.mazzo_gioco.length <= 0) {
       throw (new Error('Deck is empty, programming error'));
     }
@@ -177,11 +176,79 @@ export class CoreBriscolaBase {
       this._coreStateManager.fire_to_player(player, 'ev_pesca_carta', data_cartapesc);
 
     });
-   
+
     console.log('Mazzo rimanenti: ' + this._core_data.mazzo_gioco.length);
     this._coreStateManager.submit_next_state('st_new_mano');
+
+    //throw (new Error('Stop! check it before continue'))
+  }
+
+  st_giocata_end() {
+    //var table = _prot.table;
+    console.log('st_giocata_end');
+    let bestpoints_info = this.giocata_end_update_score();
+    //this._game_core_recorder.store_end_giocata(best_pl_points);
+    this._coreStateManager.fire_all('ev_giocata_end', { best: bestpoints_info.best_pl_points });
+    if (bestpoints_info.is_match_end) {
+      this._coreStateManager.submit_next_state('st_match_end');
+    } else {
+      this._coreStateManager.submit_next_state('st_wait_continue_game');
+    }
+    //table.expect_continue_notification(); // TODO
+  }
+
+  giocata_end_update_score() {
+    //throw (new Error('Stop! check it before continue'))
+    if(!this._core_data.segni_curr_match.is_started()){
+      console.warn('Update score is not available on segno state', this._core_data.segni_curr_match.segno_state)
+      return this._core_data.segni_curr_match.bestpoints_info
+    }
+    let m_score = this._core_data.segni_curr_match.score
+    let curr_segno_info = this._core_data.segni_curr_match
+
+    console.log('calculate best points');
+    let arr = [...this._core_data.points_curr_segno.entries()]
+    //let best_pl_points = new Array([...this._core_data.points_curr_segno.entries()].sort((a,b) => a[1] < b[1]));
+    let best_pl_points = arr.sort(function (a, b) {
+      return b[1] - a[1];
+    });
+    let nome_gioc_max = best_pl_points[0][0];
     
-    throw (new Error('Stop! check it before continue'))
+    if (best_pl_points[0][1] == best_pl_points[1][1]) {
+      console.log('Game draw all have scored ' + best_pl_points[0][1]);
+      curr_segno_info.set_draw()
+    } else {
+      console.log('Giocata winner is ' + nome_gioc_max + ' points scored are ' + best_pl_points[0][1]);
+      console.log('Giocata result is ' + best_pl_points[0][1] + ' - ' + best_pl_points[1][1]);
+      m_score.set(nome_gioc_max, m_score.get(nome_gioc_max) + 1);
+      curr_segno_info.set_end()
+    }
+    let is_match_end = false
+    if (m_score.get(nome_gioc_max) >= this._myOpt.num_segni_match) {
+      console.log('Game terminated, winner is ' + nome_gioc_max);
+
+      arr = [...m_score.entries()].sort(function (a, b) {
+        return b[1] - a[1];
+      });
+      arr.forEach(pair => {
+        console.log(pair[0] + ' segni ' + pair[1]);
+        this.match_info.score.push(pair);
+      });
+      this.match_info.end_reason = 'segni_count';
+      this.match_info.winner_name = nome_gioc_max;
+      //_prot.submit_state_to_queue(st_match_end, 'st_match_end');
+      is_match_end = true
+    } //else {
+    // _prot.submit_state_to_queue(st_wait_continue_game, 'st_wait_continue_game');
+    //}
+
+    let res = {
+      best: best_pl_points,
+      is_match_end: is_match_end
+    }
+    curr_segno_info.set_giocata_end_score(res)
+
+    return res;
   }
 
   check_if_giocata_is_terminated() {
@@ -191,7 +258,7 @@ export class CoreBriscolaBase {
       tot_num_cards += this._core_data.carte_in_mano[v].length;
     }
 
-    //_log.debug('tot_num_cards ' + tot_num_cards);
+    //console.log('tot_num_cards ' + tot_num_cards);
     tot_num_cards += this._core_data.mazzo_gioco.length;
     console.log('Giocata end? cards yet in game are: ' + tot_num_cards);
     if (tot_num_cards <= 0) {
