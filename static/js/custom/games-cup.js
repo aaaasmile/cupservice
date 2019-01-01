@@ -2,6 +2,12 @@ import { DeckInfo } from './common/deckinfo.js'
 import { CoreStateManager } from './common/core-state-manager.js'
 import { RndMgr } from './common/rnd-mgr.js'
 import { CoreDataSupport } from './common/core-data-support.js'
+import { TableStateCore } from './common/table-state-core.js'
+import { Player } from './common/player.js'
+import { PlayerActor } from './common/player-actor.js'
+import { CoreStateStore } from './common/core-state-store.js'
+import { CoreStateSubjectSubscriber } from './common/core-state-subject-subscriber.js'
+import { ActorStateSubjectSubscriber } from './common/actor-state-subject-subscriber.js'
 
 // A me servono gli oggetti esportati nei moduli anche nelle librerie stadard, come ad esempio gli spec
 // di jasmine, che viene usata direttamente. In queste spec, non si può usare import, allora metto
@@ -13,243 +19,17 @@ export const cup = {
   CoreStateManager: CoreStateManager,
   RndMgr: RndMgr,
   CoreDataSupport: CoreDataSupport,
+  TableStateCore: TableStateCore,
+  Player: Player,
+  PlayerActor: PlayerActor,
+  CoreStateStore: CoreStateStore,
+  CoreStateSubjectSubscriber: CoreStateSubjectSubscriber,
+  ActorStateSubjectSubscriber: ActorStateSubjectSubscriber,
 };
 //(function () { // intellisense in vscode non funziona se metto pattern per isolare oggetti privati. Gli oggetti privati hanno la lettera iniziale minuscola
 // Per avere poi l'intellisense anche nei miei fiels di spec (unit test di jasmine) ho messo la dir di test come sottodirectory di questa.
 
 
-//////////////////////////////////////////
-//////////////////////////////// StateHandlerCaller
-//////////////////////////////////////////
-// Questa classe serve per chiamare le funzioni degli stati all'interno del processor
-// Un processor è per esempio CoreBriscolaBase o TableStateCore
-// Le funzioni chiamate sono del tipo st_mano_end e vengono chiamate direttamente tramite apply
-cup.StateHandlerCaller = class StateHandlerCaller {
-  constructor(processor, opt) {
-    this._processor = processor //CoreBriscolaBase o TableStateCore
-    this.opt = opt
-  }
-
-  call(event, name_hand, args) {
-    if (this._processor[name_hand] != null) {
-      //console.log(args,args instanceof Array);
-      if (!(args instanceof Array)) {
-        args = [args];
-      }
-      this._processor[name_hand].apply(this._processor, args);
-    } else if (this.opt.log_missed || this.opt.log_all) {
-      if (!this._processor.ignore_sate(name_hand)) {
-        console.warn(`${event} ignored because handler ${name_hand} is missed. Object is `, this._processor);
-      }
-    }
-  }
-}
-
-//////////////////////////////////////////
-//////////////////////////////// CoreStateSubjectSubscriber
-//////////////////////////////////////////
-// Serve per gestire eventi del tipo act_XXX che sono actions.
-// Questi action handler sono del tipo act_player_sit_down e si trovano normalmente
-// implementate nel core tipo CoreBriscolaBase. 
-// In principio un evento nel Subject dell'oggetto CoreStateManager viene lanciato.
-// In questa classe viene ricevuto quest'evento e chiamato automaticamante la funzione handler
-// del core.
-cup.CoreStateSubjectSubscriber = class CoreStateSubjectSubscriber {
-
-  constructor(coreStateManager, processor, opt) {
-    this.opt = opt || { log_missed: false, log_all: false }
-    this._coreStateManager = coreStateManager;
-    this._stateHandlerCaller = new cup.StateHandlerCaller(processor, opt)
-    this._subscription = coreStateManager.get_subject_state_action()
-      .subscribe(next => {
-        try {
-          if (opt.log_all) { console.log(next); }
-          let name_hand = next.name;
-          if (next.is_action) {
-            name_hand = 'act_' + name_hand;
-          }
-          this._stateHandlerCaller.call(next.name, name_hand, next.args_arr);
-        } catch (e) {
-          console.error(e);
-          //throw(e)
-        }
-      });
-  }
-
-  dispose() {
-    if (this._subscription != null) {
-      this._subscription.unsubscribe();
-      this._subscription = null;
-    }
-  }
-
-}
-
-//////////////////////////////////////////
-//////////////////////////////// CoreStateStore
-//////////////////////////////////////////
-
-cup.CoreStateStore = class CoreStateStore {
-  constructor() {
-    this._internal_state = '';
-  }
-
-  set_state(state_name) {
-    console.log(state_name);
-    this._internal_state = state_name;
-  }
-
-  check_state(state_name) {
-    if (this._internal_state !== state_name) {
-      throw (new Error('Event expected in state ' + state_name + ' but now is ' + this._internal_state));
-    }
-  }
-  get_internal_state() {
-    return this._internal_state
-  }
-}
-
-//////////////////////////////////////////
-//////////////////////////////// Player
-//////////////////////////////////////////
-cup.Player = class Player {
-  constructor(name) {
-    this.Name = "Utente" + this.getUserId();
-    if (name != null) { this.Name = name; }
-    this.Position = 0
-  }
-
-  getUserId() {
-    return String(Math.random() * 999);
-  }
-}
-
-//////////////////////////////////////////
-//////////////////////////////// PlayerActor
-//////////////////////////////////////////
-cup.PlayerActor = class PlayerActor {
-  constructor(pl, coreStateManager) {
-    this.Player = pl; // istance of cup.Player
-    this._coreStateManager = coreStateManager
-  }
-
-  sit_down(pos) {
-    this._coreStateManager.submit_action('player_sit_down', [this.Player.Name, pos]);
-  }
-
-  play_card(card) {
-    this._coreStateManager.submit_action('alg_play_acard', [this.Player.Name, card])
-  }
-
-  getCoreStateManager() { return this._coreStateManager; }
-}
-
-//////////////////////////////////////////
-//////////////////////////////// ActorStateSubjectSubscriber
-//////////////////////////////////////////
-
-cup.ActorStateSubjectSubscriber = class ActorStateSubjectSubscriber {
-
-  constructor(coreStateManager, processor, opt, player_name) {
-    this.opt = opt || { log_missed: false, log_all: false }
-    this._coreStateManager = coreStateManager;
-    this._stateHandlerCaller = new cup.StateHandlerCaller(processor, opt)
-    this._playerSubject = null;
-    this._subscription = coreStateManager.get_subject_for_all_players()
-      .subscribe(next => {
-        try {
-          if (opt.log_all) { console.log(next); }
-          let name_hand = 'on_all_' + next.event;
-          this._stateHandlerCaller.call(next.event, name_hand, next.args);
-        } catch (e) {
-          console.error(e);
-        }
-      });
-    this._playerSubject = this._coreStateManager.get_subject_for_player(player_name)
-      .subscribe(next => {
-        try {
-          if (this.opt.log_all) { console.log(next); }
-          let name_hand = 'on_pl_' + next.event;
-          this._stateHandlerCaller.call(next.event, name_hand, next.args);
-        } catch (e) {
-          console.error(e);
-        }
-      });
-  }
-
-  dispose() {
-    if (this._playerSubject != null) {
-      this._playerSubject.unsubscribe();
-      this._playerSubject = null;
-    }
-    if (this._subscription != null) {
-      this._subscription.unsubscribe();
-      this._subscription = null;
-    }
-  }
-}
-
-//////////////////////////////////////////
-//////////////////////////////// TableStateCore
-//////////////////////////////////////////
-cup.TableStateCore = class TableStateCore {
-
-  constructor(coreStateManager, numOfPlayers) {
-    this._coreStateManager = coreStateManager
-    this._currNumPlayers = 0
-    this._numOfPlayers = numOfPlayers
-    this._players = [];
-    this._coreStateStore = new cup.CoreStateStore()
-    this.TableFullSub = new rxjs.Subject();
-    let that = this;
-    this._subscriber = new cup.CoreStateSubjectSubscriber(coreStateManager, that, { log_missed: false });
-    this._coreStateManager.submit_next_state('st_waiting_for_players');
-  }
-
-  ignore_sate(state) {
-    let ignored = [] // write here states if someone needs to be ignored
-    return ignored.indexOf(state) >= 0
-  }
-
-  st_waiting_for_players() {
-    this._coreStateStore.set_state('st_waiting_for_players')
-    console.log('Waiting for players');
-  }
-
-  st_table_partial() {
-    this._coreStateStore.set_state('st_table_partial')
-    console.log('Table is filling');
-  }
-
-  st_table_full() {
-    this._coreStateStore.set_state('st_table_full')
-    console.log("Table is full with " + this._currNumPlayers + " players: " + this._players.join(','));
-    this.TableFullSub.next({ players: this._players })
-  }
-
-  act_player_sit_down(name, pos) {
-    console.log("Player " + name + " sit on pos " + pos);
-    this._currNumPlayers += 1;
-    while (this._players.length < pos) {
-      this._players.push('');
-    }
-    this._players[pos] = name;
-    if (this._currNumPlayers >= this._numOfPlayers) {
-      this._currNumPlayers = this._numOfPlayers;
-      this._coreStateManager.submit_next_state('st_table_full');
-    } else {
-      this._coreStateManager.submit_next_state('st_table_partial');
-    }
-  }
-
-  dispose() {
-    if (this._subscriber != null) {
-      this._subscriber.dispose();
-      this._subscriber = null;
-    }
-  }
-
-}
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
