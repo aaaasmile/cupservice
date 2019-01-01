@@ -8,7 +8,7 @@ export class CoreDataSupport {
     this.segni_curr_match = { score: {}, segno_state: '' };
     this.match_state = '';
     this.match_info = new MatchInfo();
-    this.players = []; // use simple name
+    this.players = []; // use always simple name. e.g 'Luigi'
     this.carte_prese = {};
     this.carte_in_mano = {};
     this.carte_gioc_mano_corr = [];
@@ -42,7 +42,7 @@ export class CoreDataSupport {
   start_new_giocata(first_ix, cards) {
     this.segni_curr_match.segno_state = 'Started';
     this.carte_prese = {};
-    this.carte_in_mano = {};
+    this.carte_in_mano = {}; //{'Luigi': ['_Ab','_7c']} // TODO: use a Map
     this.carte_gioc_mano_corr = [];
     this.history_mano = [];
     this.mano_count = 0;
@@ -59,6 +59,18 @@ export class CoreDataSupport {
     }
     this.mazzo_gioco = cards;
     console.log('Current deck: ' + this.mazzo_gioco.join(','));
+  }
+
+  historize_mano() {
+    this.history_mano.push(this.carte_gioc_mano_corr)
+    this.carte_gioc_mano_corr = []
+  }
+
+  add_points_toplayer(player, points) {
+    this.points_curr_segno[player] += points
+   
+    console.log('Punteggio attuale: ', this.points_curr_segno);
+
   }
 
   switch_player_on_turn() {

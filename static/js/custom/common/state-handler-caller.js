@@ -19,7 +19,7 @@ export class StateHandlerCaller {
       this._processor[name_hand].apply(this._processor, args);
     } else if (this.opt.log_missed || this.opt.log_all) {
       if (!this._processor.ignore_sate(name_hand)) {
-        console.warn(`${event} ignored because handler ${name_hand} is missed. Object is `, this._processor);
+        console.warn(`${event} ignored because handler ${name_hand} is missed. Processor is ${this._processor.constructor.name}`);
       }
     }
   }

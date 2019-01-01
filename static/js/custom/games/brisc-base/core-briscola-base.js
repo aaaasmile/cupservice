@@ -37,7 +37,6 @@ export class CoreBriscolaBase {
     this._myOpt.target_points_segno = this._myOpt.target_points_segno || this._pointsForWin;
     this._myOpt.num_cards_onhand = this._myOpt.num_cards_onhand || 3;
     // var _game_core_recorder = mod_gamerepl.game_core_recorder_ctor();
-    //this._rnd_mgr.set_predefined_deck(this._myOpt.predef_deck);
 
     this._core_data.start(this._myOpt.tot_num_players, this._myOpt.players, this._myOpt.num_cards_onhand);
     this._coreStateManager.fire_all('ev_new_match', {
@@ -136,8 +135,38 @@ export class CoreBriscolaBase {
     this._core_data.round_players_by_player(wininfo.player_best)
     let punti_presi = this.calc_punteggio(carte_prese_mano);
 
+    console.log('Punti fatti nella mano ', punti_presi);
 
-    throw ("TODO da def mano_end...")
+    this._coreStateManager.fire_all('ev_mano_end', { player_best: wininfo.player_best, carte: carte_prese_mano, punti: punti_presi });
+    this._core_data.historize_mano()
+    this._core_data.add_points_toplayer(wininfo.player_best, punti_presi)
+
+
+    if (this.check_if_giocata_is_terminated()) {
+      this._coreStateManager.submit_next_state('st_giocata_end');
+    } else if (this._core_data.mazzo_gioco.length > 0) {
+      this._coreStateManager.submit_next_state('st_pesca_carta');
+    } else {
+      this._coreStateManager.submit_next_state('st_new_mano');
+    }
+    throw ('Stop!')
+  }
+
+  check_if_giocata_is_terminated() {
+    let res = false;
+    let tot_num_cards = 0
+    for(let v in this._core_data.carte_in_mano){
+      tot_num_cards += this._core_data.carte_in_mano[v].length;
+    }
+    
+    //_log.debug('tot_num_cards ' + tot_num_cards);
+    tot_num_cards += this._core_data.mazzo_gioco.length;
+    console.log('Giocata end? cards yet in game are: ' + tot_num_cards);
+    if (tot_num_cards <= 0) {
+      console.log('Giocata end beacuse no more cards have to be played');
+      res = true;
+    }
+    return res;
   }
 
   calc_punteggio(carte_prese_mano) {

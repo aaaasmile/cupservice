@@ -14,6 +14,7 @@ export class CoreStateSubjectSubscriber {
   constructor(coreStateManager, processor, opt) {
     this.opt = opt || { log_missed: false, log_all: false }
     this._coreStateManager = coreStateManager;
+    this._processor = processor
     this._stateHandlerCaller = new StateHandlerCaller(processor, opt)
     this._subscription = coreStateManager.get_subject_state_action()
       .subscribe(next => {
@@ -25,7 +26,7 @@ export class CoreStateSubjectSubscriber {
           }
           this._stateHandlerCaller.call(next.name, name_hand, next.args_arr);
         } catch (e) {
-          console.error(e);
+          console.error(`Processor is ${this._processor.constructor.name}`, e);
           //throw(e)
         }
       });

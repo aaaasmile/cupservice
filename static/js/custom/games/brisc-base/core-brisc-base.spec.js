@@ -1,47 +1,17 @@
 describe('brisc-base-core test', function () {
- 
-
-  it('Briscola base game loop', () => {
-
-    let coreStateManager = new cup.CoreStateManager('develop');
-    let b2core = new cup.CoreBriscolaBase(coreStateManager, 2, 61);
-    let tableStateCore = new cup.TableStateCore(coreStateManager, 2);
-    let subsc = tableStateCore.TableFullSub.subscribe(next => {
-      subsc.unsubscribe();
-      tableStateCore.dispose();
-      // table is full, then start a new match
-      b2core.StartNewMatch(next); // next = players  = ['Luigi', 'Ernesto']
-      coreStateManager.process_all(); // play until the end
-    });
-
-    let playerActorErnesto = new cup.PlayerActor(new cup.Player('Ernesto'), coreStateManager);
-    let playerActorLuigi = new cup.PlayerActor(new cup.Player('Luigi'), coreStateManager);
-    new cup.AlgBriscBase(playerActorErnesto);
-    new cup.AlgBriscBase(playerActorLuigi);
-
-    playerActorErnesto.sit_down(0);
-    playerActorLuigi.sit_down(1);
-    
-    // some garbage events
-    playerActorLuigi.sit_down(1);
-    playerActorLuigi.sit_down(1);
-    playerActorLuigi.sit_down(1);
-    coreStateManager.process_all();
-    expect(1).toBe(1);
-  });
 
   prepareGame = (rnd_mgr) => {
     console.log('Prepare game for test')
     let coreStateManager = new cup.CoreStateManager('develop');
     let b2core = new cup.CoreBriscolaBase(coreStateManager, 2, 61);
-    if(rnd_mgr){
+    if (rnd_mgr) {
       b2core._rnd_mgr = rnd_mgr
     }
     let tableStateCore = new cup.TableStateCore(coreStateManager, 2);
     let subsc = tableStateCore.TableFullSub.subscribe(next => {
-      b2core.StartNewMatch(next);
       subsc.unsubscribe();
       tableStateCore.dispose();
+      b2core.StartNewMatch(next);
     });
 
 
@@ -54,6 +24,16 @@ describe('brisc-base-core test', function () {
     playerActorLuigi.sit_down(1);
     return b2core
   }
+
+  it('Briscola base game loop', () => {
+
+    let b2core = prepareGame(null)
+    let coreStateManager = b2core._coreStateManager
+    coreStateManager.process_all()
+    let coreStateStore = b2core._coreStateStore
+    let state = coreStateStore.get_internal_state();
+    expect(state).toBe('st_game_end');
+  });
 
   it('Vincitore mano', () => {
     let rnd_mgr = new cup.RndMgr();
@@ -76,6 +56,14 @@ describe('brisc-base-core test', function () {
     //wininfo is for example {lbl_best: '_5c', player_best: 'Luigi'}        
     expect(wininfo.player_best).toEqual('Luigi');
 
+  })
+
+  it('Calcola punteggio', () => {
+    let b2core = new cup.CoreBriscolaBase(new cup.CoreStateManager('develop'), 2, 61);
+    let points = b2core.calc_punteggio(['_As', '_7c'])
+    expect(points).toEqual(11)
+    points = b2core.calc_punteggio(['_3s', '_Fc'])
+    expect(points).toEqual(12)
   })
 
 });

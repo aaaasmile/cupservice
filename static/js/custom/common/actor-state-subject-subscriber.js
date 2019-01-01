@@ -10,6 +10,7 @@ export class ActorStateSubjectSubscriber {
     this._coreStateManager = coreStateManager;
     this._stateHandlerCaller = new StateHandlerCaller(processor, opt)
     this._playerSubject = null;
+    this._processor = processor
     this._subscription = coreStateManager.get_subject_for_all_players()
       .subscribe(next => {
         try {
@@ -17,7 +18,7 @@ export class ActorStateSubjectSubscriber {
           let name_hand = 'on_all_' + next.event;
           this._stateHandlerCaller.call(next.event, name_hand, next.args);
         } catch (e) {
-          console.error(e);
+          this.handle_error(e)
         }
       });
     this._playerSubject = this._coreStateManager.get_subject_for_player(player_name)
@@ -27,9 +28,13 @@ export class ActorStateSubjectSubscriber {
           let name_hand = 'on_pl_' + next.event;
           this._stateHandlerCaller.call(next.event, name_hand, next.args);
         } catch (e) {
-          console.error(e);
+          this.handle_error(e)
         }
       });
+  }
+
+  handle_error(ex){
+    console.error(`Processor is ${this._processor.constructor.name}, error is ${ex}`);
   }
 
   dispose() {
