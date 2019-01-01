@@ -1,4 +1,4 @@
-import { DeckInfo } from '../../common/deckinfo.js'
+import { DeckInfo } from '../../common/deck-info.js'
 import {ActorStateSubjectSubscriber} from '../../common/actor-state-subject-subscriber.js'
 
 //////////////////////////////////////////

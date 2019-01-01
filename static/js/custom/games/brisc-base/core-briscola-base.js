@@ -1,5 +1,5 @@
 import { CoreDataSupport } from '../../common/core/core-data-support.js'
-import { DeckInfo } from '../../common/deckinfo.js'
+import { DeckInfo } from '../../common/deck-info.js'
 import { CoreStateStore } from '../../common/core/core-state-store.js'
 import { CoreStateSubjectSubscriber } from '../../common/core/core-state-subject-subscriber.js'
 import { RndMgr } from '../../common/rnd-mgr.js'

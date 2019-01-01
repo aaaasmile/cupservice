@@ -1,4 +1,4 @@
-import { DeckInfo } from './common/deckinfo.js'
+import { DeckInfo } from './common/deck-info.js'
 import { CoreStateManager } from './common/core/core-state-manager.js'
 import { RndMgr } from './common/rnd-mgr.js'
 import { CoreDataSupport } from './common/core/core-data-support.js'

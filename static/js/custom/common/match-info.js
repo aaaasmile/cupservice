@@ -1,4 +1,4 @@
-import { DeckInfo } from './deckinfo.js'
+import { DeckInfo } from './deck-info.js'
 
 //////////////////////////////////////////
 //////////////////////////////// MatchInfo
