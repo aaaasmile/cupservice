@@ -1,5 +1,5 @@
 import { DeckInfo } from '../../common/deck-info.js'
-import {ActorStateSubjectSubscriber} from '../../common/actor-state-subject-subscriber.js'
+import { ActorStateSubjectSubscriber } from '../../common/actor-state-subject-subscriber.js'
 
 //////////////////////////////////////////
 //////////////////////////////// AlgBriscBase
@@ -85,6 +85,14 @@ export class AlgBriscBase {
   on_all_ev_new_mano(args) {
     console.log("[%s] New mano " + JSON.stringify(args), this._player_name);
     this._card_played = [];
+  }
+
+  on_all_ev_mano_end(args) {
+    console.log("[%s] Mano end " + JSON.stringify(args), this._player_name);
+    let player_best = args.player_best
+    let carte_prese_mano = args.carte
+    let punti_presi = args.punti;
+    this._points_segno[player_best] += punti_presi
   }
 
   on_all_ev_have_to_play(args) {

@@ -18,7 +18,7 @@ export class TableStateCore {
     this._coreStateManager.submit_next_state('st_waiting_for_players');
   }
 
-  ignore_sate(state) {
+  ignore_state(state) {
     let ignored = [] // write here states if someone needs to be ignored
     return ignored.indexOf(state) >= 0
   }

@@ -46,7 +46,7 @@ export class CoreBriscolaBase {
     this._coreStateManager.submit_next_state('st_new_giocata');
   }
 
-  ignore_sate(state) {
+  ignore_state(state) {
     let ignored = ['st_waiting_for_players', 'st_table_partial', 'st_table_full']
     return ignored.indexOf(state) >= 0
   }
@@ -141,7 +141,6 @@ export class CoreBriscolaBase {
     this._core_data.historize_mano()
     this._core_data.add_points_toplayer(wininfo.player_best, punti_presi)
 
-
     if (this.check_if_giocata_is_terminated()) {
       this._coreStateManager.submit_next_state('st_giocata_end');
     } else if (this._core_data.mazzo_gioco.length > 0) {
@@ -149,16 +148,49 @@ export class CoreBriscolaBase {
     } else {
       this._coreStateManager.submit_next_state('st_new_mano');
     }
-    throw ('Stop!')
+  }
+
+  st_pesca_carta() {
+    console.log('st_pesca_carta');
+    let carte_player = [], brisc_tav_available = true;
+    let data_cartapesc, channel_name;
+    if (this._core_data.mazzo_gioco.length <= 0) {
+      throw (new Error('Deck is empty, programming error'));
+    }
+    this._core_data.round_players.forEach(player => {
+      let carte_player = [];
+      if (this._core_data.mazzo_gioco.length > 0) {
+        carte_player.push(this._core_data.mazzo_gioco.pop());
+      } else if (brisc_tav_available) {
+        carte_player.push(this._briscola_in_tav_lbl);
+        brisc_tav_available = false;
+      } else {
+        throw (new Error('Briscola already assigned, programming error'));
+      }
+      carte_player.forEach(c => {
+        this._core_data.carte_in_mano[player].push(c)
+      });
+      if (this._core_data.carte_in_mano[player].length > this._core_data.num_of_cards_onhandplayer) {
+        throw (new Error('To many cards in hand player ' + player));
+      }
+      let data_cartapesc = { carte: carte_player }
+      this._coreStateManager.fire_to_player(player, 'ev_pesca_carta', data_cartapesc);
+
+    });
+   
+    console.log('Mazzo rimanenti: ' + this._core_data.mazzo_gioco.length);
+    this._coreStateManager.submit_next_state('st_new_mano');
+    
+    throw ('Stop! check it before continue')
   }
 
   check_if_giocata_is_terminated() {
     let res = false;
     let tot_num_cards = 0
-    for(let v in this._core_data.carte_in_mano){
+    for (let v in this._core_data.carte_in_mano) {
       tot_num_cards += this._core_data.carte_in_mano[v].length;
     }
-    
+
     //_log.debug('tot_num_cards ' + tot_num_cards);
     tot_num_cards += this._core_data.mazzo_gioco.length;
     console.log('Giocata end? cards yet in game are: ' + tot_num_cards);

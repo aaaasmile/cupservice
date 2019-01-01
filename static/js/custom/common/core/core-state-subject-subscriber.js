@@ -26,10 +26,16 @@ export class CoreStateSubjectSubscriber {
           }
           this._stateHandlerCaller.call(next.name, name_hand, next.args_arr);
         } catch (e) {
-          console.error(`Processor is ${this._processor.constructor.name}`, e);
+          this.handle_error(e)
+
           //throw(e)
         }
       });
+  }
+
+  handle_error(ex){
+    console.error(`Processor is ${this._processor.constructor.name}`, ex);
+    this.dispose()
   }
 
   dispose() {

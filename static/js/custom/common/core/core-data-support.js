@@ -57,7 +57,7 @@ export class CoreDataSupport {
       this.carte_prese[player] = [];
       this.carte_in_mano[player] = [];
     }
-    this.mazzo_gioco = cards;
+    this.mazzo_gioco = cards; // array of ['_Ac', ...]
     console.log('Current deck: ' + this.mazzo_gioco.join(','));
   }
 
