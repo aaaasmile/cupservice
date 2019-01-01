@@ -199,14 +199,14 @@ export class CoreBriscolaBase {
     let giocata_info = this._core_data.giocata_info
 
     if(!giocata_info.is_started()){
-      console.warn('Update score is not available on segno state', giocata_info.segno_state)
+      console.warn('Update score is not available on segno state', giocata_info.giocata_state)
       return giocata_info.bestpoints_info
     }
     let m_score = giocata_info.score
-    let points_curr_segno = giocata_info.points_curr_segno
+    let points_curr = giocata_info.points_curr
 
     console.log('calculate best points');
-    let arr = [...points_curr_segno.entries()]
+    let arr = [...points_curr.entries()]
     let best_pl_points = arr.sort(function (a, b) {
       return b[1] - a[1];
     });

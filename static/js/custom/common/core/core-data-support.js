@@ -7,20 +7,20 @@ export class CoreDataSupport {
   constructor() {
     this.giocata_info = { 
       score: new Map(), // NOTA: Map usa SEMPRE get e set. 
-      points_curr_segno:  new Map(),
-      segno_state: '' ,
+      points_curr:  new Map(),
+      giocata_state: '' ,
       bestpoints_info: {},
       is_started(){
-        return this.segno_state === 'Started'
+        return this.giocata_state === 'Started'
       },
       set_draw(){
-        this.segno_state = 'draw'
+        this.giocata_state = 'draw'
       },
       set_end(){
-        this.segno_state = 'end'
+        this.giocata_state = 'end'
       },
       set_started(){
-        this.segno_state = 'Started'
+        this.giocata_state = 'Started'
         this.bestpoints_info = {}
       },
       set_giocata_end_score(info){
@@ -73,7 +73,7 @@ export class CoreDataSupport {
     for (let i = 0; i < this.round_players.length; i++) {
       let player = this.round_players[i];
       console.log('On this game play the player: ' + this.round_players[i]);
-      this.giocata_info.points_curr_segno.set(player,0);
+      this.giocata_info.points_curr.set(player,0);
       this.carte_prese[player] = [];
       this.carte_in_mano[player] = [];
     }
@@ -87,7 +87,7 @@ export class CoreDataSupport {
   }
 
   add_points_toplayer(player, points) {
-    let pcs = this.giocata_info.points_curr_segno
+    let pcs = this.giocata_info.points_curr
     let new_val = pcs.get(player) + points
     pcs.set(player, new_val)
    
