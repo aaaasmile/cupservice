@@ -36,7 +36,7 @@ export class CoreBriscolaBase {
     this._myOpt.num_segni_match = this._myOpt.num_segni_match || this._numOfSegni;
     this._myOpt.target_points_segno = this._myOpt.target_points_segno || this._pointsForWin;
     this._myOpt.num_cards_onhand = this._myOpt.num_cards_onhand || 3;
-    // var _game_core_recorder = mod_gamerepl.game_core_recorder_ctor();
+    // this._game_core_recorder = mod_gamerepl.game_core_recorder_ctor();
 
     this._core_data.start(this._myOpt.tot_num_players, this._myOpt.players, this._myOpt.num_cards_onhand);
     this._coreStateManager.fire_all('ev_new_match', {
@@ -184,7 +184,6 @@ export class CoreBriscolaBase {
   }
 
   st_giocata_end() {
-    //var table = _prot.table;
     console.log('st_giocata_end');
     let bestpoints_info = this.giocata_end_update_score();
     //this._game_core_recorder.store_end_giocata(best_pl_points);
@@ -194,7 +193,6 @@ export class CoreBriscolaBase {
     } else {
       this._coreStateManager.submit_next_state('st_wait_continue_game');
     }
-    //table.expect_continue_notification(); // TODO
   }
 
   giocata_end_update_score() {
@@ -236,11 +234,8 @@ export class CoreBriscolaBase {
       });
       this.match_info.end_reason = 'segni_count';
       this.match_info.winner_name = nome_gioc_max;
-      //_prot.submit_state_to_queue(st_match_end, 'st_match_end');
       is_match_end = true
-    } //else {
-    // _prot.submit_state_to_queue(st_wait_continue_game, 'st_wait_continue_game');
-    //}
+    }
 
     let res = {
       best: best_pl_points,
