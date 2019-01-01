@@ -1,5 +1,5 @@
-import { CoreStateStore } from './core-state-store.js'
-import { CoreStateSubjectSubscriber } from './core-state-subject-subscriber.js'
+import { CoreStateStore } from './core/core-state-store.js'
+import { CoreStateSubjectSubscriber } from './core/core-state-subject-subscriber.js'
 
 //////////////////////////////////////////
 //////////////////////////////// TableStateCore

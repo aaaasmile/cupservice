@@ -1,4 +1,4 @@
-import { MatchInfo } from './match-info.js'
+import { MatchInfo } from '../match-info.js'
 
 //////////////////////////////////////////
 //////////////////////////////// CoreDataSupport

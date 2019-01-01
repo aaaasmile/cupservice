@@ -1,6 +1,6 @@
 
 import {CoreQueue} from './core-queue.js'
-import {InternalStateProc} from './internal-state-proc.js'
+import {InternalStateProc} from '../internal-state-proc.js'
 
 //////////////////////////////////////////
 //////////////////////////////// CoreStateManager
