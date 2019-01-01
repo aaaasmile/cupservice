@@ -1,4 +1,3 @@
-import { DeckInfo } from './deck-info.js'
 
 //////////////////////////////////////////
 //////////////////////////////// MatchInfo
@@ -9,7 +8,6 @@ export class MatchInfo {
     this.score = [];
     this.end_reason = '';
     this.winner_name = '';
-    let aa = new DeckInfo();
   }
 
   start() {

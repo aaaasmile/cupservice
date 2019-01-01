@@ -49,7 +49,7 @@ describe('brisc-base-core test', function () {
       state = coreStateStore.get_internal_state();
       console.log('Internal state ' + state + ' resProc ', resProc);
     }
-    let bestpoints_info = b2core._core_data.segni_curr_match.bestpoints_info // {best: Array(2), is_match_end: false}
+    let bestpoints_info = b2core._core_data.giocata_info.bestpoints_info // {best: Array(2), is_match_end: false}
     //console.log(bestpoints_info)
     let arr = bestpoints_info.best // arr = ["Ernesto", 85], ["Luigi", 35]
     expect(arr[0][1] >= arr[1][1]).toBe(true)

@@ -196,17 +196,17 @@ export class CoreBriscolaBase {
   }
 
   giocata_end_update_score() {
-    //throw (new Error('Stop! check it before continue'))
-    if(!this._core_data.segni_curr_match.is_started()){
-      console.warn('Update score is not available on segno state', this._core_data.segni_curr_match.segno_state)
-      return this._core_data.segni_curr_match.bestpoints_info
+    let giocata_info = this._core_data.giocata_info
+
+    if(!giocata_info.is_started()){
+      console.warn('Update score is not available on segno state', giocata_info.segno_state)
+      return giocata_info.bestpoints_info
     }
-    let m_score = this._core_data.segni_curr_match.score
-    let curr_segno_info = this._core_data.segni_curr_match
+    let m_score = giocata_info.score
+    let points_curr_segno = giocata_info.points_curr_segno
 
     console.log('calculate best points');
-    let arr = [...this._core_data.points_curr_segno.entries()]
-    //let best_pl_points = new Array([...this._core_data.points_curr_segno.entries()].sort((a,b) => a[1] < b[1]));
+    let arr = [...points_curr_segno.entries()]
     let best_pl_points = arr.sort(function (a, b) {
       return b[1] - a[1];
     });
@@ -214,12 +214,12 @@ export class CoreBriscolaBase {
     
     if (best_pl_points[0][1] == best_pl_points[1][1]) {
       console.log('Game draw all have scored ' + best_pl_points[0][1]);
-      curr_segno_info.set_draw()
+      giocata_info.set_draw()
     } else {
       console.log('Giocata winner is ' + nome_gioc_max + ' points scored are ' + best_pl_points[0][1]);
       console.log('Giocata result is ' + best_pl_points[0][1] + ' - ' + best_pl_points[1][1]);
       m_score.set(nome_gioc_max, m_score.get(nome_gioc_max) + 1);
-      curr_segno_info.set_end()
+      giocata_info.set_end()
     }
     let is_match_end = false
     if (m_score.get(nome_gioc_max) >= this._myOpt.num_segni_match) {
@@ -241,7 +241,7 @@ export class CoreBriscolaBase {
       best: best_pl_points,
       is_match_end: is_match_end
     }
-    curr_segno_info.set_giocata_end_score(res)
+    giocata_info.set_giocata_end_score(res)
 
     return res;
   }
@@ -323,8 +323,6 @@ export class CoreBriscolaBase {
         carte_player.push(this._core_data.mazzo_gioco.pop());
       }
       this._core_data.carte_in_mano[player] = carte_player;
-      this._core_data.carte_prese[player] = [];
-      this._core_data.points_curr_segno[player] = 0;
       //console.log(this._core_data.carte_in_mano,carte_player,this._core_data.num_of_cards_onhandplayer);
     }
     this._briscola_in_tav_lbl = this._core_data.mazzo_gioco.pop();
