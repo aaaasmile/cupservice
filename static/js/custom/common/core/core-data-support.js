@@ -27,7 +27,6 @@ export class CoreDataSupport {
         this.bestpoints_info = info
       }
     };
-    this.match_state = '';
     this.match_info = new MatchInfo();
     this.players = []; // use always simple name. e.g 'Luigi'
     this.carte_prese = {};
@@ -44,7 +43,6 @@ export class CoreDataSupport {
 
   start(num_of_players, players, hand_player_size) {
     // players: ["Luigi", "Ernesto"]
-    this.match_state = 'Started';
     this.match_info.start();
     this.players = [];
     if (hand_player_size === undefined) {

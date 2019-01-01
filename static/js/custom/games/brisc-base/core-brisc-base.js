@@ -223,17 +223,17 @@ export class CoreBriscolaBase {
     }
     let is_match_end = false
     if (m_score.get(nome_gioc_max) >= this._myOpt.num_segni_match) {
+      throw (new Error('Stop! check it before continue'))
       console.log('Game terminated, winner is ' + nome_gioc_max);
-
+      let match_info = this._core_data.match_info
       arr = [...m_score.entries()].sort(function (a, b) {
         return b[1] - a[1];
       });
       arr.forEach(pair => {
         console.log(pair[0] + ' segni ' + pair[1]);
-        this.match_info.score.push(pair);
+        match_info.final_score.push(pair);
       });
-      this.match_info.end_reason = 'segni_count';
-      this.match_info.winner_name = nome_gioc_max;
+      match_info.end(nome_gioc_max, 'segni_count');
       is_match_end = true
     }
 
