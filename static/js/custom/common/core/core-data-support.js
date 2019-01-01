@@ -100,7 +100,7 @@ export class CoreDataSupport {
     // palyer = "Luigi"
     let ix = this.players.indexOf(player)
     if (ix < 0) {
-      throw ('Player not found', player)
+      throw (new Error(`Player not found, ${player}`))
     }
     this.round_players = this.calc_round_players(ix)
   }

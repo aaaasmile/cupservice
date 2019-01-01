@@ -181,7 +181,7 @@ export class CoreBriscolaBase {
     console.log('Mazzo rimanenti: ' + this._core_data.mazzo_gioco.length);
     this._coreStateManager.submit_next_state('st_new_mano');
     
-    throw ('Stop! check it before continue')
+    throw (new Error('Stop! check it before continue'))
   }
 
   check_if_giocata_is_terminated() {

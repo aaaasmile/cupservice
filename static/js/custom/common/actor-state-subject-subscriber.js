@@ -35,6 +35,8 @@ export class ActorStateSubjectSubscriber {
 
   handle_error(ex){
     console.error(`Processor is ${this._processor.constructor.name}, error is ${ex}`);
+    // nothing to do more
+    this.dispose()
   }
 
   dispose() {
