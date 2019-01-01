@@ -1,5 +1,7 @@
 import { DeckInfo } from './common/deckinfo.js'
 import { CoreStateManager } from './common/core-state-manager.js'
+import { RndMgr } from './common/rnd-mgr.js'
+import { CoreDataSupport } from './common/core-data-support.js'
 
 // A me servono gli oggetti esportati nei moduli anche nelle librerie stadard, come ad esempio gli spec
 // di jasmine, che viene usata direttamente. In queste spec, non si può usare import, allora metto
@@ -9,127 +11,11 @@ import { CoreStateManager } from './common/core-state-manager.js'
 export const cup = {
   DeckInfo: DeckInfo,
   CoreStateManager: CoreStateManager,
+  RndMgr: RndMgr,
+  CoreDataSupport: CoreDataSupport,
 };
 //(function () { // intellisense in vscode non funziona se metto pattern per isolare oggetti privati. Gli oggetti privati hanno la lettera iniziale minuscola
 // Per avere poi l'intellisense anche nei miei fiels di spec (unit test di jasmine) ho messo la dir di test come sottodirectory di questa.
-
-//////////////////////////////////////////
-//////////////////////////////// MatchInfo
-//////////////////////////////////////////
-
-cup.MatchInfo = class MatchInfo {
-  constructor() {
-    this.match_state = '';
-    this.score = [];
-    this.end_reason = '';
-    this.winner_name = '';
-    let aa = new DeckInfo();
-  }
-
-  start() {
-    this.match_state = 'Started';
-    this.score = [];
-    this.end_reason = '';
-    this.winner_name = '';
-  }
-}
-
-//////////////////////////////////////////
-//////////////////////////////// CoreDataSupport
-//////////////////////////////////////////
-
-cup.CoreDataSupport = class CoreDataSupport {
-  constructor() {
-    this.segni_curr_match = { score: {}, segno_state: '' };
-    this.match_state = '';
-    this.match_info = new cup.MatchInfo();
-    this.players = []; // use simple name
-    this.carte_prese = {};
-    this.carte_in_mano = {};
-    this.carte_gioc_mano_corr = [];
-    this.history_mano = [];
-    this.mano_count = 0;
-    this.first_player_ix = 0;
-    this.round_players = [];
-    this.points_curr_segno = {};
-    this.mazzo_gioco = [];
-    this.num_of_cards_onhandplayer = 3;
-    this.player_on_turn = null;
-  }
-
-  start(num_of_players, players, hand_player_size) {
-    // players: ["Luigi", "Ernesto"]
-    this.match_state = 'Started';
-    this.match_info.start();
-    this.players = [];
-    if (hand_player_size === undefined) {
-      throw (new Error('hand_player_size is undefined'));
-    }
-
-    this.num_of_cards_onhandplayer = hand_player_size;
-    for (let i = 0; i < num_of_players; i++) {
-      let player = players[i];
-      this.players.push(player);
-      this.segni_curr_match.score[player] = 0;
-    }
-  }
-
-  start_new_giocata(first_ix, cards) {
-    this.segni_curr_match.segno_state = 'Started';
-    this.carte_prese = {};
-    this.carte_in_mano = {};
-    this.carte_gioc_mano_corr = [];
-    this.history_mano = [];
-    this.mano_count = 0;
-    this.first_player_ix = first_ix;
-    this.round_players = this.calc_round_players(first_ix);
-    console.log('First player to play is ' + this.round_players[0] + ' with index ' + this.first_player_ix);
-    console.log('Number of round_players is ' + this.round_players.length + ' players size is ' + this.players.length);
-    for (let i = 0; i < this.round_players.length; i++) {
-      let player = this.round_players[i];
-      console.log('On this game play the player: ' + this.round_players[i]);
-      this.points_curr_segno[player] = 0;
-      this.carte_prese[player] = [];
-      this.carte_in_mano[player] = [];
-    }
-    this.mazzo_gioco = cards;
-    console.log('Current deck: ' + this.mazzo_gioco.join(','));
-  }
-
-  switch_player_on_turn() {
-    this.player_on_turn = this.round_players.length > 0 ? this.round_players[0] : null;
-    return this.player_on_turn;
-  }
-
-  calc_round_players(first_ix) {
-    let ins_point = -1, round_players = [], onlast = true;
-    for (let i = 0; i < this.players.length; i++) {
-      if (i === first_ix) {
-        ins_point = 0;
-        onlast = false;
-      }
-      if (ins_point === -1) {
-        round_players.push(this.players[i]);
-      }
-      else {
-        round_players.splice(ins_point, 0, this.players[i]);
-      }
-      ins_point = onlast ? -1 : ins_point + 1;
-    }
-    return round_players;
-  }
-
-  round_players_by_player(player) {
-    // palyer = "Luigi"
-    let ix = this.players.indexOf(player)
-    if (ix < 0) {
-      throw ('Player not found', player)
-    }
-    this.round_players = this.calc_round_players(ix)
-  }
-}
-
-
 
 
 //////////////////////////////////////////
@@ -365,62 +251,6 @@ cup.TableStateCore = class TableStateCore {
 
 }
 
-//////////////////////////////////////////
-//////////////////////////////// RndMgr
-//////////////////////////////////////////
-cup.RndMgr = class RndMgr {
-  constructor() {
-    this._predefCards = []
-    this._predefPlayerIx = -1
-  }
-
-  set_predefined_deck(card_obj) {
-    if (card_obj && typeof (card_obj) === 'string') {
-      let deck_to_use = card_obj.split(",");
-      this._predefCards = deck_to_use
-    } else if (card_obj && Array.isArray(card_obj)) {
-      this._predefCards = card_obj
-    }
-  }
-
-  set_predefined_player(ix) {
-    this._predefPlayerIx = ix
-  }
-
-  get_deck(cards) {
-    if (this._predefCards.length > 0) {
-      console.log('CAUTION: using a presetted deck')
-      return [...this._predefCards]
-    }
-    return this.shuffle(cards)
-  }
-
-  get_first_player(size) {
-    if (this._predefPlayerIx !== -1) {
-      console.log('CAUTION: using a presetted first player')
-      return this._predefPlayerIx
-    }
-    let i = Math.floor(Math.random() * size);
-    return i
-  }
-
-  shuffle(source) {
-    //Knuth-Fisher-Yates shuffle algorithm.
-    let array = [...source]
-    let m = array.length, t, i;
-    // While there remain elements to shuffle…
-    while (m) {
-      // Pick a remaining element…
-      i = Math.floor(Math.random() * m--);
-      // And swap it with the current element.
-      t = array[m];
-      array[m] = array[i];
-      array[i] = t;
-    }
-
-    return array;
-  }
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 /// BRISCOLA in DUE
