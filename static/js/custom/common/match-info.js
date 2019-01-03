@@ -22,4 +22,8 @@ export class MatchInfo {
     this.winner_name = winner;
     this.match_state = 'end';
   }
+
+  get_info(){
+    return (JSON.stringify(this))
+  }
 }

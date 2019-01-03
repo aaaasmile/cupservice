@@ -46,13 +46,12 @@ export class CoreBriscolaBase {
     this._coreStateManager.submit_next_state('st_new_giocata');
   }
 
-  ignore_state(state) {
-    let ignored = ['st_waiting_for_players', 'st_table_partial', 'st_table_full']
-    return ignored.indexOf(state) >= 0
+  ignore_state_or_action(state) {
+    let ignored = ['st_waiting_for_players', 'st_table_partial', 'st_table_full', 'act_player_sit_down']
+    return (ignored.indexOf(state) >= 0)
   }
 
-  act_player_sit_down(name, pos) { }
-
+  
   act_alg_play_acard(player_name, lbl_card) {
     this._coreStateStore.check_state('st_wait_for_play');
     console.log('Player ' + player_name + ' played ' + lbl_card);
@@ -78,6 +77,16 @@ export class CoreBriscolaBase {
     } else {
       console.warn('Card ' + lbl_card + ' not allowed to be played from player ' + player_name);
       this._coreStateManager.fire_to_player(player_name, 'ev_player_cardnot_allowed', { hand_player: cards, wrong_card: lbl_card });
+    }
+  }
+
+  act_alg_continue_game(player){
+    this._coreStateStore.check_state('st_wait_continue_game');
+    console.log(`Player ${player} want to continue`)
+    let cfm = this._core_data.continue_to_cfm
+    this._core_data.continue_to_cfm =  cfm.filter( x => x !== player)
+    if (this._core_data.continue_to_cfm.length === 0){
+      this._coreStateManager.submit_next_state('st_new_giocata')
     }
   }
 
@@ -117,6 +126,8 @@ export class CoreBriscolaBase {
   }
 
   st_wait_for_play() {
+    console.log('Waiting for player to play using an action')
+    this._core_data.continue_to_cfm = [...this._core_data.players]
     this._coreStateStore.set_state('st_wait_for_play');
   }
 
@@ -152,6 +163,7 @@ export class CoreBriscolaBase {
 
   st_pesca_carta() {
     console.log('st_pesca_carta');
+    this._coreStateStore.set_state('st_pesca_carta');
     let brisc_tav_available = true;
     if (this._core_data.mazzo_gioco.length <= 0) {
       throw (new Error('Deck is empty, programming error'));
@@ -185,6 +197,7 @@ export class CoreBriscolaBase {
 
   st_giocata_end() {
     console.log('st_giocata_end');
+    this._coreStateStore.set_state('st_giocata_end');
     let bestpoints_info = this.giocata_end_update_score();
     //this._game_core_recorder.store_end_giocata(best_pl_points);
     this._coreStateManager.fire_all('ev_giocata_end', { best: bestpoints_info.best_pl_points });
@@ -193,6 +206,19 @@ export class CoreBriscolaBase {
     } else {
       this._coreStateManager.submit_next_state('st_wait_continue_game');
     }
+  }
+
+  st_wait_continue_game(){
+    this._coreStateStore.set_state('st_wait_continue_game');
+    console.log('st_wait_continue_game');
+
+    this._coreStateManager.fire_all('ev_waiting_tocontinue_game', {});
+  }
+
+  st_match_end(){
+    this._coreStateStore.set_state('st_match_end');
+    console.log('st_match_end');
+    this._coreStateManager.fire_all('ev_match_end', {info: this._core_data.match_info.get_info()});
   }
 
   giocata_end_update_score() {
@@ -223,7 +249,7 @@ export class CoreBriscolaBase {
     }
     let is_match_end = false
     if (m_score.get(nome_gioc_max) >= this._myOpt.num_segni_match) {
-      throw (new Error('Stop! check it before continue'))
+      //throw (new Error('Stop! check it before continue'))
       console.log('Game terminated, winner is ' + nome_gioc_max);
       let match_info = this._core_data.match_info
       arr = [...m_score.entries()].sort(function (a, b) {

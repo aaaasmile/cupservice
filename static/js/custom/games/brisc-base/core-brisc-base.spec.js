@@ -32,7 +32,7 @@ describe('brisc-base-core test', function () {
     coreStateManager.process_all()
     let coreStateStore = b2core._coreStateStore
     let state = coreStateStore.get_internal_state();
-    expect(state).toBe('st_game_end');
+    expect(state).toBe('st_match_end');
   });
 
   it('Punteggio giocata end', () => {

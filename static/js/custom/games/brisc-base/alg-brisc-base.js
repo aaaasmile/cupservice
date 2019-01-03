@@ -8,7 +8,7 @@ export class AlgBriscBase {
 
 
   constructor(_playerActor) {
-    this._playerActor = _playerActor
+    this._playerActor = _playerActor // TODO use new PlayerActor(this,coreStateManager)
     this._deck_info = new DeckInfo();
     this._points_segno = {};
     this._opp_names = [];
@@ -80,6 +80,25 @@ export class AlgBriscBase {
     this._players.forEach(pl => {
       this._points_segno[pl] = 0;
     });
+  }
+
+  on_all_ev_giocata_end(args) {
+    console.log("[%s] giocata end " + JSON.stringify(args), this._player_name); 
+  }
+
+  on_all_ev_match_end(args){
+    //args = {info: {"match_state":"end","final_score":[["Ernesto",2],["Luigi",0]],"end_reason":"segni_count","winner_name":"Ernesto"}}
+    console.log("[%s] match end ", this._player_name, args); 
+    let info = JSON.parse(args.info)
+    let winner = info.final_score[0]
+    if(winner[0] === this._player_name){
+      console.log(`${this._player_name}: Ohhhh yeah!!!!`)
+    }
+  }
+
+  on_all_ev_waiting_tocontinue_game(args){
+    console.log("[%s] continue game " + JSON.stringify(args), this._player_name); 
+    this._playerActor.continue_game(this._player_name);
   }
 
   on_pl_ev_pesca_carta(args) {

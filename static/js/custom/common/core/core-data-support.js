@@ -39,6 +39,7 @@ export class CoreDataSupport {
     this.mazzo_gioco = [];
     this.num_of_cards_onhandplayer = 3;
     this.player_on_turn = null;
+    this.continue_to_cfm = []
   }
 
   start(num_of_players, players, hand_player_size) {
