@@ -20,8 +20,10 @@ func RunService(configfile string) {
 
 	conf.ReadConfig(configfile)
 	log.Println("Configuration is read")
+	if conf.Current.DatabaseEngine != "DatabaseNone" {
+		db.OpenDatabase()
+	}
 
-	db.OpenDatabase()
 	var wait time.Duration
 	serverurl := conf.Current.ServiceURL
 	cupServURL := fmt.Sprintf("http://%s%s", strings.Replace(serverurl, "0.0.0.0", "localhost", 1), conf.Current.RootURLPattern)
@@ -29,7 +31,7 @@ func RunService(configfile string) {
 	log.Println("Server started with URL ", serverurl)
 	log.Println("Try this url: ", cupServURL)
 
-	http.Handle(conf.Current.RootURLPattern+"static/", http.StripPrefix(conf.Current.RootURLPattern+"static", http.FileServer(http.Dir("static"))))
+	http.Handle(conf.Current.RootURLPattern+"static/", http.StripPrefix(conf.Current.RootURLPattern+"static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc(conf.Current.RootURLPattern, cup.CupAPiHandler)
 
 	srv := &http.Server{

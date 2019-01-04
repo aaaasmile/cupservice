@@ -2,10 +2,14 @@ ServiceURL =  "127.0.0.1:5571"
 RootURLPattern = "/cup/"
 AlwaysReloadTempl = true
 UseProdTemplate = false
+DatabaseEngine = "DatabaseNone"
 
 [Database]
-Host = <host>
+Host = "<host>"
 Port  = 5432
-User  = <db user>
-Password  = <db password>
-DatabaseName  = <db name>
+User  = "<db user>"
+Password  = "<db password>"
+DatabaseName  = "<db name>"
+
+[DatabaseNone]
+Host = "localhost"

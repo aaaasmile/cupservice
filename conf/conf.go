@@ -20,6 +20,7 @@ type Config struct {
 	RootURLPattern    string
 	AlwaysReloadTempl bool
 	UseProdTemplate   bool
+	DatabaseEngine    string
 	DataBase          *DataBase
 }
 
