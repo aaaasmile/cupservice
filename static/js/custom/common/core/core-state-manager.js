@@ -70,7 +70,10 @@ export class CoreStateManager {
   }
 
   get_subject_for_player(player) {
-    if (this.event_for_player[player] == null) {
+    if(!player){
+      throw new Error('Player is invalid: ', player)
+    }
+    if (this.event_for_player[player] == null) { // Oh yes use == instead of ===
       this.event_for_player[player] = new rxjs.Subject();
     }
     return this.event_for_player[player];

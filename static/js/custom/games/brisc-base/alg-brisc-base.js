@@ -1,14 +1,11 @@
 import { DeckInfo } from '../../common/deck-info.js'
-import { ActorStateSubjectSubscriber } from '../../common/actor-state-subject-subscriber.js'
 
 //////////////////////////////////////////
 //////////////////////////////// AlgBriscBase
 //////////////////////////////////////////
 export class AlgBriscBase {
 
-
-  constructor(_playerActor) {
-    this._playerActor = _playerActor // TODO use new PlayerActor(this,coreStateManager)
+  constructor(name) {
     this._deck_info = new DeckInfo();
     this._points_segno = {};
     this._opp_names = [];
@@ -29,15 +26,11 @@ export class AlgBriscBase {
       use_delay_before_play: false,
       timeout_haveplay: 300
     };
-    this._player_name = _playerActor.Player.Name;
-    let that = this;
-    // _actorNotifier: serve per ricevere gli eventi del core in un handler automatico
-    // del tipo on_all_xxx e gli eventi on_pl_xxx
-    this._actorNotifier = new ActorStateSubjectSubscriber(
-      _playerActor.getCoreStateManager(),
-      that, { log_all: false, log_missed: true },
-      _playerActor.Player.Name);
+    this._player_name = name
+  }
 
+  set_core_caller(core_caller){
+    this._core_caller = core_caller
   }
 
   on_all_ev_new_match(args) {
@@ -83,22 +76,22 @@ export class AlgBriscBase {
   }
 
   on_all_ev_giocata_end(args) {
-    console.log("[%s] giocata end " + JSON.stringify(args), this._player_name); 
+    console.log("[%s] giocata end " + JSON.stringify(args), this._player_name);
   }
 
-  on_all_ev_match_end(args){
+  on_all_ev_match_end(args) {
     //args = {info: {"match_state":"end","final_score":[["Ernesto",2],["Luigi",0]],"end_reason":"segni_count","winner_name":"Ernesto"}}
-    console.log("[%s] match end ", this._player_name, args); 
+    console.log("[%s] match end ", this._player_name, args);
     let info = JSON.parse(args.info)
     let winner = info.final_score[0]
-    if(winner[0] === this._player_name){
+    if (winner[0] === this._player_name) {
       console.log(`${this._player_name}: Ohhhh yeah!!!!`)
     }
   }
 
-  on_all_ev_waiting_tocontinue_game(args){
-    console.log("[%s] continue game " + JSON.stringify(args), this._player_name); 
-    this._playerActor.continue_game(this._player_name);
+  on_all_ev_waiting_tocontinue_game(args) {
+    console.log("[%s] continue game " + JSON.stringify(args), this._player_name);
+    this._core_caller.continue_game();
   }
 
   on_pl_ev_pesca_carta(args) {
@@ -187,7 +180,7 @@ export class AlgBriscBase {
     }
     if (card) {
       console.log("[%s] Want to play the card " + card, this._player_name);
-      this._playerActor.play_card(card);
+      this._core_caller.play_card(card);
     } else if (this._level_alg !== 'predefined') {
       throw (new Error('alg_play_acard: Card to be played not found'));
     } else {

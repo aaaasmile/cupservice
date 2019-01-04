@@ -1,8 +1,8 @@
-== cup-service
+## cup-service
 Un service della cuperativa in golang (web socket e rest)
 Client basic in react single file.
 
-==Info module
+## Info module
 Il gioco della cuperativa l'ho sviluppato usando ES6 con i moduli direttamente in browser.
 Non uso nessun webpack, ma è il browser chrome ad assemblare i moduli.
 In React dovrebbe essere possibile importare le varie classi usando import (js/custom/**/*).
@@ -14,8 +14,10 @@ I file di spec vanno messi al fianco dell'implementazione delle classi. Il fileS
 va aggiornato manualmente.
 I files jsconfig.json mi servono per avere il code complete in VS code.
 
-== todo
-La partita della briscola nel core non è completa. Dopo st_mano_end non è finito. Qui
-manca il st_game_end dopo aver finito la giocata.
-C'è da finire il file games-cup.js il quale va completato usando il games-cup-todo.js [DONE]
-Poi andrebbe testato con una unit test, magari nella directory parallela dove uso node. [DONE Jasmine]
+## TODO
+- Nel core manaca la registrazione del game come in cuperativajs (_game_core_recorder)
+- Il core della briscola va agganciato alla ui
+- La partita della briscola nel core non è completa. Dopo st_mano_end non è finito. Qui
+manca il st_game_end dopo aver finito la giocata. [DONE]
+- C'è da finire il file games-cup.js il quale va completato usando il games-cup-todo.js [DONE]
+- Poi andrebbe testato con una unit test, magari nella directory parallela dove uso node. [DONE Jasmine]

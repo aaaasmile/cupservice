@@ -4,7 +4,7 @@ import { RndMgr } from './common/rnd-mgr.js'
 import { CoreDataSupport } from './common/core/core-data-support.js'
 import { TableStateCore } from './common/table-state-core.js'
 import { Player } from './common/player.js'
-import { PlayerActor } from './common/player-actor.js'
+import { CoreCaller } from './common/core-caller.js'
 import { CoreStateStore } from './common/core/core-state-store.js'
 import { CoreStateSubjectSubscriber } from './common/core/core-state-subject-subscriber.js'
 import { ActorStateSubjectSubscriber } from './common/actor-state-subject-subscriber.js'
@@ -23,7 +23,7 @@ export const cup = {
   CoreDataSupport: CoreDataSupport,
   TableStateCore: TableStateCore,
   Player: Player,
-  PlayerActor: PlayerActor,
+  CoreCaller: CoreCaller,
   CoreStateStore: CoreStateStore,
   CoreStateSubjectSubscriber: CoreStateSubjectSubscriber,
   ActorStateSubjectSubscriber: ActorStateSubjectSubscriber,

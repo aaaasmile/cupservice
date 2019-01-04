@@ -15,13 +15,11 @@ describe('brisc-base-core test', function () {
     });
 
 
-    let playerActorErnesto = new cup.PlayerActor(new cup.Player('Ernesto'), coreStateManager);
-    let playerActorLuigi = new cup.PlayerActor(new cup.Player('Luigi'), coreStateManager);
-    new cup.AlgBriscBase(playerActorErnesto);
-    new cup.AlgBriscBase(playerActorLuigi);
-
-    playerActorErnesto.sit_down(0);
-    playerActorLuigi.sit_down(1);
+    let playerErnesto = new cup.Player(new cup.AlgBriscBase('Ernesto'), coreStateManager);
+    let playerLuigi = new cup.Player(new cup.AlgBriscBase('Luigi'), coreStateManager);
+    
+    playerErnesto.sit_down(0);
+    playerLuigi.sit_down(1);
     return b2core
   }
 
