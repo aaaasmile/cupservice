@@ -25,4 +25,5 @@ manca il st_game_end dopo aver finito la giocata. [DONE]
 ## Problemi
 Ho avuto problemi con i files statici. Specialmente quelli che vanno in module (games-cup.js). 
 In questo caso Jasmine (specrunner.html) non va.
-Essi devono  essere del tipo application/javascript e non text/plain. Su windows questo mime viene preso da HKEY_CLASSES_ROOT\.js\
+Essi devono  essere del tipo application/javascript e non text/plain. Su windows questo mime viene preso 
+da HKEY_CLASSES_ROOT\.js\
