@@ -1,4 +1,4 @@
-import {CardLoaderGfx} from '../../common/gfx/card-loader_gfx.js'
+import { GetCardLoaderGfx } from '../../common/gfx/card-loader_gfx.js'
 
 export class BriscBaseGfx {
   constructor() {
@@ -27,44 +27,57 @@ export class BriscBaseGfx {
     canvas.width = width;
     canvas.height = height;
 
-    if (!this.cardLoader) {
-      this.cardLoader = new CardLoaderGfx()
-      let loaderGfx = this.cardLoader.getProgressGfx(canvas)
-      console.log("loaderGfx is", loaderGfx)
-      this.mainStage.addChild(loaderGfx.loaderBar);
-      createjs.Ticker.framerate = 30;
 
-      let totItems = -1
-      this.cardLoader.loadResources(this.opt.deck_name)
-        .subscribe(x => {
-          if (totItems === -1) {
-            totItems = x
-            console.log("Expect total items to load: ", x)
-            return
-          }
-          console.log("Next loaded is ", x, loaderGfx.bar.scaleX)
-          // scaleX semplicemante sposta la nuova x nel rect
-          loaderGfx.bar.scaleX = (x * loaderGfx.loaderWidth) / totItems;
-          this.mainStage.update();
-        },
-          (err) => {
-            console.error("Load error", err)
-          }, () => {
-            console.log("Load Completed!")
-            loaderGfx.loaderBar.alpha = 1;
-            let that = this
-            createjs.Tween.get(loaderGfx.loaderBar).wait(500).to({ alpha: 0, visible: false }, 500)
-              .call(handleComplete)
-              .on("change", x => { that.mainStage.update() })
-            function handleComplete() {
-              //Tween complete
-              console.log("Tween complete")
-              that.mainStage.addChild(cardLoader.scene_background)
-              that.mainStage.addChild(cardLoader.printDeck())
-              that.mainStage.update();
-            }
-          })
+    let cardLoader = GetCardLoaderGfx()
+    let cache = cardLoader.getLoaded(this.opt.deck_name)
+    if (cache) {
+      this.resourceLoadCompleted(cache)
+    } else {
+      this.loadImages(cardLoader, this.opt.deck_name)
+    }
 
+  }
+
+  loadImages(cardLoader, deck_name) {
+    let loaderGfx = cardLoader.getProgressGfx(this.mainStage.canvas)
+    console.log("Load images for ", deck_name)
+    this.mainStage.addChild(loaderGfx.loaderBar);
+    createjs.Ticker.framerate = 30;
+
+    let totItems = -1
+    cardLoader.loadResources(deck_name)
+      .subscribe(x => {
+        if (totItems === -1) {
+          totItems = x
+          console.log("Expect total items to load: ", x)
+          return
+        }
+        console.log("Next loaded is ", x, loaderGfx.bar.scaleX)
+        // scaleX semplicemante sposta la nuova x nel rect
+        loaderGfx.bar.scaleX = (x * loaderGfx.loaderWidth) / totItems;
+        this.mainStage.update();
+      },
+        (err) => {
+          console.error("Load error", err)
+        }, (cache) => {
+          console.log("Load Completed!")
+          loaderGfx.loaderBar.alpha = 1;
+          this.resourceLoadCompleted(cache)
+        })
+
+  }
+
+  resourceLoadCompleted(cache) {
+    this.images = cache
+    createjs.Tween.get(loaderGfx.loaderBar).wait(500).to({ alpha: 0, visible: false }, 500)
+      .call(handleComplete)
+      .on("change", x => { that.mainStage.update() })
+    function handleComplete() {
+      //Tween complete
+      console.log("Tween complete")
+      that.mainStage.addChild(cache.scene_background)
+      that.mainStage.addChild(cache.printDeck())
+      that.mainStage.update();
     }
   }
 
