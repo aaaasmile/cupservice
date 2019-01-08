@@ -1,4 +1,4 @@
-import { BriscBaseGfx } from './brisc-base/brisc-base-gfx.js'
+import { BriscBaseGfx } from '../../games/brisc-base/brisc-base-gfx.js'
 
 class GfxProvider {
   constructor() {

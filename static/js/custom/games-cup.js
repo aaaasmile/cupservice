@@ -10,7 +10,7 @@ import { CoreStateSubjectSubscriber } from './common/core/core-state-subject-sub
 import { ActorStateSubjectSubscriber } from './common/actor-state-subject-subscriber.js'
 import { CoreBriscolaBase } from './games/brisc-base/core-brisc-base.js'
 import { AlgBriscBase } from './games/brisc-base/alg-brisc-base.js'
-import { GetGfxGameInstance } from './games/gfx-provider.js'
+import { GetGfxGameInstance } from './common/gfx/gfx-provider.js'
 
 // A me servono gli oggetti esportati nei moduli anche nelle librerie stadard, come ad esempio gli spec
 // di jasmine, che viene usata direttamente. In queste spec, non si può usare import, allora metto
