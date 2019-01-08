@@ -171,7 +171,7 @@ function OfflineGamesCtrl(props) {
 function OfflineGame(props) {
   const gameName = props.state.gameName
   const gameCode = props.state.gameCode
-  let gameGfx = cup.GfxProvider.getGfxGameInstance(gameCode)
+  let gameGfx = cup.GetGfxGameInstance(gameCode)
   gameGfx.renderScene()
   return (
     <div>

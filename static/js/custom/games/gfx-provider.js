@@ -1,9 +1,24 @@
 import { BriscBaseGfx } from './brisc-base/brisc-base-gfx.js'
 
-export class GfxProvider {
+class GfxProvider {
   constructor() {
     console.log('GfxProvider created')
     this.map_games = new Map()
+  }
+
+  getGameInstance(gameCode) {
+    let gfx = this.map_games.get(gameCode)
+    if (!gfx) {
+      switch (gameCode) {
+        case 'off-briscindue':
+          gfx = new BriscBaseGfx()
+          break
+        default:
+          console.error('Game code not recognized', gameCode)
+      }
+      this.map_games.set(gameCode, gfx)
+    }
+    return gfx
   }
 }
 
@@ -15,19 +30,7 @@ function getGfxProvider() {
   return provider
 }
 
-
-GfxProvider.getGfxGameInstance = function (gameCode) {
+export function GetGfxGameInstance(gameCode) {
   const _prov = getGfxProvider()
-  let gfx = _prov.map_games.get(gameCode)
-  if (!gfx) {
-    switch (gameCode) {
-      case 'off-briscindue':
-        gfx = new BriscBaseGfx()
-        break
-      default:
-        console.error('Game code not recognized', gameCode)
-    }
-    _prov.map_games.set(gameCode, gfx)
-  }
-  return gfx
+  return _prov.getGameInstance(gameCode)
 }
