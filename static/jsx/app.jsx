@@ -172,12 +172,12 @@ function OfflineGame(props) {
   const gameName = props.state.gameName
   const gameCode = props.state.gameCode
   let gameGfx = cup.GetGfxGameInstance(gameCode)
-  gameGfx.renderScene()
+  gameGfx.renderScene("mainCanvas")
   return (
     <div>
       <h1>{gameName}</h1>
       <div className="ui">
-        <canvas id="mainCanvas"></canvas>
+        <canvas id="mainCanvas" width={640} height={425}></canvas>
       </div>
     </div>
   )
