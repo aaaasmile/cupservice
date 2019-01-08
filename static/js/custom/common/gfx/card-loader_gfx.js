@@ -53,7 +53,7 @@ class CardLoaderGfx {
   constructor() {
     console.log('CardLoaderGfx created (singleton)')
     this.map_image_cache = new Map()
-    this.path_prefix = ''
+    this.path_prefix = 'static/'
   }
 
   getLoaded(deck_type) {
@@ -148,7 +148,7 @@ class CardLoaderGfx {
             obs.next(countLoaded)
             if (countToLoad <= countLoaded) {
               imageCache.set_completed()
-              obs.complete(imageCache)
+              obs.complete()
             }
           }
           img.onerror = () => {
@@ -173,7 +173,7 @@ class CardLoaderGfx {
           obs.next(countLoaded)
           if (countToLoad <= countLoaded) {
             imageCache.set_completed()
-            obs.complete(imageCache)
+            obs.complete()
           }
         }
       }
@@ -201,7 +201,7 @@ class CardLoaderGfx {
         obs.next(countLoaded)
         if (countToLoad <= countLoaded) {
           imageCache.set_completed()
-          obs.complete(imageCache)
+          obs.complete()
         }
       }
     })

@@ -45,6 +45,7 @@ export class BriscBaseGfx {
     createjs.Ticker.framerate = 30;
 
     let totItems = -1
+    let that = this
     cardLoader.loadResources(deck_name)
       .subscribe(x => {
         if (totItems === -1) {
@@ -59,26 +60,28 @@ export class BriscBaseGfx {
       },
         (err) => {
           console.error("Load error", err)
-        }, (cache) => {
+        }, () => {
           console.log("Load Completed!")
+          let cache = cardLoader.getLoaded(deck_name)
           loaderGfx.loaderBar.alpha = 1;
-          this.resourceLoadCompleted(cache)
+          createjs.Tween.get(loaderGfx.loaderBar).wait(500).to({ alpha: 0, visible: false }, 500)
+            .call(handleComplete)
+            .on("change", x => { that.mainStage.update() })
+          function handleComplete() {
+            //Tween complete
+            console.log("Tween complete")
+            that.resourceLoadCompleted(cache)
+          }
+
         })
 
   }
 
   resourceLoadCompleted(cache) {
     this.images = cache
-    createjs.Tween.get(loaderGfx.loaderBar).wait(500).to({ alpha: 0, visible: false }, 500)
-      .call(handleComplete)
-      .on("change", x => { that.mainStage.update() })
-    function handleComplete() {
-      //Tween complete
-      console.log("Tween complete")
-      that.mainStage.addChild(cache.scene_background)
-      that.mainStage.addChild(cache.printDeck())
-      that.mainStage.update();
-    }
+    this.mainStage.addChild(cache.scene_background)
+    this.mainStage.addChild(cache.printDeck())
+    this.mainStage.update();
   }
 
   testSomeCanvas(canvid) {
