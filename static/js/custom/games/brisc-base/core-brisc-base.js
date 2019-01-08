@@ -1,8 +1,8 @@
 import { CoreDataSupport } from '../../common/core/core-data-support.js'
-import { DeckInfo } from '../../common/deck-info.js'
+import { DeckInfo } from '../../common/class/deck-info.js'
 import { CoreStateStore } from '../../common/core/core-state-store.js'
 import { CoreStateSubjectSubscriber } from '../../common/core/core-state-subject-subscriber.js'
-import { RndMgr } from '../../common/rnd-mgr.js'
+import { RndMgr } from '../../common/class/rnd-mgr.js'
 
 //////////////////////////////////////////
 //////////////////////////////// CoreBriscolaBase

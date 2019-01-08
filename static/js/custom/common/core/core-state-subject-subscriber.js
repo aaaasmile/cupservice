@@ -1,4 +1,4 @@
-import { StateHandlerCaller } from '../state-handler-caller.js'
+import { StateHandlerCaller } from '../class/state-handler-caller.js'
 
 //////////////////////////////////////////
 //////////////////////////////// CoreStateSubjectSubscriber
