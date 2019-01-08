@@ -10,6 +10,7 @@ import { CoreStateSubjectSubscriber } from './common/core/core-state-subject-sub
 import { ActorStateSubjectSubscriber } from './common/actor-state-subject-subscriber.js'
 import { CoreBriscolaBase } from './games/brisc-base/core-brisc-base.js'
 import { AlgBriscBase } from './games/brisc-base/alg-brisc-base.js'
+import { GfxProvider } from './games/gfx-provider.js'
 
 // A me servono gli oggetti esportati nei moduli anche nelle librerie stadard, come ad esempio gli spec
 // di jasmine, che viene usata direttamente. In queste spec, non si può usare import, allora metto
@@ -29,6 +30,7 @@ export const cup = {
   ActorStateSubjectSubscriber: ActorStateSubjectSubscriber,
   CoreBriscolaBase: CoreBriscolaBase,
   AlgBriscBase: AlgBriscBase,
+  GfxProvider: GfxProvider,
 };
 
 // intellisense in vscode non funziona se metto pattern per isolare oggetti privati. Gli oggetti privati hanno la lettera iniziale minuscola

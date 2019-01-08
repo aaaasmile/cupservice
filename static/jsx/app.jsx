@@ -54,7 +54,7 @@ class App extends React.Component {
     console.log('Navigate to offline game: ', target)
     switch (target) {
       case 'off-briscindue':
-        this.setNewStateHist({ route: 'off-briscindue', gameName: 'Briscola in due' }, `off-briscindue`, `./off-briscindue`)
+        this.setNewStateHist({ route: 'off-briscindue', gameName: 'Briscola in due', gameCode: 'off-briscindue' }, `off-briscindue`, `./off-briscindue`)
         break
       default:
         console.warn('Offline game not supported: ', target)
@@ -170,6 +170,9 @@ function OfflineGamesCtrl(props) {
 
 function OfflineGame(props) {
   const gameName = props.state.gameName
+  const gameCode = props.state.gameCode
+  let gameGfx = cup.GfxProvider.getGameInstance(gameCode)
+  gameGfx.renderScene()
   return (
     <div>
       <h1>{gameName}</h1>

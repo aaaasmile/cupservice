@@ -22,7 +22,9 @@
   <script src="static/js/ext/react-dom.development.js"></script>
 
 
-  <!-- Standalone babel, should not be used in prod. Use the compiler instead-->
+  <!-- Standalone babel, should not be used in prod. Use the compiler instead
+    NOTE: Babel-standalone is able to compile individual files, but it has no support for modular code. For modules to work, you would need to use a normal Babel workflow using something like Webpack or Browserify to bundle all of your files into a single file to execute in the browser.
+  -->
   <script type="application/javascript" src="static/js/ext/babel.js"></script>
   <script type="text/babel" src="static/jsx/app.jsx"></script>
 
@@ -37,7 +39,8 @@
         Cup.invido.it
       </div>
       <p>Per giocare alle carte come nella cuperativa.</p>
-      <p>Ho messo questa riga in più SOLO nella pagina DEV per il <a href="static/js/custom/test/specrunner.html" target="_blank">test con jasmine</a>
+      <p>Ho messo questa riga in più SOLO nella pagina DEV per il <a href="static/js/custom/test/specrunner.html"
+          target="_blank">test con jasmine</a>
     </div>
     <!-- react app-->
     <div class="ui main container" style="padding:2em 0em 7em" id="app"></div>
@@ -58,8 +61,13 @@
     </div>
   </div>
 </body>
+<script type="module">
+  import { cup } from './static/js/custom/games-cup.js'
+  window.cup = cup
+</script>
 <!-- compiled app -->
 <!-- <script src="static/dist/app.js"></script> -->
 <!-- <script src="static/js/custom/games-cup.js"></script> -->
+
 </html>
 {{end}}
