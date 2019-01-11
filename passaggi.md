@@ -21,6 +21,8 @@ I files jsconfig.json mi servono per avere il code complete in VS code.
 manca il st_game_end dopo aver finito la giocata. [DONE]
 - C'è da finire il file games-cup.js il quale va completato usando il games-cup-todo.js [DONE]
 - Poi andrebbe testato con una unit test, magari nella directory parallela dove uso node. [DONE Jasmine]
+- usa {{.RootUrl}} nel template difianco alla parola static per avere url assolute e non relative al path. 
+Con / funziona senza, ma appena aggiungi un sub path, arrivano problemi tipo scripts non caricati.
 
 ## Problemi
 Ho avuto problemi con i files statici. Specialmente quelli che vanno in module (games-cup.js). 
