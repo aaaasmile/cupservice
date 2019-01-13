@@ -8,42 +8,29 @@ export class BriscBaseGfx {
     }
   }
 
-  renderScene(canvid) {
-    console.log('BriscBaseGfx render scene', canvid)
-    this.canvasNode = document.getElementById(canvid)
-    this.waitUntilCanvasReady(10, canvid, () => {
-      console.log('Canvas is ready', this.canvasNode)
-      //this.testSomeCanvas(canvid)
-      this.initScene(canvid)
-    })
+  renderScene(boardId) {
+    console.log('BriscBaseGfx render scene', boardId)
+    this.boardNode = document.getElementById(boardId)
+    this.initScene()
   }
 
-  initScene(canvid) {
+  initScene() {
     console.log('Init scene')
-    this.mainStage = new createjs.Stage(canvid);
-    let canvas = this.mainStage.canvas
-    let width = canvas.clientWidth;
-    let height = canvas.clientHeight;
-    canvas.width = width;
-    canvas.height = height;
-
-
+    
     let cardLoader = GetCardLoaderGfx()
     let cache = cardLoader.getLoaded(this.opt.deck_name)
     if (cache) {
       this.resourceLoadCompleted(cache)
     } else {
-      this.loadImages(cardLoader, this.opt.deck_name)
+      this.loadAssets(cardLoader, this.opt.deck_name)
     }
-
   }
 
-  loadImages(cardLoader, deck_name) {
-    let loaderGfx = cardLoader.getProgressGfx(this.mainStage.canvas)
+  loadAssets(cardLoader, deck_name) {
     console.log("Load images for ", deck_name)
-    this.mainStage.addChild(loaderGfx.loaderBar);
-    createjs.Ticker.framerate = 30;
-
+    if(!deck_name){
+      throw new Error('deck name not set')
+    }
     let totItems = -1
     let that = this
     cardLoader.loadResources(deck_name)
@@ -53,74 +40,18 @@ export class BriscBaseGfx {
           console.log("Expect total items to load: ", x)
           return
         }
-        //console.log("Next loaded is ", x, loaderGfx.bar.scaleX)
-        // scaleX semplicemante sposta la nuova x nel rect
-        loaderGfx.bar.scaleX = (x * loaderGfx.loaderWidth) / totItems;
-        this.mainStage.update();
       },
         (err) => {
           console.error("Load error", err)
         }, () => {
           console.log("Load Completed")
           let cache = cardLoader.getLoaded(deck_name)
-          loaderGfx.loaderBar.alpha = 1;
-          createjs.Tween.get(loaderGfx.loaderBar).wait(50).to({ alpha: 0, visible: false }, 50)
-            .call(handleComplete)
-            .on("change", x => { that.mainStage.update() })
-          function handleComplete() {
-            //Tween complete
-            console.log("Tween complete")
-            that.resourceLoadCompleted(cache)
-          }
-
+          that.resourceLoadCompleted(cache)
         })
-
   }
 
   resourceLoadCompleted(cache) {
     console.log('Resource completed')
-    this.mainStage.removeAllChildren() // rimuove la progressbar precedentemente inserita
-    this.images = cache
-    // Bitmap è un'extension di DisplayObject in createjs. DisplayObject estende a sua volta EventDispatcher.
-    cache.add_background(this.mainStage) // inserisce nello stage la Bitmap con il background. Una bitmap è semplicemente un Image del browser
-    //this.mainStage.addChild(cache.scene_background)
-    //this.mainStage.addChild(cache.printDeck())
-    this.mainStage.update(); // processa tutti i children e chiama la funzione draw del contesto 2d del canvas
   }
 
-  // testSomeCanvas(canvid) {
-  //   console.log('Canvas initialization');
-  //   this.mainStage = new createjs.Stage(canvid);
-  //   var circle = new createjs.Shape();
-  //   circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
-  //   circle.x = 100;
-  //   circle.y = 100;
-  //   this.mainStage.addChild(circle);
-
-  //   var title = new createjs.Text();
-  //   title.text = 'Briscola Rocks!';
-  //   title.font = '14px Georgia';
-  //   title.color = 'black';
-  //   title.x = 10;
-  //   title.y = 10;
-  //   this.mainStage.addChild(title);
-  //   this.mainStage.update();
-  // }
-
-  waitUntilCanvasReady(time, canvid, cb_ready) {
-    if (this.canvasNode) {
-      cb_ready()
-      return
-    }
-    console.log('canvas not set, waitUntilCanvasReady time', time)
-    setTimeout(() => {
-      this.canvasNode = document.getElementById(canvid);
-      console.log('Canvas node is', this.canvasNode)
-      if (this.canvasNode) {
-        cb_ready()
-      } else {
-        this.waitUntilCanvasReady(time + 10, canvid, cb_ready)
-      }
-    }, time)
-  }
 }

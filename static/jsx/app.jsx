@@ -197,19 +197,27 @@ function OfflineGamesCtrl(props) {
   )
 }
 
-function OfflineGame(props) {
-  const gameName = props.state.gameName
-  const gameCode = props.state.gameCode
-  let gameGfx = cup.GetGfxGameInstance(gameCode)
-  gameGfx.renderScene("mainCanvas")
-  return (
-    <div>
-      <h1>{gameName}</h1>
-      <div className="ui">
-        <canvas id="mainCanvas" ></canvas>
-      </div>
-    </div>
-  )
+class OfflineGame extends React.Component {
+  constructor(props) {
+    super(props);
+    this.gameName = props.state.gameName
+    this.gameCode = props.state.gameCode
+  }
+  componentDidMount() {
+    let gameGfx = cup.GetGfxGameInstance(this.gameCode)
+    gameGfx.renderScene("boardTable")
+  }
+
+  render() {
+    return (
+      <div>
+        <h1>{this.gameName}</h1>
+        <div className="ui">
+          <div id="boardTable" ></div>
+        </div>
+      </div >
+    )
+  }
 }
 
 

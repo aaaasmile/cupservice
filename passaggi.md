@@ -30,7 +30,7 @@ In questo caso Jasmine (specrunner.html) non va.
 Essi devono  essere del tipo application/javascript e non text/plain. Su windows questo mime viene preso 
 da HKEY_CLASSES_ROOT\.js\
 
-## Versione v0.1.20180113-00
+## Versione v0.1.20190113-00
 In questa versione ho provato a creare la ui usando il canvas. Non sono arrivato ad un risultato 
 soddisfacente e quindi l'esperimento con il canvas e createjs finisce qui. 
 
