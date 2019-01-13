@@ -57,7 +57,26 @@ class App extends React.Component {
     window.addEventListener('popstate', e => {
       console.log('browser go back')
       this.setState(e.state)
+      document.getElementById('mainMsg').hidden = this.isTargetHidingMainMsg(e.state.route);
     })
+  }
+
+  isTargetHidingMainMsg(target){
+    let hidden = false
+    switch (target) {
+      case 'home':
+      case 'info':
+      case 'help':
+      case 'signup':
+      case 'games':
+      case 'login':
+        hidden = false
+        break
+      default:
+        hidden = true
+        break;
+    }
+    return hidden 
   }
 
   setNewStateHist(obj, title, url) {
@@ -66,6 +85,8 @@ class App extends React.Component {
 
   onNavigate(target) {
     console.log('Navigate to target', target)
+    
+    document.getElementById('mainMsg').hidden = this.isTargetHidingMainMsg(target);
     switch (target) {
       case 'home':
         this.setNewStateHist({ route: 'home' }, ``, `./`)
@@ -93,6 +114,7 @@ class App extends React.Component {
 
   onNavGamesOffline(target) {
     console.log('Navigate to offline game: ', target)
+    document.getElementById('mainMsg').hidden = this.isTargetHidingMainMsg(target);
     switch (target) {
       case 'off-briscindue':
         this.setNewStateHist({ route: 'off-briscindue', gameName: 'Briscola in due', gameCode: 'off-briscindue' }, `off-briscindue`, `./off-briscindue`)

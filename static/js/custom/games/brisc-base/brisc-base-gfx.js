@@ -38,7 +38,7 @@ export class BriscBaseGfx {
     }
 
     this.playerCpu = new Player(new AlgBriscBase('Ernesto'), coreStateManager);
-    this.playerMe = new Player(new AlgBriscBase('Luigi'), coreStateManager);
+    this.playerMe = new Player(new AlgBriscBase('Luigi'), coreStateManager); // TODO manca l'handling delle notifiche in questo gfx
 
     this.playerCpu.sit_down(0);
     this.playerMe.sit_down(1);
@@ -66,31 +66,31 @@ export class BriscBaseGfx {
 
   buildScene(cache) {
     console.log('build scene')
-    this.st_beforeStartGame()
+    this.st_beforeStartGame() // TODO lo stato dipende dal this._b2core
     //this._boardNode.appendChild(cache.cards[0]) // TODO set card from a class
   }
 
   st_beforeStartGame() {
-    this._boardNode.insertAdjacentHTML('beforeend',`
+    this._boardNode.insertAdjacentHTML('beforeend', `
     <div class="ui attached message">
       <div class="ui buttons right floated content">
         <button id="startgame-btn" class="ui primary button">Inizia</button>
         <button id="optgame-btn" class="ui button">Opzioni</button>
       </div>
       <div class="header">
-        Benvenuto nella briscola
+        Benvenuto
       </div>
       <p>Seleziona un comando per partire</p>
     </div>
     `)
-    const btStart = document.getElementById('startgame-btn');
-    btStart.addEventListener('click', (event) => {
-      console.log('Start a new game')
-    });
-    const btOpt = document.getElementById('optgame-btn');
-    btOpt.addEventListener('click', (event) => {
-      console.log('Game options')
-    });
+    document.getElementById('startgame-btn')
+      .addEventListener('click', (event) => {
+        console.log('Start a new game')// TODO
+      });
+    document.getElementById('optgame-btn')
+      .addEventListener('click', (event) => {
+        console.log('Game options')// TODO
+      });
   }
 
   loadAssets(cardLoader, deck_name) {
