@@ -27,10 +27,15 @@ export class AlgBriscBase {
       timeout_haveplay: 300
     };
     this._player_name = name
+    this._is_auto_alg = true
   }
 
-  set_core_caller(core_caller){
+  set_core_caller(core_caller) {
     this._core_caller = core_caller
+  }
+
+  set_brisc_base_gfx(brisc_base_gfx) {
+    this._is_auto_alg = false
   }
 
   on_all_ev_new_match(args) {
@@ -91,7 +96,9 @@ export class AlgBriscBase {
 
   on_all_ev_waiting_tocontinue_game(args) {
     console.log("[%s] continue game " + JSON.stringify(args), this._player_name);
-    this._core_caller.continue_game();
+    if (this._is_auto_alg) {
+      this.callcore_continue_game()
+    }
   }
 
   on_pl_ev_pesca_carta(args) {
@@ -108,7 +115,7 @@ export class AlgBriscBase {
   on_all_ev_mano_end(args) {
     console.log("[%s] Mano end " + JSON.stringify(args), this._player_name);
     let player_best = args.player_best
-    let carte_prese_mano = args.carte
+    //let carte_prese_mano = args.carte
     let punti_presi = args.punti;
     this._points_segno[player_best] += punti_presi
   }
@@ -117,11 +124,13 @@ export class AlgBriscBase {
     console.log("[%s] Have to play " + JSON.stringify(args), this._player_name);
     if (args.player_on_turn === this._player_name) {
       console.log("[%s] Play a card please", this._player_name);
-      if (this._options.use_delay_before_play) {
-        console.log("[%s] Delay before play ms: " + this._options.timeout_haveplay, this._player_name);
-        setTimeout(x => this.alg_play_acard(), this._options.timeout_haveplay);
-      } else {
-        this.alg_play_acard();
+      if (this._is_auto_alg) {
+        if (this._options.use_delay_before_play) {
+          console.log("[%s] Delay before play ms: " + this._options.timeout_haveplay, this._player_name);
+          setTimeout(x => this.alg_play_acard(), this._options.timeout_haveplay);
+        } else {
+          this.alg_play_acard();
+        }
       }
     }
   }
@@ -139,6 +148,14 @@ export class AlgBriscBase {
     if (card[1] === 'A' || card[1] === '3') {
       this._strozzi_on_suite[segno] -= 1
     }
+  }
+
+  callcore_continue_game() {
+    this._core_caller.continue_game();
+  }
+
+  callcore_play_card(card) {
+    this._core_caller.play_card(card);
   }
 
   assign_cards_on_hand(cards) {
@@ -180,7 +197,7 @@ export class AlgBriscBase {
     }
     if (card) {
       console.log("[%s] Want to play the card " + card, this._player_name);
-      this._core_caller.play_card(card);
+      this.callcore_play_card(card)
     } else if (this._level_alg !== 'predefined') {
       throw (new Error('alg_play_acard: Card to be played not found'));
     } else {

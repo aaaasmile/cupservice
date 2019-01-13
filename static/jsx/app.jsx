@@ -189,10 +189,10 @@ function OfflineGamesCtrl(props) {
   }
   return (
     <div>
-      <h3 className="ui header">Giochi disponibili contro il computer</h3>
-      <ul>
-        <li><a className="item ui" onClick={onGoBriscDue}>Briscola in due</a></li>
-      </ul>
+      <h2 className="ui header">Giochi disponibili contro il computer</h2>
+      <div className="ui large bulleted link list">
+        <a className="item" onClick={onGoBriscDue}>Briscola in due</a>
+      </div>
     </div>
   )
 }
