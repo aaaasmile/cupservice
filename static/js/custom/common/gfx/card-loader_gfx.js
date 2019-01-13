@@ -85,8 +85,8 @@ class CardLoaderGfx {
     return this.path_prefix + "assets/carte/" + deck_type + "/"
   }
 
-  getTableFileName() {
-    return this.path_prefix + "assets/images/table/table.png"
+  getTableFileName(fname_prefix) {
+    return this.path_prefix + "assets/images/table/" + fname_prefix + ".png"
   }
 
   loadResources(deck_type) {
@@ -102,7 +102,6 @@ class CardLoaderGfx {
     let imageCache = new CardImageCache(deck_type)
     let folder_fullpath = this.getFolderCardsFullpath(deck_type)
     this.map_image_cache.set(deck_type, imageCache)
-    let tableFname = this.getTableFileName()
 
     // Nota sull'implementazione: uso Observable anzichè Subject
     // in quanto il Subject è per il multicast. In questo caso ho una semplice promise.
@@ -173,21 +172,6 @@ class CardLoaderGfx {
           }
         }
       }
-      // background
-      //let container = new createjs.Container();
-      let img = new Image()
-      img.src = tableFname // stored outside tzo use this instead of that
-      countToLoad += 1
-      img.onload = () => {
-        console.log('Image Loaded: ', img.src);
-        imageCache.scene_background = img
-        countLoaded += 1
-        obs.next(countLoaded)
-        if (countToLoad <= countLoaded) {
-          imageCache.set_completed()
-          obs.complete()
-        }
-      }
     })
     return obsLoader
   }
@@ -213,7 +197,7 @@ class CardLoaderGfx {
 
 let provider
 
-export function GetCardLoaderGfx() {
+export function GetCardLoaderGfx() { // GetCardLoaderGfx is a singleton to use the image cache
   if (!provider) {
     provider = new CardLoaderGfx()
   }

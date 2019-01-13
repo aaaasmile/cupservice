@@ -10,3 +10,9 @@
   width: 960;
   height: 640;
 } */
+
+#boardTable {
+  height: 80vh;
+  background-image: url('../assets/images/table/table_pattern.jpg');
+  position: relative;
+}

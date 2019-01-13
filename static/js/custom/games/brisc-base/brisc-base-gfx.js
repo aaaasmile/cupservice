@@ -4,26 +4,31 @@ export class BriscBaseGfx {
   constructor() {
     console.log('BriscBaseGfx created')
     this.opt = {
-      deck_name: 'piac'
+      deck_name: 'piac',
+      scene_back: 'table_pattern'
     }
+    this._cardLoader = GetCardLoaderGfx()
   }
 
   renderScene(boardId) {
     console.log('BriscBaseGfx render scene', boardId)
-    this.boardNode = document.getElementById(boardId)
-    this.initScene()
+    this._boardNode = document.getElementById(boardId)
+    this.initAndBuildScene()
   }
 
-  initScene() {
+  initAndBuildScene() {
     console.log('Init scene')
-    
-    let cardLoader = GetCardLoaderGfx()
-    let cache = cardLoader.getLoaded(this.opt.deck_name)
+    let cache = this._cardLoader.getLoaded(this.opt.deck_name)
     if (cache) {
-      this.resourceLoadCompleted(cache)
+      this.buildScene(cache)
     } else {
-      this.loadAssets(cardLoader, this.opt.deck_name)
+      this.loadAssets(this._cardLoader, this.opt.deck_name)
     }
+  }
+
+  buildScene(cache) {
+    console.log('build scene')
+    this._boardNode.appendChild(cache.cards[0]) 
   }
 
   loadAssets(cardLoader, deck_name) {
@@ -46,12 +51,10 @@ export class BriscBaseGfx {
         }, () => {
           console.log("Load Completed")
           let cache = cardLoader.getLoaded(deck_name)
-          that.resourceLoadCompleted(cache)
+          that.buildScene(cache)
         })
   }
 
-  resourceLoadCompleted(cache) {
-    console.log('Resource completed')
-  }
+  
 
 }
