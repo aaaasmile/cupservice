@@ -6,11 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="description" content="Cuperativa service" />
-  <link rel="shortcut icon" href="static/images/favicon.ico" type="image/x-icon" />
+  <link rel="shortcut icon" href="{{.RootUrl}}static/images/favicon.ico" type="image/x-icon" />
 
   <title>Cuperativa Service</title>
-  <script src="static/js/ext/jquery-3.3.1.min.js"></script>
-  <script src="static/js/ext/rxjs.umd.min.js"></script>
+  <script src="{{.RootUrl}}static/js/ext/jquery-3.3.1.min.js"></script>
+  <script src="{{.RootUrl}}static/js/ext/rxjs.umd.min.js"></script>
   <!-- <script src="https://cdn.auth0.com/js/auth0/9.0/auth0.min.js"></script> -->
 
   <!-- Production react-->
@@ -18,18 +18,18 @@
   <script type="application/javascript" src="https://unpkg.com/react-dom@16.0.0/umd/react-dom.production.min.js"></script> -->
 
   <!-- dev react -->
-  <script src="static/js/ext/react.development.js"></script>
-  <script src="static/js/ext/react-dom.development.js"></script>
+  <script src="{{.RootUrl}}static/js/ext/react.development.js"></script>
+  <script src="{{.RootUrl}}static/js/ext/react-dom.development.js"></script>
 
 
   <!-- Standalone babel, should not be used in prod. Use the compiler instead
     NOTE: Babel-standalone is able to compile individual files, but it has no support for modular code. For modules to work, you would need to use a normal Babel workflow using something like Webpack or Browserify to bundle all of your files into a single file to execute in the browser.
   -->
-  <script type="application/javascript" src="static/js/ext/babel.js"></script>
-  <script type="text/babel" src="static/jsx/app.jsx"></script>
+  <script type="application/javascript" src="{{.RootUrl}}static/js/ext/babel.js"></script>
+  <script type="text/babel" src="{{.RootUrl}}static/jsx/app.jsx"></script>
 
-  <link rel="stylesheet" href="static/css/semantic.css" />
-  <link rel="stylesheet" href="static/css/custom.css" />
+  <link rel="stylesheet" href="{{.RootUrl}}static/css/semantic.css" />
+  <link rel="stylesheet" href="{{.RootUrl}}static/css/custom.css" />
 </head>
 
 <body>
@@ -39,7 +39,7 @@
         Cup.invido.it
       </div>
       <p>Per giocare alle carte come nella cuperativa.</p>
-      <p>Ho messo questa riga in più SOLO nella pagina DEV per il <a href="static/js/custom/test/specrunner.html"
+      <p>Ho messo questa riga in più SOLO nella pagina DEV per il <a href="{{.RootUrl}}static/js/custom/test/specrunner.html"
           target="_blank">test con jasmine</a>
     </div>
     <!-- react app-->
@@ -68,9 +68,9 @@
 <!-- compiled app -->
 <!-- <script src="static/dist/app.js"></script> -->
 <!-- <script src="static/js/custom/games-cup.js"></script> -->
-<script src="static/js/createjs/easeljs.js"></script>
-<script src="static/js/createjs/soundjs.js"></script>
-<script src="static/js/createjs/tweenjs.js"></script>
+<script src="{{.RootUrl}}static/js/createjs/easeljs.js"></script>
+<script src="{{.RootUrl}}static/js/createjs/soundjs.js"></script>
+<script src="{{.RootUrl}}static/js/createjs/tweenjs.js"></script>
 
 </html>
 {{end}}

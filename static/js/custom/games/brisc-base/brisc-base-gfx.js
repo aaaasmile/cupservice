@@ -53,7 +53,7 @@ export class BriscBaseGfx {
           console.log("Expect total items to load: ", x)
           return
         }
-        console.log("Next loaded is ", x, loaderGfx.bar.scaleX)
+        //console.log("Next loaded is ", x, loaderGfx.bar.scaleX)
         // scaleX semplicemante sposta la nuova x nel rect
         loaderGfx.bar.scaleX = (x * loaderGfx.loaderWidth) / totItems;
         this.mainStage.update();

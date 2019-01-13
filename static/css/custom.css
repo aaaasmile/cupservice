@@ -5,3 +5,7 @@
 #errMsg{
   padding: 1em 0em;
 }
+
+#mainCanvas{
+  width: 100vw;
+}

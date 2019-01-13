@@ -19,7 +19,7 @@ class CardImageCache {
   }
 
   printDeck() {
-    let fx = 0.7
+    let fx = 1//0.7
     var container = new createjs.Container();
     let lasty = 0
     for (let jj = 0; jj < 4; jj++) {
@@ -141,7 +141,7 @@ class CardLoaderGfx {
           countToLoad += 1
           img.onload = () => {
             let posIx = i * num_cards_onsuit + index - 1
-            console.log('Image Loaded: ', img.src, posIx);
+            //console.log('Image Loaded: ', img.src, posIx);
             let card = new createjs.Bitmap(img);
             imageCache.cards[posIx] = card
             countLoaded += 1
@@ -166,7 +166,7 @@ class CardLoaderGfx {
         img.src = card_fname
         countToLoad += 1
         img.onload = () => {
-          console.log('Image Loaded: ', img.src);
+          //console.log('Image Loaded: ', img.src);
           let symb = new createjs.Bitmap(img);
           imageCache.symbols_card[i] = symb
           countLoaded += 1
@@ -195,8 +195,8 @@ class CardLoaderGfx {
         bmp.scaleX = fx
         bmp.scaleY = fx
         container.addChild(bmp)
-
-        imageCache.scene_background = container
+        //imageCache.scene_background = container
+        imageCache.scene_background = bmp
         countLoaded += 1
         obs.next(countLoaded)
         if (countToLoad <= countLoaded) {

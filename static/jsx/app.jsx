@@ -5,7 +5,8 @@ class App extends React.Component {
       isLoggedIn: false,
       route: 'home'
     };
-    console.log("APP is build in constructor")
+    let params = document.location.hash
+    console.log("APP is build in constructor", params)
     this.onNavigate = this.onNavigate.bind(this)
     this.onNavGamesOffline = this.onNavGamesOffline.bind(this)
     history.pushState({ route: 'home' }, ``, `./`)
@@ -177,7 +178,7 @@ function OfflineGame(props) {
     <div>
       <h1>{gameName}</h1>
       <div className="ui">
-        <canvas id="mainCanvas" width={640} height={425}></canvas>
+        <canvas id="mainCanvas" ></canvas>
       </div>
     </div>
   )
