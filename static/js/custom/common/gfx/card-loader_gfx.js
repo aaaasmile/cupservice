@@ -19,6 +19,7 @@ class CardImageCache {
   }
 
   add_background(stage){
+    console.log('Add background')
     stage.addChild(this.scene_background)
   }
 
@@ -182,7 +183,7 @@ class CardLoaderGfx {
         }
       }
       // background
-      let container = new createjs.Container();
+      //let container = new createjs.Container();
       let img = new Image()
       let bmp
       img.src = tableFname

@@ -61,7 +61,7 @@ export class BriscBaseGfx {
         (err) => {
           console.error("Load error", err)
         }, () => {
-          console.log("Load Completed!")
+          console.log("Load Completed")
           let cache = cardLoader.getLoaded(deck_name)
           loaderGfx.loaderBar.alpha = 1;
           createjs.Tween.get(loaderGfx.loaderBar).wait(500).to({ alpha: 0, visible: false }, 500)
@@ -78,11 +78,13 @@ export class BriscBaseGfx {
   }
 
   resourceLoadCompleted(cache) {
+    console.log('Resource completed')
+    this.mainStage.removeAllChildren() // rimuove la progressbar precedentemente inserita
     this.images = cache
-    cache.add_background(this.mainStage)
+    cache.add_background(this.mainStage) // inserisce nello stage la Bitmap con il background. Una bitmap è semplicemente un Image del browser
     //this.mainStage.addChild(cache.scene_background)
     //this.mainStage.addChild(cache.printDeck())
-    this.mainStage.update();
+    this.mainStage.update(); // processa tutti i children e chiama la funzione draw del contesto 2d del canvas
   }
 
   testSomeCanvas(canvid) {
