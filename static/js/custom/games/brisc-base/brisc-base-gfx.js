@@ -90,6 +90,11 @@ export class BriscBaseGfx {
     document.getElementById('optgame-btn')
       .addEventListener('click', (event) => {
         console.log('Game options')// TODO
+        // modal example
+        $('.ui.basic.modal').modal('show');
+        $('.ui.green.ok.inverted.button').on('click', function(event) {  
+          console.log('Clicked on OK')
+        });
       });
   }
 

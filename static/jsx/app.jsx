@@ -61,7 +61,7 @@ class App extends React.Component {
     })
   }
 
-  isTargetHidingMainMsg(target){
+  isTargetHidingMainMsg(target) {
     let hidden = false
     switch (target) {
       case 'home':
@@ -76,7 +76,7 @@ class App extends React.Component {
         hidden = true
         break;
     }
-    return hidden 
+    return hidden
   }
 
   setNewStateHist(obj, title, url) {
@@ -85,7 +85,7 @@ class App extends React.Component {
 
   onNavigate(target) {
     console.log('Navigate to target', target)
-    
+
     document.getElementById('mainMsg').hidden = this.isTargetHidingMainMsg(target);
     switch (target) {
       case 'home':
@@ -188,7 +188,7 @@ function MainMenu(props) {
       <div className="ui secondary pointing menu">
         <a className={"item" + active["home"]} onClick={onHomeClick}><i className="home icon"></i></a>
         <a className={"item" + active["games"]} onClick={onGamesClick}> Giochi</a>
-        <div className="right menu"  style={{display: 'none'}}> 
+        <div className="right menu" style={{ display: 'none' }}>
           <a className={"item" + active["login"]} onClick={onLoginClick}>Login</a>
           <a className={"item" + active["signup"]} onClick={onSignupClick}>Registra</a>
         </div>

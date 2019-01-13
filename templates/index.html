@@ -9,7 +9,12 @@
   <link rel="shortcut icon" href="{{.RootUrl}}static/images/favicon.ico" type="image/x-icon" />
 
   <title>Cuperativa Service</title>
+  <!-- Jquery mi serve per semantic ui modal. -->
   <script src="{{.RootUrl}}static/js/ext/jquery-3.3.1.min.js"></script>
+  <!-- semantic ui modal dipende da: dimmer e transiction-->
+  <script src="{{.RootUrl}}static/js/ext/modal.min.js"></script>
+  <script src="{{.RootUrl}}static/js/ext/dimmer.min.js"></script>
+  <script src="{{.RootUrl}}static/js/ext/transition.min.js"></script>
   <script src="{{.RootUrl}}static/js/ext/rxjs.umd.min.js"></script>
   <!-- <script src="https://cdn.auth0.com/js/auth0/9.0/auth0.min.js"></script> -->
 
@@ -35,9 +40,9 @@
 <body>
   <div class="ui container">
     <div id="mainMsg" class="ui attached message">
-        <div class="ui buttons right floated content">
-          <button class="ui button icon" id="appinfo-btn"><i class="info circle icon"></i> </button>
-          <button class="ui button icon" id="help-btn"><i class="question circle icon"></i> </button>
+      <div class="ui buttons right floated content">
+        <button class="ui button icon" id="appinfo-btn"><i class="info circle icon"></i> </button>
+        <button class="ui button icon" id="help-btn"><i class="question circle icon"></i> </button>
       </div>
       <div class="header">
         Cup.invido.it
@@ -62,6 +67,28 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+  <!-- Test modal questo non va qui, ma nel componente gfx-->
+  <div class="ui basic modal">
+    <div class="ui icon header">
+      <i class="cogs icon"></i>
+      Opzioni della briscola in due
+    </div>
+    <div class="content">
+      <p>Segni della partita</p>
+      <p>Nome del giocatore</p>
+      <p>Mazzo delle carte</p>
+    </div>
+    <div class="actions">
+      <div class="ui red basic cancel inverted button">
+        <i class="remove icon"></i>
+        Cancella
+      </div>
+      <div class="ui green ok inverted button">
+        <i class="checkmark icon"></i>
+        Conferma
+      </button>
     </div>
   </div>
 </body>
