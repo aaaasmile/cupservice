@@ -64,7 +64,7 @@ export class BriscBaseGfx {
           console.log("Load Completed")
           let cache = cardLoader.getLoaded(deck_name)
           loaderGfx.loaderBar.alpha = 1;
-          createjs.Tween.get(loaderGfx.loaderBar).wait(500).to({ alpha: 0, visible: false }, 500)
+          createjs.Tween.get(loaderGfx.loaderBar).wait(50).to({ alpha: 0, visible: false }, 50)
             .call(handleComplete)
             .on("change", x => { that.mainStage.update() })
           function handleComplete() {
@@ -81,30 +81,31 @@ export class BriscBaseGfx {
     console.log('Resource completed')
     this.mainStage.removeAllChildren() // rimuove la progressbar precedentemente inserita
     this.images = cache
+    // Bitmap è un'extension di DisplayObject in createjs. DisplayObject estende a sua volta EventDispatcher.
     cache.add_background(this.mainStage) // inserisce nello stage la Bitmap con il background. Una bitmap è semplicemente un Image del browser
     //this.mainStage.addChild(cache.scene_background)
     //this.mainStage.addChild(cache.printDeck())
     this.mainStage.update(); // processa tutti i children e chiama la funzione draw del contesto 2d del canvas
   }
 
-  testSomeCanvas(canvid) {
-    console.log('Canvas initialization');
-    this.mainStage = new createjs.Stage(canvid);
-    var circle = new createjs.Shape();
-    circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
-    circle.x = 100;
-    circle.y = 100;
-    this.mainStage.addChild(circle);
+  // testSomeCanvas(canvid) {
+  //   console.log('Canvas initialization');
+  //   this.mainStage = new createjs.Stage(canvid);
+  //   var circle = new createjs.Shape();
+  //   circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
+  //   circle.x = 100;
+  //   circle.y = 100;
+  //   this.mainStage.addChild(circle);
 
-    var title = new createjs.Text();
-    title.text = 'Briscola Rocks!';
-    title.font = '14px Georgia';
-    title.color = 'black';
-    title.x = 10;
-    title.y = 10;
-    this.mainStage.addChild(title);
-    this.mainStage.update();
-  }
+  //   var title = new createjs.Text();
+  //   title.text = 'Briscola Rocks!';
+  //   title.font = '14px Georgia';
+  //   title.color = 'black';
+  //   title.x = 10;
+  //   title.y = 10;
+  //   this.mainStage.addChild(title);
+  //   this.mainStage.update();
+  // }
 
   waitUntilCanvasReady(time, canvid, cb_ready) {
     if (this.canvasNode) {

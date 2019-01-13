@@ -2,6 +2,34 @@
 const c_nomi_semi = ["basto", "coppe", "denar", "spade"]
 const c_nomi_simboli = ["cope", "zero", "xxxx", "vuot"]
 
+
+///////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////// Override createjs.Bitmap
+//let p = createjs.Bitmap.prototype
+// p.draw = function (ctx, ignoreCache) {
+//   if (this.DisplayObject_draw(ctx, ignoreCache)) { return true; }
+//   let img = this.image, rect = this.sourceRect;
+//   if (img.getImage) { img = img.getImage(); }
+//   if (!img) { return true; }
+//   if (rect) {
+//     // some browsers choke on out of bound values, so we'll fix them:
+//     let x1 = rect.x, y1 = rect.y, x2 = x1 + rect.width, y2 = y1 + rect.height, x = 0, y = 0, w = img.width, h = img.height;
+//     if (x1 < 0) { x -= x1; x1 = 0; }
+//     if (x2 > w) { x2 = w; }
+//     if (y1 < 0) { y -= y1; y1 = 0; }
+//     if (y2 > h) { y2 = h; }
+//     ctx.drawImage(img, x1, y1, x2 - x1, y2 - y1, x, y, x2 - x1, y2 - y1);
+//   } else {
+//     if (this.autoScale) {
+//       console.log('My bitmap draw function')
+//       ctx.drawImage(img, 0, 0, img.width/4, img.height/4, 0, 0, ctx.canvas.width, ctx.canvas.height);
+//     } else {
+//       ctx.drawImage(img, 0, 0);
+//     }
+//   }
+//   return true;
+// };
+
 ///////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////// CardImageCache
 class CardImageCache {
@@ -18,9 +46,18 @@ class CardImageCache {
     this.completed = true
   }
 
-  add_background(stage){
+  add_background(stage) {
     console.log('Add background')
-    stage.addChild(this.scene_background)
+    let bmp = this.scene_background
+    //bmp.cache(0, 0, bmp.image.width, bmp.image.height, 0.5);
+    // let fx = 0.5
+    // bmp.scaleX = fx
+    // bmp.scaleY = fx
+    stage.addChild(bmp)
+    let cd = this.cards[0]
+    cd.x = 100
+    cd.y = 200
+    stage.addChild(cd)
   }
 
   printDeck() {
@@ -97,7 +134,7 @@ class CardLoaderGfx {
     return this.path_prefix + "assets/carte/" + deck_type + "/"
   }
 
-  getTableFileName(){
+  getTableFileName() {
     return this.path_prefix + "assets/images/table/table.png"
   }
 
@@ -126,7 +163,7 @@ class CardLoaderGfx {
       totItems += 1 // table background
 
       console.log("Load cards of ", deck_type)
-  
+
       let countToLoad = 0
       let countLoaded = 0
 
@@ -191,12 +228,16 @@ class CardLoaderGfx {
       img.onload = () => {
         console.log('Image Loaded: ', img.src);
         bmp = new createjs.Bitmap(img);
+        bmp.autoScale = true
+        //bmp.setBounds(0,0,800,600)
+        //bmp.sourceRect =  new createjs.Rectangle().setValues(0, 0, 800, 600)
         //bmp.scale = bmp.originalScale * 0.5; // Sta roba sembra non funzionare
         //let rct = new createjs.Rectangle(0, 600, 800, 1200)
         //var sb = new createjs.ScaleBitmap(img, new createjs.Rectangle(12, 12, 5, 10));
         //sb.setDrawSize(700,500)
         //container.addChild(sb)
         // let fx = 800.0 / bmp.image.width // scale to fit the canvas
+        // let fx = 0.5
         // bmp.scaleX = fx
         // bmp.scaleY = fx
         // container.addChild(bmp)
