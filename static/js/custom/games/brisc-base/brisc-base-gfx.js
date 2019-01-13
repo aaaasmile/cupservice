@@ -79,8 +79,9 @@ export class BriscBaseGfx {
 
   resourceLoadCompleted(cache) {
     this.images = cache
-    this.mainStage.addChild(cache.scene_background)
-    this.mainStage.addChild(cache.printDeck())
+    cache.add_background(this.mainStage)
+    //this.mainStage.addChild(cache.scene_background)
+    //this.mainStage.addChild(cache.printDeck())
     this.mainStage.update();
   }
 

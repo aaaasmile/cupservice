@@ -18,6 +18,10 @@ class CardImageCache {
     this.completed = true
   }
 
+  add_background(stage){
+    stage.addChild(this.scene_background)
+  }
+
   printDeck() {
     let fx = 1//0.7
     var container = new createjs.Container();
@@ -68,8 +72,8 @@ class CardLoaderGfx {
 
   getProgressGfx(canvas) {
     let that = {}
-    let loaderColor = createjs.Graphics.getRGB(247, 247, 247);
-    let loaderColor2 = createjs.Graphics.getRGB(247, 247, 247);
+    let loaderColor = createjs.Graphics.getRGB(2, 247, 247);
+    let loaderColor2 = createjs.Graphics.getRGB(2, 247, 247);
     let loaderBar = new createjs.Container();
     let bar = new createjs.Shape();
     let barHeight = 20
@@ -191,10 +195,10 @@ class CardLoaderGfx {
         //var sb = new createjs.ScaleBitmap(img, new createjs.Rectangle(12, 12, 5, 10));
         //sb.setDrawSize(700,500)
         //container.addChild(sb)
-        let fx = 800.0 / bmp.image.width // scale to fit the canvas
-        bmp.scaleX = fx
-        bmp.scaleY = fx
-        container.addChild(bmp)
+        // let fx = 800.0 / bmp.image.width // scale to fit the canvas
+        // bmp.scaleX = fx
+        // bmp.scaleY = fx
+        // container.addChild(bmp)
         //imageCache.scene_background = container
         imageCache.scene_background = bmp
         countLoaded += 1

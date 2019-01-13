@@ -5,12 +5,40 @@ class App extends React.Component {
       isLoggedIn: false,
       route: 'home'
     };
-    let params = document.location.hash
-    console.log("APP is build in constructor", params)
+    console.log("APP is build in constructor")
+    this.entryPathApp = document.location.pathname
     this.onNavigate = this.onNavigate.bind(this)
     this.onNavGamesOffline = this.onNavGamesOffline.bind(this)
     history.pushState({ route: 'home' }, ``, `./`)
+
     this.activateOnHistory()
+  }
+
+  componentDidMount() {
+    console.log('Check for navigate to ', this.entryPathApp)
+    this.navigateToBrowserRoute(this.entryPathApp)
+  }
+
+  navigateToBrowserRoute(pathname) {
+    // Questa funzione presuppone che le url dei giochi offlines siano
+    // del tipo off-<nome>
+    // E che l'obbiettivo sia l'ultimo elemento del path diverso da cup
+    console.log('check url ', pathname)
+    let url_parts = pathname.split('/')
+    if (url_parts.length <= 0) {
+      return false
+    }
+    let last = url_parts[url_parts.length - 1]
+    if (!last || last === 'cup') {
+      return false
+    }
+    let navTargs = last.split('-')
+    if (navTargs.length > 0 && navTargs[0] === 'off') {
+      this.onNavGamesOffline(last)
+      return true
+    }
+    this.onNavigate(last)
+    return true
   }
 
   activateOnHistory() {
