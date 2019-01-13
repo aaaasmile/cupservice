@@ -12,6 +12,18 @@ class App extends React.Component {
     history.pushState({ route: 'home' }, ``, `./`)
 
     this.activateOnHistory()
+
+    document.getElementById('appinfo-btn')
+      .addEventListener('click', (event) => {
+        console.log('Goto info menu')
+        this.onNavigate('info')
+      });
+    document.getElementById('help-btn')
+      .addEventListener('click', (event) => {
+        console.log('Goto help menu')
+        this.onNavigate('help')
+      });
+
   }
 
   componentDidMount() {
@@ -118,10 +130,10 @@ class App extends React.Component {
 }
 
 function MainMenu(props) {
-  let onInfoClick = function () {
-    console.log('click on info button')
-    props.onNav('info')
-  }
+  // let onInfoClick = function () {
+  //   console.log('click on info button')
+  //   props.onNav('info')
+  // }
   let onHomeClick = function () {
     console.log('click on Home button')
     props.onNav('home')
@@ -148,36 +160,40 @@ function MainMenu(props) {
     home: props.state.route === 'home' ? ' ui active' : '',
     games: props.state.route === 'games' ? ' ui active' : '',
   }
+  // disabilitao i menu login/registra per ora
   return (
     <div>
       <div className="ui secondary pointing menu">
         <a className={"item" + active["home"]} onClick={onHomeClick}><i className="home icon"></i></a>
         <a className={"item" + active["games"]} onClick={onGamesClick}> Giochi</a>
-        <div className="right menu">
+        <div className="right menu"  style={{display: 'none'}}> 
           <a className={"item" + active["login"]} onClick={onLoginClick}>Login</a>
           <a className={"item" + active["signup"]} onClick={onSignupClick}>Registra</a>
         </div>
       </div>
-      <button className="ui right floated button icon" onClick={onInfoClick}><i className="info circle icon"></i></button>
-      <button className="ui right floated button icon" onClick={onHelpClick}><i className="question circle icon"></i></button>
     </div>
   )
 }
 
 function HelpControl(props) {
   return (
-    <div>
-      <h3 className="ui header">Aiuto</h3>
-      <p>In questa app basta collegarsi in rete con un nickname. Poi basta creare un nuovo gioco oppure partecipare ad un gioco in corso.</p>
+    <div className="ui segment">
+      <h2 className="ui header">Aiuto</h2>
+      <p>In questa app, per giocare in rete, bisogna effettuare il login nickname con un nome precedentemente registrato.</p>
+      <p>Al momento però, sono disponibili solo giochi in simulazione contro l computer.</p>
+      <p>Giochi disponibili:</p>
+      <ul>
+        <li>Briscola a due giocatori</li>
+      </ul>
     </div>
   )
 }
 
 function InfoControl(props) {
   return (
-    <div>
-      <h3 className="ui header">Info sulla cuperativa...</h3>
-      <p>App per giocare alle carte.</p>
+    <div className="ui segment">
+      <h2 className="ui header">Info sulla cuperativa...</h2>
+      <p>App per giocare alle carte by Invido.it.</p>
     </div>
   )
 }
@@ -188,7 +204,7 @@ function OfflineGamesCtrl(props) {
     props.onNavGamesOffline('off-briscindue')
   }
   return (
-    <div>
+    <div className="ui segment">
       <h2 className="ui header">Giochi disponibili contro il computer</h2>
       <div className="ui large bulleted link list">
         <a className="item" onClick={onGoBriscDue}>Briscola in due</a>
@@ -210,7 +226,7 @@ class OfflineGame extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className="ui segment">
         <h1>{this.gameName}</h1>
         <div className="ui">
           <div id="boardTable" ></div>
