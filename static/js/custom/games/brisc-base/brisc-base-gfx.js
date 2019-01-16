@@ -87,15 +87,39 @@ export class BriscBaseGfx {
 
   st_beforeStartGame() {
     this._boardNode.insertAdjacentHTML('beforeend', `
-    <div class="ui attached message">
-      <div class="ui buttons right floated content">
-        <button id="startgame-btn" class="ui primary button">Inizia</button>
-        <button id="optgame-btn" class="ui button">Opzioni</button>
+    <div>
+      <div class="ui attached message">
+        <div class="ui buttons right floated content">
+          <button id="startgame-btn" class="ui primary button">Inizia</button>
+          <button id="optgame-btn" class="ui button">Opzioni</button>
+        </div>
+        <div class="header">
+          Benvenuto
+        </div>
+        <p>Seleziona un comando per partire</p>
       </div>
-      <div class="header">
-        Benvenuto
+      <!-- Finestra Modale per le opzioni-->
+      <div class="ui basic modal">
+        <div class="ui icon header">
+          <i class="cogs icon"></i>
+          Opzioni della briscola in due
+        </div>
+        <div class="content">
+          <p>Segni della partita</p>
+          <p>Nome del giocatore</p>
+          <p>Mazzo delle carte</p>
+        </div>
+        <div class="actions">
+          <div class="ui red basic cancel inverted button">
+            <i class="remove icon"></i>
+            Cancella
+          </div>
+          <div class="ui green ok inverted button">
+            <i class="checkmark icon"></i>
+            Conferma
+          </button>
+        </div>
       </div>
-      <p>Seleziona un comando per partire</p>
     </div>
     `)
     document.getElementById('startgame-btn')
