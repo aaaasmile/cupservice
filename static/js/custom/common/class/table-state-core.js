@@ -10,7 +10,7 @@ export class TableStateCore {
     this._coreStateManager = coreStateManager
     this._currNumPlayers = 0
     this._numOfPlayers = numOfPlayers
-    this._players = [];
+    this._players = []; //array of names as string. Ex: ['CPU', 'ME']
     this._coreStateStore = new CoreStateStore()
     this.TableFullSub = new rxjs.Subject();
     let that = this;

@@ -13,7 +13,6 @@ export class CoreBriscolaBase {
     this._myOpt = {
       tot_num_players: 2, num_segni_match: 2
       , target_points_segno: 61, players: [], num_cards_onhand: 3
-      , predef_deck: [], predef_ix: -1
     };
     this._coreStateManager = _coreStateManager
     this._numOfSegni = _numOfSegni
@@ -30,12 +29,11 @@ export class CoreBriscolaBase {
   StartNewMatch(options) {
     console.log("Start a new match");
     this._myOpt = options || {}
-    this._myOpt.predef_deck = this._myOpt.predef_deck || [];
-    this._myOpt.predef_ix = this._myOpt.predef_ix || -1;
     this._myOpt.tot_num_players = this._myOpt.tot_num_players || 2;
     this._myOpt.num_segni_match = this._myOpt.num_segni_match || this._numOfSegni;
     this._myOpt.target_points_segno = this._myOpt.target_points_segno || this._pointsForWin;
     this._myOpt.num_cards_onhand = this._myOpt.num_cards_onhand || 3;
+    this._myOpt.players = this._myOpt.players || ['CPU','Me']
     // this._game_core_recorder = mod_gamerepl.game_core_recorder_ctor();
 
     this._core_data.start(this._myOpt.tot_num_players, this._myOpt.players, this._myOpt.num_cards_onhand);

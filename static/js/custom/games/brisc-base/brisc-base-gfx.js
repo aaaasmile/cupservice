@@ -14,9 +14,10 @@ export class BriscBaseGfx {
       scene_back: 'table_pattern'
     }
     this._cardLoader = GetCardLoaderGfx()
+    this._that = this
   }
 
-  prepareGame(rnd_mgr) {
+  prepareGame(rnd_mgr, gfx) {
     console.log('Prepare game')
     let coreStateManager = new CoreStateManager('develop');
     let b2core = new CoreBriscolaBase(coreStateManager, 2, 61);
@@ -38,7 +39,8 @@ export class BriscBaseGfx {
     }
 
     this.playerCpu = new Player(new AlgBriscBase('Ernesto'), coreStateManager);
-    this.playerMe = new Player(new AlgBriscBase('Luigi'), coreStateManager); // TODO manca l'handling delle notifiche in questo gfx
+    this.playerMe = new Player(new AlgBriscBase('Luigi'), coreStateManager);
+    this._core_caller = this.playerMe.set_gfx_on_alg(gfx)
 
     this.playerCpu.sit_down(0);
     this.playerMe.sit_down(1);
@@ -54,7 +56,7 @@ export class BriscBaseGfx {
   initAndBuildScene() {
     console.log('Init scene')
     if (!this._b2core) {
-      this._b2core = this.prepareGame(null)
+      this._b2core = this.prepareGame(null, this._that)
     }
     let cache = this._cardLoader.getLoaded(this.opt.deck_name)
     if (cache) {
@@ -64,10 +66,21 @@ export class BriscBaseGfx {
     }
   }
 
-  buildScene(cache) {
+  buildScene(cardgfxCache) {
     console.log('build scene')
-    this.st_beforeStartGame() // TODO lo stato dipende dal this._b2core
-    //this._boardNode.appendChild(cache.cards[0]) // TODO set card from a class
+    let matchInfo = this._b2core._core_data.match_info
+    if (matchInfo.is_terminated()) {
+      this.st_terminatedGame()
+    } else if (matchInfo.is_ongoing()) {
+      this.st_onplayingGame()
+    } else {
+      this.st_beforeStartGame()
+    }
+  }
+  getOptionsForNewGame() {
+    return {
+      players: [this.playerCpu._name, this.playerMe._name]
+    }
   }
 
   st_beforeStartGame() {
@@ -85,17 +98,30 @@ export class BriscBaseGfx {
     `)
     document.getElementById('startgame-btn')
       .addEventListener('click', (event) => {
-        console.log('Start a new game')// TODO
+        console.log('Start a new game')
+        this._b2core.StartNewMatch(this.getOptionsForNewGame());
       });
     document.getElementById('optgame-btn')
       .addEventListener('click', (event) => {
         console.log('Game options')// TODO
         // modal example
         $('.ui.basic.modal').modal('show');
-        $('.ui.green.ok.inverted.button').on('click', function(event) {  
+        $('.ui.green.ok.inverted.button').on('click', function (event) {
           console.log('Clicked on OK')
         });
       });
+  }
+
+  st_onplayingGame() {
+    console.warn('st_onplayingGame is not im plemented')
+    // TODO
+    //this._boardNode.appendChild(cache.cards[0]) // TODO set card from a class
+  }
+
+
+  st_terminatedGame() {
+    console.warn('st_terminatedGame is not im plemented')
+    // TODO
   }
 
   loadAssets(cardLoader, deck_name) {

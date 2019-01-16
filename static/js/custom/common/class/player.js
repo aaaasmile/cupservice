@@ -36,6 +36,22 @@ export class Player {
     );
   }
 
+  set_gfx_on_alg(gfx) {
+    if (!this._core_caller) {
+      throw (new Error('_core_caller is not available, do you have called set_alg before?'))
+    }
+    if (this._gfxSubscriber) {
+      this._gfxSubscriber.dispose()
+    }
+    this._gfxSubscriber = new ActorStateSubjectSubscriber(
+      this._coreStateManager,
+      gfx,
+      { log_all: false, log_missed: true },
+      this._name
+    );
+    return this._core_caller
+  }
+
   sit_down(pos) {
     this._sit_position = pos
     this._coreStateManager.submit_action('player_sit_down', [this._name, pos]);
@@ -49,6 +65,10 @@ export class Player {
     if (this._actorSubscriber) {
       this._actorSubscriber.dispose()
       this._actorSubscriber = null
+    }
+    if (this._gfxSubscriber) {
+      this._gfxSubscriber.dispose()
+      this._gfxSubscriber = null
     }
   }
 }

@@ -2,6 +2,7 @@
 //////////////////////////////// CoreStateStore
 //////////////////////////////////////////
 export class CoreStateStore {
+  // used to store internal core states like st_wait_for_play
   constructor() {
     this._internal_state = '';
   }
