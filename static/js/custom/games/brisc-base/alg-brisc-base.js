@@ -30,12 +30,17 @@ export class AlgBriscBase {
     this._is_auto_alg = true
   }
 
+  set_to_master_level() {
+    this._level_alg = 'master'
+    console.log("[%s] Level changed to %s", this._player_name, this._level_alg)
+  }
+
   set_core_caller(core_caller) {
     this._core_caller = core_caller
   }
 
-  set_brisc_base_gfx(brisc_base_gfx) {
-    this._is_auto_alg = false
+  set_automatic_playing(val) {
+    this._is_auto_alg = val
   }
 
   on_all_ev_new_match(args) {

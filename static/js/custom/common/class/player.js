@@ -37,12 +37,13 @@ export class Player {
   }
 
   set_gfx_on_alg(gfx) {
-    if (!this._core_caller) {
-      throw (new Error('_core_caller is not available, do you have called set_alg before?'))
+    if (!this._core_caller || !this._alg) {
+      throw (new Error('_core_caller or _alg is not available, do you have called set_alg before?'))
     }
     if (this._gfxSubscriber) {
       this._gfxSubscriber.dispose()
     }
+    this._alg.set_automatic_playing(false)
     this._gfxSubscriber = new ActorStateSubjectSubscriber(
       this._coreStateManager,
       gfx,

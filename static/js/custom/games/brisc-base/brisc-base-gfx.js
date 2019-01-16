@@ -41,9 +41,11 @@ export class BriscBaseGfx {
     this.playerCpu = new Player(new AlgBriscBase('Ernesto'), coreStateManager);
     this.playerMe = new Player(new AlgBriscBase('Luigi'), coreStateManager);
     this._core_caller = this.playerMe.set_gfx_on_alg(gfx)
+    this.playerMe._alg.set_to_master_level()
+    this.playerCpu._alg.set_to_master_level()
+    //this.playerMe._alg.set_automatic_playing(true) // Want to have an automatic gui player
 
-    this.playerCpu.sit_down(0);
-    this.playerMe.sit_down(1);
+    coreStateManager.process_next()
     return b2core
   }
 
@@ -79,7 +81,7 @@ export class BriscBaseGfx {
   }
   getOptionsForNewGame() {
     return {
-      players: [this.playerCpu._name, this.playerMe._name]
+      players: [this.playerCpu._name, this.playerMe._name] //TOD set all other options from dialogbox
     }
   }
 
@@ -99,11 +101,14 @@ export class BriscBaseGfx {
     document.getElementById('startgame-btn')
       .addEventListener('click', (event) => {
         console.log('Start a new game')
-        this._b2core.StartNewMatch(this.getOptionsForNewGame());
+        //this._b2core.StartNewMatch(this.getOptionsForNewGame());
+        this.playerCpu.sit_down(0);
+        this.playerMe.sit_down(1);
+        this._b2core._coreStateManager.process_all()
       });
     document.getElementById('optgame-btn')
       .addEventListener('click', (event) => {
-        console.log('Game options')// TODO
+        console.log('Game options')// TODO set and get options
         // modal example
         $('.ui.basic.modal').modal('show');
         $('.ui.green.ok.inverted.button').on('click', function (event) {
@@ -113,8 +118,8 @@ export class BriscBaseGfx {
   }
 
   st_onplayingGame() {
-    console.warn('st_onplayingGame is not im plemented')
-    // TODO
+    console.warn('st_onplayingGame is not implemented')
+    // TODO rebuild the current game scene
     //this._boardNode.appendChild(cache.cards[0]) // TODO set card from a class
   }
 
@@ -122,6 +127,18 @@ export class BriscBaseGfx {
   st_terminatedGame() {
     console.warn('st_terminatedGame is not im plemented')
     // TODO
+  }
+
+  clearBoard(){
+    while (this._boardNode.firstChild) {
+      this._boardNode.removeChild(this._boardNode.firstChild);
+    }
+  }
+
+  on_all_ev_new_match(args) {
+    console.log('New match')
+    this.clearBoard()
+    
   }
 
   loadAssets(cardLoader, deck_name) {
