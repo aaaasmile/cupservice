@@ -4,12 +4,13 @@ import { TableStateCore } from '../../common/class/table-state-core.js'
 import { Player } from '../../common/class/player.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
+import {BriscBaseOptGfx} from './brisc-base-opt-gfx.js'
 
 
 export class BriscBaseGfx {
   constructor() {
     console.log('BriscBaseGfx created')
-    this.opt = {
+    this._opt = {
       deck_name: 'piac',
       scene_back: 'table_pattern'
     }
@@ -59,12 +60,13 @@ export class BriscBaseGfx {
     console.log('Init scene')
     if (!this._b2core) {
       this._b2core = this.prepareGame(null, this._that)
+      this._optGfx = new BriscBaseOptGfx(this._b2core._myOpt.num_segni_match, this._opt.deck_name)
     }
-    let cache = this._cardLoader.getLoaded(this.opt.deck_name)
+    let cache = this._cardLoader.getLoaded(this._opt.deck_name)
     if (cache) {
       this.buildScene(cache)
     } else {
-      this.loadAssets(this._cardLoader, this.opt.deck_name)
+      this.loadAssets(this._cardLoader, this._opt.deck_name)
     }
   }
 
@@ -86,6 +88,7 @@ export class BriscBaseGfx {
   }
 
   st_beforeStartGame() {
+    let optHtml = this._optGfx.render()
     this._boardNode.insertAdjacentHTML('beforeend', `
     <div>
       <div class="ui attached message">
@@ -98,28 +101,7 @@ export class BriscBaseGfx {
         </div>
         <p>Seleziona un comando per partire</p>
       </div>
-      <!-- Finestra Modale per le opzioni-->
-      <div class="ui basic modal">
-        <div class="ui icon header">
-          <i class="cogs icon"></i>
-          Opzioni della briscola in due
-        </div>
-        <div class="content">
-          <p>Segni della partita</p>
-          <p>Nome del giocatore</p>
-          <p>Mazzo delle carte</p>
-        </div>
-        <div class="actions">
-          <div class="ui red basic cancel inverted button">
-            <i class="remove icon"></i>
-            Cancella
-          </div>
-          <div class="ui green ok inverted button">
-            <i class="checkmark icon"></i>
-            Conferma
-          </button>
-        </div>
-      </div>
+      ${optHtml}
     </div>
     `)
     document.getElementById('startgame-btn')
