@@ -197,9 +197,12 @@ class CardLoaderGfx {
 
 let provider
 
-export function GetCardLoaderGfx() { // GetCardLoaderGfx is a singleton to use the image cache
+export function GetCardLoaderGfx() { // GetCardLoaderGfx is a singleton to use the image cache (also over more module imports)
   if (!provider) {
+    console.log('new CardLoaderGfx')
     provider = new CardLoaderGfx()
+  }else{
+    console.log('CardLoaderGfx')
   }
   return provider
 }
