@@ -1,10 +1,22 @@
-export class BriscBaseOptGfx{
-  constructor(num_segni_match, deck_name ){
+export class BriscBaseOptGfx {
+  constructor(num_segni_match, deck_name) {
     this.num_segni_match = num_segni_match
     this.deck_name = deck_name
   }
 
-  render(){
+  showModal(cbOk) {
+    console.log('Game options')// TODO set and get options
+    $('.ui.basic.modal').modal('show');
+    $('.ui.green.ok.inverted.button').on('click', () => {
+      console.log('Clicked on OK')
+      cbOk({
+        num_segni_match: this.num_segni_match, 
+        deck_name: this.deck_name,
+      })
+    });
+  }
+
+  render() {
     return `<!-- Finestra Modale per le opzioni-->
     <div class="ui basic modal">
       <div class="ui icon header">

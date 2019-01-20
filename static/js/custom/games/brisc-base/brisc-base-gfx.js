@@ -60,13 +60,17 @@ export class BriscBaseGfx {
     console.log('Init scene')
     if (!this._b2core) {
       this._b2core = this.prepareGame(null, this._that)
-      this._optGfx = new BriscBaseOptGfx(this._b2core._myOpt.num_segni_match, this._opt.deck_name)
+      this._optDlgGfx = new BriscBaseOptGfx(this._b2core._myOpt.num_segni_match, this._opt.deck_name)
     }
-    let cache = this._cardLoader.getLoaded(this._opt.deck_name)
+    this.buildSceneWithDeck(this._cardLoader,this._opt.deck_name)
+  }
+
+  buildSceneWithDeck(cardLoader, deck_name){
+    let cache = cardLoader.getLoaded(deck_name)
     if (cache) {
       this.buildScene(cache)
     } else {
-      this.loadAssets(this._cardLoader, this._opt.deck_name)
+      this.loadAssets(cardLoader, deck_name)
     }
   }
 
@@ -88,7 +92,7 @@ export class BriscBaseGfx {
   }
 
   st_beforeStartGame() {
-    let optHtml = this._optGfx.render()
+    let optHtml = this._optDlgGfx.render()
     this._boardNode.insertAdjacentHTML('beforeend', `
     <div>
       <div class="ui attached message">
@@ -113,13 +117,14 @@ export class BriscBaseGfx {
         this._b2core._coreStateManager.process_all()
       });
     document.getElementById('optgame-btn')
-      .addEventListener('click', (event) => {
-        console.log('Game options')// TODO set and get options
-        // modal example
-        $('.ui.basic.modal').modal('show');
-        $('.ui.green.ok.inverted.button').on('click', function (event) {
-          console.log('Clicked on OK')
-        });
+      .addEventListener('click', () => {
+        this._optDlgGfx.showModal((res) => {
+          this._b2core.num_segni_match = res.num_segni_match
+          if(this._opt.deck_name !== res.deck_name){
+            this._opt.deck_name = res.deck_name
+            this.buildSceneWithDeck(this._cardLoader,this._opt.deck_name)
+          }
+        })
       });
   }
 
