@@ -4,7 +4,8 @@ import { TableStateCore } from '../../common/class/table-state-core.js'
 import { Player } from '../../common/class/player.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
-import {BriscBaseOptGfx} from './brisc-base-opt-gfx.js'
+import { BriscBaseOptGfx } from './brisc-base-opt-gfx.js'
+import { buildStaticSceneHtml } from './static-scene-gfx.js'
 
 
 export class BriscBaseGfx {
@@ -25,7 +26,7 @@ export class BriscBaseGfx {
     if (rnd_mgr) {
       b2core._rnd_mgr = rnd_mgr
     }
-    
+
     if (this.playerCpu) {
       this.playerCpu.dispose()
     }
@@ -47,24 +48,19 @@ export class BriscBaseGfx {
   renderScene(boardId) {
     console.log('BriscBaseGfx render scene', boardId)
     this._boardNode = document.getElementById(boardId)
-    this.initAndBuildScene()
-  }
-
-  initAndBuildScene() {
-    console.log('Init scene')
     if (!this._b2core) {
       this._b2core = this.prepareGame(null, this._that)
       this._optDlgGfx = new BriscBaseOptGfx(this._b2core._myOpt.num_segni_match, this._opt.deck_name)
     }
-    this.buildSceneWithDeck(this._cardLoader,this._opt.deck_name)
+    this.buildSceneWithDeck(this._cardLoader, this._opt.deck_name)
   }
 
-  buildSceneWithDeck(cardLoader, deck_name){
+  buildSceneWithDeck(cardLoader, deck_name) {
     let cache = cardLoader.getLoaded(deck_name)
     if (cache) {
       this.buildScene(cache)
     } else {
-      this.loadAssets(cardLoader, deck_name)
+      this.loadAssets(cardLoader, deck_name, (cache) => this.buildScene(cache))
     }
   }
 
@@ -79,11 +75,12 @@ export class BriscBaseGfx {
       this.st_beforeStartGame()
     }
   }
-  getOptionsForNewGame() {
-    return {
-      players: [this.playerCpu._name, this.playerMe._name] //TOD set all other options from dialogbox
-    }
-  }
+
+  // getOptionsForNewGame() {
+  //   return {
+  //     players: [this.playerCpu._name, this.playerMe._name] //TOD set all other options from dialogbox
+  //   }
+  // }
 
   st_beforeStartGame() {
     let optHtml = this._optDlgGfx.render()
@@ -111,16 +108,16 @@ export class BriscBaseGfx {
       .addEventListener('click', () => {
         this._optDlgGfx.showModal((res) => {
           this._b2core.num_segni_match = res.num_segni_match
-          if(this._opt.deck_name !== res.deck_name){
+          if (this._opt.deck_name !== res.deck_name) {
             this._opt.deck_name = res.deck_name
-            this.buildSceneWithDeck(this._cardLoader,this._opt.deck_name)
+            this.buildSceneWithDeck(this._cardLoader, this._opt.deck_name)
           }
         })
       });
   }
 
-  startNewGame(){
-    console.log('Start a new match')
+  startNewGame() {
+    console.log('Start a new Game')
     let tableStateCore = new TableStateCore(this._b2core._coreStateManager, this._b2core._myOpt.tot_num_players);
     let b2core = this._b2core
     let subsc = tableStateCore.TableFullSub.subscribe(next => {
@@ -129,13 +126,17 @@ export class BriscBaseGfx {
       b2core.StartNewMatch(next);
     });
 
+    this.clearBoard()
+    this.st_onplayingGame()
+
     this.playerCpu.sit_down(0);
     this.playerMe.sit_down(1);
     this._b2core._coreStateManager.process_all()
   }
 
   st_onplayingGame() {
-    console.warn('st_onplayingGame is not implemented')
+    console.log('st_onplayingGame')
+    this._boardNode.insertAdjacentHTML('beforeend', buildStaticSceneHtml())
     // TODO rebuild the current game scene
     //this._boardNode.appendChild(cache.cards[0]) // TODO set card from a class
   }
@@ -146,7 +147,7 @@ export class BriscBaseGfx {
     // TODO
   }
 
-  clearBoard(){
+  clearBoard() {
     while (this._boardNode.firstChild) {
       this._boardNode.removeChild(this._boardNode.firstChild);
     }
@@ -154,17 +155,14 @@ export class BriscBaseGfx {
 
   on_all_ev_new_match(args) {
     console.log('New match')
-    this.clearBoard()
-    
   }
 
-  loadAssets(cardLoader, deck_name) {
+  loadAssets(cardLoader, deck_name, cbLoaded) {
     console.log("Load images for ", deck_name)
     if (!deck_name) {
       throw new Error('deck name not set')
     }
     let totItems = -1
-    let that = this
     cardLoader.loadResources(deck_name)
       .subscribe(x => {
         if (totItems === -1) {
@@ -178,7 +176,7 @@ export class BriscBaseGfx {
         }, () => {
           console.log("Load Completed")
           let cache = cardLoader.getLoaded(deck_name)
-          that.buildScene(cache)
+          cbLoaded(cache)
         })
   }
 
