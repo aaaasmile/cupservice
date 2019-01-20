@@ -10,10 +10,29 @@ function partial(aFunction, ...parametersBound) {
 //   return `<div>${child}<div>`
 // }
 
-export function buildStaticSceneHtml() {
+function createDiv(clname) {
+  let div = document.createElement("div")
+  div.className = clname
+  return div
+}
+
+export function BuildStaticSceneHtml(cardgfxCache) {
   console.log('Create html for the static scene')
-  const htmlScene =
-    `
+  let rootDiv = createDiv("staticScene")
+  
+  let handMeDiv = createDiv("handMe")
+  for(let i = 0; i < 3; i++){
+    let cardInHand = createDiv("cardHand")
+    cardInHand.setAttribute("data-card", `_As`) // TOD set from core
+    let img = cardgfxCache.get_cardimage(10)
+    cardInHand.appendChild(img)
+    handMeDiv.appendChild(cardInHand)
+  } 
+
+  rootDiv.appendChild(handMeDiv)
+  return rootDiv
+
+    /*
 <div class="staticScene">
   <div class="handMe">
     <div class="cardHand" data-card="_As"></div>
@@ -44,6 +63,5 @@ export function buildStaticSceneHtml() {
     <div class="card2" data-card=""></div>
   </div>
 </div>
-`
-  return htmlScene
+*/
 }

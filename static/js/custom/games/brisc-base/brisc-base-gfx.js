@@ -5,7 +5,7 @@ import { Player } from '../../common/class/player.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
 import { BriscBaseOptGfx } from './brisc-base-opt-gfx.js'
-import { buildStaticSceneHtml } from './static-scene-gfx.js'
+import { BuildStaticSceneHtml } from './static-scene-gfx.js'
 
 
 export class BriscBaseGfx {
@@ -60,7 +60,14 @@ export class BriscBaseGfx {
     if (cache) {
       this.buildScene(cache)
     } else {
-      this.loadAssets(cardLoader, deck_name, (cache) => this.buildScene(cache))
+      if(this.deck_loading === deck_name){
+        return
+      }
+      this.deck_loading = deck_name
+      this.loadAssets(cardLoader, deck_name, (cache) => {
+        this.deck_loading = null
+        this.buildScene(cache)
+      })
     }
   }
 
@@ -70,19 +77,19 @@ export class BriscBaseGfx {
     if (matchInfo.is_terminated()) {
       this.st_terminatedGame()
     } else if (matchInfo.is_ongoing()) {
-      this.st_onplayingGame()
+      this.st_onplayingGame(cardgfxCache)
     } else {
-      this.st_beforeStartGame()
+      this.st_beforeStartGame(cardgfxCache)
     }
   }
 
-  // getOptionsForNewGame() {
+  // getOptionsForNewGame() { ????????
   //   return {
   //     players: [this.playerCpu._name, this.playerMe._name] //TOD set all other options from dialogbox
   //   }
   // }
 
-  st_beforeStartGame() {
+  st_beforeStartGame(cardgfxCache) {
     let optHtml = this._optDlgGfx.render()
     this._boardNode.insertAdjacentHTML('beforeend', `
     <div>
@@ -102,7 +109,7 @@ export class BriscBaseGfx {
     document.getElementById('startgame-btn')
       .addEventListener('click', (event) => {
         console.log('Start a new game')
-        this.startNewGame()
+        this.startNewGame(cardgfxCache)
       });
     document.getElementById('optgame-btn')
       .addEventListener('click', () => {
@@ -116,7 +123,7 @@ export class BriscBaseGfx {
       });
   }
 
-  startNewGame() {
+  startNewGame(cardgfxCache) {
     console.log('Start a new Game')
     let tableStateCore = new TableStateCore(this._b2core._coreStateManager, this._b2core._myOpt.tot_num_players);
     let b2core = this._b2core
@@ -127,16 +134,16 @@ export class BriscBaseGfx {
     });
 
     this.clearBoard()
-    this.st_onplayingGame()
+    this.st_onplayingGame(cardgfxCache)
 
     this.playerCpu.sit_down(0);
     this.playerMe.sit_down(1);
     this._b2core._coreStateManager.process_all()
   }
 
-  st_onplayingGame() {
+  st_onplayingGame(cardgfxCache) {
     console.log('st_onplayingGame')
-    this._boardNode.insertAdjacentHTML('beforeend', buildStaticSceneHtml())
+    this._boardNode.appendChild(BuildStaticSceneHtml(cardgfxCache))
     // TODO rebuild the current game scene
     //this._boardNode.appendChild(cache.cards[0]) // TODO set card from a class
   }

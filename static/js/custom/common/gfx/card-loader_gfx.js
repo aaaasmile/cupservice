@@ -18,47 +18,15 @@ class CardImageCache {
     this.completed = true
   }
 
-  // add_background(stage) {
-  //   console.log('Add background')
-  //   let bmp = this.scene_background
-  //   //bmp.cache(0, 0, bmp.image.width, bmp.image.height, 0.5);
-  //   // let fx = 0.5
-  //   // bmp.scaleX = fx
-  //   // bmp.scaleY = fx
-  //   stage.addChild(bmp)
-  //   let cd = this.cards[0]
-  //   cd.x = 100
-  //   cd.y = 200
-  //   stage.addChild(cd)
-  // }
+  get_cardimage(posIx){
+    if(posIx > 0 && posIx < this.cards.length){
+      let img = this.cards[posIx]
+      let clone = img.cloneNode() // clone beacuse it could be used only once
+      return clone
+    }
+    throw(new Error(`${posIx}Ix out of range`))
+  }
 
-  // printDeck() {
-  //   let fx = 1//0.7
-  //   var container = new createjs.Container();
-  //   let lasty = 0
-  //   for (let jj = 0; jj < 4; jj++) {
-  //     for (let ii = 0; ii < 10; ii++) {
-  //       let cd = this.cards[ii + jj * 10]
-  //       cd.x = ii * 50
-  //       cd.y = jj * 80
-  //       lasty = cd.y
-  //       cd.scaleX = fx
-  //       cd.scaleY = fx
-  //       container.addChild(cd)
-  //     }
-  //   }
-  //   lasty += 50
-  //   for (let i = 0; i < c_nomi_simboli.length; i++) {
-  //     let cd = this.symbols_card[i]
-  //     cd.x = i * 50
-  //     cd.y = lasty
-  //     lasty = cd.y
-  //     cd.rotation = -90
-  //     container.addChild(cd)
-  //   }
-
-  //   return container
-  // }
 }
 
 ///////////////////////////////////////////////////////////
@@ -99,6 +67,7 @@ class CardLoaderGfx {
       nomi_simboli = ['simbo', 'simbo', 'simbo']
       nomi_semi = ["fiori", "quadr", "cuori", "picch"]
     }
+    
     let imageCache = new CardImageCache(deck_type)
     let folder_fullpath = this.getFolderCardsFullpath(deck_type)
     this.map_image_cache.set(deck_type, imageCache)
