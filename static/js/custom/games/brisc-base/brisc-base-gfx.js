@@ -25,13 +25,7 @@ export class BriscBaseGfx {
     if (rnd_mgr) {
       b2core._rnd_mgr = rnd_mgr
     }
-    let tableStateCore = new TableStateCore(coreStateManager, 2);
-    let subsc = tableStateCore.TableFullSub.subscribe(next => {
-      subsc.unsubscribe();
-      tableStateCore.dispose();
-      b2core.StartNewMatch(next);
-    });
-
+    
     if (this.playerCpu) {
       this.playerCpu.dispose()
     }
@@ -111,10 +105,7 @@ export class BriscBaseGfx {
     document.getElementById('startgame-btn')
       .addEventListener('click', (event) => {
         console.log('Start a new game')
-        //this._b2core.StartNewMatch(this.getOptionsForNewGame());
-        this.playerCpu.sit_down(0);
-        this.playerMe.sit_down(1);
-        this._b2core._coreStateManager.process_all()
+        this.startNewGame()
       });
     document.getElementById('optgame-btn')
       .addEventListener('click', () => {
@@ -126,6 +117,21 @@ export class BriscBaseGfx {
           }
         })
       });
+  }
+
+  startNewGame(){
+    console.log('Start a new match')
+    let tableStateCore = new TableStateCore(this._b2core._coreStateManager, this._b2core._myOpt.tot_num_players);
+    let b2core = this._b2core
+    let subsc = tableStateCore.TableFullSub.subscribe(next => {
+      subsc.unsubscribe();
+      tableStateCore.dispose();
+      b2core.StartNewMatch(next);
+    });
+
+    this.playerCpu.sit_down(0);
+    this.playerMe.sit_down(1);
+    this._b2core._coreStateManager.process_all()
   }
 
   st_onplayingGame() {
