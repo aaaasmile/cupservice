@@ -33,3 +33,16 @@
   padding: 0.2em;
 }
 
+.player{
+  position: absolute;
+  margin-right: 10%;
+  right: 0;
+}
+
+.playerCpu{
+  top: 60;
+}
+
+.playerMe{
+  bottom: 60;
+}

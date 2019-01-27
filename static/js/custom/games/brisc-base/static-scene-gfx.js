@@ -88,7 +88,7 @@ export function LoadAssets(cardLoader, deck_name, cbLoaded) {
 }
 
 export function CreatePlayerLabel(color, player, cardgfxCache){
-  let eleA = document.createElement("a")
+  let eleA = document.createElement("div")
     eleA.className = `ui ${color} image label`
     
     let avatarImg = cardgfxCache.get_avatar_img(player._avatar_name)
