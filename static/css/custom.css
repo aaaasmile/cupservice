@@ -12,7 +12,6 @@
   position: relative;
 }
 
-
 .handMe{
   text-align: center;
   position: absolute;
@@ -21,7 +20,15 @@
   padding: 2em;
 }
 
-.cardHand{
+.handCpu{
+  text-align: center;
+  position: absolute;
+  top: 20;
+  margin-left: 20%;
+  padding: 2em;
+}
+
+.cardHand, .cardDecked{
   display: inline-block;
   padding: 0.2em;
 }

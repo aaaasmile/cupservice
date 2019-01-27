@@ -144,10 +144,8 @@ export class BriscBaseGfx {
   st_onplayingGame(cardgfxCache) {
     console.log('st_onplayingGame')
     let builder = BuildStaticSceneHtml(cardgfxCache)
-    let root = builder(this.handMeGxc)
+    let root = builder(this.handCpuGxc, this.handMeGxc)
     this._boardNode.appendChild(root)
-    // TODO rebuild the current game scene
-    //this._boardNode.appendChild(cache.cards[0]) // TODO set card from a class
   }
 
   st_terminatedGame() {
@@ -168,14 +166,14 @@ export class BriscBaseGfx {
   }
 
   handCpuGxc(cardgfxCache) {
-    let handMeDiv = CreateDiv("handCpu")
+    let handCpu = CreateDiv("handCpu")
     for (let i = 0; i < 3; i++) { // TODO set from core
       let cardInHand = CreateDiv("cardDecked")
-      let img = cardgfxCache.get_cardimage(10)
+      let img = cardgfxCache.get_symbol_img('cope')
       cardInHand.appendChild(img)
-      handMeDiv.appendChild(cardInHand)
+      handCpu.appendChild(cardInHand)
     }
-    return handMeDiv
+    return handCpu
   }
 
   clearBoard() {

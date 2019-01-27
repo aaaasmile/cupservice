@@ -27,8 +27,11 @@ class CardImageCache {
     throw (new Error(`${posIx}Ix out of range`))
   }
 
-  get_symbol_img(posIx) {
-
+  get_symbol_img(nome_simbolo) {
+    if (this.symbols_card.has(nome_simbolo)) {
+      return this.symbols_card.get(nome_simbolo).cloneNode()
+    }
+    return null
   }
 
 }
@@ -133,29 +136,14 @@ class CardLoaderGfx {
         img.src = card_fname
         countToLoad += 1
 
-        if (i === 0) {
-          img.onload = () => {
-            setTimeout(() => {
-              console.log('First symbol Loaded: %d %s, %s', i, img.src, nome_simbolo);
-              imageCache.symbols_card.set(nome_simbolo, img)
-              countLoaded += 1
-              obs.next(countLoaded)
-              if (countToLoad <= countLoaded) {
-                imageCache.set_completed()
-                obs.complete()
-              }
-            }, 1000)
-          }
-        } else {
-          img.onload = () => {
-            console.log('Image Loaded: %d %s, %s', i, img.src, nome_simbolo);
-            imageCache.symbols_card.set(nome_simbolo, img)
-            countLoaded += 1
-            obs.next(countLoaded)
-            if (countToLoad <= countLoaded) {
-              imageCache.set_completed()
-              obs.complete()
-            }
+        img.onload = () => { // works also if i = 2 il loaded before i = 1
+          //console.log('Image Loaded: %d %s, %s', i, img.src, nome_simbolo);
+          imageCache.symbols_card.set(nome_simbolo, img)
+          countLoaded += 1
+          obs.next(countLoaded)
+          if (countToLoad <= countLoaded) {
+            imageCache.set_completed()
+            obs.complete()
           }
         }
       }
