@@ -86,3 +86,18 @@ export function LoadAssets(cardLoader, deck_name, cbLoaded) {
         cbLoaded(cache)
       })
 }
+
+export function CreatePlayerLabel(color, player, cardgfxCache){
+  let eleA = document.createElement("a")
+    eleA.className = `ui ${color} image label`
+    
+    let avatarImg = cardgfxCache.get_avatar_img(player._avatar_name)
+    if(avatarImg){
+      eleA.appendChild(avatarImg)  
+    }
+    eleA.appendChild(document.createTextNode(player._name))
+    let divDet = CreateDiv("detail")
+    divDet.appendChild(document.createTextNode(player._avatar_detail))
+    eleA.appendChild(divDet)
+    return eleA
+}

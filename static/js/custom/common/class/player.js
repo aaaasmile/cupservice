@@ -14,6 +14,11 @@ export class Player {
     }
   }
 
+  set_avatar(avatar_name, detail){
+    this._avatar_detail = detail
+    this._avatar_name = avatar_name
+  }
+
   set_alg(alg, coreStateManager) {
     this._name = alg._player_name
     this._coreStateManager = coreStateManager

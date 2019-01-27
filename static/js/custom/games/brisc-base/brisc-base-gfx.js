@@ -5,7 +5,7 @@ import { Player } from '../../common/class/player.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
 import { BriscBaseOptGfx } from './brisc-base-opt-gfx.js'
-import { CreateDiv, CreateSceneBuilder, LoadAssets } from './static-scene-gfx.js'
+import { CreatePlayerLabel, CreateDiv, CreateSceneBuilder, LoadAssets } from './static-scene-gfx.js'
 
 
 export class BriscBaseGfx {
@@ -42,7 +42,9 @@ export class BriscBaseGfx {
     this.playerMe = new Player(new AlgBriscBase('Luigi'), coreStateManager);
     this._core_caller = this.playerMe.set_gfx_on_alg(gfx)
     this.playerMe._alg.set_to_master_level()
+    this.playerMe.set_avatar('christian', 'Me')
     this.playerCpu._alg.set_to_master_level()
+    this.playerCpu.set_avatar('', 'CPU')
     //this.playerMe._alg.set_automatic_playing(true) // Want to have an automatic gui player
 
     coreStateManager.process_next()
@@ -155,30 +157,21 @@ export class BriscBaseGfx {
     // TODO
   }
 
-  cpuPlayerGxc() {
-    let cpuPlayerDiv = CreateDiv("player playerCpu")
-    cpuPlayerDiv.appendChild(document.createTextNode(this.playerCpu._name))
-    return cpuPlayerDiv
+  cpuPlayerGxc(cardgfxCache) {
+    let playerDiv = CreateDiv("player playerCpu")
+    let eleA = CreatePlayerLabel("yellow", this.playerCpu, cardgfxCache)
+    playerDiv.appendChild(eleA)
+    return playerDiv
   }
 
   mePlayerGxc(cardgfxCache) {
     let playerDiv = CreateDiv("player playerMe")
-    let eleA = document.createElement("a")
-    eleA.className = "ui blue image label"
-    
-    let avatarImg = cardgfxCache.get_avatar_img('christian')
-    if(avatarImg){
-      eleA.appendChild(avatarImg)  
-    }
-    eleA.appendChild(document.createTextNode(this.playerMe._name))
-    let divDet = CreateDiv("detail")
-    divDet.appendChild(document.createTextNode("Me"))
-    eleA.appendChild(divDet)
-
+    let eleA = CreatePlayerLabel("blue", this.playerMe, cardgfxCache)
     playerDiv.appendChild(eleA)
-    
+
     return playerDiv
   }
+
 
   handMeGxc(cardgfxCache) {
     let handMeDiv = CreateDiv("handMe")
