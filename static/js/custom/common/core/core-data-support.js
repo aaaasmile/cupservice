@@ -42,6 +42,20 @@ export class CoreDataSupport {
     this.continue_to_cfm = []
   }
 
+  getNumCardInHand(player_name){
+    if(this.carte_in_mano[player_name]){
+      return this.carte_in_mano[player_name].length
+    }
+    return 0
+  }
+
+  getCardInHand(player_name, posIx){
+    if(this.carte_in_mano[player_name]){
+      return this.carte_in_mano[player_name][posIx]
+    }
+    return null
+  }
+
   start(num_of_players, players, hand_player_size) {
     // players: ["Luigi", "Ernesto"]
     this.match_info.start();
@@ -61,7 +75,7 @@ export class CoreDataSupport {
   start_new_giocata(first_ix, cards) {
     this.giocata_info.set_started();
     this.carte_prese = {};
-    this.carte_in_mano = {}; //{'Luigi': ['_Ab','_7c']} // TODO: use a Map
+    this.carte_in_mano = {}; //{'Luigi': ['_Ab','_7c']} 
     this.carte_gioc_mano_corr = [];
     this.history_mano = [];
     this.mano_count = 0;

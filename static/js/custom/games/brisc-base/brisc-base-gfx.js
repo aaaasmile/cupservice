@@ -16,7 +16,8 @@ export class BriscBaseGfx {
       scene_back: 'table_pattern'
     }
     this._cardLoader = GetCardLoaderGfx()
-    this._that = this
+    this.handMeGxc = this.handMeGxc.bind(this) 
+    this.handCpuGxc = this.handMeGxc.bind(this)
   }
 
   prepareGame(rnd_mgr, gfx) {
@@ -49,7 +50,7 @@ export class BriscBaseGfx {
     console.log('BriscBaseGfx render scene', boardId)
     this._boardNode = document.getElementById(boardId)
     if (!this._b2core) {
-      this._b2core = this.prepareGame(null, this._that)
+      this._b2core = this.prepareGame(null, this)
       this._optDlgGfx = new BriscBaseOptGfx(this._b2core._myOpt.num_segni_match, this._opt.deck_name)
     }
     this.buildSceneWithDeck(this._cardLoader, this._opt.deck_name)
@@ -150,10 +151,13 @@ export class BriscBaseGfx {
 
   handMeGxc(cardgfxCache) {
     let handMeDiv = CreateDiv("handMe")
-    for (let i = 0; i < 3; i++) {
+    let numCards = this._b2core._core_data.getNumCardInHand(this.playerMe._name)
+    for (let i = 0; i < numCards; i++) {
       let cardInHand = CreateDiv(`cardHand pos${i}`)
-      cardInHand.setAttribute("data-card", `_As`) // TOD set from core
-      let img = cardgfxCache.get_cardimage(10)
+      let lbl = this._b2core._core_data.getCardInHand(this.playerMe._name, i)
+      cardInHand.setAttribute("data-card", lbl) 
+      let card_info = this._b2core._deck_info.get_card_info(lbl)
+      let img = cardgfxCache.get_cardimage(card_info.ix)
       cardInHand.appendChild(img)
       handMeDiv.appendChild(cardInHand)
     }
@@ -161,8 +165,9 @@ export class BriscBaseGfx {
   }
 
   handCpuGxc(cardgfxCache) {
+    let numCards = this._b2core._core_data.getNumCardInHand(this.playerCpu._name)
     let handCpu = CreateDiv("handCpu")
-    for (let i = 0; i < 3; i++) { // TODO set from core
+    for (let i = 0; i < numCards; i++) {
       let cardInHand = CreateDiv(`cardDecked pos${i}`)
       let img = cardgfxCache.get_symbol_img('cope')
       cardInHand.appendChild(img)
