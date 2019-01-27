@@ -16,8 +16,11 @@ export class BriscBaseGfx {
       scene_back: 'table_pattern'
     }
     this._cardLoader = GetCardLoaderGfx()
-    this.handMeGxc = this.handMeGxc.bind(this) 
+    this.handMeGxc = this.handMeGxc.bind(this)
     this.handCpuGxc = this.handMeGxc.bind(this)
+    this.cpuPlayerGxc = this.cpuPlayerGxc.bind(this)
+    this.mePlayerGxc = this.mePlayerGxc.bind(this)
+
   }
 
   prepareGame(rnd_mgr, gfx) {
@@ -140,7 +143,10 @@ export class BriscBaseGfx {
   st_onplayingGame(cardgfxCache) {
     console.log('st_onplayingGame')
     let builder = CreateSceneBuilder(cardgfxCache)
-    let root = builder(this.handCpuGxc, this.handMeGxc)
+    let root = builder(this.handCpuGxc,
+      this.cpuPlayerGxc,
+      this.handMeGxc,
+      this.mePlayerGxc)
     this._boardNode.appendChild(root)
   }
 
@@ -149,13 +155,25 @@ export class BriscBaseGfx {
     // TODO
   }
 
+  cpuPlayerGxc() {
+    let cpuPlayerDiv = CreateDiv("player playerCpu")
+    cpuPlayerDiv.appendChild(document.createTextNode(this.playerCpu._name))
+    return cpuPlayerDiv
+  }
+
+  mePlayerGxc() {
+    let playerDiv = CreateDiv("player playerMe")
+    playerDiv.appendChild(document.createTextNode(this.playerMe._name))
+    return playerDiv
+  }
+
   handMeGxc(cardgfxCache) {
     let handMeDiv = CreateDiv("handMe")
     let numCards = this._b2core._core_data.getNumCardInHand(this.playerMe._name)
     for (let i = 0; i < numCards; i++) {
       let cardInHand = CreateDiv(`cardHand pos${i}`)
       let lbl = this._b2core._core_data.getCardInHand(this.playerMe._name, i)
-      cardInHand.setAttribute("data-card", lbl) 
+      cardInHand.setAttribute("data-card", lbl)
       let card_info = this._b2core._deck_info.get_card_info(lbl)
       let img = cardgfxCache.get_cardimage(card_info.ix)
       cardInHand.appendChild(img)
@@ -201,13 +219,13 @@ export class BriscBaseGfx {
     // update handme div
     let handMeDiv = document.getElementsByClassName("handMe")[0]
     // cleanup
-    while(handMeDiv.firstChild){
+    while (handMeDiv.firstChild) {
       handMeDiv.removeChild(handMeDiv.firstChild)
     }
     newhand.forEach((e) => {
       handMeDiv.appendChild(e)
     })
-    
+
   }
 
 }

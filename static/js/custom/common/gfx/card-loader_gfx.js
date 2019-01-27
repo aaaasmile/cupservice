@@ -1,6 +1,7 @@
 
 const c_nomi_semi = ["basto", "coppe", "denar", "spade"]
 const c_nomi_simboli = ["cope", "zero", "xxxx", "vuot"]
+const c_nomi_avatar = ["ade","christian", "elliot", "jenny", "joe", "nan", "stevie", "zoe"]
 
 ///////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////// CardImageCache
@@ -11,7 +12,7 @@ class CardImageCache {
     this.symbols_card = new Map()
     this.cards_rotated = []
     this.completed = false
-    this.scene_background = null
+    this.avatars = new Map()
   }
 
   set_completed() {
@@ -19,17 +20,24 @@ class CardImageCache {
   }
 
   get_cardimage(posIx) {
-    if (posIx > 0 && posIx < this.cards.length) {
+    if (posIx >= 0 && posIx < this.cards.length) {
       let img = this.cards[posIx]
       let clone = img.cloneNode() // clone beacuse it could be used only once
       return clone
     }
-    throw (new Error(`${posIx}Ix out of range`))
+    throw (new Error(`Ix => ${posIx} is out of range`))
   }
 
   get_symbol_img(nome_simbolo) {
     if (this.symbols_card.has(nome_simbolo)) {
       return this.symbols_card.get(nome_simbolo).cloneNode()
+    }
+    return null
+  }
+
+  get_avatar_img(avatar_name) {
+    if (this.avatars.has(nome_simbolo)) {
+      return this.avatars.get(avatar_name).cloneNode()
     }
     return null
   }
@@ -44,6 +52,7 @@ class CardLoaderGfx {
     this.map_image_cache = new Map()
     this.path_prefix = 'static/'
     this.current_cache = null
+    this.avatars = []
   }
 
   getLoaded(deck_type) {
@@ -65,10 +74,6 @@ class CardLoaderGfx {
     return this.path_prefix + "assets/carte/" + deck_type + "/"
   }
 
-  getTableFileName(fname_prefix) {
-    return this.path_prefix + "assets/images/table/" + fname_prefix + ".png"
-  }
-
   loadResources(deck_type) {
     console.log('Load resources')
     let nomi_simboli = [...c_nomi_simboli]
@@ -88,16 +93,16 @@ class CardLoaderGfx {
     // in quanto il Subject è per il multicast. In questo caso ho una semplice promise.
     // Qui viene fatto un wrapper di tutta la funzione e Observable.create(...) la 
     // deve includere tutta. 
-    let obsLoader = rxjs.Observable.create(function (obs) {
+    let obsLoader = rxjs.Observable.create((obs) => {
       let card_fname = ""
 
-      let totItems = nomi_semi.length * num_cards_onsuit + nomi_simboli.length
-      totItems += 1 // table background
+      let totItems = nomi_semi.length * num_cards_onsuit + nomi_simboli.length // used onl for notification progress
+      totItems += c_nomi_avatar.length // avatars
 
       console.log("Load cards of ", deck_type)
 
-      let countToLoad = 0
-      let countLoaded = 0
+      let countToLoad = 0 
+      let loadedCount = 0 // when reach countToLoad, then the load is completed
 
       // cards
       obs.next(totItems)
@@ -119,9 +124,9 @@ class CardLoaderGfx {
             //let card = new createjs.Bitmap(img);
             let card = img // todo use a class
             imageCache.cards[posIx] = card
-            countLoaded += 1
-            obs.next(countLoaded)
-            if (countToLoad <= countLoaded) {
+            loadedCount += 1
+            obs.next(loadedCount)
+            if (countToLoad <= loadedCount) {
               imageCache.set_completed()
               obs.complete()
             }
@@ -144,13 +149,40 @@ class CardLoaderGfx {
         img.onload = () => { // works also if i = 2 il loaded before i = 1
           //console.log('Image Loaded: %d %s, %s', i, img.src, nome_simbolo);
           imageCache.symbols_card.set(nome_simbolo, img)
-          countLoaded += 1
-          obs.next(countLoaded)
-          if (countToLoad <= countLoaded) {
+          loadedCount += 1
+          obs.next(loadedCount)
+          if (countToLoad <= loadedCount) {
             imageCache.set_completed()
             obs.complete()
           }
         }
+      }
+      // avatars
+      console.log("Load all avatars...")
+      if(this.avatars.length === c_nomi_avatar.length){
+        // avatars already loaded
+        c_nomi_avatar.forEach((e,ix) => {
+          imageCache.avatars.set(e, this.avatars[ix])
+        })
+      }else{
+        this.avatars = []
+        let avatar_folder = this.path_prefix + "assets/images/avatar"
+        c_nomi_avatar.forEach((e,ix) => {
+          let avatar_filepath = `${avatar_folder}/${e}.jpg`
+          let img = new Image()
+          img.src = avatar_filepath
+          countToLoad += 1
+          img.onload = () => {
+            imageCache.avatars.set(e, img)
+            this.avatars[ix] = img
+            loadedCount += 1
+            obs.next(loadedCount)
+            if (countToLoad <= loadedCount) {
+              imageCache.set_completed()
+              obs.complete()
+            } 
+          }
+        })
       }
     })
     return obsLoader
