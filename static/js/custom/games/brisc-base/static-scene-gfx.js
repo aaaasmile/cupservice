@@ -1,9 +1,9 @@
 
-function partial(aFunction, ...parametersBound) {
-  return function (...parametersUnBound) {
-    return aFunction(...parametersBound, ...parametersUnBound)
-  }
-}
+// function partial(aFunction, ...parametersBound) {
+//   return function (...parametersUnBound) {
+//     return aFunction(...parametersBound, ...parametersUnBound)
+//   }
+// }
 
 // function renderStatic(childFn, siblingFn){
 //   let child = childFn()

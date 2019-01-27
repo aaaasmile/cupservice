@@ -161,9 +161,22 @@ export class BriscBaseGfx {
     return cpuPlayerDiv
   }
 
-  mePlayerGxc() {
+  mePlayerGxc(cardgfxCache) {
     let playerDiv = CreateDiv("player playerMe")
-    playerDiv.appendChild(document.createTextNode(this.playerMe._name))
+    let eleA = document.createElement("a")
+    eleA.className = "ui blue image label"
+    
+    let avatarImg = cardgfxCache.get_avatar_img('christian')
+    if(avatarImg){
+      eleA.appendChild(avatarImg)  
+    }
+    eleA.appendChild(document.createTextNode(this.playerMe._name))
+    let divDet = CreateDiv("detail")
+    divDet.appendChild(document.createTextNode("Me"))
+    eleA.appendChild(divDet)
+
+    playerDiv.appendChild(eleA)
+    
     return playerDiv
   }
 

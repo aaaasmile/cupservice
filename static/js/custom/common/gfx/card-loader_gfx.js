@@ -36,7 +36,7 @@ class CardImageCache {
   }
 
   get_avatar_img(avatar_name) {
-    if (this.avatars.has(nome_simbolo)) {
+    if (this.avatars.has(avatar_name)) {
       return this.avatars.get(avatar_name).cloneNode()
     }
     return null
