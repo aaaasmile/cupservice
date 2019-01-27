@@ -5,7 +5,7 @@ import { Player } from '../../common/class/player.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
 import { BriscBaseOptGfx } from './brisc-base-opt-gfx.js'
-import { BuildStaticSceneHtml } from './static-scene-gfx.js'
+import { CreateDiv, BuildStaticSceneHtml } from './static-scene-gfx.js'
 
 
 export class BriscBaseGfx {
@@ -60,7 +60,7 @@ export class BriscBaseGfx {
     if (cache) {
       this.buildScene(cache)
     } else {
-      if(this.deck_loading === deck_name){
+      if (this.deck_loading === deck_name) {
         return
       }
       this.deck_loading = deck_name
@@ -81,6 +81,24 @@ export class BriscBaseGfx {
     } else {
       this.st_beforeStartGame(cardgfxCache)
     }
+  }
+
+  startNewGame(cardgfxCache) {
+    console.log('Start a new Game')
+    let tableStateCore = new TableStateCore(this._b2core._coreStateManager, this._b2core._myOpt.tot_num_players);
+    let b2core = this._b2core
+    let subsc = tableStateCore.TableFullSub.subscribe(next => {
+      subsc.unsubscribe();
+      tableStateCore.dispose();
+      b2core.StartNewMatch(next);
+    });
+
+    this.clearBoard()
+    this.st_onplayingGame(cardgfxCache)
+
+    this.playerCpu.sit_down(0);
+    this.playerMe.sit_down(1);
+    this._b2core._coreStateManager.process_all()
   }
 
   // getOptionsForNewGame() { ????????
@@ -123,35 +141,30 @@ export class BriscBaseGfx {
       });
   }
 
-  startNewGame(cardgfxCache) {
-    console.log('Start a new Game')
-    let tableStateCore = new TableStateCore(this._b2core._coreStateManager, this._b2core._myOpt.tot_num_players);
-    let b2core = this._b2core
-    let subsc = tableStateCore.TableFullSub.subscribe(next => {
-      subsc.unsubscribe();
-      tableStateCore.dispose();
-      b2core.StartNewMatch(next);
-    });
-
-    this.clearBoard()
-    this.st_onplayingGame(cardgfxCache)
-
-    this.playerCpu.sit_down(0);
-    this.playerMe.sit_down(1);
-    this._b2core._coreStateManager.process_all()
-  }
-
   st_onplayingGame(cardgfxCache) {
     console.log('st_onplayingGame')
-    this._boardNode.appendChild(BuildStaticSceneHtml(cardgfxCache))
+    let builder = BuildStaticSceneHtml(cardgfxCache)
+    let root = builder(this.handMeGxc)
+    this._boardNode.appendChild(root)
     // TODO rebuild the current game scene
     //this._boardNode.appendChild(cache.cards[0]) // TODO set card from a class
   }
 
-
   st_terminatedGame() {
     console.warn('st_terminatedGame is not im plemented')
     // TODO
+  }
+
+  handMeGxc(cardgfxCache) {
+    let handMeDiv = CreateDiv("handMe")
+    for (let i = 0; i < 3; i++) {
+      let cardInHand = CreateDiv("cardHand")
+      cardInHand.setAttribute("data-card", `_As`) // TOD set from core
+      let img = cardgfxCache.get_cardimage(10)
+      cardInHand.appendChild(img)
+      handMeDiv.appendChild(cardInHand)
+    }
+    return handMeDiv
   }
 
   clearBoard() {
