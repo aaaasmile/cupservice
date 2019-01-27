@@ -5,7 +5,7 @@ import { Player } from '../../common/class/player.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
 import { BriscBaseOptGfx } from './brisc-base-opt-gfx.js'
-import { CreateDiv, BuildStaticSceneHtml } from './static-scene-gfx.js'
+import { CreateDiv, BuildStaticSceneHtml, LoadAssets } from './static-scene-gfx.js'
 
 
 export class BriscBaseGfx {
@@ -65,7 +65,7 @@ export class BriscBaseGfx {
         return
       }
       this.deck_loading = deck_name
-      this.loadAssets(cardLoader, deck_name, (cache) => {
+      LoadAssets(cardLoader, deck_name, (cache) => {
         this.deck_loading = null
         this.buildScene(cache)
       })
@@ -209,30 +209,5 @@ export class BriscBaseGfx {
     })
     
   }
-
-  loadAssets(cardLoader, deck_name, cbLoaded) {
-    console.log("Load images for ", deck_name)
-    if (!deck_name) {
-      throw new Error('deck name not set')
-    }
-    let totItems = -1
-    cardLoader.loadResources(deck_name)
-      .subscribe(x => {
-        if (totItems === -1) {
-          totItems = x
-          console.log("Expect total items to load: ", x)
-          return
-        }
-      },
-        (err) => {
-          console.error("Load error", err)
-        }, () => {
-          console.log("Load Completed")
-          let cache = cardLoader.getLoaded(deck_name)
-          cbLoaded(cache)
-        })
-  }
-
-
 
 }

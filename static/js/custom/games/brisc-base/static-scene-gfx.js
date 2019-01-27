@@ -63,3 +63,26 @@ export function BuildStaticSceneHtml(cardgfxCache) {
 </div>
 */
 }
+
+export function LoadAssets(cardLoader, deck_name, cbLoaded) {
+  console.log("Load images for ", deck_name)
+  if (!deck_name) {
+    throw new Error('deck name not set')
+  }
+  let totItems = -1
+  cardLoader.loadResources(deck_name)
+    .subscribe(x => {
+      if (totItems === -1) {
+        totItems = x
+        console.log("Expect total items to load: ", x)
+        return
+      }
+    },
+      (err) => {
+        console.error("Load error", err)
+      }, () => {
+        console.log("Load Completed")
+        let cache = cardLoader.getLoaded(deck_name)
+        cbLoaded(cache)
+      })
+}
