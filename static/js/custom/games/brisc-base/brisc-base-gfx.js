@@ -167,6 +167,17 @@ export class BriscBaseGfx {
     return handMeDiv
   }
 
+  handCpuGxc(cardgfxCache) {
+    let handMeDiv = CreateDiv("handCpu")
+    for (let i = 0; i < 3; i++) { // TODO set from core
+      let cardInHand = CreateDiv("cardDecked")
+      let img = cardgfxCache.get_cardimage(10)
+      cardInHand.appendChild(img)
+      handMeDiv.appendChild(cardInHand)
+    }
+    return handMeDiv
+  }
+
   clearBoard() {
     while (this._boardNode.firstChild) {
       this._boardNode.removeChild(this._boardNode.firstChild);

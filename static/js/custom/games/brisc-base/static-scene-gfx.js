@@ -19,18 +19,6 @@ export function CreateDiv(clname) {
 
 export function BuildStaticSceneHtml(cardgfxCache) {
   console.log('Create html for the static scene')
-  // let rootDiv = createDiv("staticScene")
-
-  // let handMeDiv = createDiv("handMe")
-  // for (let i = 0; i < 3; i++) {
-  //   let cardInHand = createDiv("cardHand")
-  //   cardInHand.setAttribute("data-card", `_As`) // TOD set from core
-  //   let img = cardgfxCache.get_cardimage(10)
-  //   cardInHand.appendChild(img)
-  //   handMeDiv.appendChild(cardInHand)
-  // }
-
-  // rootDiv.appendChild(handMeDiv)
   let rootDiv = CreateDiv("staticScene")
 
   return function (...parameters) {
@@ -41,10 +29,7 @@ export function BuildStaticSceneHtml(cardgfxCache) {
     
     return rootDiv
   }
-  //let builder = prepareRoot()
-
-  //return rootDiv
-
+  
   /*
 <div class="staticScene">
 <div class="handMe">

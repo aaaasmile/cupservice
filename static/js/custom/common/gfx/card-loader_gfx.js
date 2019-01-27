@@ -8,7 +8,7 @@ class CardImageCache {
   constructor(deck_type) {
     this.current_deck_type = deck_type
     this.cards = []
-    this.symbols_card = []
+    this.symbols_card = new Map()
     this.cards_rotated = []
     this.completed = false
     this.scene_background = null
@@ -18,13 +18,17 @@ class CardImageCache {
     this.completed = true
   }
 
-  get_cardimage(posIx){
-    if(posIx > 0 && posIx < this.cards.length){
+  get_cardimage(posIx) {
+    if (posIx > 0 && posIx < this.cards.length) {
       let img = this.cards[posIx]
       let clone = img.cloneNode() // clone beacuse it could be used only once
       return clone
     }
-    throw(new Error(`${posIx}Ix out of range`))
+    throw (new Error(`${posIx}Ix out of range`))
+  }
+
+  get_symbol_img(posIx) {
+
   }
 
 }
@@ -67,7 +71,7 @@ class CardLoaderGfx {
       nomi_simboli = ['simbo', 'simbo', 'simbo']
       nomi_semi = ["fiori", "quadr", "cuori", "picch"]
     }
-    
+
     let imageCache = new CardImageCache(deck_type)
     let folder_fullpath = this.getFolderCardsFullpath(deck_type)
     this.map_image_cache.set(deck_type, imageCache)
@@ -123,21 +127,35 @@ class CardLoaderGfx {
       // symbols
       console.log("Load all symbols...")
       for (let i = 0; i < nomi_simboli.length; i++) {
-        let seed = nomi_simboli[i]
-        card_fname = `${folder_fullpath}01_${seed}.png`
+        let nome_simbolo = nomi_simboli[i]
+        card_fname = `${folder_fullpath}01_${nome_simbolo}.png`
         let img = new Image()
         img.src = card_fname
         countToLoad += 1
-        img.onload = () => {
-          //console.log('Image Loaded: ', img.src);
-          //let symb = new createjs.Bitmap(img);
-          let symb = img // TODO use a class
-          imageCache.symbols_card[i] = symb
-          countLoaded += 1
-          obs.next(countLoaded)
-          if (countToLoad <= countLoaded) {
-            imageCache.set_completed()
-            obs.complete()
+
+        if (i === 0) {
+          img.onload = () => {
+            setTimeout(() => {
+              console.log('First symbol Loaded: %d %s, %s', i, img.src, nome_simbolo);
+              imageCache.symbols_card.set(nome_simbolo, img)
+              countLoaded += 1
+              obs.next(countLoaded)
+              if (countToLoad <= countLoaded) {
+                imageCache.set_completed()
+                obs.complete()
+              }
+            }, 1000)
+          }
+        } else {
+          img.onload = () => {
+            console.log('Image Loaded: %d %s, %s', i, img.src, nome_simbolo);
+            imageCache.symbols_card.set(nome_simbolo, img)
+            countLoaded += 1
+            obs.next(countLoaded)
+            if (countToLoad <= countLoaded) {
+              imageCache.set_completed()
+              obs.complete()
+            }
           }
         }
       }
@@ -170,7 +188,7 @@ export function GetCardLoaderGfx() { // GetCardLoaderGfx is a singleton to use t
   if (!provider) {
     console.log('new CardLoaderGfx')
     provider = new CardLoaderGfx()
-  }else{
+  } else {
     console.log('CardLoaderGfx')
   }
   return provider
