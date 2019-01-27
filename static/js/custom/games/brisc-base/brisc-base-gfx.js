@@ -77,6 +77,7 @@ export class BriscBaseGfx {
     if (matchInfo.is_terminated()) {
       this.st_terminatedGame()
     } else if (matchInfo.is_ongoing()) {
+      this.clearBoard()
       this.st_onplayingGame(cardgfxCache)
     } else {
       this.st_beforeStartGame(cardgfxCache)
@@ -100,12 +101,6 @@ export class BriscBaseGfx {
     this.playerMe.sit_down(1);
     this._b2core._coreStateManager.process_all()
   }
-
-  // getOptionsForNewGame() { ????????
-  //   return {
-  //     players: [this.playerCpu._name, this.playerMe._name] //TOD set all other options from dialogbox
-  //   }
-  // }
 
   st_beforeStartGame(cardgfxCache) {
     let optHtml = this._optDlgGfx.render()
@@ -156,7 +151,7 @@ export class BriscBaseGfx {
   handMeGxc(cardgfxCache) {
     let handMeDiv = CreateDiv("handMe")
     for (let i = 0; i < 3; i++) {
-      let cardInHand = CreateDiv("cardHand")
+      let cardInHand = CreateDiv(`cardHand pos${i}`)
       cardInHand.setAttribute("data-card", `_As`) // TOD set from core
       let img = cardgfxCache.get_cardimage(10)
       cardInHand.appendChild(img)
@@ -168,7 +163,7 @@ export class BriscBaseGfx {
   handCpuGxc(cardgfxCache) {
     let handCpu = CreateDiv("handCpu")
     for (let i = 0; i < 3; i++) { // TODO set from core
-      let cardInHand = CreateDiv("cardDecked")
+      let cardInHand = CreateDiv(`cardDecked pos${i}`)
       let img = cardgfxCache.get_symbol_img('cope')
       cardInHand.appendChild(img)
       handCpu.appendChild(cardInHand)
@@ -183,7 +178,31 @@ export class BriscBaseGfx {
   }
 
   on_all_ev_new_match(args) {
-    console.log('New match')
+    console.log('New match', args)
+  }
+
+  on_pl_ev_brisc_new_giocata(args) {
+    console.log('New giocata', args)
+    let newhand = []
+    let cardgfxCache = this._cardLoader.getCurrentCache()
+    args.carte.forEach((lbl, i) => {
+      let cardInHand = CreateDiv(`cardHand pos${i}`)
+      cardInHand.setAttribute("data-card", lbl)
+      let card_info = this._b2core._deck_info.get_card_info(lbl)
+      let img = cardgfxCache.get_cardimage(card_info.ix)
+      cardInHand.appendChild(img)
+      newhand.push(cardInHand)
+    })
+    // update handme div
+    let handMeDiv = document.getElementsByClassName("handMe")[0]
+    // cleanup
+    while(handMeDiv.firstChild){
+      handMeDiv.removeChild(handMeDiv.firstChild)
+    }
+    newhand.forEach((e) => {
+      handMeDiv.appendChild(e)
+    })
+    
   }
 
   loadAssets(cardLoader, deck_name, cbLoaded) {

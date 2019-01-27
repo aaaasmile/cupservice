@@ -43,18 +43,23 @@ class CardLoaderGfx {
     console.log('CardLoaderGfx created (singleton)')
     this.map_image_cache = new Map()
     this.path_prefix = 'static/'
+    this.current_cache = null
   }
 
   getLoaded(deck_type) {
     if (this.map_image_cache.has(deck_type)) {
       let cc = this.map_image_cache.get(deck_type)
       if (cc.completed) {
+        this.current_cache = cc
         return cc
       }
     }
     return null
   }
 
+  getCurrentCache(){
+    return this.current_cache
+  }
 
   getFolderCardsFullpath(deck_type) {
     return this.path_prefix + "assets/carte/" + deck_type + "/"
