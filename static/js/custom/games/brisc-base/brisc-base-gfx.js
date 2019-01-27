@@ -5,7 +5,7 @@ import { Player } from '../../common/class/player.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
 import { BriscBaseOptGfx } from './brisc-base-opt-gfx.js'
-import { CreateDiv, BuildStaticSceneHtml, LoadAssets } from './static-scene-gfx.js'
+import { CreateDiv, CreateSceneBuilder, LoadAssets } from './static-scene-gfx.js'
 
 
 export class BriscBaseGfx {
@@ -139,7 +139,7 @@ export class BriscBaseGfx {
 
   st_onplayingGame(cardgfxCache) {
     console.log('st_onplayingGame')
-    let builder = BuildStaticSceneHtml(cardgfxCache)
+    let builder = CreateSceneBuilder(cardgfxCache)
     let root = builder(this.handCpuGxc, this.handMeGxc)
     this._boardNode.appendChild(root)
   }

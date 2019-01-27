@@ -17,7 +17,7 @@ export function CreateDiv(clname) {
 }
 
 
-export function BuildStaticSceneHtml(cardgfxCache) {
+export function CreateSceneBuilder(cardgfxCache) {
   console.log('Create html for the static scene')
   let rootDiv = CreateDiv("staticScene")
 
