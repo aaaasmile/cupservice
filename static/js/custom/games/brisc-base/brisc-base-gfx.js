@@ -17,7 +17,7 @@ export class BriscBaseGfx {
     }
     this._cardLoader = GetCardLoaderGfx()
     this.handMeGxc = this.handMeGxc.bind(this)
-    this.handCpuGxc = this.handMeGxc.bind(this)
+    this.handCpuGxc = this.handCpuGxc.bind(this)
     this.cpuPlayerGxc = this.cpuPlayerGxc.bind(this)
     this.mePlayerGxc = this.mePlayerGxc.bind(this)
 
@@ -174,6 +174,7 @@ export class BriscBaseGfx {
 
 
   handMeGxc(cardgfxCache) {
+    console.log('Create Handme')
     let handMeDiv = CreateDiv("handMe")
     let numCards = this._b2core._core_data.getNumCardInHand(this.playerMe._name)
     for (let i = 0; i < numCards; i++) {
@@ -242,14 +243,14 @@ export class BriscBaseGfx {
       handMeDiv.removeChild(handMeDiv.firstChild)
     }
     newhand.forEach((e) => {
-      handMeDiv.appendChild(e)
+      handMeDiv.appendChild(e) // TODO usa handMe fisso con immagini in hidden per sapere solo le posizioni.
     })
 
     decked.forEach((e, i) => {
       this._boardNode.appendChild(e)
-      setTimeout(() => {
-        let x_dest = handMeDiv.offsetLeft + newhand[i].offsetLeft
-        let y_dest = handMeDiv.offsetTop + newhand[i].offsetTop
+      setTimeout(() => { // timeout per il dom render
+        let x_dest = handMeDiv.offsetLeft + newhand[i].firstChild.offsetLeft // Il decked deve andare a coprire l'immagine handMe -> cardHand -> Img
+        let y_dest = handMeDiv.offsetTop + newhand[i].firstChild.offsetTop
         e.style.left = x_dest + 'px'
         e.style.top = y_dest + 'px'
         console.log('e is now on :', e.style.left, e.style.top)

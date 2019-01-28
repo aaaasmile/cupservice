@@ -30,7 +30,7 @@
 
 .cardHand, .cardDecked{
   display: inline-block;
-  padding: 0.2em;
+  padding: 5px;
 }
 
 .aniDeck{
