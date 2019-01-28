@@ -211,12 +211,17 @@ export class BriscBaseGfx {
   }
 
   on_pl_ev_brisc_new_giocata(args) {
+    this._b2core._coreStateManager.suspend_proc_gevents('Start animation new giocata') // stop core processing until animation end
+  
     console.log('New giocata', args)
     let newhand = []
     let cardgfxCache = this._cardLoader.getCurrentCache()
     args.carte.forEach((lbl, i) => {
       let cardInHand = CreateDiv(`cardHand pos${i}`)
       cardInHand.setAttribute("data-card", lbl)
+      //cardInHand.style.visibility = 'hidden'
+      //cardInHand.style.left = -200 + 'px'
+      //cardInHand.style.top = -200 + 'px'
       let card_info = this._b2core._deck_info.get_card_info(lbl)
       let img = cardgfxCache.get_cardimage(card_info.ix)
       cardInHand.appendChild(img)
@@ -228,8 +233,19 @@ export class BriscBaseGfx {
     while (handMeDiv.firstChild) {
       handMeDiv.removeChild(handMeDiv.firstChild)
     }
+    // let x_dest = handMeDiv.offsetLeft
+    // let y_dest = handMeDiv.offsetTop
+    // newhand.forEach((e) => {
+    //   //this._boardNode.appendChild(e)
+    //   //e.style.left = x_dest + 'px'
+    //   //e.style.top = y_dest + 'px'
+    //   handMeDiv.appendChild(e)
+    //   console.log('e is now on :', e.style.left, e.style.top)
+    // })
+    
     newhand.forEach((e) => {
       handMeDiv.appendChild(e)
+      //console.log('e is now on :', e.style.left, e.style.top)
     })
 
   }
