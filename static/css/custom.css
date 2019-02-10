@@ -31,6 +31,8 @@
 .cardHand, .cardDecked{
   display: inline-block;
   padding: 5px;
+  transform-style: preserve-3d;
+  transition: transform .6s;
 }
 
 .aniDeck{
@@ -52,13 +54,17 @@
   bottom: 60;
 }
 
+.cardHand.flip {
+  transform: rotateY(180deg);
+}
+
 .front-face,
 .back-face {
   display: inline-block;
 }
 
 .front-face {
-  /* transform: rotateY(180deg); */
+  transform: rotateY(180deg);
 }
 
 .back-face{

@@ -224,7 +224,6 @@ export class BriscBaseGfx {
       cardInHand.setAttribute("data-card", lbl)
 
       let aniDecked = CreateDiv(`aniDeck`)
-      //cardInHand.style.visibility = 'hidden'
       aniDecked.style.left = -200 + 'px'
       aniDecked.style.top = -200 + 'px'
       let imgDeck = cardgfxCache.get_symbol_img('cope')
@@ -261,12 +260,18 @@ export class BriscBaseGfx {
         // transation is on top end left (2 transactions)
         trCount[i] += 1;
         if (trCount[i] >= 2){
-          console.log('Animation end: ', tr, e)
-          this._boardNode.removeChild(e)
+          console.log('Animation distrib hand me end: ', tr, e)
+          let backface = newhand[i].getElementsByClassName("back-face")[0]
+          backface.style.visibility = "visible"
+          let frontface = newhand[i].getElementsByClassName("front-face")[0]
+          frontface.style.visibility = "visible"
+
+          this._boardNode.removeChild(e) // ani card non serve più
+          newhand[i].classList.add("flip")
         }
       })
       setTimeout(() => { // timeout per il dom render
-        let x_dest = handMeDiv.offsetLeft + newhand[i].firstChild.offsetLeft // Il decked deve andare a coprire l'immagine handMe -> cardHand -> Img
+        let x_dest = handMeDiv.offsetLeft + newhand[i].firstChild.offsetLeft
         let y_dest = handMeDiv.offsetTop + newhand[i].firstChild.offsetTop
         e.style.left = x_dest + 'px'
         e.style.top = y_dest + 'px'
