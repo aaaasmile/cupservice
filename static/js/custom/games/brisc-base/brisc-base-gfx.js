@@ -218,6 +218,8 @@ export class BriscBaseGfx {
     let newhand = []
     let decked = []
     let cardgfxCache = this._cardLoader.getCurrentCache()
+    // ***** HAND Me ********
+    // update hand Me
     args.carte.forEach((lbl, i) => {
 
       let cardInHand = CreateDiv(`cardHand pos${i}`)
@@ -251,7 +253,7 @@ export class BriscBaseGfx {
     newhand.forEach((e) => {
       handMeDiv.appendChild(e) 
     })
-
+    // animate hand me
     let trCount = [0,0,0]
     decked.forEach((e, i) => {
       this._boardNode.appendChild(e)
@@ -279,6 +281,62 @@ export class BriscBaseGfx {
       }, 0)
     })
 
+    this.animateHandCpu(cardgfxCache)
+  }// end on_pl_ev_brisc_new_giocata
+
+  animateHandCpu(cardgfxCache){
+    console.log('Animate hand cpu')
+    let deckedCpu = []
+    let newHandCpu = []
+    for(let i = 0; i < this._b2core._core_data.num_of_cards_onhandplayer; i++){
+      let cardInHandCpu = CreateDiv(`cardDecked pos${i}`)
+      let aniDecked = CreateDiv(`aniDeck`)
+      aniDecked.style.left = -200 + 'px'
+      aniDecked.style.top = -200 + 'px'
+      let imgDeck = cardgfxCache.get_symbol_img('cope')
+      aniDecked.appendChild(imgDeck)
+      deckedCpu.push(aniDecked)
+
+      let imgCope = cardgfxCache.get_symbol_img('cope')
+      imgCope.style.visibility = "hidden"
+      cardInHandCpu.appendChild(imgCope)
+
+      newHandCpu.push(cardInHandCpu)
+    }
+
+    let handCpuDiv = document.getElementsByClassName("handCpu")[0]
+    // cleanup
+    while (handCpuDiv.firstChild) {
+      handCpuDiv.removeChild(handCpuDiv.firstChild)
+    };
+
+    newHandCpu.forEach((e) => {
+      handCpuDiv.appendChild(e) 
+    })
+
+    // Animate hand cpu
+    let trCountCpu = [0,0,0]
+    deckedCpu.forEach((e, i) => {
+      this._boardNode.appendChild(e)
+      e.addEventListener("transitionend", (tr) => {
+        // transation is on top end left (2 transactions)
+        trCountCpu[i] += 1;
+        if (trCountCpu[i] >= 2){
+          console.log('Animation distrib hand CPU end: ', tr, e)
+          let backface = newHandCpu[i].firstChild
+          backface.style.visibility = "visible"
+        
+          this._boardNode.removeChild(e) // ani card non serve più
+        }
+      })
+      setTimeout(() => { // timeout per il dom render
+        let x_dest = handCpuDiv.offsetLeft + newHandCpu[i].firstChild.offsetLeft
+        let y_dest = handCpuDiv.offsetTop + newHandCpu[i].firstChild.offsetTop
+        e.style.left = x_dest + 'px'
+        e.style.top = y_dest + 'px'
+        console.log('cpu e is now on :', e.style.left, e.style.top)
+      }, 0)
+    })
   }
 
 }
