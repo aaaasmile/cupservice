@@ -273,8 +273,8 @@ export class BriscBaseGfx {
         }
       })
       setTimeout(() => { // timeout per il dom render
-        let x_dest = handMeDiv.offsetLeft + newhand[i].firstChild.offsetLeft
-        let y_dest = handMeDiv.offsetTop + newhand[i].firstChild.offsetTop
+        let x_dest = handMeDiv.offsetLeft + newhand[i].offsetLeft
+        let y_dest = handMeDiv.offsetTop + newhand[i].offsetTop
         e.style.left = x_dest + 'px'
         e.style.top = y_dest + 'px'
         console.log('e is now on :', e.style.left, e.style.top)
@@ -318,24 +318,27 @@ export class BriscBaseGfx {
     let trCountCpu = [0,0,0]
     deckedCpu.forEach((e, i) => {
       this._boardNode.appendChild(e)
+     
       e.addEventListener("transitionend", (tr) => {
         // transation is on top end left (2 transactions)
         trCountCpu[i] += 1;
         if (trCountCpu[i] >= 2){
-          console.log('Animation distrib hand CPU end: ', tr, e)
+          console.log(`Animation ${i} distrib hand CPU end: `, tr, e)
           let backface = newHandCpu[i].firstChild
           backface.style.visibility = "visible"
         
           this._boardNode.removeChild(e) // ani card non serve più
         }
       })
+
       setTimeout(() => { // timeout per il dom render
-        let x_dest = handCpuDiv.offsetLeft + newHandCpu[i].firstChild.offsetLeft
-        let y_dest = handCpuDiv.offsetTop + newHandCpu[i].firstChild.offsetTop
+        let x_dest = handCpuDiv.offsetLeft + newHandCpu[i].offsetLeft
+        let y_dest = handCpuDiv.offsetTop + newHandCpu[i].offsetTop
         e.style.left = x_dest + 'px'
         e.style.top = y_dest + 'px'
-        console.log('cpu e is now on :', e.style.left, e.style.top)
-      }, 0)
+        console.log(`cpu ix ${i} is now on :`, e.style.left, e.style.top)
+      
+      }, 300)
     })
   }
 
