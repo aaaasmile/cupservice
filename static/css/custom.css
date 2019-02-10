@@ -51,3 +51,16 @@
 .playerMe{
   bottom: 60;
 }
+
+.front-face,
+.back-face {
+  display: inline-block;
+}
+
+.front-face {
+  /* transform: rotateY(180deg); */
+}
+
+.back-face{
+  position: absolute;
+}

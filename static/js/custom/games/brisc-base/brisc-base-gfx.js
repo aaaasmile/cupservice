@@ -233,6 +233,13 @@ export class BriscBaseGfx {
 
       let card_info = this._b2core._deck_info.get_card_info(lbl)
       let img = cardgfxCache.get_cardimage(card_info.ix)
+      img.classList.add("front-face")
+      img.style.visibility = "hidden"
+      let imgCope = cardgfxCache.get_symbol_img('cope')
+      imgCope.classList.add("back-face")
+      imgCope.style.visibility = "hidden"
+      
+      cardInHand.appendChild(imgCope)
       cardInHand.appendChild(img)
       newhand.push(cardInHand)
     })
@@ -243,11 +250,21 @@ export class BriscBaseGfx {
       handMeDiv.removeChild(handMeDiv.firstChild)
     }
     newhand.forEach((e) => {
-      handMeDiv.appendChild(e) // TODO usa handMe fisso con immagini in hidden per sapere solo le posizioni.
+      handMeDiv.appendChild(e) 
     })
 
+    let trCount = [0,0,0]
     decked.forEach((e, i) => {
       this._boardNode.appendChild(e)
+      console.log('Subscribe to transition end on ', e)
+      e.addEventListener("transitionend", (tr) => {
+        // transation is on top end left (2 transactions)
+        trCount[i] += 1;
+        if (trCount[i] >= 2){
+          console.log('Animation end: ', tr, e)
+          this._boardNode.removeChild(e)
+        }
+      })
       setTimeout(() => { // timeout per il dom render
         let x_dest = handMeDiv.offsetLeft + newhand[i].firstChild.offsetLeft // Il decked deve andare a coprire l'immagine handMe -> cardHand -> Img
         let y_dest = handMeDiv.offsetTop + newhand[i].firstChild.offsetTop
