@@ -5,7 +5,7 @@ import { Player } from '../../common/class/player.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
 import { BriscBaseOptGfx } from './brisc-base-opt-gfx.js'
-import { CreatePlayerLabel, CreateDiv, CreateSceneBuilder, LoadAssets, AnimateHandCpu, AnimateHandMe } from './static-scene-gfx.js'
+import  * as sc from './static-scene-gfx.js'
 
 
 export class BriscBaseGfx {
@@ -70,7 +70,7 @@ export class BriscBaseGfx {
         return
       }
       this.deck_loading = deck_name
-      LoadAssets(cardLoader, deck_name, (cache) => {
+      sc.LoadAssets(cardLoader, deck_name, (cache) => {
         this.deck_loading = null
         this.buildScene(cache)
       })
@@ -144,7 +144,7 @@ export class BriscBaseGfx {
 
   st_onplayingGame(cardgfxCache) {
     console.log('st_onplayingGame')
-    let builder = CreateSceneBuilder(cardgfxCache)
+    let builder = sc.CreateSceneBuilder(cardgfxCache)
     let root = builder(this.handCpuGxc,
       this.cpuPlayerGxc,
       this.handMeGxc,
@@ -158,15 +158,15 @@ export class BriscBaseGfx {
   }
 
   cpuPlayerGxc(cardgfxCache) {
-    let playerDiv = CreateDiv("player playerCpu")
-    let eleA = CreatePlayerLabel("yellow", this.playerCpu, cardgfxCache)
+    let playerDiv = sc.CreateDiv("player playerCpu")
+    let eleA = sc.CreatePlayerLabel("yellow", this.playerCpu, cardgfxCache)
     playerDiv.appendChild(eleA)
     return playerDiv
   }
 
   mePlayerGxc(cardgfxCache) {
-    let playerDiv = CreateDiv("player playerMe")
-    let eleA = CreatePlayerLabel("blue", this.playerMe, cardgfxCache)
+    let playerDiv = sc.CreateDiv("player playerMe")
+    let eleA = sc.CreatePlayerLabel("blue", this.playerMe, cardgfxCache)
     playerDiv.appendChild(eleA)
 
     return playerDiv
@@ -175,10 +175,10 @@ export class BriscBaseGfx {
 
   handMeGxc(cardgfxCache) {
     console.log('Create Handme')
-    let handMeDiv = CreateDiv("handMe")
+    let handMeDiv = sc.CreateDiv("handMe")
     let numCards = this._b2core._core_data.getNumCardInHand(this.playerMe._name)
     for (let i = 0; i < numCards; i++) {
-      let cardInHand = CreateDiv(`cardHand pos${i}`)
+      let cardInHand = scCreateDiv(`cardHand pos${i}`)
       let lbl = this._b2core._core_data.getCardInHand(this.playerMe._name, i)
       cardInHand.setAttribute("data-card", lbl)
       let card_info = this._b2core._deck_info.get_card_info(lbl)
@@ -196,9 +196,9 @@ export class BriscBaseGfx {
 
   handCpuGxc(cardgfxCache) {
     let numCards = this._b2core._core_data.getNumCardInHand(this.playerCpu._name)
-    let handCpu = CreateDiv("handCpu")
+    let handCpu = sc.CreateDiv("handCpu")
     for (let i = 0; i < numCards; i++) {
-      let cardInHand = CreateDiv(`cardDecked pos${i}`)
+      let cardInHand = sc.CreateDiv(`cardDecked pos${i}`)
       let img = cardgfxCache.get_symbol_img('cope')
       cardInHand.appendChild(img)
       handCpu.appendChild(cardInHand)
@@ -224,8 +224,8 @@ export class BriscBaseGfx {
     let cardgfxCache = this._cardLoader.getCurrentCache()
 
     let obsAnimator = rxjs.Observable.create((obs) => {
-      AnimateHandMe(this._boardNode, args.carte, cardgfxCache, obs, this._b2core._deck_info, this.handleCLickMe)
-      AnimateHandCpu(this._boardNode, cardgfxCache, obs, this._b2core._core_data.num_of_cards_onhandplayer)
+      sc.AnimateHandMe(this._boardNode, args.carte, cardgfxCache, obs, this._b2core._deck_info, this.handleCLickMe)
+      sc.AnimateHandCpu(this._boardNode, cardgfxCache, obs, this._b2core._core_data.num_of_cards_onhandplayer)
     })
     let aniCount = 0
     obsAnimator.subscribe(x => {
