@@ -27,10 +27,10 @@ export function CreateSceneBuilder(cardgfxCache) {
       let arr_args = parameters[i + 1]
       rootDiv.appendChild(childDiv(cardgfxCache, arr_args))
     }
-    
+
     return rootDiv
   }
-  
+
   /*
 <div class="staticScene">
 <div class="handMe">
@@ -88,22 +88,22 @@ export function LoadAssets(cardLoader, deck_name, cbLoaded) {
       })
 }
 
-export function CreatePlayerLabel(color, player, cardgfxCache){
+export function CreatePlayerLabel(color, player, cardgfxCache) {
   let eleA = document.createElement("div")
-    eleA.className = `ui ${color} image label`
-    
-    let avatarImg = cardgfxCache.get_avatar_img(player._avatar_name)
-    if(avatarImg){
-      eleA.appendChild(avatarImg)  
-    }
-    eleA.appendChild(document.createTextNode(player._name))
-    let divDet = CreateDiv("detail")
-    divDet.appendChild(document.createTextNode(player._avatar_detail))
-    eleA.appendChild(divDet)
-    return eleA
+  eleA.className = `ui ${color} image label`
+
+  let avatarImg = cardgfxCache.get_avatar_img(player._avatar_name)
+  if (avatarImg) {
+    eleA.appendChild(avatarImg)
+  }
+  eleA.appendChild(document.createTextNode(player._name))
+  let divDet = CreateDiv("detail")
+  divDet.appendChild(document.createTextNode(player._avatar_detail))
+  eleA.appendChild(divDet)
+  return eleA
 }
 
-export function AnimateHandMe(boardNode, carte,cardgfxCache, obs, deck_info, handleCLickMe) {
+export function AnimateHandMe(boardNode, carte, cardgfxCache, obs, deck_info, handleCLickMe) {
   let newhand = []
   let decked = []
 
@@ -170,7 +170,7 @@ export function AnimateHandMe(boardNode, carte,cardgfxCache, obs, deck_info, han
   })
 }
 
-export function  AnimateHandCpu(boardNode, cardgfxCache, obs, num_of_cards_onhandplayer) {
+export function AnimateHandCpu(boardNode, cardgfxCache, obs, num_of_cards_onhandplayer) {
   console.log('Animate hand cpu')
   let deckedCpu = []
   let newHandCpu = []
@@ -279,8 +279,101 @@ export function HandCpuGxc(cardgfxCache, arr_args) {
   return handCpu
 }
 
-export function  ClearBoard(boardNode) {
+export function ClearBoard(boardNode) {
   while (boardNode.firstChild) {
     boardNode.removeChild(boardNode.firstChild);
   }
+}
+
+export class GameRenderGfx {
+
+  constructor(match_info, gfx, optDlgGfx){
+    this._math_info = match_info
+    this._gfx = gfx
+    this._optDlgGfx = optDlgGfx
+  }
+
+  RenderScene(boardId, cardLoader, deck_name) {
+    this._boardNode = document.getElementById(boardId)
+    this._cardLoader = cardLoader
+    this.buildSceneWithDeck(cardLoader, deck_name)
+  }
+
+  buildSceneWithDeck(cardLoader, deck_name) {
+    let cache = cardLoader.getLoaded(deck_name)
+    if (cache) {
+      this.buildScene(cache)
+    } else {
+      if (this.deck_loading === deck_name) {
+        return
+      }
+      this.deck_loading = deck_name
+      LoadAssets(cardLoader, deck_name, (cache) => {
+        this.deck_loading = null
+        this.buildScene(cache)
+      })
+    }
+  }
+
+  buildScene(cardgfxCache) {
+    console.log('build scene')
+    let matchInfo = this._math_info
+    if (matchInfo.is_terminated()) {
+      this.st_terminatedGame()
+    } else if (matchInfo.is_ongoing()) {
+      ClearBoard(this._boardNode)
+      this.st_onplayingGame(cardgfxCache)
+    } else {
+      this.st_beforeStartGame(cardgfxCache)
+    }
+  }
+
+  st_beforeStartGame(cardgfxCache) {
+    let optHtml = this._optDlgGfx.render()
+    this._boardNode.insertAdjacentHTML('beforeend', `
+    <div>
+      <div class="ui attached message">
+        <div class="ui buttons right floated content">
+          <button id="startgame-btn" class="ui primary button">Inizia</button>
+          <button id="optgame-btn" class="ui button">Opzioni</button>
+        </div>
+        <div class="header">
+          Benvenuto
+        </div>
+        <p>Seleziona un comando per partire</p>
+      </div>
+      ${optHtml}
+    </div>
+    `)
+    document.getElementById('startgame-btn')
+      .addEventListener('click', (event) => {
+        console.log('Start a new game')
+        ClearBoard(this._boardNode)
+        this.st_onplayingGame(cardgfxCache)
+        this._gfx.OnStartNewGame(cardgfxCache)
+      });
+    document.getElementById('optgame-btn')
+      .addEventListener('click', () => {
+        this._optDlgGfx.showModal((res) => {
+          this._gfx.OnAssignOptionGfx(res)
+          if (this._opt.deck_name !== res.deck_name) {
+            this._opt.deck_name = res.deck_name
+            this.buildSceneWithDeck(this._cardLoader, this._opt.deck_name)
+          }
+        })
+      });
+  }
+
+  st_terminatedGame() {
+    console.warn('st_terminatedGame is not implemented')
+    // TODO
+  }
+
+  st_onplayingGame(cardgfxCache) {
+    console.log('st_onplayingGame')
+    let builder = CreateSceneBuilder(cardgfxCache)
+    let root = this._gfx.OnCallTheBuilder(builder)
+    this._boardNode.appendChild(root)
+  }
+
 }

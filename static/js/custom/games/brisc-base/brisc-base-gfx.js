@@ -16,6 +16,7 @@ export class BriscBaseGfx {
       scene_back: 'table_pattern'
     }
     this._cardLoader = GetCardLoaderGfx()
+    
   }
 
   prepareGame(rnd_mgr, gfx) {
@@ -25,6 +26,8 @@ export class BriscBaseGfx {
     if (rnd_mgr) {
       b2core._rnd_mgr = rnd_mgr
     }
+    this._b2core = b2core
+    this._optDlgGfx = new BriscBaseOptGfx(b2core._myOpt.num_segni_match, this._opt.deck_name)
 
     if (this.playerCpu) {
       this.playerCpu.dispose()
@@ -42,50 +45,43 @@ export class BriscBaseGfx {
     this.playerCpu.set_avatar('', 'CPU')
     //this.playerMe._alg.set_automatic_playing(true) // Want to have an automatic gui player
 
+    let that = this
+    this._gameRender = new sc.GameRenderGfx(b2core._core_data.match_info, that, this._optDlgGfx)
+
     coreStateManager.process_next()
-    return b2core
   }
 
   renderScene(boardId) {
+    // called from app.jsx
     console.log('BriscBaseGfx render scene', boardId)
     this._boardNode = document.getElementById(boardId)
-    if (!this._b2core) {
-      this._b2core = this.prepareGame(null, this)
-      this._optDlgGfx = new BriscBaseOptGfx(this._b2core._myOpt.num_segni_match, this._opt.deck_name)
+    // if (!this._b2core) {
+    //   this._b2core = this.prepareGame(null, this)
+    //   this._optDlgGfx = new BriscBaseOptGfx(this._b2core._myOpt.num_segni_match, this._opt.deck_name)
+    // }
+    // this.buildSceneWithDeck(this._cardLoader, this._opt.deck_name)
+    if (!this._b2core){
+      this.prepareGame(null, this)
     }
-    this.buildSceneWithDeck(this._cardLoader, this._opt.deck_name)
+    this._gameRender.RenderScene(boardId, this._cardLoader, this._opt.deck_name)
   }
 
-  buildSceneWithDeck(cardLoader, deck_name) {
-    let cache = cardLoader.getLoaded(deck_name)
-    if (cache) {
-      this.buildScene(cache)
-    } else {
-      if (this.deck_loading === deck_name) {
-        return
-      }
-      this.deck_loading = deck_name
-      sc.LoadAssets(cardLoader, deck_name, (cache) => {
-        this.deck_loading = null
-        this.buildScene(cache)
-      })
-    }
-  }
+  // buildScene(cardgfxCache) {
+  //   console.log('build scene')
+  //   let matchInfo = this._b2core._core_data.match_info
+  //   if (matchInfo.is_terminated()) {
+  //     this.st_terminatedGame()
+  //   } else if (matchInfo.is_ongoing()) {
+  //     sc.ClearBoard(this._boardNode)
+  //     this.st_onplayingGame(cardgfxCache)
+  //   } else {
+  //     this.st_beforeStartGame(cardgfxCache)
+  //   }
+  // }
 
-  buildScene(cardgfxCache) {
-    console.log('build scene')
-    let matchInfo = this._b2core._core_data.match_info
-    if (matchInfo.is_terminated()) {
-      this.st_terminatedGame()
-    } else if (matchInfo.is_ongoing()) {
-      sc.ClearBoard(this._boardNode)
-      this.st_onplayingGame(cardgfxCache)
-    } else {
-      this.st_beforeStartGame(cardgfxCache)
-    }
-  }
+  // Callbaccks of GameRenderGfx - start
 
-  startNewGame(cardgfxCache) {
+  OnStartNewGame(cardgfxCache) {
     console.log('Start a new Game')
     let tableStateCore = new TableStateCore(this._b2core._coreStateManager, this._b2core._myOpt.tot_num_players);
     let b2core = this._b2core
@@ -95,64 +91,26 @@ export class BriscBaseGfx {
       b2core.StartNewMatch(next);
     });
 
-    sc.ClearBoard(this._boardNode)
-    this.st_onplayingGame(cardgfxCache)
-
     this.playerCpu.sit_down(0);
     this.playerMe.sit_down(1);
     this._b2core._coreStateManager.process_all()
   }
 
-  st_beforeStartGame(cardgfxCache) {
-    let optHtml = this._optDlgGfx.render()
-    this._boardNode.insertAdjacentHTML('beforeend', `
-    <div>
-      <div class="ui attached message">
-        <div class="ui buttons right floated content">
-          <button id="startgame-btn" class="ui primary button">Inizia</button>
-          <button id="optgame-btn" class="ui button">Opzioni</button>
-        </div>
-        <div class="header">
-          Benvenuto
-        </div>
-        <p>Seleziona un comando per partire</p>
-      </div>
-      ${optHtml}
-    </div>
-    `)
-    document.getElementById('startgame-btn')
-      .addEventListener('click', (event) => {
-        console.log('Start a new game')
-        this.startNewGame(cardgfxCache)
-      });
-    document.getElementById('optgame-btn')
-      .addEventListener('click', () => {
-        this._optDlgGfx.showModal((res) => {
-          this._b2core.num_segni_match = res.num_segni_match
-          if (this._opt.deck_name !== res.deck_name) {
-            this._opt.deck_name = res.deck_name
-            this.buildSceneWithDeck(this._cardLoader, this._opt.deck_name)
-          }
-        })
-      });
-  }
-
-  st_onplayingGame(cardgfxCache) {
-    console.log('st_onplayingGame')
-    let builder = sc.CreateSceneBuilder(cardgfxCache)
+  OnCallTheBuilder(builder){
     let root = builder(
       sc.HandCpuGxc, [this.playerCpu, this._b2core._core_data],
       sc.CpuPlayerGxc, [this.playerCpu],
       sc.HandMeGxc, [this.playerMe, this._b2core._deck_info, this.handleCLickMe, this._b2core._core_data],
       sc.MePlayerGxc, [this.playerMe]
     )
-    this._boardNode.appendChild(root)
+    return root
   }
 
-  st_terminatedGame() {
-    console.warn('st_terminatedGame is not implemented')
-    // TODO
+  OnAssignOptionGfx(res){
+    this._b2core.num_segni_match = res.num_segni_match
   }
+
+  // Callbaccks of GameRenderGfx - end
 
   handleCLickMe(card) {
     console.log('Card clicked...', card)
