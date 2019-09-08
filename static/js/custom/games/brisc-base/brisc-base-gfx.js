@@ -185,13 +185,13 @@ export class BriscBaseGfx {
       let img = cardgfxCache.get_cardimage(card_info.ix)
       cardInHand.appendChild(img)
       handMeDiv.appendChild(cardInHand)
-      cardInHand.addEventListener("click",() => this.handleCLickMe(cardInHand),false)
+      cardInHand.addEventListener("click", () => this.handleCLickMe(cardInHand), false)
     }
     return handMeDiv
   }
 
-  handleCLickMe(card){
-    console.log('Card clicked...',card)
+  handleCLickMe(card) {
+    console.log('Card clicked...', card)
   }
 
   handCpuGxc(cardgfxCache) {
@@ -220,13 +220,29 @@ export class BriscBaseGfx {
     this._b2core._coreStateManager.suspend_proc_gevents('Start animation new giocata') // stop core processing until animation end
 
     console.log('New giocata', args)
+    
+    let cardgfxCache = this._cardLoader.getCurrentCache()
+
+    let obsAnimator = rxjs.Observable.create((obs) => {
+      this.animateHandMe(args, cardgfxCache, obs)
+      this.animateHandCpu(cardgfxCache, obs)
+    })
+    let aniCount = 0
+    obsAnimator.subscribe(x => {
+      console.log('Animation obeserved', x)
+      aniCount ++;
+      if (aniCount >= this._b2core._core_data.num_of_cards_onhandplayer * 2){
+        console.log('All animatios are completed')
+        this._b2core._coreStateManager.continue_process_events('Animation end')
+      }
+    })  
+  }// end on_pl_ev_brisc_new_giocata
+
+  animateHandMe(args,cardgfxCache, obs) {
     let newhand = []
     let decked = []
-    let cardgfxCache = this._cardLoader.getCurrentCache()
-    // ***** HAND Me ********
-    // update hand Me
-    args.carte.forEach((lbl, i) => {
 
+    args.carte.forEach((lbl, i) => {
       let cardInHand = CreateDiv(`cardHand pos${i}`)
       cardInHand.setAttribute("data-card", lbl)
 
@@ -244,7 +260,7 @@ export class BriscBaseGfx {
       let imgCope = cardgfxCache.get_symbol_img('cope')
       imgCope.classList.add("back-face")
       imgCope.style.visibility = "hidden"
-      
+
       cardInHand.appendChild(imgCope)
       cardInHand.appendChild(img)
       newhand.push(cardInHand)
@@ -256,18 +272,18 @@ export class BriscBaseGfx {
       handMeDiv.removeChild(handMeDiv.firstChild)
     }
     newhand.forEach((card) => {
-      handMeDiv.appendChild(card) 
-      card.addEventListener("click",() => this.handleCLickMe(card),false)
+      handMeDiv.appendChild(card)
+      card.addEventListener("click", () => this.handleCLickMe(card), false)
     })
     // animate hand me
-    let trCount = [0,0,0]
+    let trCount = [0, 0, 0]
     decked.forEach((e, i) => {
       this._boardNode.appendChild(e)
       console.log('Subscribe to transition end on ', e)
       e.addEventListener("transitionend", (tr) => {
         // transation is on top end left (2 transactions)
         trCount[i] += 1;
-        if (trCount[i] >= 2){
+        if (trCount[i] >= 2) {
           console.log('Animation distrib hand me end: ', tr, e)
           let backface = newhand[i].getElementsByClassName("back-face")[0]
           backface.style.visibility = "visible"
@@ -276,6 +292,7 @@ export class BriscBaseGfx {
 
           this._boardNode.removeChild(e) // ani card non serve più
           newhand[i].classList.add("flip")
+          obs.next(i)
         }
       })
       setTimeout(() => { // timeout per il dom render
@@ -286,15 +303,13 @@ export class BriscBaseGfx {
         //console.log('e is now on :', e.style.left, e.style.top)
       }, 0)
     })
+  }
 
-    this.animateHandCpu(cardgfxCache)
-  }// end on_pl_ev_brisc_new_giocata
-
-  animateHandCpu(cardgfxCache){
+  animateHandCpu(cardgfxCache, obs) {
     console.log('Animate hand cpu')
     let deckedCpu = []
     let newHandCpu = []
-    for(let i = 0; i < this._b2core._core_data.num_of_cards_onhandplayer; i++){
+    for (let i = 0; i < this._b2core._core_data.num_of_cards_onhandplayer; i++) {
       let cardInHandCpu = CreateDiv(`cardDecked pos${i}`)
       let aniDecked = CreateDiv(`aniDeck`)
       aniDecked.style.left = -200 + 'px'
@@ -317,22 +332,23 @@ export class BriscBaseGfx {
     };
 
     newHandCpu.forEach((e) => {
-      handCpuDiv.appendChild(e) 
+      handCpuDiv.appendChild(e)
     })
 
     // Animate hand cpu
-    let trCountCpu = [0,0,0]
+    let trCountCpu = [0, 0, 0]
     deckedCpu.forEach((e, i) => {
       this._boardNode.appendChild(e)
-     
+
       e.addEventListener("transitionend", (tr) => {
         // transation is on top end left (2 transactions)
         trCountCpu[i] += 1;
-        if (trCountCpu[i] >= 2){
+        if (trCountCpu[i] >= 2) {
           console.log(`Animation ${i} distrib hand CPU end: `, tr, e)
           let backface = newHandCpu[i].firstChild
           backface.style.visibility = "visible"
-        
+          obs.next(i)
+
           this._boardNode.removeChild(e) // ani card non serve più
         }
       })
@@ -343,7 +359,7 @@ export class BriscBaseGfx {
         e.style.left = x_dest + 'px'
         e.style.top = y_dest + 'px'
         //console.log(`cpu ix ${i} is now on :`, e.style.left, e.style.top)
-      
+
       }, 300)
     })
   }
