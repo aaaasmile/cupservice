@@ -83,7 +83,7 @@ export class BriscBaseGfx {
     let root = builder(
       sc.HandCpuGxc, [this.playerCpu, this._b2core._core_data],
       sc.CpuPlayerGxc, [this.playerCpu],
-      sc.HandMeGxc, [this.playerMe, this._b2core._deck_info, this.handleCLickMe, this._b2core._core_data],
+      sc.HandMeGxc, [this.playerMe, this._b2core._deck_info, this.handleClickCard, this._b2core._core_data],
       sc.MePlayerGxc, [this.playerMe]
     )
     return root
@@ -95,7 +95,7 @@ export class BriscBaseGfx {
 
   // Callbaccks of GameRenderGfx - end
 
-  handleCLickMe(card) {
+  handleClickCard(card) {
     console.log('Card clicked...', card)
   }
 
@@ -111,7 +111,7 @@ export class BriscBaseGfx {
     let cardgfxCache = this._cardLoader.getCurrentCache()
 
     let obsAnimator = rxjs.Observable.create((obs) => {
-      sc.AnimateHandMe(this._boardNode, args.carte, cardgfxCache, obs, this._b2core._deck_info, this.handleCLickMe)
+      sc.AnimateHandMe(this._boardNode, args.carte, cardgfxCache, obs, this._b2core._deck_info, this.handleClickCard)
       sc.AnimateHandCpu(this._boardNode, cardgfxCache, obs, this._b2core._core_data.num_of_cards_onhandplayer)
     })
     let aniCount = 0

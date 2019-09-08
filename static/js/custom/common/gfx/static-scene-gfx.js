@@ -103,7 +103,7 @@ export function CreatePlayerLabel(color, player, cardgfxCache) {
   return eleA
 }
 
-export function AnimateHandMe(boardNode, carte, cardgfxCache, obs, deck_info, handleCLickMe) {
+export function AnimateHandMe(boardNode, carte, cardgfxCache, obs, deck_info, handleClickCard) {
   let newhand = []
   let decked = []
 
@@ -138,7 +138,7 @@ export function AnimateHandMe(boardNode, carte, cardgfxCache, obs, deck_info, ha
   }
   newhand.forEach((card) => {
     handMeDiv.appendChild(card)
-    card.addEventListener("click", () => handleCLickMe(card), false)
+    card.addEventListener("click", () => handleClickCard(card), false)
   })
   // animate hand me
   let trCount = [0, 0, 0]
@@ -248,7 +248,7 @@ export function HandMeGxc(cardgfxCache, arr_args) {
   console.log('Create Handme')
   let playerMe = arr_args[0]
   let deck_info = arr_args[1]
-  let handleCLickMe = arr_args[2]
+  let handleClickCard = arr_args[2]
   let core_data = arr_args[3]
   let handMeDiv = CreateDiv("handMe")
   let numCards = core_data.getNumCardInHand(playerMe._name)
@@ -260,7 +260,7 @@ export function HandMeGxc(cardgfxCache, arr_args) {
     let img = cardgfxCache.get_cardimage(card_info.ix)
     cardInHand.appendChild(img)
     handMeDiv.appendChild(cardInHand)
-    cardInHand.addEventListener("click", () => handleCLickMe(cardInHand), false)
+    cardInHand.addEventListener("click", () => handleClickCard(cardInHand), false)
   }
   return handMeDiv
 }
