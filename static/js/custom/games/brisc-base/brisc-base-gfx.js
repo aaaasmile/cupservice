@@ -185,8 +185,13 @@ export class BriscBaseGfx {
       let img = cardgfxCache.get_cardimage(card_info.ix)
       cardInHand.appendChild(img)
       handMeDiv.appendChild(cardInHand)
+      cardInHand.addEventListener("click",() => this.handleCLickMe(cardInHand),false)
     }
     return handMeDiv
+  }
+
+  handleCLickMe(card){
+    console.log('Card clicked...',card)
   }
 
   handCpuGxc(cardgfxCache) {
@@ -250,8 +255,9 @@ export class BriscBaseGfx {
     while (handMeDiv.firstChild) {
       handMeDiv.removeChild(handMeDiv.firstChild)
     }
-    newhand.forEach((e) => {
-      handMeDiv.appendChild(e) 
+    newhand.forEach((card) => {
+      handMeDiv.appendChild(card) 
+      card.addEventListener("click",() => this.handleCLickMe(card),false)
     })
     // animate hand me
     let trCount = [0,0,0]
@@ -277,7 +283,7 @@ export class BriscBaseGfx {
         let y_dest = handMeDiv.offsetTop + newhand[i].offsetTop
         e.style.left = x_dest + 'px'
         e.style.top = y_dest + 'px'
-        console.log('e is now on :', e.style.left, e.style.top)
+        //console.log('e is now on :', e.style.left, e.style.top)
       }, 0)
     })
 
@@ -336,7 +342,7 @@ export class BriscBaseGfx {
         let y_dest = handCpuDiv.offsetTop + newHandCpu[i].offsetTop
         e.style.left = x_dest + 'px'
         e.style.top = y_dest + 'px'
-        console.log(`cpu ix ${i} is now on :`, e.style.left, e.style.top)
+        //console.log(`cpu ix ${i} is now on :`, e.style.left, e.style.top)
       
       }, 300)
     })
