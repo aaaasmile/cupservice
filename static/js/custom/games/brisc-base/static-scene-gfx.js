@@ -278,3 +278,9 @@ export function HandCpuGxc(cardgfxCache, arr_args) {
   }
   return handCpu
 }
+
+export function  ClearBoard(boardNode) {
+  while (boardNode.firstChild) {
+    boardNode.removeChild(boardNode.firstChild);
+  }
+}

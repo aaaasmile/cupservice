@@ -78,7 +78,7 @@ export class BriscBaseGfx {
     if (matchInfo.is_terminated()) {
       this.st_terminatedGame()
     } else if (matchInfo.is_ongoing()) {
-      this.clearBoard()
+      sc.ClearBoard(this._boardNode)
       this.st_onplayingGame(cardgfxCache)
     } else {
       this.st_beforeStartGame(cardgfxCache)
@@ -95,7 +95,7 @@ export class BriscBaseGfx {
       b2core.StartNewMatch(next);
     });
 
-    this.clearBoard()
+    sc.ClearBoard(this._boardNode)
     this.st_onplayingGame(cardgfxCache)
 
     this.playerCpu.sit_down(0);
@@ -158,12 +158,6 @@ export class BriscBaseGfx {
     console.log('Card clicked...', card)
   }
 
-  clearBoard() {
-    while (this._boardNode.firstChild) {
-      this._boardNode.removeChild(this._boardNode.firstChild);
-    }
-  }
-
   on_all_ev_new_match(args) {
     console.log('New match', args)
   }
@@ -192,4 +186,4 @@ export class BriscBaseGfx {
 
 
 
-}
+}//end BriscBaseGfx
