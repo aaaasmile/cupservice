@@ -5,7 +5,8 @@ import { Player } from '../../common/class/player.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
 import { BriscBaseOptGfx } from './brisc-base-opt-gfx.js'
-import * as sc from './static-scene-gfx.js'
+import { GameRenderGfx } from '../../common/gfx/game-render-gfx.js'
+import * as sc from '../../common/gfx/static-scene-gfx.js'
 
 
 export class BriscBaseGfx {
@@ -16,7 +17,7 @@ export class BriscBaseGfx {
       scene_back: 'table_pattern'
     }
     this._cardLoader = GetCardLoaderGfx()
-    
+
   }
 
   prepareGame(rnd_mgr, gfx) {
@@ -46,7 +47,7 @@ export class BriscBaseGfx {
     //this.playerMe._alg.set_automatic_playing(true) // Want to have an automatic gui player
 
     let that = this
-    this._gameRender = new sc.GameRenderGfx(b2core._core_data.match_info, that, this._optDlgGfx)
+    this._gameRender = new GameRenderGfx(b2core._core_data.match_info, that, this._optDlgGfx)
 
     coreStateManager.process_next()
   }
@@ -55,33 +56,15 @@ export class BriscBaseGfx {
     // called from app.jsx
     console.log('BriscBaseGfx render scene', boardId)
     this._boardNode = document.getElementById(boardId)
-    // if (!this._b2core) {
-    //   this._b2core = this.prepareGame(null, this)
-    //   this._optDlgGfx = new BriscBaseOptGfx(this._b2core._myOpt.num_segni_match, this._opt.deck_name)
-    // }
-    // this.buildSceneWithDeck(this._cardLoader, this._opt.deck_name)
-    if (!this._b2core){
+    if (!this._b2core) {
       this.prepareGame(null, this)
     }
     this._gameRender.RenderScene(boardId, this._cardLoader, this._opt.deck_name)
   }
 
-  // buildScene(cardgfxCache) {
-  //   console.log('build scene')
-  //   let matchInfo = this._b2core._core_data.match_info
-  //   if (matchInfo.is_terminated()) {
-  //     this.st_terminatedGame()
-  //   } else if (matchInfo.is_ongoing()) {
-  //     sc.ClearBoard(this._boardNode)
-  //     this.st_onplayingGame(cardgfxCache)
-  //   } else {
-  //     this.st_beforeStartGame(cardgfxCache)
-  //   }
-  // }
-
   // Callbaccks of GameRenderGfx - start
 
-  OnStartNewGame(cardgfxCache) {
+  OnStartNewGame() {
     console.log('Start a new Game')
     let tableStateCore = new TableStateCore(this._b2core._coreStateManager, this._b2core._myOpt.tot_num_players);
     let b2core = this._b2core
@@ -96,7 +79,7 @@ export class BriscBaseGfx {
     this._b2core._coreStateManager.process_all()
   }
 
-  OnCallTheBuilder(builder){
+  OnCallTheBuilder(builder) {
     let root = builder(
       sc.HandCpuGxc, [this.playerCpu, this._b2core._core_data],
       sc.CpuPlayerGxc, [this.playerCpu],
@@ -106,7 +89,7 @@ export class BriscBaseGfx {
     return root
   }
 
-  OnAssignOptionGfx(res){
+  OnAssignOptionGfx(res) {
     this._b2core.num_segni_match = res.num_segni_match
   }
 
