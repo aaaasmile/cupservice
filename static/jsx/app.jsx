@@ -243,7 +243,7 @@ class OfflineGame extends React.Component {
   }
   componentDidMount() {
     let gameGfx = cup.GetGfxGameInstance(this.gameCode)
-    gameGfx.renderScene("boardTable")
+    gameGfx.RenderScene("boardTable")
   }
 
   render() {

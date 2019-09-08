@@ -15,6 +15,7 @@ va aggiornato manualmente.
 I files jsconfig.json mi servono per avere il code complete in VS code.
 
 ## TODO
+- Continua con la classe BriscBaseGfx (manca il mazzo e la briscola)
 - Nel core manaca la registrazione del game come in cuperativajs (_game_core_recorder)
 - Il core della briscola va agganciato alla ui
 - La partita della briscola nel core non è completa. Dopo st_mano_end non è finito. Qui

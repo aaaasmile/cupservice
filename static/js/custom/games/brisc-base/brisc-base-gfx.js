@@ -20,8 +20,8 @@ export class BriscBaseGfx {
 
   }
 
-  prepareGame(rnd_mgr, gfx) {
-    console.log('Prepare game')
+  initGame(rnd_mgr, gfx) {
+    console.log('initGame')
     let coreStateManager = new CoreStateManager('develop');
     let b2core = new CoreBriscolaBase(coreStateManager, 2, 61);
     if (rnd_mgr) {
@@ -52,12 +52,12 @@ export class BriscBaseGfx {
     coreStateManager.process_next()
   }
 
-  renderScene(boardId) {
+  RenderScene(boardId) {
     // called from app.jsx
     console.log('BriscBaseGfx render scene', boardId)
     this._boardNode = document.getElementById(boardId)
     if (!this._b2core) {
-      this.prepareGame(null, this)
+      this.initGame(null, this)
     }
     this._gameRender.RenderScene(boardId, this._cardLoader, this._opt.deck_name)
   }
@@ -116,7 +116,7 @@ export class BriscBaseGfx {
     })
     let aniCount = 0
     obsAnimator.subscribe(x => {
-      console.log('Animation obeserved', x)
+      console.log('Animation observed', x)
       aniCount++;
       if (aniCount >= this._b2core._core_data.num_of_cards_onhandplayer * 2) {
         console.log('All animatios are completed')
