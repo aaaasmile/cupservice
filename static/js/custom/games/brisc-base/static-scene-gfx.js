@@ -22,9 +22,10 @@ export function CreateSceneBuilder(cardgfxCache) {
   let rootDiv = CreateDiv("staticScene")
 
   return function (...parameters) {
-    for (let i = 0; i < parameters.length; i++) {
+    for (let i = 0; i < parameters.length; i += 2) {
       let childDiv = parameters[i]
-      rootDiv.appendChild(childDiv(cardgfxCache))
+      let arr_args = parameters[i + 1]
+      rootDiv.appendChild(childDiv(cardgfxCache, arr_args))
     }
     
     return rootDiv
@@ -226,4 +227,54 @@ export function  AnimateHandCpu(boardNode, cardgfxCache, obs, num_of_cards_onhan
 
     }, 300)
   })
+}
+
+export function MePlayerGxc(cardgfxCache, arr_args) {
+  let playerDiv = CreateDiv("player playerMe")
+  let eleA = CreatePlayerLabel("blue", arr_args[0], cardgfxCache)
+  playerDiv.appendChild(eleA)
+
+  return playerDiv
+}
+
+export function CpuPlayerGxc(cardgfxCache, arr_args) {
+  let playerDiv = CreateDiv("player playerCpu")
+  let eleA = CreatePlayerLabel("yellow", arr_args[0], cardgfxCache)
+  playerDiv.appendChild(eleA)
+  return playerDiv
+}
+
+export function HandMeGxc(cardgfxCache, arr_args) {
+  console.log('Create Handme')
+  let playerMe = arr_args[0]
+  let deck_info = arr_args[1]
+  let handleCLickMe = arr_args[2]
+  let core_data = arr_args[3]
+  let handMeDiv = CreateDiv("handMe")
+  let numCards = core_data.getNumCardInHand(playerMe._name)
+  for (let i = 0; i < numCards; i++) {
+    let cardInHand = scCreateDiv(`cardHand pos${i}`)
+    let lbl = core_data.getCardInHand(playerMe._name, i)
+    cardInHand.setAttribute("data-card", lbl)
+    let card_info = deck_info.get_card_info(lbl)
+    let img = cardgfxCache.get_cardimage(card_info.ix)
+    cardInHand.appendChild(img)
+    handMeDiv.appendChild(cardInHand)
+    cardInHand.addEventListener("click", () => handleCLickMe(cardInHand), false)
+  }
+  return handMeDiv
+}
+
+export function HandCpuGxc(cardgfxCache, arr_args) {
+  let playerCpu = arr_args[0]
+  let core_data = arr_args[1]
+  let numCards = core_data.getNumCardInHand(playerCpu._name)
+  let handCpu = CreateDiv("handCpu")
+  for (let i = 0; i < numCards; i++) {
+    let cardInHand = CreateDiv(`cardDecked pos${i}`)
+    let img = cardgfxCache.get_symbol_img('cope')
+    cardInHand.appendChild(img)
+    handCpu.appendChild(cardInHand)
+  }
+  return handCpu
 }
