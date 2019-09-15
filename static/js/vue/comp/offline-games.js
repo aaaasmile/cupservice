@@ -25,6 +25,12 @@ export const OfflineGames = Vue.component('offlinegames', {
   methods: {
     gameClicked: function(game){
       console.log('Congrats, you have clicked a game. Code is %s.', game.code)
+      let index =  dataGames.games.indexOf(game)
+      if (index !== -1){
+        dataGames.games.splice(index, 1);
+        console.log('Removed item with index ', index)
+      } 
+     
     }
   }
 })
