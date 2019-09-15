@@ -66,9 +66,9 @@ func handleIndexGet(w http.ResponseWriter, req *http.Request) {
 	if conf.Current.Framework == "Vue" {
 		templName = "templates/vue/index.html"
 	} else {
-		templName = "templates/index.html"
+		templName = "templates/react/index.html"
 		if conf.Current.UseProdTemplate {
-			templName = "templates/index_prod.html"
+			templName = "templates/react/index_prod.html"
 		}
 	}
 
