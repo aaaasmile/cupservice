@@ -22,11 +22,11 @@ export const app = new Vue({
     currentRoute: window.location.pathname
   },
   computed: {
-    ViewComponent() {
+    CurrentViewComponent() {
       return routes[this.currentRoute] || NotFound
     }
   },
-  render(h) { return h(this.ViewComponent) }
+  render(h) { return h(this.CurrentViewComponent) }
 })
 
 
