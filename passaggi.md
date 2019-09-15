@@ -1,6 +1,6 @@
 ## cup-service
 Un service della cuperativa in golang (web socket e rest)
-Client basic in react single file.
+Client basic in react (e ora Vue) single file.
 
 ## Info module
 Il gioco della cuperativa l'ho sviluppato usando ES6 con i moduli direttamente in browser.
@@ -38,3 +38,15 @@ soddisfacente e quindi l'esperimento con il canvas e createjs finisce qui.
 ## Tag
 git tag -a v0.1.20190113-00 -m "canvas try"
 git push origin tag v0.1.20190113-00
+
+## Vue
+Ho cominciato a riscrivere la UI usando Vue.js invece di React. In questo modo
+sembra più facile gestire anche i componenti di una partita. In React arrivo fino al 
+momento dell'inizio e poi ho tentato di creare i componenti della partita manipolando il dom
+nel codice. Questo complica di molto l'app con risultati grafici modesti.
+Per far gestire tutta l'applicazione da react, occorre avere dei moduli separti e componenti 
+all'interno di app.jsx. Ma per avere una separazione degli jsx, serve un build-chain, che
+proprio non voglio settare. Go, Chrome e Visual Code sono sufficienti.
+Con Vue e i template multilines nel codice, è possibile 
+avere una separazione in componenti in files separati senza usare una build-chain, ma solo 
+il caricamento dei moduli che avviene in Chrome usando index.html.
