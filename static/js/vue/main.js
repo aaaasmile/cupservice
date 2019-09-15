@@ -1,18 +1,37 @@
 
 import { OfflineGames } from './comp/offline-games.js'
+import { AboutPage } from './comp/about-page.js'
 
+const NotFound = { template: '<div class="ui container"><p>Page not found</p></div>' }
 
-Vue.component('appview', {
+const Home = Vue.component('appview', {
   template: ` 
   <div class="ui container">
     <offlinegames/>
   </div>`
 })
 
+const routes = {
+  '/cup/': Home,
+  '/cup/about': AboutPage
+}
 
 export const app = new Vue({
   el: '#app',
-  template: '<appview/>'
+  data: {
+    currentRoute: window.location.pathname
+  },
+  computed: {
+    ViewComponent() {
+      return routes[this.currentRoute] || NotFound
+    }
+  },
+  render(h) { return h(this.ViewComponent) }
 })
 
-console.log('Main Vue is here!')
+
+window.addEventListener('popstate', () => {
+  app.currentRoute = window.location.pathname
+})
+
+console.log('Main Vue is here! ', window.location.pathname)
