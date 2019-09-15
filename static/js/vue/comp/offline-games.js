@@ -8,7 +8,7 @@ export const OfflineGames = Vue.component('offlinegames', {
   <div class="ui segment">
     <h2 class="ui header">Giochi disponibili contro il computer</h2>
     <div class="ui large bulleted link list">
-      <a v-for="game in games" class="item"> {{ game.desc }} </a>
+      <a v-for="game in games" v-on:click="gameClicked(game)" class="item"> {{ game.desc }} </a>
     </div>
   </div>`,
   data: function () {
@@ -19,8 +19,12 @@ export const OfflineGames = Vue.component('offlinegames', {
     let list = ga.GetGameList()
     console.log('Going for creation...', list)
     list.forEach(element => {
-      dataGames.games.push(element)  
+      dataGames.games.push(element)
     });
-    
+  },
+  methods: {
+    gameClicked: function(game){
+      console.log('Congrats, you have clicked a game. Code is %s.', game.code)
+    }
   }
 })
