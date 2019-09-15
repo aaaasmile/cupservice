@@ -1,10 +1,5 @@
 
-Vue.component('offlinegames', {
-  template: `
-  <div class="ui segment">
-    <h2 class="ui header">Giochi disponibili contro il computer</h2>
-  </div>`
-})
+import { OfflineGames } from './comp/offline-games.js'
 
 
 Vue.component('appview', {

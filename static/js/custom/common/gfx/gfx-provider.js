@@ -20,6 +20,12 @@ class GfxProvider {
     }
     return gfx
   }
+  getGameList() {
+    return [
+      { code: 'off-briscindue', desc: 'Briscola in due' },
+      { code: 'off-briscolone', desc: 'Briscolone in due' }
+    ]
+  }
 }
 
 let provider
@@ -33,4 +39,14 @@ function getGfxProvider() {
 export function GetGfxGameInstance(gameCode) {
   const _prov = getGfxProvider()
   return _prov.getGameInstance(gameCode)
+}
+
+export class GameAvailableInfo {
+  constructor() {
+    this._prov = getGfxProvider()
+  }
+
+  GetGameList() {
+    return this._prov.getGameList()
+  }
 }
