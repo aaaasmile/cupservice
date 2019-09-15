@@ -1,0 +1,44 @@
+{{define "base"}}
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="description" content="Cuperativa service" />
+  <link rel="shortcut icon" href="{{.RootUrl}}static/images/favicon.ico" type="image/x-icon" />
+
+  <title>Cuperativa Service</title>
+  <!-- Jquery mi serve per semantic ui modal. -->
+  <script src="{{.RootUrl}}static/js/ext/jquery-3.3.1.min.js"></script>
+  <!-- semantic ui modal dipende da: dimmer e transaction-->
+  <script src="{{.RootUrl}}static/js/ext/modal.min.js"></script>
+  <script src="{{.RootUrl}}static/js/ext/dimmer.min.js"></script>
+  <script src="{{.RootUrl}}static/js/ext/transition.min.js"></script>
+  <script src="{{.RootUrl}}static/js/ext/rxjs.umd.min.js"></script>
+  
+  
+  <!-- dev vue -->
+  <script src="{{.RootUrl}}static/js/ext/vue.js"></script>
+  <!-- prod vue -->
+  <!-- <script src="{{.RootUrl}}static/js/ext/vue_prod.js"></script> -->
+  
+
+  <script type="application/javascript" src="{{.RootUrl}}static/js/ext/babel.js"></script>
+  <link rel="stylesheet" href="{{.RootUrl}}static/css/semantic.css" />
+  <link rel="stylesheet" href="{{.RootUrl}}static/css/custom.css" />
+</head>
+
+<body>
+  <div class="ui container">
+    <!-- Vue app-->
+    <div class="ui main container" style="padding:2em 0em 7em" id="app"></div>
+  </div>
+</body>
+<script type="module">
+  import { cup } from './static/js/custom/games-cup.js'
+  window.cup = cup
+</script>
+
+</html>
+{{end}}

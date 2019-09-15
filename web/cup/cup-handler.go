@@ -58,18 +58,25 @@ type PageCtx struct {
 }
 
 func handleIndexGet(w http.ResponseWriter, req *http.Request) {
+	var templName string
 	pagectx := PageCtx{
 		RootUrl: conf.Current.RootURLPattern,
 		Buildnr: idl.Buildnr,
 	}
-	templName := "templates/index.html"
-	if conf.Current.UseProdTemplate {
-		templName = "templates/index_prod.html"
+	if conf.Current.Framework == "Vue" {
+		templName = "templates/vue/index.html"
+	} else {
+		templName = "templates/index.html"
+		if conf.Current.UseProdTemplate {
+			templName = "templates/index_prod.html"
+		}
 	}
+
 	if tmplIndex == nil || conf.Current.AlwaysReloadTempl {
 		log.Println("Load the template, reload on request is ", conf.Current.AlwaysReloadTempl)
 		tmplIndex = template.Must(template.New("AppIndex").ParseFiles(templName))
 	}
+
 	err := tmplIndex.ExecuteTemplate(w, "base", pagectx)
 	if err != nil {
 		log.Fatal(err)
