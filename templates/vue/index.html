@@ -16,29 +16,33 @@
   <script src="{{.RootUrl}}static/js/ext/dimmer.min.js"></script>
   <script src="{{.RootUrl}}static/js/ext/transition.min.js"></script>
   <script src="{{.RootUrl}}static/js/ext/rxjs.umd.min.js"></script>
-  
-  
+
+
   <!-- dev vue -->
   <script src="{{.RootUrl}}static/js/ext/vue.js"></script>
   <!-- prod vue -->
   <!-- <script src="{{.RootUrl}}static/js/ext/vue_prod.js"></script> -->
-  
 
-  <script type="application/javascript" src="{{.RootUrl}}static/js/ext/babel.js"></script>
   <link rel="stylesheet" href="{{.RootUrl}}static/css/semantic.css" />
   <link rel="stylesheet" href="{{.RootUrl}}static/css/custom.css" />
 </head>
 
 <body>
-  <div class="ui container">
-    <!-- Vue app-->
-    <div class="ui main container" style="padding:2em 0em 7em" id="app"></div>
-  </div>
+  <div id="app"></div>
 </body>
 <script type="module">
   import { cup } from './static/js/custom/games-cup.js'
+  import { app } from './static/js/vue/main.js'
   window.cup = cup
 </script>
+
+<!-- <script type="text/javascript">
+  $(document).ready(function () {
+    console.log("ready for loading vue!");
+    // $('<script/>',{type:'text/javascript', src:'{{.RootUrl}}static/js/vue/main.js', async: true}).appendTo('head');
+  });
+</script> -->
+<!-- <script src="{{.RootUrl}}static/js/vue/main.js"></script> -->
 
 </html>
 {{end}}
