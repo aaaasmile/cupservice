@@ -1,6 +1,8 @@
 
 import { GameAvailableInfo } from '../../custom/common/gfx/gfx-provider.js'
 
+let dataGames = { games: [] }
+
 export const OfflineGames = Vue.component('offlinegames', {
   template: `
   <div class="ui segment">
@@ -10,12 +12,15 @@ export const OfflineGames = Vue.component('offlinegames', {
     </div>
   </div>`,
   data: function () {
-    return { games: [] }
+    return dataGames
   },
-  created: function () {
+  beforeCreate: function () {
     let ga = new GameAvailableInfo()
-    let data = ga.GetGameList()
-    console.log('Going for creation...', data)
-    this.data.games = data
+    let list = ga.GetGameList()
+    console.log('Going for creation...', list)
+    list.forEach(element => {
+      dataGames.games.push(element)  
+    });
+    
   }
 })
