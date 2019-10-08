@@ -33,6 +33,7 @@ func RunService(configfile string) {
 
 	http.Handle(conf.Current.RootURLPattern+"static/", http.StripPrefix(conf.Current.RootURLPattern+"static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc(conf.Current.RootURLPattern, cup.CupAPiHandler)
+	http.HandleFunc(conf.Current.RootURLPattern + "ws", cup.WsHandler)
 
 	srv := &http.Server{
 		Addr: serverurl,

@@ -22,6 +22,7 @@ type Config struct {
 	UseProdTemplate   bool
 	Framework         string
 	DatabaseEngine    string
+	WsUrl             string
 	DataBase          *DataBase
 }
 

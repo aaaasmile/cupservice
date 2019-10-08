@@ -36,13 +36,8 @@
   window.cup = cup
 </script>
 
-<!-- <script type="text/javascript">
-  $(document).ready(function () {
-    console.log("ready for loading vue!");
-    // $('<script/>',{type:'text/javascript', src:'{{.RootUrl}}static/js/vue/main.js', async: true}).appendTo('head');
-  });
-</script> -->
-<!-- <script src="{{.RootUrl}}static/js/vue/main.js"></script> -->
-
+<script type="text/javascript">
+  window.wsaddress = "{{.WsUrl}}"
+</script> 
 </html>
 {{end}}
