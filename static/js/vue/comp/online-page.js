@@ -1,5 +1,5 @@
 
-let socket
+let socket // TODO usa il service socket
 let dataOnline = {
   username: "igor"
 }
