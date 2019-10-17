@@ -50,3 +50,9 @@ proprio non voglio settare. Go, Chrome e Visual Code sono sufficienti.
 Con Vue e i template multilines nel codice, è possibile 
 avere una separazione in componenti in files separati senza usare una build-chain, ma solo 
 il caricamento dei moduli che avviene in Chrome usando index.html.
+
+## Websocket
+Ho iniziato nel file cup-ws-handler and implementare il protocollo cuperativa con websocket.
+Si può testare con il robot in ruby nella directory: PS D:\scratch\sinatra\cup_sinatra_local\middlewares\robots>
+Dove basta lanciare ruby .\cuperativa_bot.rb
+Quello che manca è la lettura della richiesta del client.
