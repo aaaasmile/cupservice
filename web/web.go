@@ -61,7 +61,8 @@ loop:
 		}
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Millisecond)
+	var wait time.Duration = 5 * time.Second
+	ctx, cancel := context.WithTimeout(context.Background(), wait)
 	defer cancel()
 	srv.Shutdown(ctx)
 	cup.EndWS()
