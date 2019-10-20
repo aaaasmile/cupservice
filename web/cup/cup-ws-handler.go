@@ -61,11 +61,11 @@ var (
 )
 
 func getConnName() string {
-	clientCount++
+	clientCount++ // TODO use rnd id
 	return fmt.Sprintf("Client %d", clientCount)
 }
 
-func cmdInfo(det string) string {
+func cmdInfo(det string) string { // TODO move in cupCmd package
 	cmd := fmt.Sprintf("INFO: %s", det)
 	bytes, err := json.Marshal(cmd)
 	if err != nil {
@@ -100,11 +100,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println("Websocket read error ", err)
-			info.WsConn[conn] = false
-			delete(info.WsConn, conn)
-			if len(info.WsConn) == 0 {
-				discClientCh <- &info
-			}
+			closeWsConn(&info, conn)
 			return
 		}
 		if messageType == websocket.TextMessage {
@@ -126,15 +122,48 @@ func broadcastMsg() {
 				err := conn.WriteMessage(websocket.TextMessage, []byte(msg.MsgJson))
 				if err != nil {
 					log.Println("Socket error: ", err)
-					conn.Close()
-					delete(ci.WsConn, conn)
+					closeWsConn(ci, conn)
 				}
 			}
 		}
 	}
 }
 
-func checkReconnect(ciNew *ClientInfo) {
+func closeWsConn(ci *ClientInfo, conn *websocket.Conn) { // TODO add as method of ClientInfo
+	ci.WsConn[conn] = false
+	delete(ci.WsConn, conn)
+	if len(ci.WsConn) == 0 {
+		if ci.GameInProg == nil || ci.Username == "" {
+			log.Printf("Client %q disconnect immediately\n", ci.ConnName)
+			discClientCh <- ci
+		} else {
+			disconnectingClients[ci.ConnName] = ci // TODO use mutex
+			go delayedDisconnect(ci)
+		}
+	}
+}
+
+func delayedDisconnect(ci *ClientInfo) { // TODO add as method of ClientInfo
+	log.Println("Delayed disconnect for ", ci.ConnName)
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
+	for {
+		select {
+		case crNew := <-ci.GetReconnectCh(true):
+			log.Println("Client reconnect", crNew)
+			log.Printf("Good news, %q reconnect with this connection: %q", ci.ConnName, crNew.ConnName)
+			discClientCh <- ci
+			// TODO restore game in progress with now crNew
+			return
+		case <-ctx.Done():
+			log.Printf("Context done, disconnect %q", ci.ConnName)
+			discClientCh <- ci
+			return
+		}
+	}
+}
+
+func checkReconnect(ciNew *ClientInfo) { // TODO add as method of disconnectingClients
 	if len(disconnectingClients) == 0 {
 		return
 	}
@@ -153,41 +182,11 @@ func checkReconnect(ciNew *ClientInfo) {
 func handleDisconnect() {
 	for {
 		ci := <-discClientCh
-		if ci.GameInProg == nil || ci.Username == "" {
-			log.Printf("Client %q disconnect immediately\n", ci.ConnName)
-			disconnectClient(ci)
-		} else {
-			disconnectingClients[ci.ConnName] = ci // TODO use mutex
-			go delayedDisconnect(ci)
-		}
+		log.Printf("Disconnect client %q", ci.ConnName)
+		ci.DisposeReconnectCh()
+		delete(clients, ci.ConnName) // TODO use mutex
+		log.Println("Connected clients: ", len(clients))
 	}
-}
-
-func delayedDisconnect(clientInfo *ClientInfo) {
-	log.Println("Delayed disconnect for ", clientInfo.ConnName)
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	for {
-		select {
-		case crNew := <-clientInfo.GetReconnectCh(true):
-			log.Println("Client reconnect", crNew)
-			log.Printf("Good news, %q reconnect with this connection: %q", clientInfo.ConnName, crNew.ConnName)
-			disconnectClient(clientInfo)
-			// TODO restore game in progress with now crNew
-			return
-		case <-ctx.Done():
-			log.Printf("Context done, disconnect %q", clientInfo.ConnName)
-			disconnectClient(clientInfo)
-			return
-		}
-	}
-}
-
-func disconnectClient(ci *ClientInfo) {
-	log.Printf("Disconnect client %q", ci.ConnName)
-	ci.DisposeReconnectCh()
-	delete(clients, ci.ConnName) // TODO use mutex
-	log.Println("Connected clients: ", len(clients))
 }
 
 func StartWS() {
