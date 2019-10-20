@@ -63,18 +63,18 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	mm.TargetClientInfos = []string{name}
 	broadcast <- mm
 
-	// for {
-	// 	clientReq := &ClientRequest{}
-	// 	err := conn.ReadJSON(clientReq)
-	// 	if err != nil {
-	// 		log.Println(err)
-	// 		return
-	// 	}
-	// 	log.Printf("Message from client: %#v", clientReq)
-	// 	if 0 == len(clientReq.Username) {
-	// 		return
-	// 	}
-	// }
+	for {
+		messageType, p, err := conn.ReadMessage()
+		if err != nil {
+			log.Println("Websocket error ", err)
+			info.Clients[conn] = false
+			delete(info.Clients, conn)
+			return
+		}
+		if messageType == websocket.TextMessage {
+			log.Println("Message rec: ", string(p))
+		}
+	}
 }
 
 func broadcastMsg() {
@@ -100,4 +100,13 @@ func broadcastMsg() {
 
 func StartWS() {
 	go broadcastMsg()
+}
+
+func EndWS() {
+	log.Println("End od websocket service")
+	for _, ci := range clients {
+		for conn := range ci.Clients {
+			conn.Close()
+		}
+	}
 }

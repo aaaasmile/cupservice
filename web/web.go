@@ -65,6 +65,6 @@ loop:
 	ctx, cancel := context.WithTimeout(context.Background(), wait)
 	defer cancel()
 	srv.Shutdown(ctx)
-
+	cup.EndWS()
 	log.Println("Bye, service")
 }
