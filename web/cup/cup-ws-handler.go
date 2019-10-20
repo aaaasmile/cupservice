@@ -14,7 +14,7 @@ import (
 type ClientInfo struct {
 	Username   string
 	ConnName   string
-	Clients    map[*websocket.Conn]bool
+	WsConn     map[*websocket.Conn]bool
 	GameInProg *GameInProgress
 	reconCh    chan *ClientInfo
 }
@@ -84,8 +84,8 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 
 	info := ClientInfo{} // TODO use NewCLientInfo(conn)
 	connName := getConnName()
-	info.Clients = make(map[*websocket.Conn]bool)
-	info.Clients[conn] = true
+	info.WsConn = make(map[*websocket.Conn]bool)
+	info.WsConn[conn] = true
 	info.ConnName = connName
 	clients[connName] = &info // TODO use mutex
 	log.Printf("Client %q is connected. Connected clients %d", connName, len(clients))
@@ -100,9 +100,9 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println("Websocket read error ", err)
-			info.Clients[conn] = false
-			delete(info.Clients, conn)
-			if len(info.Clients) == 0 {
+			info.WsConn[conn] = false
+			delete(info.WsConn, conn)
+			if len(info.WsConn) == 0 {
 				discClientCh <- &info
 			}
 			return
@@ -122,12 +122,12 @@ func broadcastMsg() {
 		}
 		for _, name := range msg.TargetClientInfos {
 			ci := clients[name]
-			for conn := range ci.Clients {
+			for conn := range ci.WsConn {
 				err := conn.WriteMessage(websocket.TextMessage, []byte(msg.MsgJson))
 				if err != nil {
 					log.Println("Socket error: ", err)
 					conn.Close()
-					delete(ci.Clients, conn)
+					delete(ci.WsConn, conn)
 				}
 			}
 		}
@@ -153,7 +153,7 @@ func checkReconnect(ciNew *ClientInfo) {
 func handleDisconnect() {
 	for {
 		ci := <-discClientCh
-		if ci.GameInProg == nil {
+		if ci.GameInProg == nil || ci.Username == "" {
 			log.Printf("Client %q disconnect immediately\n", ci.ConnName)
 			disconnectClient(ci)
 		} else {
@@ -198,7 +198,7 @@ func StartWS() {
 func EndWS() {
 	log.Println("End od websocket service")
 	for _, ci := range clients {
-		for conn := range ci.Clients {
+		for conn := range ci.WsConn {
 			conn.Close()
 		}
 	}
