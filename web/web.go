@@ -24,7 +24,6 @@ func RunService(configfile string) {
 		db.OpenDatabase()
 	}
 
-	var wait time.Duration
 	serverurl := conf.Current.ServiceURL
 	cupServURL := fmt.Sprintf("http://%s%s", strings.Replace(serverurl, "0.0.0.0", "localhost", 1), conf.Current.RootURLPattern)
 	cupServURL = strings.Replace(cupServURL, "127.0.0.1", "localhost", 1)
@@ -62,7 +61,7 @@ loop:
 		}
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), wait)
+	ctx, cancel := context.WithTimeout(context.Background(), 1000*time.Millisecond)
 	defer cancel()
 	srv.Shutdown(ctx)
 	cup.EndWS()
