@@ -32,7 +32,7 @@ func (ci *ClientInfo) DisposeReconnectCh() {
 	if ci.reconCh != nil {
 		close(ci.reconCh)
 		ci.reconCh = nil
-		delete(disconnectingClients, ci.ConnName)
+		delete(disconnectingClients, ci.ConnName) // TODO use mutex
 	}
 }
 
@@ -87,7 +87,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	info.Clients = make(map[*websocket.Conn]bool)
 	info.Clients[conn] = true
 	info.ConnName = connName
-	clients[connName] = &info
+	clients[connName] = &info // TODO use mutex
 	log.Printf("Client %q is connected. Connected clients %d", connName, len(clients))
 
 	mm := &MessageSnd{MsgJson: cmdInfo("WELCOME_SERVER_CUPERATIVA_WS - 10.0.0")}
@@ -108,7 +108,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		if messageType == websocket.TextMessage {
-			log.Println("Message rec: ", string(p))
+			log.Println("Message rec: ", string(p)) // TODO message parser
 		}
 	}
 }
@@ -140,7 +140,7 @@ func checkReconnect(ciNew *ClientInfo) {
 	}
 	log.Println("Check for reconnect")
 	for _, ci := range disconnectingClients {
-		if ciNew != nil { //ciNew.Username == ci.Username { // TODO use ==
+		if ciNew.Username == ci.Username {
 			crCh := ci.GetReconnectCh(false)
 			if crCh != nil {
 				crCh <- ciNew
@@ -153,11 +153,11 @@ func checkReconnect(ciNew *ClientInfo) {
 func handleDisconnect() {
 	for {
 		ci := <-discClientCh
-		disconnectingClients[ci.ConnName] = ci
-		if ci.GameInProg != nil { // Test TODO remove != and use ==
+		if ci.GameInProg == nil {
 			log.Printf("Client %q disconnect immediately\n", ci.ConnName)
 			disconnectClient(ci)
 		} else {
+			disconnectingClients[ci.ConnName] = ci // TODO use mutex
 			go delayedDisconnect(ci)
 		}
 	}
@@ -186,7 +186,7 @@ func delayedDisconnect(clientInfo *ClientInfo) {
 func disconnectClient(ci *ClientInfo) {
 	log.Printf("Disconnect client %q", ci.ConnName)
 	ci.DisposeReconnectCh()
-	delete(clients, ci.ConnName)
+	delete(clients, ci.ConnName) // TODO use mutex
 	log.Println("Connected clients: ", len(clients))
 }
 
