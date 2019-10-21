@@ -1,4 +1,4 @@
-package cup
+package rest
 
 import (
 	"log"
@@ -7,8 +7,8 @@ import (
 	"strings"
 	"text/template"
 
-	"../../conf"
-	"../idl"
+	"../../../conf"
+	"../../idl"
 )
 
 func checkDoRquest(reqURI string) bool {
