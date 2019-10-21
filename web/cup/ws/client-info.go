@@ -3,6 +3,7 @@ package ws
 import (
 	"fmt"
 	"math/rand"
+	"sync"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -20,6 +21,7 @@ type ClientInfo struct {
 	WsConn     map[*websocket.Conn]bool
 	GameInProg *GameInProgress
 	reconCh    chan *ClientInfo
+	mux        sync.Mutex
 }
 
 func (ci *ClientInfo) Init(conn *websocket.Conn) {
@@ -27,6 +29,14 @@ func (ci *ClientInfo) Init(conn *websocket.Conn) {
 	ci.WsConn = make(map[*websocket.Conn]bool)
 	ci.WsConn[conn] = true
 	ci.ConnName = connName
+}
+
+func (ci *ClientInfo) MergeConn(ciSource *ClientInfo) {
+	ci.mux.Lock()
+	for con := range ciSource.WsConn {
+		ci.WsConn[con] = true
+	}
+	ci.mux.Unlock()
 }
 
 func (ci *ClientInfo) stringWithCharset(length int, charset string) string {
@@ -55,6 +65,21 @@ func (ci *ClientInfo) DisposeReconnectCh(dc *DisconnClient) {
 		close(ci.reconCh)
 		ci.reconCh = nil
 		dc.EndDisconn(ci)
+	}
+}
+
+func (ci *ClientInfo) CloseWsConn(conn *websocket.Conn, dc *DisconnClient) {
+	ci.WsConn[conn] = false
+	ci.mux.Lock()
+	delete(ci.WsConn, conn) // TODO use mutex
+	ci.mux.Unlock()
+	if len(ci.WsConn) == 0 {
+		//if false && (ci.GameInProg == nil || ci.Username == "") {
+		if ci.GameInProg == nil || ci.Username == "" {
+			dc.ImmediateDisconn(ci)
+		} else {
+			dc.StartDisconn(ci)
+		}
 	}
 }
 

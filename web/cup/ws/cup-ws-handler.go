@@ -25,11 +25,11 @@ type MessageRead struct {
 }
 
 var (
-	upgrader      websocket.Upgrader
-	clients       = Clients{clients: make(map[string]*ClientInfo)}
-	broadcastCh   = make(chan *MessageSnd)
-	discClientCh  = make(chan *ClientInfo)
-	disconnClient = NewDisconnClient(discClientCh)
+	upgrader       websocket.Upgrader
+	clients        = Clients{clients: make(map[string]*ClientInfo)}
+	broadcastCh    = make(chan *MessageSnd)
+	removeClientCh = make(chan *ClientInfo)
+	disconnClient  = NewDisconnClient(removeClientCh)
 )
 
 func cmdInfo(det string) string { // TODO move in cupCmd package
@@ -57,12 +57,13 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	broadcastCh <- mm
 
 	disconnClient.CheckReconnect(ci) // TODO do it after login
+	// TODO after login: check user already connected: 1) ciPrev.MergeConn(ciNew) 2) ciNew.SendStatusFrom(ciPrev)  3) removeClientCh <- ciNew
 
 	for {
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println("Websocket read error ", err)
-			closeWsConn(ci, conn)
+			ci.CloseWsConn(conn, disconnClient)
 			return
 		}
 		if messageType == websocket.TextMessage {
@@ -88,30 +89,17 @@ func broadcastMsg() {
 				err := conn.WriteMessage(websocket.TextMessage, []byte(msg.MsgJson))
 				if err != nil {
 					log.Println("Socket error: ", err)
-					closeWsConn(ci, conn)
+					ci.CloseWsConn(conn, disconnClient)
 				}
 			}
 		}
 	}
 }
 
-func closeWsConn(ci *ClientInfo, conn *websocket.Conn) {
-	ci.WsConn[conn] = false
-	delete(ci.WsConn, conn) // TODO use mutex
-	if len(ci.WsConn) == 0 {
-		//if false && (ci.GameInProg == nil || ci.Username == "") {
-		if ci.GameInProg == nil || ci.Username == "" {
-			disconnClient.ImmediateDisconn(ci)
-		} else {
-			disconnClient.StartDisconn(ci)
-		}
-	}
-}
-
-func handleDisconnect() {
+func handleRemoveClient() {
 	for {
-		ci := <-discClientCh
-		log.Printf("Disconnect client %q", ci.ConnName)
+		ci := <-removeClientCh
+		log.Printf("Remove client with connection %q", ci.ConnName)
 		ci.DisposeReconnectCh(disconnClient)
 		clients.RemoveConn(ci.ConnName)
 	}
@@ -119,7 +107,7 @@ func handleDisconnect() {
 
 func StartWS() {
 	go broadcastMsg()
-	go handleDisconnect()
+	go handleRemoveClient()
 }
 
 func EndWS() {
