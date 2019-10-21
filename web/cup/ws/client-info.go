@@ -21,11 +21,11 @@ func (ci *ClientInfo) GetReconnectCh(create bool) chan *ClientInfo {
 	return ci.reconCh
 }
 
-func (ci *ClientInfo) DisposeReconnectCh() {
+func (ci *ClientInfo) DisposeReconnectCh(dc *DisconnClient) {
 	if ci.reconCh != nil {
 		close(ci.reconCh)
 		ci.reconCh = nil
-		delete(disconnectingClients, ci.ConnName) // TODO use mutex
+		dc.EndDisconn(ci)
 	}
 }
 

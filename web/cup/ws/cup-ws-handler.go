@@ -1,12 +1,10 @@
 package ws
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
-	"time"
 
 	"github.com/gorilla/websocket"
 )
@@ -27,12 +25,13 @@ type MessageRead struct {
 }
 
 var (
-	upgrader             websocket.Upgrader
-	clients              = make(map[string]*ClientInfo)
-	disconnectingClients = make(map[string]*ClientInfo)
+	upgrader websocket.Upgrader
+	clients  = make(map[string]*ClientInfo)
+	//disconnectingClients = make(map[string]*ClientInfo)
 	clientCount          = 0
 	broadcastCh          = make(chan *MessageSnd)
 	discClientCh         = make(chan *ClientInfo)
+	disconnectingClients = NewDisconnClient(discClientCh)
 )
 
 func getConnName() string {
@@ -65,7 +64,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	mm.TargetClientInfos = []string{info.ConnName}
 	broadcastCh <- mm
 
-	checkReconnect(info) // TODO do it after login
+	disconnectingClients.CheckReconnect(info) // TODO do it after login
 
 	for {
 		messageType, p, err := conn.ReadMessage()
@@ -100,61 +99,61 @@ func broadcastMsg() {
 	}
 }
 
-func closeWsConn(ci *ClientInfo, conn *websocket.Conn) { // TODO add as method of ClientInfo
+func closeWsConn(ci *ClientInfo, conn *websocket.Conn) {
 	ci.WsConn[conn] = false
-	delete(ci.WsConn, conn)
+	delete(ci.WsConn, conn) // TODO use mutex
 	if len(ci.WsConn) == 0 {
 		if ci.GameInProg == nil || ci.Username == "" {
-			log.Printf("Client %q disconnect immediately\n", ci.ConnName)
-			discClientCh <- ci
+			disconnectingClients.ImmediateDisconn(ci)
 		} else {
-			disconnectingClients[ci.ConnName] = ci // TODO use mutex
-			go delayedDisconnect(ci)
+			//disconnectingClients[ci.ConnName] = ci // TODO use mutex
+			disconnectingClients.StartDisconn(ci)
+			//go delayedDisconnect(ci)
 		}
 	}
 }
 
-func delayedDisconnect(ci *ClientInfo) { // TODO add as method of ClientInfo
-	log.Println("Delayed disconnect for ", ci.ConnName)
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
-	for {
-		select {
-		case crNew := <-ci.GetReconnectCh(true):
-			log.Println("Client reconnect", crNew)
-			log.Printf("Good news, %q reconnect with this connection: %q", ci.ConnName, crNew.ConnName)
-			discClientCh <- ci
-			// TODO restore game in progress with now crNew
-			return
-		case <-ctx.Done():
-			log.Printf("Context done, disconnect %q", ci.ConnName)
-			discClientCh <- ci
-			return
-		}
-	}
-}
+// func delayedDisconnect(ci *ClientInfo) { // TODO add as method of ClientInfo
+// 	log.Println("Delayed disconnect for ", ci.ConnName)
+// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+// 	defer cancel()
+// 	for {
+// 		select {
+// 		case crNew := <-ci.GetReconnectCh(true):
+// 			log.Println("Client reconnect", crNew)
+// 			log.Printf("Good news, %q reconnect with this connection: %q", ci.ConnName, crNew.ConnName)
+// 			discClientCh <- ci
+// 			// TODO restore game in progress with now crNew
+// 			return
+// 		case <-ctx.Done():
+// 			log.Printf("Context done, disconnect %q", ci.ConnName)
+// 			discClientCh <- ci
+// 			return
+// 		}
+// 	}
+// }
 
-func checkReconnect(ciNew *ClientInfo) { // TODO add as method of disconnectingClients
-	if len(disconnectingClients) == 0 {
-		return
-	}
-	log.Println("Check for reconnect")
-	for _, ci := range disconnectingClients {
-		if ciNew.Username == ci.Username {
-			crCh := ci.GetReconnectCh(false)
-			if crCh != nil {
-				crCh <- ciNew
-				return
-			}
-		}
-	}
-}
+// func checkReconnect(ciNew *ClientInfo) { // TODO add as method of disconnectingClients
+// 	if len(disconnectingClients) == 0 {
+// 		return
+// 	}
+// 	log.Println("Check for reconnect")
+// 	for _, ci := range disconnectingClients {
+// 		if ciNew.Username == ci.Username {
+// 			crCh := ci.GetReconnectCh(false)
+// 			if crCh != nil {
+// 				crCh <- ciNew
+// 				return
+// 			}
+// 		}
+// 	}
+// }
 
 func handleDisconnect() {
 	for {
 		ci := <-discClientCh
 		log.Printf("Disconnect client %q", ci.ConnName)
-		ci.DisposeReconnectCh()
+		ci.DisposeReconnectCh(disconnectingClients)
 		delete(clients, ci.ConnName) // TODO use mutex
 		log.Println("Connected clients: ", len(clients))
 	}
