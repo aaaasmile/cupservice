@@ -25,13 +25,12 @@ type MessageRead struct {
 }
 
 var (
-	upgrader websocket.Upgrader
-	clients  = make(map[string]*ClientInfo)
-	//disconnectingClients = make(map[string]*ClientInfo)
-	clientCount          = 0
-	broadcastCh          = make(chan *MessageSnd)
-	discClientCh         = make(chan *ClientInfo)
-	disconnectingClients = NewDisconnClient(discClientCh)
+	upgrader      websocket.Upgrader
+	clients       = make(map[string]*ClientInfo)
+	clientCount   = 0
+	broadcastCh   = make(chan *MessageSnd)
+	discClientCh  = make(chan *ClientInfo)
+	disconnClient = NewDisconnClient(discClientCh)
 )
 
 func getConnName() string {
@@ -64,7 +63,7 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 	mm.TargetClientInfos = []string{info.ConnName}
 	broadcastCh <- mm
 
-	disconnectingClients.CheckReconnect(info) // TODO do it after login
+	disconnClient.CheckReconnect(info) // TODO do it after login
 
 	for {
 		messageType, p, err := conn.ReadMessage()
@@ -103,57 +102,20 @@ func closeWsConn(ci *ClientInfo, conn *websocket.Conn) {
 	ci.WsConn[conn] = false
 	delete(ci.WsConn, conn) // TODO use mutex
 	if len(ci.WsConn) == 0 {
+		//if false && (ci.GameInProg == nil || ci.Username == "") {
 		if ci.GameInProg == nil || ci.Username == "" {
-			disconnectingClients.ImmediateDisconn(ci)
+			disconnClient.ImmediateDisconn(ci)
 		} else {
-			//disconnectingClients[ci.ConnName] = ci // TODO use mutex
-			disconnectingClients.StartDisconn(ci)
-			//go delayedDisconnect(ci)
+			disconnClient.StartDisconn(ci)
 		}
 	}
 }
-
-// func delayedDisconnect(ci *ClientInfo) { // TODO add as method of ClientInfo
-// 	log.Println("Delayed disconnect for ", ci.ConnName)
-// 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-// 	defer cancel()
-// 	for {
-// 		select {
-// 		case crNew := <-ci.GetReconnectCh(true):
-// 			log.Println("Client reconnect", crNew)
-// 			log.Printf("Good news, %q reconnect with this connection: %q", ci.ConnName, crNew.ConnName)
-// 			discClientCh <- ci
-// 			// TODO restore game in progress with now crNew
-// 			return
-// 		case <-ctx.Done():
-// 			log.Printf("Context done, disconnect %q", ci.ConnName)
-// 			discClientCh <- ci
-// 			return
-// 		}
-// 	}
-// }
-
-// func checkReconnect(ciNew *ClientInfo) { // TODO add as method of disconnectingClients
-// 	if len(disconnectingClients) == 0 {
-// 		return
-// 	}
-// 	log.Println("Check for reconnect")
-// 	for _, ci := range disconnectingClients {
-// 		if ciNew.Username == ci.Username {
-// 			crCh := ci.GetReconnectCh(false)
-// 			if crCh != nil {
-// 				crCh <- ciNew
-// 				return
-// 			}
-// 		}
-// 	}
-// }
 
 func handleDisconnect() {
 	for {
 		ci := <-discClientCh
 		log.Printf("Disconnect client %q", ci.ConnName)
-		ci.DisposeReconnectCh(disconnectingClients)
+		ci.DisposeReconnectCh(disconnClient)
 		delete(clients, ci.ConnName) // TODO use mutex
 		log.Println("Connected clients: ", len(clients))
 	}
