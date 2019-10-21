@@ -2,9 +2,17 @@ package ws
 
 import (
 	"fmt"
+	"math/rand"
+	"time"
 
 	"github.com/gorilla/websocket"
 )
+
+const charset = "abcdefghijklmnopqrstuvwxyz" +
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+
+var seededRand *rand.Rand = rand.New(
+	rand.NewSource(time.Now().UnixNano()))
 
 type ClientInfo struct {
 	Username   string
@@ -21,9 +29,16 @@ func (ci *ClientInfo) Init(conn *websocket.Conn) {
 	ci.ConnName = connName
 }
 
+func (ci *ClientInfo) stringWithCharset(length int, charset string) string {
+	b := make([]byte, length)
+	for i := range b {
+		b[i] = charset[seededRand.Intn(len(charset))]
+	}
+	return string(b)
+}
+
 func (ci *ClientInfo) getConnName() string {
-	clientCount++ // TODO use rnd id
-	return fmt.Sprintf("Client %d", clientCount)
+	return fmt.Sprintf("Client-%s", ci.stringWithCharset(5, charset))
 }
 
 func (ci *ClientInfo) GetReconnectCh(create bool) chan *ClientInfo {

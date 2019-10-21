@@ -27,7 +27,6 @@ type MessageRead struct {
 var (
 	upgrader      websocket.Upgrader
 	clients       = make(map[string]*ClientInfo)
-	clientCount   = 0
 	broadcastCh   = make(chan *MessageSnd)
 	discClientCh  = make(chan *ClientInfo)
 	disconnClient = NewDisconnClient(discClientCh)
