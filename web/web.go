@@ -14,6 +14,7 @@ import (
 	"../conf"
 	"../db"
 	"./cup"
+	"./cup/socket"
 )
 
 func RunService(configfile string) {
@@ -32,7 +33,7 @@ func RunService(configfile string) {
 
 	http.Handle(conf.Current.RootURLPattern+"static/", http.StripPrefix(conf.Current.RootURLPattern+"static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc(conf.Current.RootURLPattern, cup.CupAPiHandler)
-	http.HandleFunc("/websocket", cup.WsHandler)
+	http.HandleFunc("/websocket", socket.WsHandler)
 
 	srv := &http.Server{
 		Addr: serverurl,
@@ -50,7 +51,7 @@ func RunService(configfile string) {
 
 	sig := make(chan os.Signal, 1)
 	signal.Notify(sig, os.Interrupt) //We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
-	cup.StartWS()
+	socket.StartWS()
 	log.Println("Enter in server loop")
 loop:
 	for {
@@ -65,6 +66,6 @@ loop:
 	ctx, cancel := context.WithTimeout(context.Background(), wait)
 	defer cancel()
 	srv.Shutdown(ctx)
-	cup.EndWS()
+	socket.EndWS()
 	log.Println("Bye, service")
 }

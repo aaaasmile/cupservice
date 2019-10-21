@@ -1,4 +1,4 @@
-package cup
+package socket
 
 import (
 	"context"
@@ -34,6 +34,15 @@ func (ci *ClientInfo) DisposeReconnectCh() {
 		ci.reconCh = nil
 		delete(disconnectingClients, ci.ConnName) // TODO use mutex
 	}
+}
+
+func NewClientInfo(conn *websocket.Conn) *ClientInfo {
+	info := ClientInfo{}
+	connName := getConnName()
+	info.WsConn = make(map[*websocket.Conn]bool)
+	info.WsConn[conn] = true
+	info.ConnName = connName
+	return &info
 }
 
 type GameInProgress struct {
@@ -82,25 +91,21 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	info := ClientInfo{} // TODO use NewCLientInfo(conn)
-	connName := getConnName()
-	info.WsConn = make(map[*websocket.Conn]bool)
-	info.WsConn[conn] = true
-	info.ConnName = connName
-	clients[connName] = &info // TODO use mutex
-	log.Printf("Client %q is connected. Connected clients %d", connName, len(clients))
+	info := NewClientInfo(conn)
+	clients[info.ConnName] = info // TODO use mutex
+	log.Printf("Client %q is connected. Connected clients %d", info.ConnName, len(clients))
 
 	mm := &MessageSnd{MsgJson: cmdInfo("WELCOME_SERVER_CUPERATIVA_WS - 10.0.0")}
-	mm.TargetClientInfos = []string{connName}
+	mm.TargetClientInfos = []string{info.ConnName}
 	broadcastCh <- mm
 
-	checkReconnect(&info) // TODO do it after login
+	checkReconnect(info) // TODO do it after login
 
 	for {
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println("Websocket read error ", err)
-			closeWsConn(&info, conn)
+			closeWsConn(info, conn)
 			return
 		}
 		if messageType == websocket.TextMessage {
