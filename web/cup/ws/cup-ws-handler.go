@@ -26,7 +26,7 @@ type MessageRead struct {
 
 var (
 	upgrader      websocket.Upgrader
-	clients       = make(map[string]*ClientInfo)
+	clients       = Clients{clients: make(map[string]*ClientInfo)}
 	broadcastCh   = make(chan *MessageSnd)
 	discClientCh  = make(chan *ClientInfo)
 	disconnClient = NewDisconnClient(discClientCh)
@@ -49,21 +49,20 @@ func WsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	info := NewClientInfo(conn)
-	clients[info.ConnName] = info // TODO use mutex
-	log.Printf("Client %q is connected. Connected clients %d", info.ConnName, len(clients))
+	ci := NewClientInfo(conn)
+	clients.AddConn(ci)
 
 	mm := &MessageSnd{MsgJson: cmdInfo("WELCOME_SERVER_CUPERATIVA_WS - 10.0.0")}
-	mm.TargetClientInfos = []string{info.ConnName}
+	mm.TargetClientInfos = []string{ci.ConnName}
 	broadcastCh <- mm
 
-	disconnClient.CheckReconnect(info) // TODO do it after login
+	disconnClient.CheckReconnect(ci) // TODO do it after login
 
 	for {
 		messageType, p, err := conn.ReadMessage()
 		if err != nil {
 			log.Println("Websocket read error ", err)
-			closeWsConn(info, conn)
+			closeWsConn(ci, conn)
 			return
 		}
 		if messageType == websocket.TextMessage {
@@ -80,7 +79,11 @@ func broadcastMsg() {
 			continue
 		}
 		for _, name := range msg.TargetClientInfos {
-			ci := clients[name]
+			ci, err := clients.GetClientInfo(name)
+			if err != nil {
+				log.Println("Client info error: ", err)
+				continue
+			}
 			for conn := range ci.WsConn {
 				err := conn.WriteMessage(websocket.TextMessage, []byte(msg.MsgJson))
 				if err != nil {
@@ -110,8 +113,7 @@ func handleDisconnect() {
 		ci := <-discClientCh
 		log.Printf("Disconnect client %q", ci.ConnName)
 		ci.DisposeReconnectCh(disconnClient)
-		delete(clients, ci.ConnName) // TODO use mutex
-		log.Println("Connected clients: ", len(clients))
+		clients.RemoveConn(ci.ConnName)
 	}
 }
 
@@ -122,9 +124,5 @@ func StartWS() {
 
 func EndWS() {
 	log.Println("End od websocket service")
-	for _, ci := range clients {
-		for conn := range ci.WsConn {
-			conn.Close()
-		}
-	}
+	clients.CloseAllConn()
 }

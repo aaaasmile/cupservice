@@ -36,8 +36,7 @@ func RunService(configfile string) {
 	http.HandleFunc("/websocket", ws.WsHandler)
 
 	srv := &http.Server{
-		Addr: serverurl,
-		// Good practice to set timeouts to avoid Slowloris attacks.
+		Addr:         serverurl,
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
@@ -50,7 +49,7 @@ func RunService(configfile string) {
 	}()
 
 	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, os.Interrupt) //We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
+	signal.Notify(sig, os.Interrupt)
 	ws.StartWS()
 	log.Println("Enter in server loop")
 loop:
