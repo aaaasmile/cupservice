@@ -1,6 +1,8 @@
 package ws
 
 import (
+	"fmt"
+
 	"github.com/gorilla/websocket"
 )
 
@@ -10,6 +12,18 @@ type ClientInfo struct {
 	WsConn     map[*websocket.Conn]bool
 	GameInProg *GameInProgress
 	reconCh    chan *ClientInfo
+}
+
+func (ci *ClientInfo) Init(conn *websocket.Conn) {
+	connName := ci.getConnName()
+	ci.WsConn = make(map[*websocket.Conn]bool)
+	ci.WsConn[conn] = true
+	ci.ConnName = connName
+}
+
+func (ci *ClientInfo) getConnName() string {
+	clientCount++ // TODO use rnd id
+	return fmt.Sprintf("Client %d", clientCount)
 }
 
 func (ci *ClientInfo) GetReconnectCh(create bool) chan *ClientInfo {
@@ -31,9 +45,6 @@ func (ci *ClientInfo) DisposeReconnectCh(dc *DisconnClient) {
 
 func NewClientInfo(conn *websocket.Conn) *ClientInfo {
 	info := ClientInfo{}
-	connName := getConnName()
-	info.WsConn = make(map[*websocket.Conn]bool)
-	info.WsConn[conn] = true
-	info.ConnName = connName
+	info.Init(conn)
 	return &info
 }

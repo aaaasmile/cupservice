@@ -33,11 +33,6 @@ var (
 	disconnClient = NewDisconnClient(discClientCh)
 )
 
-func getConnName() string {
-	clientCount++ // TODO use rnd id
-	return fmt.Sprintf("Client %d", clientCount)
-}
-
 func cmdInfo(det string) string { // TODO move in cupCmd package
 	cmd := fmt.Sprintf("INFO: %s", det)
 	bytes, err := json.Marshal(cmd)
