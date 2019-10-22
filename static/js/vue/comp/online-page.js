@@ -61,6 +61,7 @@ export const  OnlinePage = Vue.component('online', {
   },
   beforeCreate: function () {
     console.log('The ws url is ', window.wsaddress)
+    // TODO: usa il socket di socket-service.js
     // socket = new WebSocket(window.wsaddress)
     // socket.addEventListener('open', function (event) {
     //   var msg = { "type": "hello", "username": dataOnline.username };
