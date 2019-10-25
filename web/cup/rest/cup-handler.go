@@ -67,11 +67,13 @@ func handleIndexGet(w http.ResponseWriter, req *http.Request) {
 	}
 	if conf.Current.Framework == "Vue" {
 		templName = "templates/vue/index.html"
-	} else {
+	} else if conf.Current.Framework == "React" {
 		templName = "templates/react/index.html"
 		if conf.Current.UseProdTemplate {
 			templName = "templates/react/index_prod.html"
 		}
+	} else if conf.Current.Framework == "Static" {
+		templName = "templates/static/index.html"
 	}
 
 	if tmplIndex == nil || conf.Current.AlwaysReloadTempl {
