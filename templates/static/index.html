@@ -10,6 +10,7 @@
 
   <title>Cuperativa Service</title>
   <script src="{{.RootUrl}}static/js/ext/rxjs.umd.min.js"></script>
+  <script src="{{.RootUrl}}static/js/ext/pixi.js"></script>
 
   <!-- <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
   <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css"> -->
@@ -25,13 +26,14 @@
     <i class="material-icons">add</i>
   </button>
   <!-- Accent-colored raised button with ripple -->
-  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-    Button
+  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="full">
+    Full Screen
   </button>
-
+  <div id="Display"></div>
 </body>
 <script type="module">
   import { cup } from './static/js/custom/games-cup.js'
+  import { myapp } from './static/js/custom/app/app.js'
   window.cup = cup
 </script>
 
