@@ -1,3 +1,4 @@
+// File adattato dal link: https://github.com/kittykatattack/tink
 export class Tink {
   constructor(PIXI, element, scale = 1) {
 

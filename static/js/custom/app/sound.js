@@ -1,5 +1,8 @@
 
 /*
+Questo file l'ho adattato per usare come import dal link:
+https://github.com/kittykatattack/sound.js
+
 Sound.js
 ===============
 
