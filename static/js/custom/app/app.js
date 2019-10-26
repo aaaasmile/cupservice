@@ -1,5 +1,6 @@
 import { GetCardLoaderGfx } from '../common/gfx/card-loader_gfx.js'
 import { LoadAssets } from '../common/gfx/static-scene-gfx.js'
+import { Tink } from './tink.js'
 
 class MyPixiApp {
 
@@ -39,14 +40,28 @@ class MyPixiApp {
     sprite.position.y = sprite.height + 10
     sprite.rotation = - 3.14 / 2.0
     myapp._sprite = sprite
+    let message = new PIXI.Text("Hello Pixi!")
+    message.style = { fill: "white" }
 
     myapp._app.stage.addChild(sprite);
+    myapp._app.stage.addChild(message);
+    let t = new Tink(PIXI, myapp._app.renderer.view)
+    // let pointer = t.makePointer();
+    // pointer.press = () => console.log("The pointer was pressed");
+    // pointer.release = () => console.log("The pointer was released");
+    //t.makeDraggable(sprite)
+    // t.makeInteractive(sprite);
+    // sprite.press = () => console.log("Sprite was pressed");
+    // sprite.release = () => console.log("Sprite was released");
+
+    myapp._t = t
     myapp._app.ticker.add(delta => myapp.gameLoop(delta));
 
   }
 
   gameLoop(delta) {
     //this._sprite.x += 1
+    this._t.update();
   }
 }
 
