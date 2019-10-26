@@ -4,7 +4,6 @@ import { LoadAssets } from '../common/gfx/static-scene-gfx.js'
 class MyPixiApp {
 
   constructor() {
-
   }
 
   fullSize() {
@@ -24,12 +23,30 @@ class MyPixiApp {
     this._app = app
 
     let loader = GetCardLoaderGfx()
-    LoadAssets(loader, 'piac', (cache) => {
-      console.log('Card loaded')
-    })
-
+    LoadAssets(loader, 'piac', this.setup)
     document.body.appendChild(app.view);
-    
+  }
+
+  setup(cache) {
+    console.log('Card loaded')
+    // cache is istance of CardImageCache
+    let img = cache.get_cardimage(0)
+    let texture = PIXI.Texture.from(img)
+    let sprite = new PIXI.Sprite(texture)
+    sprite.anchor.x = 0.5;
+    sprite.anchor.y = 0.5;
+    sprite.position.x = sprite.height + 10
+    sprite.position.y = sprite.height + 10
+    sprite.rotation = - 3.14 / 2.0
+    myapp._sprite = sprite
+
+    myapp._app.stage.addChild(sprite);
+    myapp._app.ticker.add(delta => myapp.gameLoop(delta));
+
+  }
+
+  gameLoop(delta) {
+    //this._sprite.x += 1
   }
 }
 
