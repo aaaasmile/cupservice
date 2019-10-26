@@ -1,6 +1,7 @@
 import { GetCardLoaderGfx } from '../common/gfx/card-loader_gfx.js'
 import { LoadAssets } from '../common/gfx/static-scene-gfx.js'
 import { Tink } from './tink.js'
+import * as snd from './sound.js'
 
 class MyPixiApp {
 
@@ -29,7 +30,7 @@ class MyPixiApp {
   }
 
   setup(cache) {
-    console.log('Card loaded')
+    console.log('cache Card loaded')
     // cache is istance of CardImageCache
     let img = cache.get_cardimage(0)
     let texture = PIXI.Texture.from(img)
@@ -50,9 +51,22 @@ class MyPixiApp {
     // pointer.press = () => console.log("The pointer was pressed");
     // pointer.release = () => console.log("The pointer was released");
     //t.makeDraggable(sprite)
-    // t.makeInteractive(sprite);
+     t.makeInteractive(sprite);
     // sprite.press = () => console.log("Sprite was pressed");
     // sprite.release = () => console.log("Sprite was released");
+
+    // load sounds
+    snd.sounds.load([
+      "static/assets/sound/mischen1.wav", 
+      "static/assets/sound/click_4bit.wav"
+    ]);
+    snd.sounds.whenLoaded = () => {
+      console.log('Sounds loaded OK')
+      let click = snd.sounds["static/assets/sound/click_4bit.wav"]
+      sprite.press = () =>{
+        click.play()
+      }
+    }
 
     myapp._t = t
     myapp._app.ticker.add(delta => myapp.gameLoop(delta));
