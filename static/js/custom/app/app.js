@@ -29,7 +29,7 @@ class MyPixiApp {
       let that = this
       mm.Init(() => {
         let loader = GetCardLoaderGfx()
-        if (!that._cache){
+        if (!that._cache) {
           LoadAssets(loader, 'piac', (cache) => {
             that._cache = cache
             that.setup(cache)
@@ -37,21 +37,32 @@ class MyPixiApp {
         }
       })
       document.body.appendChild(app.view);
-    }else{
+    } else {
       this.setup(this._cache)
     }
   }
 
   setup(cache) {
     console.log('cache Card loaded')
+    myapp._app.stage.removeChildren()
     // cache is istance of CardImageCache
     let img = cache.get_cardimage(0)
     let texture = PIXI.Texture.from(img)
     let sprite = new PIXI.Sprite(texture)
 
+    //let viewWidth = (myapp._app.renderer.width / myapp._app.renderer.resolution);
+    let viewHeight = (myapp._app.renderer.height / myapp._app.renderer.resolution);
     img = cache.get_background_img('table')
     texture = PIXI.Texture.from(img)
     let backgound = new PIXI.Sprite(texture)
+    //backgound.scale.set(0.5, 0.5);
+    let backCont = new PIXI.Container();
+    backCont.addChild(backgound)
+    //backCont.width = viewWidth
+    backCont.scale.y = viewHeight / backgound.height;
+    backCont.scale.x = backCont.scale.y
+    console.log('Scale back is ', backCont.scale.y, viewHeight, img.height)
+
     //sprite.anchor.x = 0.5;
     //sprite.anchor.y = 0.5;
     //sprite.position.x = sprite.height + 10
@@ -61,7 +72,7 @@ class MyPixiApp {
     // let message = new PIXI.Text("Hello Pixi!")
     // message.style = { fill: "white" }
 
-    myapp._app.stage.addChild(backgound)
+    myapp._app.stage.addChild(backCont)
     myapp._app.stage.addChild(sprite);
     //myapp._app.stage.addChild(message);
     let tink = new Tink(PIXI, myapp._app.renderer.view)
