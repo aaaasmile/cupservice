@@ -54,17 +54,17 @@ class MyPixiApp {
     //sprite.position.y = sprite.height + 10
     //sprite.rotation = - 3.14 / 2.0
     myapp._sprite = sprite
-    let message = new PIXI.Text("Hello Pixi!")
-    message.style = { fill: "white" }
+    // let message = new PIXI.Text("Hello Pixi!")
+    // message.style = { fill: "white" }
 
     myapp._app.stage.addChild(sprite);
-    myapp._app.stage.addChild(message);
-    let t = new Tink(PIXI, myapp._app.renderer.view)
+    //myapp._app.stage.addChild(message);
+    let tink = new Tink(PIXI, myapp._app.renderer.view)
     // let pointer = t.makePointer();
     // pointer.press = () => console.log("The pointer was pressed");
     // pointer.release = () => console.log("The pointer was released");
-    //t.makeDraggable(sprite)
-    t.makeInteractive(sprite);
+    //tink.makeDraggable(sprite)
+    tink.makeInteractive(sprite);
     // sprite.press = () => console.log("Sprite was pressed");
     // sprite.release = () => console.log("Sprite was released");
 
@@ -74,14 +74,14 @@ class MyPixiApp {
       myapp._music.Play('played')
     }
 
-    myapp._t = t
+    myapp._tink = tink
     myapp._app.ticker.add(delta => myapp.gameLoop(delta));
 
   }
 
   gameLoop(delta) {
     //this._sprite.x += 1
-    this._t.update();
+    this._tink.update();
   }
 }
 
@@ -92,3 +92,8 @@ document.getElementById('run').addEventListener('click', () => {
   myapp.Run()
   document.getElementById('gamelist').style.visibility = "hidden";
 })
+
+
+// TEST fast, remove this  - start
+myapp.Run() 
+// TEST fast, remove this - end
