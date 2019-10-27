@@ -48,6 +48,10 @@ class MyPixiApp {
     let img = cache.get_cardimage(0)
     let texture = PIXI.Texture.from(img)
     let sprite = new PIXI.Sprite(texture)
+
+    img = cache.get_background_img('table')
+    texture = PIXI.Texture.from(img)
+    let backgound = new PIXI.Sprite(texture)
     //sprite.anchor.x = 0.5;
     //sprite.anchor.y = 0.5;
     //sprite.position.x = sprite.height + 10
@@ -57,6 +61,7 @@ class MyPixiApp {
     // let message = new PIXI.Text("Hello Pixi!")
     // message.style = { fill: "white" }
 
+    myapp._app.stage.addChild(backgound)
     myapp._app.stage.addChild(sprite);
     //myapp._app.stage.addChild(message);
     let tink = new Tink(PIXI, myapp._app.renderer.view)
@@ -95,5 +100,5 @@ document.getElementById('run').addEventListener('click', () => {
 
 
 // TEST fast, remove this  - start
-myapp.Run() 
+myapp.Run()  // audio warning here
 // TEST fast, remove this - end

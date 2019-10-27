@@ -2,6 +2,7 @@
 const c_nomi_semi = ["basto", "coppe", "denar", "spade"]
 const c_nomi_simboli = ["cope", "zero", "xxxx", "vuot"]
 const c_nomi_avatar = ["ade","christian", "elliot", "jenny", "joe", "nan", "stevie", "zoe"]
+const c_nomi_sfondi = ["table"]
 
 ///////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////// CardImageCache
@@ -13,6 +14,7 @@ class CardImageCache {
     this.cards_rotated = []
     this.completed = false
     this.avatars = new Map()
+    this.backgrounds = new Map()
   }
 
   set_completed() {
@@ -42,6 +44,13 @@ class CardImageCache {
     return null
   }
 
+  get_background_img(background_name) {
+    if (this.backgrounds.has(background_name)) {
+      return this.backgrounds.get(background_name).cloneNode()
+    }
+    return null
+  }
+
 }
 
 ///////////////////////////////////////////////////////////
@@ -53,6 +62,7 @@ class CardLoaderGfx {
     this.path_prefix = 'static/'
     this.current_cache = null
     this.avatars = []
+    this.backgrounds = []
   }
 
   getLoaded(deck_type) {
@@ -98,6 +108,7 @@ class CardLoaderGfx {
 
       let totItems = nomi_semi.length * num_cards_onsuit + nomi_simboli.length // used onl for notification progress
       totItems += c_nomi_avatar.length // avatars
+      totItems += c_nomi_sfondi.length // backgrounds
 
       console.log("Load cards of ", deck_type)
 
@@ -175,6 +186,32 @@ class CardLoaderGfx {
           img.onload = () => {
             imageCache.avatars.set(e, img)
             this.avatars[ix] = img
+            loadedCount += 1
+            obs.next(loadedCount)
+            if (countToLoad <= loadedCount) {
+              imageCache.set_completed()
+              obs.complete()
+            } 
+          }
+        })
+      }
+      console.log('Load background')
+      if(this.backgrounds.length === c_nomi_sfondi.length){
+        // background already loaded
+        c_nomi_sfondi.forEach((e,ix) => {
+          imageCache.backgrounds.set(e, this.backgrounds[ix])
+        })
+      }else{
+        this.backgrounds = []
+        let back_folder = this.path_prefix + "assets/images/table"
+        c_nomi_sfondi.forEach((e,ix) => {
+          let item_filepath = `${back_folder}/${e}.png`
+          let img = new Image()
+          img.src = item_filepath
+          countToLoad += 1
+          img.onload = () => {
+            imageCache.backgrounds.set(e, img)
+            this.backgrounds[ix] = img
             loadedCount += 1
             obs.next(loadedCount)
             if (countToLoad <= loadedCount) {
