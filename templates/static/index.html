@@ -20,16 +20,22 @@
 </head>
 
 <body>
-  <h2>Proviamo a fare andare Material Design</h2>
+  <h2>Gioca a carte</h2>
   <!-- Colored FAB button -->
-  <button class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
-    <i class="material-icons">add</i>
-  </button>
-  <!-- Accent-colored raised button with ripple -->
-  <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" id="full">
-    Full Screen
-  </button>
-  <div id="Display"></div>
+  <div>
+    <ul class="demo-list-item mdl-list">
+      <li class="mdl-list__item">
+        <span class="mdl-list__item-primary-content">
+          Gioca a Briscola
+          <button id="run" class="mdl-button mdl-js-button mdl-button--fab mdl-button--colored">
+            <i class="material-icons">play_arrow</i>
+          </button>
+        </span>
+      </li>
+    </ul>
+  </div>
+
+ 
 </body>
 <script type="module">
   import { cup } from './static/js/custom/games-cup.js'

@@ -1,7 +1,7 @@
 import { GetCardLoaderGfx } from '../common/gfx/card-loader_gfx.js'
 import { LoadAssets } from '../common/gfx/static-scene-gfx.js'
 import { Tink } from './tink.js'
-import * as snd from './sound.js'
+import { GetMusicManagerInstance } from './sound-mgr.js'
 
 class MyPixiApp {
 
@@ -19,14 +19,27 @@ class MyPixiApp {
 
   Run() {
     console.log('Your static app is there!')
-    let app = new PIXI.Application({ width: 800, height: 600, antialias: true, transparent: false });
-    app.renderer.backgroundColor = 0x061639;
-    app.renderer.autoDensity = true;
-    this._app = app
-
-    let loader = GetCardLoaderGfx()
-    LoadAssets(loader, 'piac', this.setup)
-    document.body.appendChild(app.view);
+    if (!this._app) {
+      let app = new PIXI.Application({ width: 800, height: 600, antialias: true, transparent: false });
+      app.renderer.backgroundColor = 0x061639;
+      app.renderer.autoDensity = true;
+      this._app = app
+      let mm = GetMusicManagerInstance()
+      this._music = mm
+      let that = this
+      mm.Init(() => {
+        let loader = GetCardLoaderGfx()
+        if (!that._cache){
+          LoadAssets(loader, 'piac', (cache) => {
+            that._cache = cache
+            that.setup(cache)
+          })
+        }
+      })
+      document.body.appendChild(app.view);
+    }else{
+      this.setup(this._cache)
+    }
   }
 
   setup(cache) {
@@ -51,21 +64,14 @@ class MyPixiApp {
     // pointer.press = () => console.log("The pointer was pressed");
     // pointer.release = () => console.log("The pointer was released");
     //t.makeDraggable(sprite)
-     t.makeInteractive(sprite);
+    t.makeInteractive(sprite);
     // sprite.press = () => console.log("Sprite was pressed");
     // sprite.release = () => console.log("Sprite was released");
 
-    // load sounds
-    snd.sounds.load([
-      "static/assets/sound/mischen1.wav", 
-      "static/assets/sound/click_4bit.wav"
-    ]);
-    snd.sounds.whenLoaded = () => {
-      console.log('Sounds loaded OK')
-      let click = snd.sounds["static/assets/sound/click_4bit.wav"]
-      sprite.press = () =>{
-        click.play()
-      }
+    // test sounds
+    //let click = snd.sounds["static/assets/sound/click_4bit.wav"]
+    sprite.press = () => {
+      myapp._music.Play('played')
     }
 
     myapp._t = t
@@ -81,9 +87,12 @@ class MyPixiApp {
 
 export const myapp = new MyPixiApp();
 
-myapp.Run();
+// document.getElementById('full').addEventListener('click', () => {
+//   console.log('Button click')
+//   myapp.fullSize()
+// })
 
-document.getElementById('full').addEventListener('click', () => {
-  console.log('Button click')
-  myapp.fullSize()
+document.getElementById('run').addEventListener('click', () => {
+  console.log('Run click')
+  myapp.Run()
 })

@@ -168,9 +168,6 @@ Define the audio context
 All this code uses a single `AudioContext` If you want to use any of these functions
 independently of this file, make sure that have an `AudioContext` called `actx`.
 */
-var actx = new AudioContext();
-const _actx = actx;
-export { _actx as actx };
 
 /*
 sounds
@@ -357,8 +354,13 @@ of you application. (The [Hexi game engine](https://github.com/kittykatattack/he
 
 */
 
+let actx
+
 function makeSound(source, loadHandler, shouldLoadSound, xhr, failHandler) {
 
+  if (!actx) {
+    actx = new AudioContext();
+  }
   //The sound object that this function returns.
   var o = {};
 
@@ -544,7 +546,7 @@ function makeSound(source, loadHandler, shouldLoadSound, xhr, failHandler) {
 
   //Fade a sound in, from an initial volume level of zero.
 
-  o.fadeIn = function(durationInSeconds) {
+  o.fadeIn = function (durationInSeconds) {
 
     //Set the volume to 0 so that you can fade
     //in from silence
@@ -641,7 +643,9 @@ export { _loadSound as loadSound };
 //The `decodeAudio` function decodes the audio file for you and
 //launches the `loadHandler` when it's done
 function decodeAudio(o, xhr, loadHandler, failHandler) {
-
+  if (!actx) {
+    actx = new AudioContext();
+  }
   //Decode the sound and store a reference to the buffer.
   actx.decodeAudioData(
     xhr.response,
@@ -711,6 +715,9 @@ function soundEffect(
   reverb,              //An array: [durationInSeconds, decayRateInSeconds, reverse]
   timeout              //A number, in seconds, which is the maximum duration for sound effects
 ) {
+  if (!actx) {
+    actx = new AudioContext();
+  }
 
   //Set the default values
   if (frequencyValue === undefined) frequencyValue = 200;
@@ -961,7 +968,9 @@ and `soundEffect` if you need to use the reverb feature.
 */
 
 function impulseResponse(duration, decay, reverse, actx) {
-
+  if (!actx) {
+    actx = new AudioContext();
+  }
   //The length of the buffer.
   var length = actx.sampleRate * duration;
 
