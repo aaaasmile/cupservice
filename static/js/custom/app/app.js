@@ -33,6 +33,7 @@ class MyPixiApp {
           LoadAssets(loader, 'piac', (cache) => {
             that._cache = cache
             that.setup(cache)
+            myapp._app.ticker.add(delta => myapp.gameLoop(delta)); // aggiungi il ticker solo una volta
           })
         }
       })
@@ -91,7 +92,7 @@ class MyPixiApp {
     }
 
     myapp._tink = tink
-    myapp._app.ticker.add(delta => myapp.gameLoop(delta));
+    
 
   }
 
