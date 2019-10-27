@@ -87,12 +87,8 @@ class MyPixiApp {
 
 export const myapp = new MyPixiApp();
 
-// document.getElementById('full').addEventListener('click', () => {
-//   console.log('Button click')
-//   myapp.fullSize()
-// })
-
 document.getElementById('run').addEventListener('click', () => {
   console.log('Run click')
   myapp.Run()
+  document.getElementById('gamelist').style.visibility = "hidden";
 })
