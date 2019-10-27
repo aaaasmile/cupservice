@@ -48,11 +48,11 @@ class MyPixiApp {
     let img = cache.get_cardimage(0)
     let texture = PIXI.Texture.from(img)
     let sprite = new PIXI.Sprite(texture)
-    sprite.anchor.x = 0.5;
-    sprite.anchor.y = 0.5;
-    sprite.position.x = sprite.height + 10
-    sprite.position.y = sprite.height + 10
-    sprite.rotation = - 3.14 / 2.0
+    //sprite.anchor.x = 0.5;
+    //sprite.anchor.y = 0.5;
+    //sprite.position.x = sprite.height + 10
+    //sprite.position.y = sprite.height + 10
+    //sprite.rotation = - 3.14 / 2.0
     myapp._sprite = sprite
     let message = new PIXI.Text("Hello Pixi!")
     message.style = { fill: "white" }
