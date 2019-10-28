@@ -1,7 +1,7 @@
 
 const c_nomi_semi = ["basto", "coppe", "denar", "spade"]
 const c_nomi_simboli = ["cope", "zero", "xxxx", "vuot"]
-const c_nomi_avatar = ["ade","christian", "elliot", "jenny", "joe", "nan", "stevie", "zoe"]
+const c_nomi_avatar = ["ade", "christian", "elliot", "jenny", "joe", "nan", "stevie", "zoe"]
 const c_nomi_sfondi = ["table"]
 
 ///////////////////////////////////////////////////////////
@@ -15,6 +15,7 @@ class CardImageCache {
     this.completed = false
     this.avatars = new Map()
     this.backgrounds = new Map()
+    this.textureCache = new Map()
   }
 
   set_completed() {
@@ -51,6 +52,20 @@ class CardImageCache {
     return null
   }
 
+  GetTextureFromSymbol(symbol) {
+    let texture = null
+    let symbKey = 'SYM-' + symbol
+    if (this.textureCache.has(symbKey)) {
+      return this.textureCache.get(symbKey)
+    }
+    let ssImg = this.get_symbol_img(symbol)
+    if (ssImg) {
+      texture = PIXI.Texture.from(ssImg)
+      this.textureCache.set(symbKey, texture)
+    }
+    return texture
+  }
+
 }
 
 ///////////////////////////////////////////////////////////
@@ -76,7 +91,7 @@ class CardLoaderGfx {
     return null
   }
 
-  getCurrentCache(){
+  getCurrentCache() {
     return this.current_cache
   }
 
@@ -112,7 +127,7 @@ class CardLoaderGfx {
 
       console.log("Load cards of ", deck_type)
 
-      let countToLoad = 0 
+      let countToLoad = 0
       let loadedCount = 0 // when reach countToLoad, then the load is completed
 
       // cards
@@ -170,15 +185,15 @@ class CardLoaderGfx {
       }
       // avatars
       console.log("Load all avatars...")
-      if(this.avatars.length === c_nomi_avatar.length){
+      if (this.avatars.length === c_nomi_avatar.length) {
         // avatars already loaded
-        c_nomi_avatar.forEach((e,ix) => {
+        c_nomi_avatar.forEach((e, ix) => {
           imageCache.avatars.set(e, this.avatars[ix])
         })
-      }else{
+      } else {
         this.avatars = []
         let avatar_folder = this.path_prefix + "assets/images/avatar"
-        c_nomi_avatar.forEach((e,ix) => {
+        c_nomi_avatar.forEach((e, ix) => {
           let avatar_filepath = `${avatar_folder}/${e}.jpg`
           let img = new Image()
           img.src = avatar_filepath
@@ -191,20 +206,20 @@ class CardLoaderGfx {
             if (countToLoad <= loadedCount) {
               imageCache.set_completed()
               obs.complete()
-            } 
+            }
           }
         })
       }
       console.log('Load background')
-      if(this.backgrounds.length === c_nomi_sfondi.length){
+      if (this.backgrounds.length === c_nomi_sfondi.length) {
         // background already loaded
-        c_nomi_sfondi.forEach((e,ix) => {
+        c_nomi_sfondi.forEach((e, ix) => {
           imageCache.backgrounds.set(e, this.backgrounds[ix])
         })
-      }else{
+      } else {
         this.backgrounds = []
         let back_folder = this.path_prefix + "assets/images/table"
-        c_nomi_sfondi.forEach((e,ix) => {
+        c_nomi_sfondi.forEach((e, ix) => {
           let item_filepath = `${back_folder}/${e}.png`
           let img = new Image()
           img.src = item_filepath
@@ -217,7 +232,7 @@ class CardLoaderGfx {
             if (countToLoad <= loadedCount) {
               imageCache.set_completed()
               obs.complete()
-            } 
+            }
           }
         })
       }

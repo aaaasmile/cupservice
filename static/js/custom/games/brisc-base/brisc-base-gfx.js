@@ -1,4 +1,4 @@
-import { GetCardLoaderGfx } from '../../common/gfx/card-loader_gfx.js'
+import { GetCardLoaderGfx } from '../../common/gfx/card-loader-gfx.js'
 import { CoreStateManager } from '../../common/core/core-state-manager.js'
 import { TableStateCore } from '../../common/class/table-state-core.js'
 import { Player } from '../../common/class/player.js'

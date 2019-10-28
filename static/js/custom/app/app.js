@@ -1,7 +1,8 @@
-import { GetCardLoaderGfx } from '../common/gfx/card-loader_gfx.js'
+import { GetCardLoaderGfx } from '../common/gfx/card-loader-gfx.js'
 import { LoadAssets } from '../common/gfx/static-scene-gfx.js'
 import { Tink } from './tink.js'
 import { GetMusicManagerInstance } from './sound-mgr.js'
+import { DeckGfx } from './deck-gfx.js'
 
 class MyPixiApp {
 
@@ -33,7 +34,7 @@ class MyPixiApp {
           LoadAssets(loader, 'piac', (cache) => {
             that._cache = cache
             that.setup(cache)
-            myapp._app.ticker.add(delta => myapp.gameLoop(delta)); // aggiungi il ticker solo una volta
+            myapp._app.ticker.add(delta => myapp.gameLoop(delta)); // il ticker va aggiunto solo una volta
           })
         }
       })
@@ -85,6 +86,13 @@ class MyPixiApp {
     // sprite.press = () => console.log("Sprite was pressed");
     // sprite.release = () => console.log("Sprite was released");
 
+    // test deck
+    let deck = new DeckGfx();
+    let deckItemTexture = cache.GetTextureFromSymbol('cope')
+    let deckContainer = deck.Build(40 - 6 - 1, deckItemTexture, null)
+    deckContainer.position.set(350, 300)
+    myapp._app.stage.addChild(deckContainer)
+
     // test sounds
     //let click = snd.sounds["static/assets/sound/click_4bit.wav"]
     sprite.press = () => {
@@ -92,8 +100,6 @@ class MyPixiApp {
     }
 
     myapp._tink = tink
-    
-
   }
 
   gameLoop(delta) {
