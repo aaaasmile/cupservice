@@ -13,6 +13,7 @@ export class DeckGfx {
     for (let index = 0; index < numCardsOnDeck; index++) {
       let sprite = new PIXI.Sprite(deckItemTexture)
       sprite.position.set(x, y)
+      this.deckSprite.push(sprite)
       this.container.addChild(sprite)
       x += 1
       y += 1
@@ -21,6 +22,14 @@ export class DeckGfx {
   }
 
   PopCard(num) {
-
+    for (let index = 0; index < num; index++) {
+      let item = this.deckSprite.pop()
+      if (item) {
+        this.container.removeChild(item)
+      }else if(this.briscola){
+        this.container.removeChild(this.briscola)
+        this.briscola = null
+      }
+    }
   }
 }

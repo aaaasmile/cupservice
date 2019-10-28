@@ -97,6 +97,7 @@ class MyPixiApp {
     //let click = snd.sounds["static/assets/sound/click_4bit.wav"]
     sprite.press = () => {
       myapp._music.Play('played')
+      deck.PopCard(2)
     }
 
     myapp._tink = tink
