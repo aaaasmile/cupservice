@@ -1,7 +1,7 @@
 import { GetCardLoaderGfx } from './gfx/card-loader-gfx.js'
 import { Tink } from './tink.js'
 import { GetMusicManagerInstance } from './sound-mgr.js'
-import { DeckGfx } from './deck-gfx.js'
+import { DeckGfx } from './gfx/deck-gfx.js'
 
 // briscola specific imports
 import { CoreBriscolaBase } from '../games/brisc-base/core-brisc-base.js'
@@ -43,6 +43,7 @@ class MyPixiApp {
       })
       document.body.appendChild(app.view);
     } else {
+      console.log('PIXI App already initilized')
       this.setup(this._cache)
     }
   }

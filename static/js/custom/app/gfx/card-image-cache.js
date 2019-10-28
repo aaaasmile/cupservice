@@ -58,6 +58,7 @@ export class CardImageCache {
     return texture
   }
 
+  // deckInfo: is a parameter because the ix differ on deck type. It is game specific.
   GetTextureFromCard(cardLbl, deckInfo) { //cardLbl: _5s, deckInfo instance of class DeckInfo
     let texture = null
     let crdKey = 'CRD-' + cardLbl
