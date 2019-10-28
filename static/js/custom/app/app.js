@@ -1,5 +1,4 @@
-import { GetCardLoaderGfx } from '../common/gfx/card-loader-gfx.js'
-import { LoadAssets } from '../common/gfx/static-scene-gfx.js'
+import { GetCardLoaderGfx } from './gfx/card-loader-gfx.js'
 import { Tink } from './tink.js'
 import { GetMusicManagerInstance } from './sound-mgr.js'
 import { DeckGfx } from './deck-gfx.js'
@@ -35,7 +34,7 @@ class MyPixiApp {
       mm.Init(() => {
         let loader = GetCardLoaderGfx()
         if (!that._cache) {
-          LoadAssets(loader, 'piac', (cache) => {
+          loader.LoadAssets('piac', (cache) => {
             that._cache = cache
             that.setup(cache)
             myapp._app.ticker.add(delta => myapp.gameLoop(delta)); // il ticker va aggiunto solo una volta

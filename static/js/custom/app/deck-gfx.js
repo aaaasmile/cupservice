@@ -23,7 +23,7 @@ export class DeckGfx {
       let sprite = new PIXI.Sprite(briscolaTexture)
       this.briscola = sprite
       if (this.deckSprite.length > 0) {
-        let last = this.deckSprite[this.deckSprite.length - 1]
+        let last = this.deckSprite[0]
         y = last.y + last.height - ((last.height - last.width) / 2)
         x = last.x + last.width / 2
       }
