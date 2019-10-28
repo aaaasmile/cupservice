@@ -4,6 +4,10 @@ import { Tink } from './tink.js'
 import { GetMusicManagerInstance } from './sound-mgr.js'
 import { DeckGfx } from './deck-gfx.js'
 
+// briscola specific imports
+import { CoreBriscolaBase } from '../games/brisc-base/core-brisc-base.js'
+import { CoreStateManager } from '../common/core/core-state-manager.js'
+
 class MyPixiApp {
 
   constructor() {
@@ -87,9 +91,13 @@ class MyPixiApp {
     // sprite.release = () => console.log("Sprite was released");
 
     // test deck
+    let coreStateManager = new CoreStateManager('develop');
+    let b2core = new CoreBriscolaBase(coreStateManager, 2, 61);
+
     let deck = new DeckGfx();
     let deckItemTexture = cache.GetTextureFromSymbol('cope')
-    let deckContainer = deck.Build(40 - 6 - 1, deckItemTexture, null)
+    let briscolaTexture = cache.GetTextureFromCard('_5s', b2core._deck_info)
+    let deckContainer = deck.Build(40 - 6 - 1, deckItemTexture, briscolaTexture)
     deckContainer.position.set(350, 300)
     myapp._app.stage.addChild(deckContainer)
 

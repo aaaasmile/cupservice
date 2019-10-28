@@ -66,6 +66,20 @@ class CardImageCache {
     return texture
   }
 
+  GetTextureFromCard(cardLbl, deckInfo) { //cardLbl: _5s, deckInfo instance of class DeckInfo
+    let texture = null
+    let crdKey = 'CRD-' + cardLbl
+    if (this.textureCache.has(crdKey)) {
+      return this.textureCache.get(crdKey)
+    }
+    let card_info = deckInfo.get_card_info(cardLbl)
+    let cardImg = this.get_cardimage(card_info.ix)
+    if (cardImg) {
+      texture = PIXI.Texture.from(cardImg)
+      this.textureCache.set(crdKey, texture)
+    }
+    return texture
+  }
 }
 
 ///////////////////////////////////////////////////////////
