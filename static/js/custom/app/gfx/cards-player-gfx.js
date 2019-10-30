@@ -1,6 +1,6 @@
 export class CardsPlayerGfx {
   constructor(tink) {
-    this.sprites = []
+    this.spriteInfos = []
     this.container = new PIXI.Container()
     this.clickHandler = new Map()
     this.numCards = 0
@@ -12,7 +12,7 @@ export class CardsPlayerGfx {
     return this.container
   }
 
-  SetCards(textures, space_x, clickable) {
+  SetCards(textureInfos, space_x) {
     let ixTexture = 0
     let iniX = 0
     let iniY = 0
@@ -20,31 +20,38 @@ export class CardsPlayerGfx {
     let y = iniY
 
     for (let index = 0; index < this.numCards; index++) {
-      const itemTexture = textures[ixTexture];
+      const itemTexture = textureInfos[ixTexture].t;
       let sprite = new PIXI.Sprite(itemTexture)
       sprite.position.set(x, y)
-
-      if (clickable) {
-        this._tink.makeInteractive(sprite)
-        sprite.press = () => {
-          console.log('Card is pressed')
-          let keyCard = 'click-1' // TODO get the index 1 correct
-          if (this.clickHandler.has(keyCard)) {
-            this.clickHandler.get(keyCard)()
-          }
-        }
-      }
-
-      this.sprites.push(sprite)
+      this.spriteInfos.push({ sprite: sprite, data: textureInfos[ixTexture].d })
       this.container.addChild(sprite)
       x += space_x
-      if (ixTexture < textures.length) {
+      if (ixTexture < textureInfos.length) {
         ixTexture += 1
       }
     }
   }
 
-  OnClick(event, funHandler) {
+  OnClick(funHandler) {
+    const event = 'click-card'
     this.clickHandler.set(event, funHandler)
+
+    for (let index = 0; index < this.spriteInfos.length; index++) {
+      const element = this.spriteInfos[index];
+      let sprite = element.sprite
+      let data = element.data
+      this._tink.makeInteractive(sprite);
+      this.handlePress(event, data, sprite)
+    }
+  }
+
+  handlePress(event, data, sprite) {
+    sprite.press = () => {
+      console.log('Card is pressed')
+      if (this.clickHandler.has(event)) {
+        this.clickHandler.get(event)(data)
+      }
+    }
   }
 }
+
