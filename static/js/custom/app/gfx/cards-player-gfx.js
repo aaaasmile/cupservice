@@ -1,6 +1,6 @@
 export class CardsPlayerGfx {
   constructor(tink) {
-    this.spriteInfos = []
+    this.sprites = []
     this.container = new PIXI.Container()
     this.clickHandler = new Map()
     this.numCards = 0
@@ -12,7 +12,7 @@ export class CardsPlayerGfx {
     return this.container
   }
 
-  SetCards(textureInfos, space_x) {
+  SetCards(textures, space_x) {
     let ixTexture = 0
     let iniX = 0
     let iniY = 0
@@ -20,13 +20,14 @@ export class CardsPlayerGfx {
     let y = iniY
 
     for (let index = 0; index < this.numCards; index++) {
-      const itemTexture = textureInfos[ixTexture].t;
+      const itemTexture = textures[ixTexture];
       let sprite = new PIXI.Sprite(itemTexture)
+      sprite.cup_data_lbl = itemTexture.cup_data_lbl
       sprite.position.set(x, y)
-      this.spriteInfos.push({ sprite: sprite, data: textureInfos[ixTexture].d })
+      this.sprites.push(sprite)
       this.container.addChild(sprite)
       x += space_x
-      if (ixTexture < textureInfos.length) {
+      if (ixTexture < textures.length) {
         ixTexture += 1
       }
     }
@@ -36,10 +37,9 @@ export class CardsPlayerGfx {
     const event = 'click-card'
     this.clickHandler.set(event, funHandler)
 
-    for (let index = 0; index < this.spriteInfos.length; index++) {
-      const element = this.spriteInfos[index];
-      let sprite = element.sprite
-      let data = element.data
+    for (let index = 0; index < this.sprites.length; index++) {
+      const sprite = this.sprites[index];
+      let data = sprite.cup_data_lbl
       this._tink.makeInteractive(sprite);
       this.handlePress(event, data, sprite)
     }

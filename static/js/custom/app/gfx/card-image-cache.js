@@ -69,8 +69,10 @@ export class CardImageCache {
     let cardImg = this.get_cardimage(card_info.ix)
     if (cardImg) {
       texture = PIXI.Texture.from(cardImg)
+      texture.cup_data_lbl = cardLbl // give the context
       this.textureCache.set(crdKey, texture)
     }
+    
     return texture
   }
 }

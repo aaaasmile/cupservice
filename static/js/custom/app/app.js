@@ -109,11 +109,7 @@ class MyPixiApp {
     const cdT1 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
     const cdT2 = cache.GetTextureFromCard('_2d', b2core._deck_info)
     const cdT3 = cache.GetTextureFromCard('_3d', b2core._deck_info)
-    cardsMeGfx.SetCards([
-      { t: cdT1, d: '_Ad' },
-      { t: cdT2, d: '_2d' },
-      { t: cdT3, d: '_3d' },
-    ], cdT1.width + 5)
+    cardsMeGfx.SetCards([cdT1, cdT2, cdT3], cdT1.width + 5)
     cardsMeGfx.OnClick((ev) => {
       console.log('Click rec in handler', ev)
     })
