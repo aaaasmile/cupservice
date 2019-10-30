@@ -48,6 +48,8 @@ export class CardsPlayerGfx {
   handlePress(event, data, sprite) {
     sprite.press = () => {
       console.log('Card is pressed')
+      //sprite.enabled = false // remove the interactivity
+      //sprite.visible = false
       if (this.clickHandler.has(event)) {
         this.clickHandler.get(event)(data)
       }
