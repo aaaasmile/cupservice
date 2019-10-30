@@ -2,6 +2,7 @@ import { GetCardLoaderGfx } from './gfx/card-loader-gfx.js'
 import { Tink } from './tink.js'
 import { GetMusicManagerInstance } from './sound-mgr.js'
 import { DeckGfx } from './gfx/deck-gfx.js'
+import { CardsPlayerGfx } from './gfx/cards-player-gfx.js'
 
 // briscola specific imports
 import { CoreBriscolaBase } from '../games/brisc-base/core-brisc-base.js'
@@ -86,7 +87,8 @@ class MyPixiApp {
     // pointer.press = () => console.log("The pointer was pressed");
     // pointer.release = () => console.log("The pointer was released");
     //tink.makeDraggable(sprite)
-    tink.makeInteractive(sprite);
+    tink.makeInteractive(sprite); // TODO how to remove from intercative?
+
     // sprite.press = () => console.log("Sprite was pressed");
     // sprite.release = () => console.log("Sprite was released");
 
@@ -94,12 +96,25 @@ class MyPixiApp {
     let coreStateManager = new CoreStateManager('develop');
     let b2core = new CoreBriscolaBase(coreStateManager, 2, 61);
 
-    let deck = new DeckGfx();
+    let deckGfx = new DeckGfx();
     let deckItemTexture = cache.GetTextureFromSymbol('cope')
     let briscolaTexture = cache.GetTextureFromCard('_5s', b2core._deck_info)
-    let deckContainer = deck.Build(40 - 6 - 1, deckItemTexture, briscolaTexture)
-    deckContainer.position.set(350, 300)
+    let deckContainer = deckGfx.Build(40 - 6 - 1, deckItemTexture, briscolaTexture)
+    deckContainer.position.set(500, 300)
     myapp._app.stage.addChild(deckContainer)
+
+    // test hand player
+    let cardsMeGfx = new CardsPlayerGfx(tink)
+    let cardMeContainer = cardsMeGfx.Build(3)
+    const cdT1 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
+    const cdT2 = cache.GetTextureFromCard('_2d', b2core._deck_info)
+    const cdT3 = cache.GetTextureFromCard('_3d', b2core._deck_info)
+    cardsMeGfx.SetCards([cdT1, cdT2, cdT3], cdT1.width + 5, true)
+    cardsMeGfx.OnClick('click-1', () => {
+      console.log('Click-1 rec in handler')
+    })
+    cardMeContainer.position.set(20, 300)
+    myapp._app.stage.addChild(cardMeContainer)
 
     // test sounds
     //let click = snd.sounds["static/assets/sound/click_4bit.wav"]
