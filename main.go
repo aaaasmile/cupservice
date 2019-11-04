@@ -12,6 +12,8 @@ import (
 func main() {
 	var configfile = flag.String("config", "config.toml", "Configuration file path")
 	var ver = flag.Bool("version", false, "Prints current version")
+	flag.Parse()
+
 	if *ver {
 		fmt.Printf("%s, version: %s", idl.Appname, idl.Buildnr)
 		os.Exit(0)
