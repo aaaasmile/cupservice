@@ -56,6 +56,20 @@ export class CardImageCache {
     return texture
   }
 
+  GetTextureFromBackground(name) {
+    let texture = null
+    let textureKey = 'BACK-' + name
+    if (this.textureCache.has(textureKey)) {
+      return this.textureCache.get(textureKey)
+    }
+    let img = this.get_background_img(name)
+    if (img) {
+      texture = PIXI.Texture.from(img)
+      this.textureCache.set(textureKey, texture)
+    }
+    return texture
+  }
+
   // deckInfo: is a parameter because the ix differ on deck type. It is game specific.
   GetTextureFromCard(cardLbl, deckInfo) { //cardLbl: _5s, deckInfo instance of class DeckInfo
     let texture = null

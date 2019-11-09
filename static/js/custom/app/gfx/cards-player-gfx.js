@@ -22,7 +22,7 @@ export class CardsPlayerGfx {
     for (let index = 0; index < this.numCards; index++) {
       const itemTexture = textures[ixTexture];
       let sprite = new PIXI.Sprite(itemTexture)
-      sprite.cup_data_lbl = itemTexture.cup_data_lbl
+      sprite.cup_data_lbl = itemTexture.cup_data_lbl // recognize the card
       sprite.position.set(x, y)
       this.sprites.push(sprite)
       this.container.addChild(sprite)

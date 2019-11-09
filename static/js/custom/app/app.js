@@ -3,6 +3,7 @@ import { Tink } from './tink.js'
 import { GetMusicManagerInstance } from './sound-mgr.js'
 import { DeckGfx } from './gfx/deck-gfx.js'
 import { CardsPlayerGfx } from './gfx/cards-player-gfx.js'
+import { StaticSceneGfx } from './gfx/static-scene-gfx.js'
 
 // briscola specific imports
 import { CoreBriscolaBase } from '../games/brisc-base/core-brisc-base.js'
@@ -52,44 +53,54 @@ class MyPixiApp {
 
   setup(cache) {
     console.log('cache Card loaded')
+    let tink = new Tink(PIXI, myapp._app.renderer.view)
+
     myapp._app.stage.removeChildren()
+
+    // Test static scene
+    const staticSceneGfx = new StaticSceneGfx()
+    const backTexture = cache.GetTextureFromBackground('table')
+    let viewWidth = (myapp._app.renderer.width / myapp._app.renderer.resolution);
+    let viewHeight = (myapp._app.renderer.height / myapp._app.renderer.resolution);
+    let scContainer = staticSceneGfx.Build(backTexture, viewWidth, viewHeight)
+    myapp._app.stage.addChild(scContainer)
+    // end
+
     // cache is istance of CardImageCache
-    let img = cache.get_cardimage(0)
-    let texture = PIXI.Texture.from(img)
-    let sprite = new PIXI.Sprite(texture)
+    //let img = cache.get_cardimage(0)
+    //let texture = PIXI.Texture.from(img)
+    //let sprite = new PIXI.Sprite(texture)
 
     //let viewWidth = (myapp._app.renderer.width / myapp._app.renderer.resolution);
-    let viewHeight = (myapp._app.renderer.height / myapp._app.renderer.resolution);
-    img = cache.get_background_img('table')
-    console.log('Image is ', img, img.width)
-    texture = PIXI.Texture.from(img)
-    let backgound = new PIXI.Sprite(texture)
-    //backgound.scale.set(0.5, 0.5);
-    let backCont = new PIXI.Container();
-    backCont.addChild(backgound)
-    //backCont.width = viewWidth
-    backCont.scale.y = viewHeight / backgound.height;
-    backCont.scale.x = backCont.scale.y
-    console.log('Scale back is ', backCont.scale.y, viewHeight, img.height)
+    //let viewHeight = (myapp._app.renderer.height / myapp._app.renderer.resolution);
 
+
+    //img = cache.get_background_img('table')
+    //console.log('Image is ', img, img.width)
+    //texture = PIXI.Texture.from(img)
+    //let backgound = new PIXI.Sprite(texture)
+    //backgound.scale.set(0.5, 0.5);
+    //let backCont = new PIXI.Container();
+    //backCont.addChild(backgound)
+    //backCont.width = viewWidth
     //sprite.anchor.x = 0.5;
     //sprite.anchor.y = 0.5;
     //sprite.position.x = sprite.height + 10
     //sprite.position.y = sprite.height + 10
     //sprite.rotation = - 3.14 / 2.0
-    myapp._sprite = sprite
+    //myapp._sprite = sprite
     // let message = new PIXI.Text("Hello Pixi!")
     // message.style = { fill: "white" }
 
-    myapp._app.stage.addChild(backCont)
-    myapp._app.stage.addChild(sprite);
+    //myapp._app.stage.addChild(backCont)
+    //myapp._app.stage.addChild(sprite);
     //myapp._app.stage.addChild(message);
-    let tink = new Tink(PIXI, myapp._app.renderer.view)
+
     // let pointer = t.makePointer();
     // pointer.press = () => console.log("The pointer was pressed");
     // pointer.release = () => console.log("The pointer was released");
     //tink.makeDraggable(sprite)
-    tink.makeInteractive(sprite); // TODO how to remove from intercative?
+    //tink.makeInteractive(sprite);
 
     // sprite.press = () => console.log("Sprite was pressed");
     // sprite.release = () => console.log("Sprite was released");
@@ -114,16 +125,11 @@ class MyPixiApp {
     cardsMeGfx.SetCards([cdT1, cdT2, cdT3], cdT1.width + 5)
     cardsMeGfx.OnClick((ev) => {
       console.log('Click rec in handler', ev)
+      myapp._music.Play('played')
+      deckGfx.PopCard(2)
     })
     cardMeContainer.position.set(20, 300)
     myapp._app.stage.addChild(cardMeContainer)
-
-    // test sounds
-    //let click = snd.sounds["static/assets/sound/click_4bit.wav"]
-    sprite.press = () => {
-      myapp._music.Play('played')
-      deckGfx.PopCard(2)
-    }
 
     myapp._tink = tink
   }
