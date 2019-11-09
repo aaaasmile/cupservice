@@ -130,7 +130,7 @@ class MyPixiApp {
 
   gameLoop(delta) {
     //this._sprite.x += 1
-    //this._tink.update();
+    this._tink.update();
   }
 }
 

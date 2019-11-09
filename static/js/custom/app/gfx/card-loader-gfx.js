@@ -29,8 +29,9 @@ class CardLoaderGfx {
 
   getonloadImage(cb, ...params) {
     return () => { 
-      // Arrow function in JS should support this contructor at declaration (contex in the stack)
-      // but in golang it is an error. To avoid rechecking the code evrey time and thinking it is an async error, 
+      // Arrow function in JS should support this contructor at declaration (contex in the new stack)
+      // but in golang a go routine inside a for doesn't elevate the stack in a lambda function and async errors could happen. 
+      // To avoid rechecking the JS code every time and thinking it is an async error, 
       // make the context in a new stack explicit.
       switch (params.length) {
         case 0: cb(); break;
