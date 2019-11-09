@@ -16,30 +16,28 @@ export class CardImageCache {
 
   get_cardimage(posIx) {
     if (posIx >= 0 && posIx < this.cards.length) {
-      let img = this.cards[posIx]
-      let clone = img.cloneNode() // clone beacuse it could be used only once
-      return clone
+      return this.cards[posIx]
     }
     throw (new Error(`Ix => ${posIx} is out of range`))
   }
 
   get_symbol_img(nome_simbolo) {
     if (this.symbols_card.has(nome_simbolo)) {
-      return this.symbols_card.get(nome_simbolo).cloneNode()
+      return this.symbols_card.get(nome_simbolo)
     }
-    return null
+    throw (new Error(`nome_simbolo => ${nome_simbolo} not available.`))
   }
 
   get_avatar_img(avatar_name) {
     if (this.avatars.has(avatar_name)) {
-      return this.avatars.get(avatar_name).cloneNode()
+      return this.avatars.get(avatar_name)
     }
-    return null
+    throw (new Error(`avatar_name => ${avatar_name} not available.`))
   }
 
   get_background_img(background_name) {
     if (this.backgrounds.has(background_name)) {
-      return this.backgrounds.get(background_name).cloneNode()
+      return this.backgrounds.get(background_name)
     }
     return null
   }
@@ -72,6 +70,7 @@ export class CardImageCache {
       texture.cup_data_lbl = cardLbl // give the context
       this.textureCache.set(crdKey, texture)
     }
+    //console.log("Texture for card is ", texture)
     
     return texture
   }

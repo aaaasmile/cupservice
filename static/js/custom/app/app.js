@@ -25,6 +25,7 @@ class MyPixiApp {
   Run() {
     console.log('Your static app is there!')
     if (!this._app) {
+      console.log('Setup the app')
       let app = new PIXI.Application({ width: 800, height: 600, antialias: true, transparent: false });
       app.renderer.backgroundColor = 0x061639;
       app.renderer.autoDensity = true;
@@ -60,6 +61,7 @@ class MyPixiApp {
     //let viewWidth = (myapp._app.renderer.width / myapp._app.renderer.resolution);
     let viewHeight = (myapp._app.renderer.height / myapp._app.renderer.resolution);
     img = cache.get_background_img('table')
+    console.log('Image is ', img, img.width)
     texture = PIXI.Texture.from(img)
     let backgound = new PIXI.Sprite(texture)
     //backgound.scale.set(0.5, 0.5);
@@ -107,7 +109,7 @@ class MyPixiApp {
     let cardsMeGfx = new CardsPlayerGfx(tink)
     let cardMeContainer = cardsMeGfx.Build(3)
     const cdT1 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
-    const cdT2 = cache.GetTextureFromCard('_2d', b2core._deck_info)
+    const cdT2 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
     const cdT3 = cache.GetTextureFromCard('_3d', b2core._deck_info)
     cardsMeGfx.SetCards([cdT1, cdT2, cdT3], cdT1.width + 5)
     cardsMeGfx.OnClick((ev) => {
@@ -120,7 +122,7 @@ class MyPixiApp {
     //let click = snd.sounds["static/assets/sound/click_4bit.wav"]
     sprite.press = () => {
       myapp._music.Play('played')
-      deck.PopCard(2)
+      deckGfx.PopCard(2)
     }
 
     myapp._tink = tink
@@ -128,7 +130,7 @@ class MyPixiApp {
 
   gameLoop(delta) {
     //this._sprite.x += 1
-    this._tink.update();
+    //this._tink.update();
   }
 }
 

@@ -27,6 +27,21 @@ class CardLoaderGfx {
     return this.path_prefix + "assets/carte/" + deck_name + "/"
   }
 
+  getonloadImage(cb, ...params) {
+    return () => { 
+      // Arrow function in JS should support this contructor at declaration (contex in the stack)
+      // but in golang it is an error. To avoid rechecking the code evrey time and thinking it is an async error, 
+      // make the context in a new stack explicit.
+      switch (params.length) {
+        case 0: cb(); break;
+        case 1: cb(params[0]); break;
+        case 2: cb(params[0], params[1]); break;
+        case 3: cb(params[0], params[1], params[2]); break;
+        default: throw new Error('Callback error')
+      }
+    }
+  }
+
   LoadAssets(deck_name, cbLoaded) {
     console.log("Load images for ", deck_name)
     if (!deck_name) {
@@ -87,7 +102,10 @@ class CardLoaderGfx {
 
       console.log("Load cards of ", deck_name)
 
-      let countToLoad = 0
+      let countToLoad = c_nomi_sfondi.length - this.backgrounds.length  // backgrounds
+      countToLoad += c_nomi_avatar.length - this.avatars.length
+      countToLoad += nomi_semi.length * num_cards_onsuit + nomi_simboli.length
+
       let loadedCount = 0 // when reach countToLoad, then the load is completed
 
       // cards
@@ -101,15 +119,12 @@ class CardLoaderGfx {
           }
           card_fname = `${folder_fullpath}${ixname}_${seed}.png`
           //console.log('Card fname is: ', card_fname)
-          let img = new Image()
-          img.src = card_fname
-          countToLoad += 1
-          img.onload = () => {
-            let posIx = i * num_cards_onsuit + index - 1
-            //console.log('Image Loaded: ', img.src, posIx);
-            //let card = new createjs.Bitmap(img);
-            let card = img // todo use a class
-            imageCache.cards[posIx] = card
+          let imgToLoad = new Image()
+          imgToLoad.src = card_fname
+          imgToLoad.onload = this.getonloadImage((img, ii, jj) => {
+            let posIx = ii * num_cards_onsuit + jj - 1
+            console.log('Image Loaded: ', img.src, posIx);
+            imageCache.cards[posIx] = img
             loadedCount += 1
             obs.next(loadedCount)
             if (countToLoad <= loadedCount) {
@@ -117,11 +132,7 @@ class CardLoaderGfx {
               obs.complete()
               cbLoaded(imageCache)
             }
-          }
-          img.onerror = () => {
-            console.error('Image load error on ', img.src)
-            obs.error('err on image load')
-          }
+          }, imgToLoad, i, index)
         }
       }
       // symbols
@@ -129,13 +140,13 @@ class CardLoaderGfx {
       for (let i = 0; i < nomi_simboli.length; i++) {
         let nome_simbolo = nomi_simboli[i]
         card_fname = `${folder_fullpath}01_${nome_simbolo}.png`
-        let img = new Image()
-        img.src = card_fname
-        countToLoad += 1
+        let imgToLoad = new Image()
+        imgToLoad.src = card_fname
 
-        img.onload = () => { // works also if i = 2 il loaded before i = 1
-          //console.log('Image Loaded: %d %s, %s', i, img.src, nome_simbolo);
-          imageCache.symbols_card.set(nome_simbolo, img)
+        imgToLoad.onload = this.getonloadImage((img, ii) => {
+          let key = nomi_simboli[ii]
+          console.log('Symbol Loaded: %d %s, %s', ii, img.src, key);
+          imageCache.symbols_card.set(key, img)
           loadedCount += 1
           obs.next(loadedCount)
           if (countToLoad <= loadedCount) {
@@ -143,7 +154,7 @@ class CardLoaderGfx {
             obs.complete()
             cbLoaded(imageCache)
           }
-        }
+        }, imgToLoad, i)
       }
       // avatars
       console.log("Load all avatars...")
@@ -157,12 +168,12 @@ class CardLoaderGfx {
         let avatar_folder = this.path_prefix + "assets/images/avatar"
         c_nomi_avatar.forEach((e, ix) => {
           let avatar_filepath = `${avatar_folder}/${e}.jpg`
-          let img = new Image()
-          img.src = avatar_filepath
-          countToLoad += 1
-          img.onload = () => {
-            imageCache.avatars.set(e, img)
-            this.avatars[ix] = img
+          let imgToLoad = new Image()
+          imgToLoad.src = avatar_filepath
+          imgToLoad.onload = this.getonloadImage((img, ii, ee) => {
+            console.log('Avatar Loaded: ', img.src, ii, ee);
+            imageCache.avatars.set(ee, img)
+            this.avatars[ii] = img
             loadedCount += 1
             obs.next(loadedCount)
             if (countToLoad <= loadedCount) {
@@ -170,7 +181,7 @@ class CardLoaderGfx {
               obs.complete()
               cbLoaded(imageCache)
             }
-          }
+          }, imgToLoad, ix, e)
         })
       }
       console.log('Load background')
@@ -184,12 +195,12 @@ class CardLoaderGfx {
         let back_folder = this.path_prefix + "assets/images/table"
         c_nomi_sfondi.forEach((e, ix) => {
           let item_filepath = `${back_folder}/${e}.png`
-          let img = new Image()
-          img.src = item_filepath
-          countToLoad += 1
-          img.onload = () => {
-            imageCache.backgrounds.set(e, img)
-            this.backgrounds[ix] = img
+          let imgToLoad = new Image()
+          imgToLoad.src = item_filepath
+          imgToLoad.onload = this.getonloadImage((img, ii, ee) => {
+            console.log('Image back Loaded: ', img.src, ii, ee);
+            imageCache.backgrounds.set(ee, img)
+            this.backgrounds[ii] = img
             loadedCount += 1
             obs.next(loadedCount)
             if (countToLoad <= loadedCount) {
@@ -197,7 +208,7 @@ class CardLoaderGfx {
               obs.complete()
               cbLoaded(imageCache)
             }
-          }
+          }, imgToLoad, ix, e)
         })
       }
     })
