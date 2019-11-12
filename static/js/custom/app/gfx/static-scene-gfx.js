@@ -6,33 +6,37 @@ export class StaticSceneGfx {
 
   Build(backTexture, viewWidth, viewHeight) {
     this.backSprite = new PIXI.Sprite(backTexture)
-    //this.container.addChild(this.backSprite)
+    this.container = new PIXI.Container()
+    this.container.addChild(this.backSprite)
     //this.scaleContainer(viewWidth, viewHeight)
-    var containerSize = { x: viewWidth, y: viewHeight };
-    var slide = background(containerSize, this.backSprite, 'cover');
-    this.container = slide.container
+    //var containerSize = { x: viewWidth, y: viewHeight };
+    //var slide = background(containerSize, this.backSprite, 'cover');
+    //this.container = slide.container
+    this.scaleContainer(this.backSprite, viewWidth, viewHeight)
+
     return this.container
   }
 
-  scaleContainer(viewHeight, viewWidth) {
-    this.backSprite.anchor.set(0.5, 0.5)
-    //this.backSprite.anchor.set(0.5, 0.5)
-    this.backSprite.scale.y = viewHeight / this.backSprite.height;
-    //this.backSprite.scale.x = viewWidth / this.backSprite.width;
-    this.backSprite.scale.x = this.backSprite.scale.y
-    // TODO: correggi lo scale che non va a modo
-
-    //this.container.scale.set(0.5, 0.5)
-    console.log('Scale back is ', this.container.scale.y, viewHeight, this.backSprite.height, viewWidth, this.backSprite.width)
+  scaleContainer(sprite, viewWidth, viewHeight) {
+    let winratio = viewWidth / viewHeight
+    let spratio = sprite.width / sprite.height
+    let scale = 1
+    let pos = new PIXI.Point(0, 0)
+    if (winratio > spratio) {
+      scale = viewWidth / sprite.width
+      pos.y = -((sprite.height * scale) - viewHeight) / 2
+    } else {
+      scale = viewHeight / sprite.height
+      pos.x = -((sprite.width * scale) - viewWidth) / 2
+    }
+    sprite.scale = new PIXI.Point(scale, scale);
+    sprite.position = pos
   }
 }
 
 function background(bgSize, inputSprite, type, forceSize) {
   var sprite = inputSprite;
   var bgContainer = new PIXI.Container();
-  //var mask = new PIXI.Graphics().beginFill(0x8bc5ff).drawRect(0, 0, bgSize.x, bgSize.y).endFill();
-  //bgContainer.mask = mask;
-  //bgContainer.addChild(mask);
   bgContainer.addChild(sprite);
 
   function resize() {
