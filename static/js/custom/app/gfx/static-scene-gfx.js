@@ -22,10 +22,10 @@ function ScaleSprite(sprite, viewWidth, viewHeight) {
   let pos = new PIXI.Point(0, 0)
   if (viewratio > spratio) {
     scale = viewWidth / sprite.width
-    pos.y = -((sprite.height * scale) - viewHeight) / 2
+    pos.y = (viewHeight - sprite.height * scale) / 2
   } else {
     scale = viewHeight / sprite.height
-    pos.x = -((sprite.width * scale) - viewWidth) / 2
+    pos.x = (viewWidth - sprite.width * scale) / 2
   }
   sprite.scale.set(scale, scale)
   sprite.position = pos
