@@ -1,16 +1,15 @@
-import { DeckInfo } from './common/class/deck-info.js'
-import { CoreStateManager } from './common/core/core-state-manager.js'
-import { RndMgr } from './common/class/rnd-mgr.js'
-import { CoreDataSupport } from './common/core/core-data-support.js'
-import { TableStateCore } from './common/class/table-state-core.js'
-import { Player } from './common/class/player.js'
-import { CoreCaller } from './common/class/core-caller.js'
-import { CoreStateStore } from './common/core/core-state-store.js'
-import { CoreStateSubjectSubscriber } from './common/core/core-state-subject-subscriber.js'
-import { ActorStateSubjectSubscriber } from './common/class/actor-state-subject-subscriber.js'
+import { DeckInfo } from './shared/deck-info.js'
+import { CoreStateManager } from './core/core-state-manager.js'
+import { RndMgr } from './shared/rnd-mgr.js'
+import { CoreDataSupport } from './core/core-data-support.js'
+import { TableStateCore } from './shared/table-state-core.js'
+import { Player } from './shared/player.js'
+import { CoreCaller } from './shared/core-caller.js'
+import { CoreStateStore } from './core/core-state-store.js'
+import { CoreStateSubjectSubscriber } from './core/core-state-subject-subscriber.js'
+import { ActorStateSubjectSubscriber } from './shared/actor-state-subject-subscriber.js'
 import { CoreBriscolaBase } from './games/brisc-base/core-brisc-base.js'
 import { AlgBriscBase } from './games/brisc-base/alg-brisc-base.js'
-import { GetGfxGameInstance } from './common/gfx/gfx-provider.js'
 
 // A me servono gli oggetti esportati nei moduli anche nelle librerie stadard, come ad esempio gli spec
 // di jasmine, che viene usata direttamente. In queste spec, non si può usare import, allora metto
@@ -29,8 +28,7 @@ export const cup = {
   CoreStateSubjectSubscriber: CoreStateSubjectSubscriber,
   ActorStateSubjectSubscriber: ActorStateSubjectSubscriber,
   CoreBriscolaBase: CoreBriscolaBase,
-  AlgBriscBase: AlgBriscBase,
-  GetGfxGameInstance: GetGfxGameInstance,
+  AlgBriscBase: AlgBriscBase
 };
 
 // intellisense in vscode non funziona se metto pattern per isolare oggetti privati. Gli oggetti privati hanno la lettera iniziale minuscola

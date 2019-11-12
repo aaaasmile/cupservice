@@ -1,13 +1,13 @@
-import { GetCardLoaderGfx } from './gfx/card-loader-gfx.js'
+import { GetCardLoaderGfx } from '../gfx/card-loader-gfx.js'
 import { Tink } from './tink.js'
 import { GetMusicManagerInstance } from './sound-mgr.js'
-import { DeckGfx } from './gfx/deck-gfx.js'
-import { CardsPlayerGfx } from './gfx/cards-player-gfx.js'
-import { StaticSceneGfx } from './gfx/static-scene-gfx.js'
+import { DeckGfx } from '../gfx/deck-gfx.js'
+import { CardsPlayerGfx } from '../gfx/cards-player-gfx.js'
+import { StaticSceneGfx } from '../gfx/static-scene-gfx.js'
 
 // briscola specific imports
 import { CoreBriscolaBase } from '../games/brisc-base/core-brisc-base.js'
-import { CoreStateManager } from '../common/core/core-state-manager.js'
+import { CoreStateManager } from '../core/core-state-manager.js'
 
 class MyPixiApp {
 
