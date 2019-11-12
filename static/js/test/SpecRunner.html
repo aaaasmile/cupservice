@@ -13,21 +13,19 @@
   <script src="lib/jasmine-3.3.0/boot.js"></script>
 
   <!-- include source files here... -->
-  <!-- <script src="src/Player.js"></script>
-  <script src="src/Song.js"></script> -->
-  <script src="../../ext/rxjs.umd.min.js"></script>
+  <script src="../ext/rxjs.umd.min.js"></script>
 
   <!-- include spec files here... -->
-  <script src="../shared/deck-info.spec.js"></script>
-  <script src="../shared/rnd-mgr.spec.js"></script>
-  <script src="..//core-data-support.spec.js"></script>
-  <script src="..//core-state-manager.spec.js"></script>
-  <script src="../games/brisc-base/core-brisc-base.spec.js"></script>
+  <script src="../local/shared/deck-info.spec.js"></script>
+  <script src="../local/shared/rnd-mgr.spec.js"></script>
+  <script src="../local/core/core-data-support.spec.js"></script>
+  <script src="../local/core/core-state-manager.spec.js"></script>
+  <script src="../local/games/brisc-base/core-brisc-base.spec.js"></script>
 </head>
 
 <body>
   <script type="module">
-    import { cup } from '../games-cup.js'
+    import { cup } from '../local/games-cup.js'
     window.cup = cup
   </script>
 </body>
