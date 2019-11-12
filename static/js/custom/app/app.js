@@ -12,15 +12,9 @@ import { CoreStateManager } from '../common/core/core-state-manager.js'
 class MyPixiApp {
 
   constructor() {
-  }
-
-  fullSize() {
-    console.log('Try the full size')
-    let app = this._app
-    app.renderer.view.style.position = "absolute";
-    app.renderer.view.style.display = "block";
-    app.renderer.autoDensity = true;
-    app.renderer.resize(window.innerWidth, window.innerHeight);
+    this._app = null
+    this._music = null
+    this._cache = null
   }
 
   Run() {
@@ -52,9 +46,8 @@ class MyPixiApp {
   }
 
   setup(cache) {
-    console.log('cache Card loaded')
+    console.log('Setup with cache')
     let tink = new Tink(PIXI, myapp._app.renderer.view)
-
     myapp._app.stage.removeChildren()
 
     // Test static scene
@@ -65,45 +58,6 @@ class MyPixiApp {
     let scContainer = staticSceneGfx.Build(backTexture, viewWidth, viewHeight)
     myapp._app.stage.addChild(scContainer)
     // end
-
-    // cache is istance of CardImageCache
-    //let img = cache.get_cardimage(0)
-    //let texture = PIXI.Texture.from(img)
-    //let sprite = new PIXI.Sprite(texture)
-
-    //let viewWidth = (myapp._app.renderer.width / myapp._app.renderer.resolution);
-    //let viewHeight = (myapp._app.renderer.height / myapp._app.renderer.resolution);
-
-
-    //img = cache.get_background_img('table')
-    //console.log('Image is ', img, img.width)
-    //texture = PIXI.Texture.from(img)
-    //let backgound = new PIXI.Sprite(texture)
-    //backgound.scale.set(0.5, 0.5);
-    //let backCont = new PIXI.Container();
-    //backCont.addChild(backgound)
-    //backCont.width = viewWidth
-    //sprite.anchor.x = 0.5;
-    //sprite.anchor.y = 0.5;
-    //sprite.position.x = sprite.height + 10
-    //sprite.position.y = sprite.height + 10
-    //sprite.rotation = - 3.14 / 2.0
-    //myapp._sprite = sprite
-    // let message = new PIXI.Text("Hello Pixi!")
-    // message.style = { fill: "white" }
-
-    //myapp._app.stage.addChild(backCont)
-    //myapp._app.stage.addChild(sprite);
-    //myapp._app.stage.addChild(message);
-
-    // let pointer = t.makePointer();
-    // pointer.press = () => console.log("The pointer was pressed");
-    // pointer.release = () => console.log("The pointer was released");
-    //tink.makeDraggable(sprite)
-    //tink.makeInteractive(sprite);
-
-    // sprite.press = () => console.log("Sprite was pressed");
-    // sprite.release = () => console.log("Sprite was released");
 
     // test deck
     let coreStateManager = new CoreStateManager('develop');
