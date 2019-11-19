@@ -3,7 +3,7 @@ import { GetMusicManagerInstance } from './sound-mgr.js'
 import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js'
 
 
-class MyPixiApp {
+class CuperativaApp {
 
   constructor() {
     this._app = null
@@ -61,7 +61,7 @@ class MyPixiApp {
   }
 }
 
-export const myapp = new MyPixiApp();
+export const myapp = new CuperativaApp();
 
 document.getElementById('run').addEventListener('click', () => {
   console.log('Run click')
