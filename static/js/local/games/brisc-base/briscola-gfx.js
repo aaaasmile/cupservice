@@ -3,7 +3,7 @@ import { CardsPlayerGfx } from '../../gfx/cards-player-gfx.js'
 import { StaticSceneGfx } from '../../gfx/static-scene-gfx.js'
 import { Tink } from '../../app/tink.js'
 import { GetMusicManagerInstance } from '../../app/sound-mgr.js'
-import { CoreBriscolaBase } from './core-brisc-base.js'
+import { CoreBriscolaBase, PrepareGameVsCpu } from './core-brisc-base.js'
 import { CoreStateManager } from '../../core/core-state-manager.js'
 
 
@@ -17,6 +17,8 @@ export class BriscolaGfx {
     let tink = new Tink(PIXI, renderer.view)
     let stage = new PIXI.Container()
 
+    let b2core = PrepareGameVsCpu(opt.num_segni)
+
     // Test static scene
     const staticSceneGfx = new StaticSceneGfx()
     const backTexture = cache.GetTextureFromBackground('table')
@@ -27,9 +29,6 @@ export class BriscolaGfx {
     // end
 
     // test deck
-    let coreStateManager = new CoreStateManager('develop');
-    let b2core = new CoreBriscolaBase(coreStateManager, 2, 61);
-
     let deckGfx = new DeckGfx();
     let deckItemTexture = cache.GetTextureFromSymbol('cope')
     let briscolaTexture = cache.GetTextureFromCard('_5s', b2core._deck_info)

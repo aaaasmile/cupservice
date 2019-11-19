@@ -65,7 +65,8 @@ export const myapp = new CuperativaApp();
 
 document.getElementById('run').addEventListener('click', () => {
   console.log('Run click')
-  myapp.Run()
+  const opt = { num_segni: 2 }
+  myapp.Run('briscola', opt)
   document.getElementById('gamelist').style.visibility = "hidden";
 })
 

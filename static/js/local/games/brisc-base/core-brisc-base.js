@@ -22,6 +22,7 @@ export class CoreBriscolaBase {
     this._subscriber = new CoreStateSubjectSubscriber(_coreStateManager, that, { log_missed: true });
     this._deck_info.deck_info_dabriscola();
     this._rnd_mgr = new RndMgr()
+    this._players = []
   }
 
   StartNewMatch(options) {
@@ -31,7 +32,7 @@ export class CoreBriscolaBase {
     this._myOpt.num_segni_match = this._myOpt.num_segni_match || 2;
     this._myOpt.target_points_segno = this._myOpt.target_points_segno || 61;
     this._myOpt.num_cards_onhand = this._myOpt.num_cards_onhand || 3;
-    this._myOpt.players = this._myOpt.players || ['CPU','Me']
+    this._myOpt.players = this._myOpt.players || ['CPU', 'Me']
     // this._game_core_recorder = mod_gamerepl.game_core_recorder_ctor();
 
     this._core_data.start(this._myOpt.tot_num_players, this._myOpt.players, this._myOpt.num_cards_onhand);
@@ -42,12 +43,16 @@ export class CoreBriscolaBase {
     this._coreStateManager.submit_next_state('st_new_giocata');
   }
 
+  AddPlayer(ix, player){
+    this._players[0] = player
+  }
+
   ignore_state_or_action(state) {
     let ignored = ['st_waiting_for_players', 'st_table_partial', 'st_table_full', 'act_player_sit_down']
     return (ignored.indexOf(state) >= 0)
   }
 
-  
+
   act_alg_play_acard(player_name, lbl_card) {
     this._coreStateStore.check_state('st_wait_for_play');
     console.log('Player ' + player_name + ' played ' + lbl_card);
@@ -76,12 +81,12 @@ export class CoreBriscolaBase {
     }
   }
 
-  act_alg_continue_game(player){
+  act_alg_continue_game(player) {
     this._coreStateStore.check_state('st_wait_continue_game');
     console.log(`Player ${player} want to continue`)
     let cfm = this._core_data.continue_to_cfm
-    this._core_data.continue_to_cfm =  cfm.filter( x => x !== player)
-    if (this._core_data.continue_to_cfm.length === 0){
+    this._core_data.continue_to_cfm = cfm.filter(x => x !== player)
+    if (this._core_data.continue_to_cfm.length === 0) {
       this._coreStateManager.submit_next_state('st_new_giocata')
     }
   }
@@ -204,23 +209,23 @@ export class CoreBriscolaBase {
     }
   }
 
-  st_wait_continue_game(){
+  st_wait_continue_game() {
     this._coreStateStore.set_state('st_wait_continue_game');
     console.log('st_wait_continue_game');
 
     this._coreStateManager.fire_all('ev_waiting_tocontinue_game', {});
   }
 
-  st_match_end(){
+  st_match_end() {
     this._coreStateStore.set_state('st_match_end');
     console.log('st_match_end');
-    this._coreStateManager.fire_all('ev_match_end', {info: this._core_data.match_info.get_info()});
+    this._coreStateManager.fire_all('ev_match_end', { info: this._core_data.match_info.get_info() });
   }
 
   giocata_end_update_score() {
     let giocata_info = this._core_data.giocata_info
 
-    if(!giocata_info.is_started()){
+    if (!giocata_info.is_started()) {
       console.warn('Update score is not available on segno state', giocata_info.giocata_state)
       return giocata_info.bestpoints_info
     }
@@ -233,7 +238,7 @@ export class CoreBriscolaBase {
       return b[1] - a[1];
     });
     let nome_gioc_max = best_pl_points[0][0];
-    
+
     if (best_pl_points[0][1] == best_pl_points[1][1]) {
       console.log('Game draw all have scored ' + best_pl_points[0][1]);
       giocata_info.set_draw()
@@ -356,4 +361,26 @@ export class CoreBriscolaBase {
       this._subscriber = null;
     }
   }
+}
+
+export function PrepareGameVsCpu(numSegni) {
+  console.log('Prepare game vs CPU')
+  let coreStateManager = new cup.CoreStateManager('develop');
+  let b2core = new cup.CoreBriscolaBase(coreStateManager, numSegni, 61);
+  let tableStateCore = new cup.TableStateCore(coreStateManager, 2);
+  let subsc = tableStateCore.TableFullSub.subscribe(next => {
+    subsc.unsubscribe();
+    tableStateCore.dispose();
+    b2core.StartNewMatch(next);
+  });
+
+
+  let playerErnesto = new cup.Player(new cup.AlgBriscBase('Ernesto'), coreStateManager);
+  let playerLuigi = new cup.Player(new cup.AlgBriscBase('Luigi'), coreStateManager);
+  b2core.AddPlayer(0, playerErnesto)
+  b2core.AddPlayer(1, playerLuigi)
+  playerErnesto.sit_down(0);
+  playerLuigi.sit_down(1);
+
+  return b2core
 }
