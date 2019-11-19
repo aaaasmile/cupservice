@@ -124,7 +124,7 @@ class CardLoaderGfx {
           imgToLoad.src = card_fname
           imgToLoad.onload = this.getonloadImage((img, ii, jj) => {
             let posIx = ii * num_cards_onsuit + jj - 1
-            console.log('Image Loaded: ', img.src, posIx);
+            //console.log('Image Loaded: ', img.src, posIx);
             imageCache.cards[posIx] = img
             loadedCount += 1
             obs.next(loadedCount)
@@ -146,7 +146,7 @@ class CardLoaderGfx {
 
         imgToLoad.onload = this.getonloadImage((img, ii) => {
           let key = nomi_simboli[ii]
-          console.log('Symbol Loaded: %d %s, %s', ii, img.src, key);
+          //console.log('Symbol Loaded: %d %s, %s', ii, img.src, key);
           imageCache.symbols_card.set(key, img)
           loadedCount += 1
           obs.next(loadedCount)
@@ -172,7 +172,7 @@ class CardLoaderGfx {
           let imgToLoad = new Image()
           imgToLoad.src = avatar_filepath
           imgToLoad.onload = this.getonloadImage((img, ii, ee) => {
-            console.log('Avatar Loaded: ', img.src, ii, ee);
+            //console.log('Avatar Loaded: ', img.src, ii, ee);
             imageCache.avatars.set(ee, img)
             this.avatars[ii] = img
             loadedCount += 1
@@ -199,7 +199,7 @@ class CardLoaderGfx {
           let imgToLoad = new Image()
           imgToLoad.src = item_filepath
           imgToLoad.onload = this.getonloadImage((img, ii, ee) => {
-            console.log('Image back Loaded: ', img.src, ii, ee);
+            //console.log('Image back Loaded: ', img.src, ii, ee);
             imageCache.backgrounds.set(ee, img)
             this.backgrounds[ii] = img
             loadedCount += 1

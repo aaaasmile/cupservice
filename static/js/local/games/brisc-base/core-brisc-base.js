@@ -363,10 +363,10 @@ export class CoreBriscolaBase {
   }
 }
 
-export function PrepareGameVsCpu(numSegni) {
+export function PrepareGameVsCpu(algGfx, opt) {
   console.log('Prepare game vs CPU')
   let coreStateManager = new cup.CoreStateManager('develop');
-  let b2core = new cup.CoreBriscolaBase(coreStateManager, numSegni, 61);
+  let b2core = new cup.CoreBriscolaBase(coreStateManager, opt.num_segni, 61);
   let tableStateCore = new cup.TableStateCore(coreStateManager, 2);
   let subsc = tableStateCore.TableFullSub.subscribe(next => {
     subsc.unsubscribe();
@@ -376,7 +376,9 @@ export function PrepareGameVsCpu(numSegni) {
 
 
   let playerErnesto = new cup.Player(new cup.AlgBriscBase('Ernesto'), coreStateManager);
+  playerErnesto._alg.set_to_master_level()
   let playerLuigi = new cup.Player(new cup.AlgBriscBase('Luigi'), coreStateManager);
+  playerLuigi.set_gfx_on_alg(algGfx)
   b2core.AddPlayer(0, playerErnesto)
   b2core.AddPlayer(1, playerLuigi)
   playerErnesto.sit_down(0);

@@ -7,17 +7,52 @@ import { CoreBriscolaBase, PrepareGameVsCpu } from './core-brisc-base.js'
 import { CoreStateManager } from '../../core/core-state-manager.js'
 
 
+class BriscAlgGfx {
+  on_all_ev_new_match(args) {
+  }
+
+  on_pl_ev_brisc_new_giocata(args) {
+  }
+
+  on_all_ev_giocata_end(args) {
+  }
+
+  on_all_ev_match_end(args) {
+  }
+
+  on_all_ev_waiting_tocontinue_game(args) {
+  }
+
+  on_pl_ev_pesca_carta(args) {
+  }
+
+  on_all_ev_new_mano(args) {
+  }
+
+  on_all_ev_mano_end(args) {
+  }
+
+  on_all_ev_have_to_play(args) {
+  }
+
+  on_all_ev_player_has_played(args) {
+  }
+}
+
 export class BriscolaGfx {
 
   constructor() {
     this._tink = null
+    this._core_state = null
   }
 
   Build(opt, cache, renderer) {
     let tink = new Tink(PIXI, renderer.view)
     let stage = new PIXI.Container()
 
-    let b2core = PrepareGameVsCpu(opt.num_segni)
+    const algGfx = new BriscAlgGfx()
+    let b2core = PrepareGameVsCpu(algGfx, opt)
+    this._core_state = b2core._coreStateManager
 
     // Test static scene
     const staticSceneGfx = new StaticSceneGfx()
@@ -58,6 +93,7 @@ export class BriscolaGfx {
   }
 
   Update(delta) {
+    this._core_state.process_next()
     this._tink.update();
   }
 }

@@ -48,7 +48,12 @@ export class AlgBriscBase {
     //console.log("[%s]New match %s", this._player_name, JSON.stringify(args));
     this._players = args.players;
     this._target_points = args.target_segno;
-    console.log("[%s] New match, " + this._player_name + '  is playing level ' + this._level_alg + ' ( game with ' + this._players.length + ' players)', this._player_name);
+    if (this._is_auto_alg) {
+      console.log("[%s] New match, " + this._player_name + '  is playing level ' + this._level_alg + ' ( game with ' + this._players.length + ' players)', this._player_name);
+    } else {
+      console.log("[%s] New match, " + this._player_name + ' Gfx is handling', this._player_name)
+    }
+
     this._opp_names = [];
     this._team_mates = [];
     this._points_segno = {};
