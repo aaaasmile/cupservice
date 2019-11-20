@@ -1,18 +1,39 @@
 export class StaticSceneGfx {
   constructor() {
-    this.backSprite = null
-    this.container = null
+    this._backSprite = null
+    this._container = null
+    this._components = new Map()
   }
 
   Build(backTexture, viewWidth, viewHeight) {
-    this.backSprite = new PIXI.Sprite(backTexture)
-    this.container = new PIXI.Container()
-    this.container.addChild(this.backSprite)
-    ScaleSprite(this.backSprite, viewWidth, viewHeight)
+    this._backSprite = new PIXI.Sprite(backTexture)
+    this._container = new PIXI.Container()
+    this._container.addChild(this._backSprite)
+    ScaleSprite(this._backSprite, viewWidth, viewHeight)
 
-    return this.container
+    return this._container
   }
+
+  AddMarker(nameMarker, container) {
+    this._components.set('MKR-' + nameMarker, container)
+    this._container.addChild(container)
+  }
+
+  GetMarker(nameMarker) {
+    const key = 'MKR-' + nameMarker
+    return this.get_component(key)
+  }
+
+  get_component(key) {
+    if (this._components.has(key)) {
+      return this._components.get(key)
+    }
+    throw new Error("Component not found", key)
+  }
+
 }
+
+///////////////////////////////////////////////////////////
 
 function ScaleSprite(sprite, viewWidth, viewHeight) {
   let viewratio = viewWidth / viewHeight

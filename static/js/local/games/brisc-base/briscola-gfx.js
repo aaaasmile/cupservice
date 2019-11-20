@@ -21,8 +21,10 @@ class BriscAlgGfx {
     const nameCpu = args.players[0]
     const markerCpu = new PlayerMarkerGfx()
     let cpuCont = markerCpu.Build(nameCpu, cpuTexture)
-    cpuCont.position.set(10,10)
-    this._staticScene.addChild(cpuCont)
+    cpuCont.markerCpu = markerCpu
+    //cpuCont.position.set(10,10)
+    // TODO: let info = { x: 0, y: 20, anchor_element: 'canvas', x_type: 'center_anchor_horiz'}
+    this._staticScene.AddMarker(nameCpu, cpuCont)
   }
 
   on_pl_ev_brisc_new_giocata(args) {
@@ -56,6 +58,8 @@ class BriscAlgGfx {
 //aa["info_tag"] = { x: 23, y:34, anchor_element: 'canvas', x_type: 'left_anchor'}
 
 
+////////////////////////////////////////////////////////////////////////////////////
+
 export class BriscolaGfx {
 
   constructor() {
@@ -76,7 +80,7 @@ export class BriscolaGfx {
     stage.addChild(scContainer)
     // end
 
-    const algGfx = new BriscAlgGfx(cache, scContainer) // Should be staticSceneGfx
+    const algGfx = new BriscAlgGfx(cache, staticSceneGfx)
     let b2core = PrepareGameVsCpu(algGfx, opt)
     this._core_state = b2core._coreStateManager
 
