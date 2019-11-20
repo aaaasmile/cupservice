@@ -42,6 +42,20 @@ export class CardImageCache {
     return null
   }
 
+  GetTextureFromAvatar(avatar) {
+    let texture = null
+    let avatarKey = 'AVT-' + avatar
+    if (this.textureCache.has(avatarKey)) {
+      return this.textureCache.get(avatarKey)
+    }
+    let ssImg = this.get_avatar_img(avatar)
+    if (ssImg) {
+      texture = PIXI.Texture.from(ssImg)
+      this.textureCache.set(avatarKey, texture)
+    }
+    return texture
+  }
+
   GetTextureFromSymbol(symbol) {
     let texture = null
     let symbKey = 'SYM-' + symbol

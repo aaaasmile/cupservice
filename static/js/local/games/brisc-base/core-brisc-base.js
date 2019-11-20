@@ -375,9 +375,9 @@ export function PrepareGameVsCpu(algGfx, opt) {
   });
 
 
-  let playerErnesto = new cup.Player(new cup.AlgBriscBase('Ernesto'), coreStateManager);
+  let playerErnesto = new cup.Player(new cup.AlgBriscBase('Luisa'), coreStateManager);
   playerErnesto._alg.set_to_master_level()
-  let playerLuigi = new cup.Player(new cup.AlgBriscBase('Luigi'), coreStateManager);
+  let playerLuigi = new cup.Player(new cup.AlgBriscBase('Silvio'), coreStateManager);
   playerLuigi.set_gfx_on_alg(algGfx)
   b2core.AddPlayer(0, playerErnesto)
   b2core.AddPlayer(1, playerLuigi)

@@ -3,12 +3,26 @@ import { CardsPlayerGfx } from '../../gfx/cards-player-gfx.js'
 import { StaticSceneGfx } from '../../gfx/static-scene-gfx.js'
 import { Tink } from '../../app/tink.js'
 import { GetMusicManagerInstance } from '../../app/sound-mgr.js'
-import { CoreBriscolaBase, PrepareGameVsCpu } from './core-brisc-base.js'
-import { CoreStateManager } from '../../core/core-state-manager.js'
+import { PrepareGameVsCpu } from './core-brisc-base.js'
+import { PlayerMarkerGfx } from '../../gfx/player-marker-gfx.js'
 
 
 class BriscAlgGfx {
+  constructor(cache, static_scene){
+    this._cache = cache
+    this._staticScene = static_scene
+  }
+
   on_all_ev_new_match(args) {
+    console.log('on_all_ev_new_match ', args)
+    //args: {players: Array(2), num_segni: 2, target_segno: 61}
+    //       players: ["Ernesto", "Luigi"]
+    const cpuTexture = this._cache.GetTextureFromAvatar('stevie')
+    const nameCpu = args.players[0]
+    const markerCpu = new PlayerMarkerGfx()
+    let cpuCont = markerCpu.Build(nameCpu, cpuTexture)
+    cpuCont.position.set(10,10)
+    this._staticScene.addChild(cpuCont)
   }
 
   on_pl_ev_brisc_new_giocata(args) {
@@ -39,6 +53,9 @@ class BriscAlgGfx {
   }
 }
 
+//aa["info_tag"] = { x: 23, y:34, anchor_element: 'canvas', x_type: 'left_anchor'}
+
+
 export class BriscolaGfx {
 
   constructor() {
@@ -50,10 +67,6 @@ export class BriscolaGfx {
     let tink = new Tink(PIXI, renderer.view)
     let stage = new PIXI.Container()
 
-    const algGfx = new BriscAlgGfx()
-    let b2core = PrepareGameVsCpu(algGfx, opt)
-    this._core_state = b2core._coreStateManager
-
     // Test static scene
     const staticSceneGfx = new StaticSceneGfx()
     const backTexture = cache.GetTextureFromBackground('table')
@@ -62,6 +75,10 @@ export class BriscolaGfx {
     let scContainer = staticSceneGfx.Build(backTexture, viewWidth, viewHeight)
     stage.addChild(scContainer)
     // end
+
+    const algGfx = new BriscAlgGfx(cache, scContainer) // Should be staticSceneGfx
+    let b2core = PrepareGameVsCpu(algGfx, opt)
+    this._core_state = b2core._coreStateManager
 
     // test deck
     let deckGfx = new DeckGfx();
