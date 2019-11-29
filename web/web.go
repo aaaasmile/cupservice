@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"os/signal"
 	"strings"
@@ -34,6 +36,7 @@ func RunService(configfile string) {
 	http.Handle(conf.Current.RootURLPattern+"static/", http.StripPrefix(conf.Current.RootURLPattern+"static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc(conf.Current.RootURLPattern, rest.CupAPiHandler)
 	http.HandleFunc("/websocket", ws.WsHandler)
+	http.HandleFunc("/redirect", proxyOrfHandler)
 
 	srv := &http.Server{
 		Addr:         serverurl,
@@ -67,4 +70,24 @@ loop:
 	srv.Shutdown(ctx)
 	ws.EndWS()
 	log.Println("Bye, service")
+}
+
+func proxyOrfHandler(w http.ResponseWriter, r *http.Request) {
+
+	//url, _ := url.Parse("http://wetter.orf.at/wien/")
+	url, _ := url.Parse("http://localhost:5591/proxed")
+	r.URL.Path = "" // importante altrimenti viene aggiunto alla request
+	log.Println("proxy handler", url)
+	// create the reverse proxy
+	proxy := httputil.NewSingleHostReverseProxy(url)
+
+	// Update the headers to allow for SSL redirection
+	r.URL.Host = url.Host
+	r.URL.Scheme = url.Scheme
+	r.Header.Set("X-Forwarded-Host", r.Header.Get("Host"))
+	r.Header.Set("jwttoken", "TOKEN")
+	r.Host = url.Host
+
+	// Note that ServeHttp is non blocking and uses a go routine under the hood
+	proxy.ServeHTTP(w, r)
 }
