@@ -76,7 +76,7 @@ func proxyOrfHandler(w http.ResponseWriter, r *http.Request) {
 	// In browser use: http://localhost:5571/redirect
 	//url, _ := url.Parse("http://wetter.orf.at/wien/")
 	url, _ := url.Parse("http://localhost:5591/")
-	r.URL.Path = "proxed" // importante altrimenti viene aggiunto alla request
+	r.URL.Path = "proxed" // importante viene aggiunto alla request. La url sopra è sempre terminata da uno /
 	log.Printf("proxy handler %s on path %s", url, r.URL.Path)
 	// create the reverse proxy
 	proxy := httputil.NewSingleHostReverseProxy(url)
