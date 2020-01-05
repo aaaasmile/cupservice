@@ -7,7 +7,7 @@ import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { PlayerMarkerGfx } from '../../gfx/player-marker-gfx.js'
 
 
-class BriscAlgGfx {
+class BriscAlgGfx { // TODO the name is confusing, it is the full game gfx handling
   constructor(cache, static_scene){
     this._cache = cache
     this._staticScene = static_scene
@@ -24,7 +24,7 @@ class BriscAlgGfx {
     cpuCont.markerCpu = markerCpu
     //cpuCont.position.set(10,10)
     // TODO: let info = { x: 0, y: 20, anchor_element: 'canvas', x_type: 'center_anchor_horiz'}
-    this._staticScene.AddMarker(nameCpu, cpuCont)
+    this._staticScene.AddMarker(nameCpu, cpuCont, markerCpu)
   }
 
   on_pl_ev_brisc_new_giocata(args) {
@@ -65,56 +65,61 @@ export class BriscolaGfx {
   constructor() {
     this._tink = null
     this._core_state = null
+    this._staticScene = null
+    this._isDirty = false
   }
 
   Build(opt, cache, renderer) {
     let tink = new Tink(PIXI, renderer.view)
     let stage = new PIXI.Container()
 
-    // Test static scene
     const staticSceneGfx = new StaticSceneGfx()
     const backTexture = cache.GetTextureFromBackground('table')
     let viewWidth = (renderer.width / renderer.resolution);
     let viewHeight = (renderer.height / renderer.resolution);
     let scContainer = staticSceneGfx.Build(backTexture, viewWidth, viewHeight)
     stage.addChild(scContainer)
-    // end
+    
 
     const algGfx = new BriscAlgGfx(cache, staticSceneGfx)
     let b2core = PrepareGameVsCpu(algGfx, opt)
     this._core_state = b2core._coreStateManager
 
-    // test deck
-    let deckGfx = new DeckGfx();
-    let deckItemTexture = cache.GetTextureFromSymbol('cope')
-    let briscolaTexture = cache.GetTextureFromCard('_5s', b2core._deck_info)
-    let deckContainer = deckGfx.Build(40 - 6 - 1, deckItemTexture, briscolaTexture)
-    deckContainer.position.set(500, 300)
-    stage.addChild(deckContainer)
+    // // test deck
+    // let deckGfx = new DeckGfx();
+    // let deckItemTexture = cache.GetTextureFromSymbol('cope')
+    // let briscolaTexture = cache.GetTextureFromCard('_5s', b2core._deck_info)
+    // let deckContainer = deckGfx.Build(40 - 6 - 1, deckItemTexture, briscolaTexture)
+    // deckContainer.position.set(500, 300)
+    // stage.addChild(deckContainer)
 
-    // test hand player
-    let music = GetMusicManagerInstance()
-    let cardsMeGfx = new CardsPlayerGfx(tink)
-    let cardMeContainer = cardsMeGfx.Build(3)
-    const cdT1 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
-    const cdT2 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
-    const cdT3 = cache.GetTextureFromCard('_3d', b2core._deck_info)
-    cardsMeGfx.SetCards([cdT1, cdT2, cdT3], cdT1.width + 5)
-    cardsMeGfx.OnClick((ev) => {
-      console.log('Click rec in handler', ev)
-      music.Play('played')
-      deckGfx.PopCard(2)
-    })
-    cardMeContainer.position.set(20, 300)
-    stage.addChild(cardMeContainer)
+    // // test hand player
+    // let music = GetMusicManagerInstance()
+    // let cardsMeGfx = new CardsPlayerGfx(tink)
+    // let cardMeContainer = cardsMeGfx.Build(3)
+    // const cdT1 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
+    // const cdT2 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
+    // const cdT3 = cache.GetTextureFromCard('_3d', b2core._deck_info)
+    // cardsMeGfx.SetCards([cdT1, cdT2, cdT3], cdT1.width + 5)
+    // cardsMeGfx.OnClick((ev) => {
+    //   console.log('Click rec in handler', ev)
+    //   music.Play('played')
+    //   deckGfx.PopCard(2)
+    // })
+    // cardMeContainer.position.set(20, 300)
+    // stage.addChild(cardMeContainer)
 
+    this._staticScene = staticSceneGfx
     this._tink = tink
+    this._isDirty = true
 
     return stage
   }
 
   Update(delta) {
+    this._staticScene.Render(this._isDirty)
     this._core_state.process_next()
     this._tink.update();
+    this._isDirty = false
   }
 }
