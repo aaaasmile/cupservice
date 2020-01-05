@@ -17,9 +17,9 @@ export class StaticSceneGfx {
     return this._container
   }
 
-  AddMarker(nameMarker, container, comp) {
+  AddMarker(nameMarker, comp) {
     const key = 'MKR-' + nameMarker
-    this.set_component(key, container, comp)
+    this.set_component(key, comp)
   }
 
   GetMarker(nameMarker) {
@@ -27,7 +27,7 @@ export class StaticSceneGfx {
     return this.get_component(key)
   }
 
-  set_component(key, container, comp) {
+  set_component(key, comp) {
     this._components.set(key, comp)
     this.update_z_order()
     this._isDirty = true

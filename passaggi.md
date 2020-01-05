@@ -13,8 +13,7 @@ va aggiornato manualmente.
 I files jsconfig.json mi servono per avere il code complete in VS code.
 
 ## TODO
-- Nel core manaca la registrazione del game come in cuperativajs (_game_core_recorder)
-- Il core della briscola va agganciato alla ui
+- Sto lavorando a static scene come rendering di componenti. I nomi dei giocatori come primo componente da implementare.
 
 ## Problemi
 Ho avuto problemi con i files statici. Specialmente quelli che vanno in module (games-cup.js). 
