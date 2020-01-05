@@ -5,6 +5,7 @@ export class StaticSceneGfx {
     this._sorted_list = []
     this._component_in_front = null
     this._components = new Map()
+    this._isDirty = false
   }
 
   Build(backTexture, viewWidth, viewHeight) {
@@ -28,8 +29,8 @@ export class StaticSceneGfx {
 
   set_component(key, container, comp) {
     this._components.set(key, comp)
-    this._container.addChild(container)
     this.update_z_order()
+    this._isDirty = true
   }
 
   get_component(key) {
@@ -39,20 +40,51 @@ export class StaticSceneGfx {
     throw new Error("Component not found", key)
   }
 
-  update_z_order(){
-    let list = Array.from(this._components.values())
+  update_z_order() {
+    //let list = Array.from(this._components.values())
+    let list = []
+    let listKeys = Array.from(this._components.keys())
+    let mm = this._components
+    let sortedKeys = listKeys.sort((k1, k2) => {
+      let c1 = mm.get(k1)
+      let c2 = mm.get(k2)
+      if (c1.z_ord > c2.z_ord) {
+        return -1
+      } else if (c1.z_ord === c2.z_ord) {
+        return 0
+      }
+      return 1
+    })
+    console.log('*** sorted keys: ', sortedKeys)
+    sortedKeys.forEach(element => {
+      list.push(element)
+    });
     this._sorted_list = list
   }
 
   Render(isDirty) {
+    if (this._isDirty) {
+      console.log('*** rebuild the scene')
+      this._container.removeChildren()
+      this._container.addChild(this._backSprite)
+    }
     this._sorted_list.forEach(element => {
-      if (element !== this._component_in_front){
-        element.Render(isDirty)
+      if (element !== this._component_in_front) {
+        let c1 = this._components.get(element)
+        c1.Render(isDirty)
+        if (this._isDirty) {
+          this._container.addChild(c1._container)
+        }
       }
     });
-    if (this._component_in_front){
-      this._component_in_front.Render(isDirty)
+    if (this._component_in_front) {
+      let cf = this._components.get(this._component_in_front)
+      cf.Render(isDirty)
+      if (this._isDirty) {
+        this._container.addChild(c1._container)
+      }
     }
+    this._isDirty = false
   }
 
 }

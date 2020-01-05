@@ -17,14 +17,20 @@ class BriscAlgGfx { // TODO the name is confusing, it is the full game gfx handl
     console.log('on_all_ev_new_match ', args)
     //args: {players: Array(2), num_segni: 2, target_segno: 61}
     //       players: ["Ernesto", "Luigi"]
-    const cpuTexture = this._cache.GetTextureFromAvatar('stevie')
+    const textureCpu = this._cache.GetTextureFromAvatar('stevie')
     const nameCpu = args.players[0]
-    const markerCpu = new PlayerMarkerGfx()
-    let cpuCont = markerCpu.Build(nameCpu, cpuTexture)
-    cpuCont.markerCpu = markerCpu
+    const markerCpu = new PlayerMarkerGfx(100)
+    let containerMarkerCpu = markerCpu.Build(nameCpu, textureCpu)
+    //cpuCont.markerCpu = markerCpu
     //cpuCont.position.set(10,10)
     // TODO: let info = { x: 0, y: 20, anchor_element: 'canvas', x_type: 'center_anchor_horiz'}
-    this._staticScene.AddMarker(nameCpu, cpuCont, markerCpu)
+    this._staticScene.AddMarker(nameCpu, containerMarkerCpu, markerCpu)
+
+    const textureMe = this._cache.GetTextureFromAvatar('joe')
+    const nameMe = args.players[1]
+    const markerMe = new PlayerMarkerGfx(200)
+    let containerMarkerMe = markerMe.Build(nameMe, textureMe)
+    this._staticScene.AddMarker(nameMe, containerMarkerMe, markerMe)
   }
 
   on_pl_ev_brisc_new_giocata(args) {

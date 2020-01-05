@@ -1,9 +1,10 @@
 export class PlayerMarkerGfx {
-  constructor() {
+  constructor(z_ord) {
     this._container = new PIXI.Container()
     this._sprite = null
     this._text = null
     this._isDirty = false
+    this.z_ord = z_ord
   }
 
   Build(name, avatarTexture) {
@@ -18,7 +19,7 @@ export class PlayerMarkerGfx {
 
   Render(isDirty){
     if (this._isDirty || isDirty){
-      console.log('*** TODO: render the marker...')
+      console.log('*** render the marker ...')
       this._text.position.x = this._sprite.width + 10
     }
     this._isDirty = false
