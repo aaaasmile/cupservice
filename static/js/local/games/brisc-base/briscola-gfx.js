@@ -21,17 +21,24 @@ class BriscAlgGfx { // TODO the name is confusing, it is the full game gfx handl
     const nameCpu = args.players[0]
     const markerCpu = new PlayerMarkerGfx(100) // z-ord: smaller is in front
     markerCpu.Build(nameCpu, textureCpu)
-    markerCpu._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 20 }, anchor_element: 'canvas', }
+    markerCpu._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'top_anchor', offset: 20 }, anchor_element: 'canvas', }
     this._staticScene.AddMarker(nameCpu, markerCpu)
 
     const textureMe = this._cache.GetTextureFromAvatar('joe')
     const nameMe = args.players[1]
     const markerMe = new PlayerMarkerGfx(200)
     markerMe.Build(nameMe, textureMe)
-    //this._staticScene.AddMarker(nameMe, markerMe) // TODO
+    markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -70 }, anchor_element: 'canvas', }
+    this._staticScene.AddMarker(nameMe, markerMe) 
+
+    // TODO create a result component
+    
+
   }
 
   on_pl_ev_brisc_new_giocata(args) {
+    // TODO: create the deck component, start an animation of card distribution
+    //       during the animation stop this._core_state process queue and restore it when the animation is completed
   }
 
   on_all_ev_giocata_end(args) {

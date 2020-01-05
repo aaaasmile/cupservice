@@ -13,7 +13,7 @@ va aggiornato manualmente.
 I files jsconfig.json mi servono per avere il code complete in VS code.
 
 ## TODO
-- Sto lavorando a static scene come rendering di componenti. I nomi dei giocatori come primo componente da implementare.
+- continua con la classe BriscAlgGfx: segnapunti, mazzo, distribuzione, ...
 
 ## Problemi
 Ho avuto problemi con i files statici. Specialmente quelli che vanno in module (games-cup.js). 
