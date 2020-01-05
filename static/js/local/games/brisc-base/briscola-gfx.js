@@ -8,7 +8,7 @@ import { PlayerMarkerGfx } from '../../gfx/player-marker-gfx.js'
 
 
 class BriscAlgGfx { // TODO the name is confusing, it is the full game gfx handling
-  constructor(cache, static_scene){
+  constructor(cache, static_scene) {
     this._cache = cache
     this._staticScene = static_scene
   }
@@ -21,17 +21,14 @@ class BriscAlgGfx { // TODO the name is confusing, it is the full game gfx handl
     const nameCpu = args.players[0]
     const markerCpu = new PlayerMarkerGfx(100) // z-ord: smaller is in front
     markerCpu.Build(nameCpu, textureCpu)
-    //cpuCont.markerCpu = markerCpu
-    //cpuCont.position.set(10,10)
-    // TODO: markerCpu._infoGfx = { x: 0, y: 20, anchor_element: 'canvas', x_type: 'center_anchor_horiz'}
-    //       static scene should at the end of the rendering and when is dirty, calculate the position of the component using _infoGfx
+    markerCpu._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 20 }, anchor_element: 'canvas', }
     this._staticScene.AddMarker(nameCpu, markerCpu)
 
     const textureMe = this._cache.GetTextureFromAvatar('joe')
     const nameMe = args.players[1]
     const markerMe = new PlayerMarkerGfx(200)
     markerMe.Build(nameMe, textureMe)
-    this._staticScene.AddMarker(nameMe, markerMe)
+    //this._staticScene.AddMarker(nameMe, markerMe) // TODO
   }
 
   on_pl_ev_brisc_new_giocata(args) {
@@ -86,7 +83,7 @@ export class BriscolaGfx {
     let viewHeight = (renderer.height / renderer.resolution);
     let scContainer = staticSceneGfx.Build(backTexture, viewWidth, viewHeight)
     stage.addChild(scContainer)
-    
+
 
     const algGfx = new BriscAlgGfx(cache, staticSceneGfx)
     let b2core = PrepareGameVsCpu(algGfx, opt)

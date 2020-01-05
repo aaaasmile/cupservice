@@ -6,9 +6,13 @@ export class StaticSceneGfx {
     this._component_in_front = null
     this._components = new Map()
     this._isDirty = false
+    this.canvas_h = 0
+    this.canvas_w = 0
   }
 
   Build(backTexture, viewWidth, viewHeight) {
+    this.canvas_h = viewHeight
+    this.canvas_w = viewWidth
     this._backSprite = new PIXI.Sprite(backTexture)
     this._container = new PIXI.Container()
     this._container.addChild(this._backSprite)
@@ -68,12 +72,15 @@ export class StaticSceneGfx {
       this._container.removeChildren()
       this._container.addChild(this._backSprite)
     }
+    let built_comp = []
+    // render components
     this._sorted_list.forEach(element => {
       if (element !== this._component_in_front) {
         let c1 = this._components.get(element)
         c1.Render(isDirty)
         if (this._isDirty) {
           this._container.addChild(c1._container)
+          built_comp.push(c1)
         }
       }
     });
@@ -82,9 +89,37 @@ export class StaticSceneGfx {
       cf.Render(isDirty)
       if (this._isDirty) {
         this._container.addChild(c1._container)
+        built_comp.push(c1)
       }
     }
+
+    // update component position
+    for (let index = 0; index < built_comp.length; index++) {
+      const compB = built_comp[index];
+      if (compB._infoGfx) {
+        let [anch_pos_x, anch_pos_y, anch_w, anch_h] = this.get_anch_comp_info(compB._infoGfx.anchor_element)
+        const item_w = compB._container.width
+        const item_h = compB._container.height
+        const pos_x = calc_off_pos(compB._infoGfx.x, anch_pos_x, anch_pos_y, anch_w, anch_h, item_w, item_h)
+        const pos_y = calc_off_pos(compB._infoGfx.y, anch_pos_x, anch_pos_y, anch_w, anch_h, item_w, item_h)
+        compB._container.position.set(pos_x, pos_y)
+      }
+    }
+
+
     this._isDirty = false
+  }// end Render
+
+  get_anch_comp_info(anchor_element) {
+    if (anchor_element === 'canvas') {
+      return [0, 0, this.canvas_w, this.canvas_h]
+    }
+    let c1 = this._components.get(this._components)
+    if (c1) {
+      return [c1._container.position.x, c1._container.position.y, c1._container.width, c1._container.height]
+    }
+
+    throw (new Error(`anchor_element => ${anchor_element} not found.`))
   }
 
 }
@@ -106,6 +141,34 @@ function ScaleSprite(sprite, viewWidth, viewHeight) {
   }
   sprite.scale.set(scale, scale)
   sprite.position = pos
+}
+
+//info_pos:  {type: 'left_anchor', offset: 10}
+function calc_off_pos(info_pos, anch_pos_x, anch_pos_y, anch_w, anch_h, item_w, item_h) {
+  let calc_pos = 0
+  switch (info_pos.type) {
+    case 'left_anchor':
+      calc_pos = anch_pos_x + info_pos.offset
+      break
+    case 'right_anchor':
+      calc_pos = anch_pos_x + anch_w - item_w + info_pos.offset
+      break
+    case 'bottom_anchor':
+      calc_pos = anch_pos_y + anch_h - item_h + info_pos.offset
+      break
+    case 'top_anchor':
+      calc_pos = anch_pos_y + info_pos.offset
+      break
+    case 'center_anchor_horiz':
+      calc_pos = anch_pos_x + anch_w / 2 - item_w / 2 + info_pos.offset
+      break
+    case 'center_anchor_vert':
+      calc_pos = anch_pos_y + anch_h / 2 - item_h / 2 + info_pos.offset
+      break
+    default:
+      throw (new Error(`info_pos.type => ${info_pos.type} not recognized.`))
+  }
+  return calc_pos
 }
 
 
