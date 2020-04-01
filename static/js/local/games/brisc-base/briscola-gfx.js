@@ -32,7 +32,7 @@ class BriscAlgGfx { // TODO the name is confusing, it is the full game gfx handl
     markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -70 }, anchor_element: 'canvas', }
     this._staticScene.AddMarker(nameMe, markerMe)
 
-    const scoreBoard = new ScoreBoardGfx(90)
+    const scoreBoard = new ScoreBoardGfx(90) //TODO: finire ScoreBoardGfx
     scoreBoard.Build(nameCpu, nameMe, args.num_segni)
     scoreBoard._infoGfx = { x: { type: 'left_anchor', offset: +30 }, y: { type: 'top_anchor', offset: 70 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('scoreBoard',scoreBoard)
