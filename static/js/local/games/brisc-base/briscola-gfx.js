@@ -5,6 +5,7 @@ import { Tink } from '../../app/tink.js'
 import { GetMusicManagerInstance } from '../../app/sound-mgr.js'
 import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { PlayerMarkerGfx } from '../../gfx/player-marker-gfx.js'
+import {ScoreBoardGfx} from '../../gfx/scoreboard-gfx.js'
 
 
 class BriscAlgGfx { // TODO the name is confusing, it is the full game gfx handling
@@ -29,11 +30,12 @@ class BriscAlgGfx { // TODO the name is confusing, it is the full game gfx handl
     const markerMe = new PlayerMarkerGfx(200)
     markerMe.Build(nameMe, textureMe)
     markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -70 }, anchor_element: 'canvas', }
-    this._staticScene.AddMarker(nameMe, markerMe) 
+    this._staticScene.AddMarker(nameMe, markerMe)
 
-    // TODO create a result component
-    
-
+    const scoreBoard = new ScoreBoardGfx(90)
+    scoreBoard.Build(nameCpu, nameMe, args.num_segni)
+    scoreBoard._infoGfx = { x: { type: 'left_anchor', offset: +30 }, y: { type: 'top_anchor', offset: 70 }, anchor_element: 'canvas', }
+    this._staticScene.AddGfxComponent('scoreBoard',scoreBoard)
   }
 
   on_pl_ev_brisc_new_giocata(args) {

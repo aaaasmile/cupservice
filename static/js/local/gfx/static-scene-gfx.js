@@ -31,7 +31,14 @@ export class StaticSceneGfx {
     return this.get_component(key)
   }
 
+  AddGfxComponent(key, comp) {
+    this.set_component(key, comp)
+  }
+
   set_component(key, comp) {
+    if (this._components.has(key)) {
+      throw new Error("Component already set", key)
+    }
     this._components.set(key, comp)
     this.update_z_order()
     this._isDirty = true
