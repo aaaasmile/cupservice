@@ -116,7 +116,7 @@ func HandlerShutdown() {
 		}
 
 	case <-chTimeout:
-		log.Println("Timeout on shutdown, something was blockd")
+		log.Println("Timeout on shutdown, something was blocked")
 		break
 	}
 	log.Println("Exit from HandlerShutdown")
