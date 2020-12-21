@@ -10,22 +10,27 @@ export default {
       selName: 'Mario',
       selGame: 'Briscola',
       is_mobile: false,
-      appWidth: 800,
+      appWidth: 0,
+      appHeight: 0,
     }
   },
-  created()  {
+  created() {
     // if (this.is_mobile) this.appWidth = (document.getElementById('pixi')).offsetWidth
     // else this.appWidth = Math.min(600, (document.getElementById('pixi')).offsetWidth)
     // console.log(this.appWidth)
     // this.fetch_tmda(-1)
     console.log('Created')
   },
-  mounted(){
+  mounted() {
     console.log('Mounted')
+   
+    this.appWidth = (document.getElementById('refw')).offsetWidth
+    this.appHeight = (document.getElementById('app')).offsetHeight
+
     // 1. Create a Pixi renderer and define size and a background color
     introAnim = new PIXI.Application({
-      width: window.innerWidth,
-      height: window.innerHeight,
+      width: this.appWidth,
+      height: this.appHeight,
       // change background color to blue
       backgroundColor: "0x000000"
     });
@@ -33,10 +38,10 @@ export default {
     // 2. Append canvas element to the body
     document.getElementById('pixi').appendChild(introAnim.view);
 
-    var wW = window.innerWidth,
-      wH = window.innerHeight,
-      cw = window.innerWidth / 2,
-      ch = window.innerHeight / 2;
+    var wW = this.appWidth,
+      wH = this.appHeight,
+      cw = this.appWidth / 2,
+      ch = this.appHeight / 2;
 
     var minX = wW / 4,
       maxX = minX + cw,
@@ -108,9 +113,9 @@ export default {
         var b = star.getBounds();
 
         if (
-          b.x > window.innerWidth ||
+          b.x > this.appWidth ||
           b.x < 0 ||
-          b.y > window.innerHeight ||
+          b.y > this.appHeight ||
           b.y < 0
         ) {
           star.x = 0;
@@ -152,7 +157,7 @@ export default {
         <v-col cols="12">
           <v-row>
             <v-col cols="12">
-              <v-text-field
+              <v-text-field id="refw"
                 v-model="selName"
                 label="Select a name"
               ></v-text-field>
@@ -163,13 +168,9 @@ export default {
               <v-card flat tile>
                 <v-card-title>Partita a {{ selGame }} </v-card-title>
                 <v-content>
-                  <v-container fluid dark>
-                    <v-layout row wrap>
-                      <v-flex xs12 md8 class="text-xs-center text-center">
-                        <div id='pixi'></div>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
+                  <v-col cols="12">
+                    <v-row justify="center" id="pixi"></v-row>
+                  </v-col>
                 </v-content>
               </v-card>
             </v-col>
@@ -177,6 +178,5 @@ export default {
         </v-col>
       </v-card>
     </v-col>
-  </v-row>
-`
+  </v-row>`
 }

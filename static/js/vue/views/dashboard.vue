@@ -17,7 +17,7 @@
         <v-col cols="12">
           <v-row>
             <v-col cols="12">
-              <v-text-field
+              <v-text-field id="refw"
                 v-model="selName"
                 label="Select a name"
               ></v-text-field>
@@ -28,13 +28,9 @@
               <v-card flat tile>
                 <v-card-title>Partita a {{ selGame }} </v-card-title>
                 <v-content>
-                  <v-container fluid dark>
-                    <v-layout row wrap>
-                      <v-flex xs12 md8 class="text-xs-center text-center">
-                        <div id='pixi'></div>
-                      </v-flex>
-                    </v-layout>
-                  </v-container>
+                  <v-col cols="12">
+                    <v-row justify="center" id="pixi"></v-row>
+                  </v-col>
                 </v-content>
               </v-card>
             </v-col>
