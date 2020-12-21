@@ -15,17 +15,22 @@ export default {
     }
   },
   created() {
-    // if (this.is_mobile) this.appWidth = (document.getElementById('pixi')).offsetWidth
-    // else this.appWidth = Math.min(600, (document.getElementById('pixi')).offsetWidth)
-    // console.log(this.appWidth)
-    // this.fetch_tmda(-1)
     console.log('Created')
   },
   mounted() {
     console.log('Mounted')
    
     this.appWidth = (document.getElementById('refw')).offsetWidth
-    this.appHeight = (document.getElementById('app')).offsetHeight
+    this.appHeight = (document.getElementById('reffull')).offsetHeight
+    this.appHeight -= (document.getElementById('refcont')).offsetHeight
+
+    this.appHeight = 600
+    
+    let c_left = (document.getElementById('pixi').offsetWidth - this.appWidth) / 2
+    let c_top = document.getElementById('pixi').offsetTop
+    console.log("Coordinates: ", c_left, c_top, this.appWidth, this.appHeight)
+
+    //this.appHeight = (document.getElementById('refcont')).offsetHeight
 
     // 1. Create a Pixi renderer and define size and a background color
     introAnim = new PIXI.Application({
@@ -43,9 +48,9 @@ export default {
       cw = this.appWidth / 2,
       ch = this.appHeight / 2;
 
-    var minX = wW / 4,
+    var minX = c_left + wW / 4 ,
       maxX = minX + cw,
-      minY = wH / 4,
+      minY = c_top +  wH / 4,
       maxY = minY + ch;
 
     console.log(wH, minY, maxY);
@@ -178,5 +183,6 @@ export default {
         </v-col>
       </v-card>
     </v-col>
-  </v-row>`
+  </v-row>
+`
 }
