@@ -29,7 +29,7 @@
                 <v-card-title>Partita a {{ selGame }} </v-card-title>
                 <v-content>
                   <v-col cols="12">
-                    <v-row justify="center" id="pixi"></v-row>
+                    <v-row align-stretch justify="center" id="pixi"></v-row>
                   </v-col>
                 </v-content>
               </v-card>

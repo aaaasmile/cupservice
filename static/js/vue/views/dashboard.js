@@ -11,7 +11,7 @@ export default {
       selGame: 'Briscola',
       is_mobile: false,
       appWidth: 0,
-      appHeight: 0,
+      appHeight: 600,
     }
   },
   created() {
@@ -20,14 +20,18 @@ export default {
   mounted() {
     console.log('Mounted')
    
-    this.appWidth = (document.getElementById('refw')).offsetWidth
-    this.appHeight = (document.getElementById('reffull')).offsetHeight
-    this.appHeight -= (document.getElementById('refcont')).offsetHeight
+    //this.appWidth = (document.getElementById('refw')).offsetWidth
+    //this.appHeight = (document.getElementById('reffull')).offsetHeight
+    //this.appHeight -= (document.getElementById('refcont')).offsetHeight
+    this.appWidth = (document.getElementById('pixi')).offsetWidth
+    //this.appHeight = (document.getElementById('pixi')).offsetHeight
 
-    this.appHeight = 600
+    //this.appHeight = 600
     
-    let c_left = (document.getElementById('pixi').offsetWidth - this.appWidth) / 2
-    let c_top = document.getElementById('pixi').offsetTop
+    // let c_left = (document.getElementById('pixi').offsetWidth - this.appWidth) / 2
+    // let c_top = document.getElementById('pixi').offsetTop
+    let c_left = 0
+    let c_top = 0
     console.log("Coordinates: ", c_left, c_top, this.appWidth, this.appHeight)
 
     //this.appHeight = (document.getElementById('refcont')).offsetHeight
@@ -174,7 +178,7 @@ export default {
                 <v-card-title>Partita a {{ selGame }} </v-card-title>
                 <v-content>
                   <v-col cols="12">
-                    <v-row justify="center" id="pixi"></v-row>
+                    <v-row align-stretch justify="center" id="pixi"></v-row>
                   </v-col>
                 </v-content>
               </v-card>
