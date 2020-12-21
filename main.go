@@ -5,18 +5,22 @@ import (
 	"fmt"
 	"os"
 
-	"./web"
-	"./web/idl"
+	"github.com/aaaasmile/cupservice/web"
+	"github.com/aaaasmile/cupservice/web/idl"
 )
 
 func main() {
+	var ver = flag.Bool("ver", false, "Prints the current version")
 	var configfile = flag.String("config", "config.toml", "Configuration file path")
-	var ver = flag.Bool("version", false, "Prints current version")
 	flag.Parse()
 
 	if *ver {
 		fmt.Printf("%s, version: %s", idl.Appname, idl.Buildnr)
 		os.Exit(0)
 	}
-	web.RunService(*configfile)
+
+	if err := web.RunService(*configfile); err != nil {
+		panic(err)
+	}
 }
+
