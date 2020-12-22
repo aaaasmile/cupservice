@@ -34,25 +34,26 @@ class BriscolaGfx {
     const nameMe = args.players[1]
     const markerMe = new PlayerMarkerGfx(200)
     markerMe.Build(nameMe, textureMe)
-    markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -70 }, anchor_element: 'canvas', }
+    markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddMarker(nameMe, markerMe)
 
     const scoreBoard = new ScoreBoardGfx(90)
     scoreBoard.Build(nameCpu, nameMe, args.num_segni)
-    scoreBoard._infoGfx = { x: { type: 'left_anchor', offset: +30 }, y: { type: 'top_anchor', offset: 70 }, anchor_element: 'canvas', }
+    scoreBoard._infoGfx = { x: { type: 'left_anchor', offset: +30 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('scoreBoard', scoreBoard)
   }
 
   on_pl_ev_brisc_new_giocata(args) {
     console.log('on_pl_ev_brisc_new_giocata', args)
-    // TODO: create the deck component, start an animation of card distribution
-    //       during the animation stop this._core_state process queue and restore it when the animation is completed
     const deck = new DeckGfx(80)
     let deckItemTexture = this._cache.GetTextureFromSymbol('cope')
     let briscolaTexture = this._cache.GetTextureFromCard(args.brisc, this._deck_info)
     deck.Build(args.num_card_deck, deckItemTexture, briscolaTexture)
-    deck._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: 70 }, anchor_element: 'canvas', }
+    deck._infoGfx = { x: { type: 'left_anchor', offset: 20 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('deck', deck)
+    // TODO: start an animation of card distribution
+    //       during the animation stop this._core_state process queue and restore it when the animation is completed
+   
   }
 
   on_all_ev_giocata_end(args) {
