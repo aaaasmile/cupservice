@@ -53,7 +53,6 @@ export default {
 
     // 2. Append canvas element to the body
     document.getElementById('pixi').appendChild(app.view);
-    // Listen for animate update
 
   },
   computed: {
@@ -71,7 +70,7 @@ export default {
       }
       this.setup(this._cache, this.selGame, this.optGame)
       if (addTick){
-        this._app.ticker.add(delta => this.gameLoop(delta)); 
+        this._app.ticker.add(delta => this.gameLoop(delta));  // il ticker sembra vada aggiunto solo una volta
       }else{
         this._app.ticker.start()
       }

@@ -1,5 +1,5 @@
 ## cup-service
-Un service della cuperativa in golang (web socket e rest) ed ui in javascript
+Un service della cuperativa in golang e vuetify. Rendering del gioco delle carte in pixi.js.
 
 ## Info module
 Il gioco della cuperativa l'ho sviluppato usando ES6 con i moduli direttamente in browser.
@@ -38,10 +38,12 @@ ho abbandonato l'idea in favore della libreria pixjs.
 In tmp/reference_app.js_copy.js ho messo alcune prove per quanto riguarda la prova con la libreria.
 
 ## Angular, React, Vue e pure html
-Dopo essere partito da Angular poi passato a React e infine a Vue, ho deciso di usare 
-il file index.html puro con la libreria grafica mdl do google. 
-Si può rispolverare vue in futuro quando servirà una ui per gestire tutto quello 
-fuori dai giochi (vedi dir ..\old\cup-service-vue-react) senza troppi polpettoni vari.
+Dopo essere partito da Angular (mamma mia che polpettone) poi passato a React, a Vue, ho deciso di usare 
+il file index.html puro con la libreria grafica mdl do google. Ma non sono andato molto lontano.
+Con vuetify, invece, sembra andare molto meglio.
+
+Ora è arrivato il momento di rispolverare vue con vuetify per gestire il flusso del gioco (vedi dir ..\old\cup-service-vue-react).
+
 React senza webpack (monofile) diventa troppo difficile da gestire. I polpettoni alla webpack ancora meno.
 Angular invece è da evitare. Sempre che non si voglia passare il tempo ad aggiornare la libreria 
 (versione a oggi è 8 mentre ero partito dalla 2 e ad ogni salto puoi partire da capo), 

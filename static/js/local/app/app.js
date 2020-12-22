@@ -2,6 +2,8 @@ import { GetCardLoaderGfx } from '../gfx/card-loader-gfx.js'
 import { GetMusicManagerInstance } from './sound-mgr.js'
 import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js'
 
+// NOTA: questo file in vuetify è obsoleto. Viene usato dashboard.js
+
 
 class CuperativaApp {
 
