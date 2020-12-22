@@ -378,10 +378,11 @@ export function PrepareGameVsCpu(algGfx, opt) {
     b2core.StartNewMatch(next);
   });
 
-
-  let playerErnesto = new Player(new AlgBriscBase('Luisa'), coreStateManager);
+  const namePl1 = opt.namePl1
+  const namePl2 = opt.namePl2
+  let playerErnesto = new Player(new AlgBriscBase(namePl1), coreStateManager);
   playerErnesto._alg.set_to_master_level()
-  let playerLuigi = new Player(new AlgBriscBase('Silvio'), coreStateManager);
+  let playerLuigi = new Player(new AlgBriscBase(namePl2), coreStateManager);
   playerLuigi.set_gfx_on_alg(algGfx)
   b2core.AddPlayer(0, playerErnesto)
   b2core.AddPlayer(1, playerLuigi)

@@ -11,7 +11,7 @@ export default {
       loadinggame: false,
       selName: 'Mario',
       selGame: 'briscola',
-      optGame: {num_segni: 2},
+      optGame: {num_segni: 2, namePl1: 'Luisa'},
       is_mobile: false,
       appWidth: 0,
       appHeight: 600,
@@ -77,6 +77,7 @@ export default {
       }
     },
     setup(cache, name, opt) {
+      opt.namePl2 = this.selName
       console.log('Setup with cache', name, opt)
       this._app.stage.removeChildren()
       let gfx;
