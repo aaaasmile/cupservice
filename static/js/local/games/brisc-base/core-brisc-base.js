@@ -3,6 +3,10 @@ import { DeckInfo } from '../../shared/deck-info.js'
 import { CoreStateStore } from '../../core/core-state-store.js'
 import { CoreStateSubjectSubscriber } from '../../core/core-state-subject-subscriber.js'
 import { RndMgr } from '../../shared/rnd-mgr.js'
+import { CoreStateManager } from '../../core/core-state-manager.js'
+import { TableStateCore } from '../../shared/table-state-core.js'
+import { Player } from '../../shared/player.js'
+import { AlgBriscBase } from '../brisc-base/alg-brisc-base.js'
 
 //////////////////////////////////////////
 //////////////////////////////// CoreBriscolaBase
@@ -365,9 +369,9 @@ export class CoreBriscolaBase {
 
 export function PrepareGameVsCpu(algGfx, opt) {
   console.log('Prepare game vs CPU')
-  let coreStateManager = new cup.CoreStateManager('develop');
-  let b2core = new cup.CoreBriscolaBase(coreStateManager, opt.num_segni, 61);
-  let tableStateCore = new cup.TableStateCore(coreStateManager, 2);
+  let coreStateManager = new CoreStateManager('develop');
+  let b2core = new CoreBriscolaBase(coreStateManager, opt.num_segni, 61);
+  let tableStateCore = new TableStateCore(coreStateManager, 2);
   let subsc = tableStateCore.TableFullSub.subscribe(next => {
     subsc.unsubscribe();
     tableStateCore.dispose();
@@ -375,9 +379,9 @@ export function PrepareGameVsCpu(algGfx, opt) {
   });
 
 
-  let playerErnesto = new cup.Player(new cup.AlgBriscBase('Luisa'), coreStateManager);
+  let playerErnesto = new Player(new AlgBriscBase('Luisa'), coreStateManager);
   playerErnesto._alg.set_to_master_level()
-  let playerLuigi = new cup.Player(new cup.AlgBriscBase('Silvio'), coreStateManager);
+  let playerLuigi = new Player(new AlgBriscBase('Silvio'), coreStateManager);
   playerLuigi.set_gfx_on_alg(algGfx)
   b2core.AddPlayer(0, playerErnesto)
   b2core.AddPlayer(1, playerLuigi)
