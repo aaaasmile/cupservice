@@ -1,7 +1,7 @@
 import API from '../apicaller.js'
 import { GetMusicManagerInstance } from '../../local/app/sound-mgr.js'
 import { GetCardLoaderGfx } from '../../local/gfx/card-loader-gfx.js'
-import { BriscolaGfx } from '../../local/games/brisc-base/briscola-gfx.js'
+import { BuilderGfx } from '../../local/games/brisc-base/briscola-gfx.js'
 
 var introAnim;
 
@@ -82,7 +82,7 @@ export default {
       let gfx;
       switch (name) {
         case 'briscola':
-          gfx = new BriscolaGfx();
+          gfx = new BuilderGfx();
           break;
         default:
           throw new Error("Game not supproted: ", name)

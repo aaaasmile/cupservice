@@ -104,8 +104,9 @@ export class CoreBriscolaBase {
     this.distribute_cards();
     this._core_data.players.forEach(player => {
       let data_newgioc = {
-        carte: this._core_data.carte_in_mano[player]
-        , brisc: this._briscola_in_tav_lbl
+        carte: this._core_data.carte_in_mano[player],
+        brisc: this._briscola_in_tav_lbl,
+        num_card_deck: this._deck_info.get_numofcards_ondeck() - 1 -  this._core_data.carte_in_mano[player].length * this._core_data.players.length,
       };
       this._coreStateManager.fire_to_player(player, 'ev_brisc_new_giocata', data_newgioc);
     });

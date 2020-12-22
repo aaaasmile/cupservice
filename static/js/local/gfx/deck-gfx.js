@@ -1,6 +1,7 @@
 export class DeckGfx {
-  constructor() {
+  constructor(z_ord) {
     this.deckSprite = []
+    this.z_ord = z_ord
     this.briscola = null
     this.container = new PIXI.Container()
   }

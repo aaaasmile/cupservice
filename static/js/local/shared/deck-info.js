@@ -224,6 +224,10 @@
       return this.cards_on_game.slice();
     }
 
+    get_numofcards_ondeck(){
+      return this.cards_on_game.length
+    }
+
     set_rank_points(arr_rank, arr_points) {
       var i, symb_card;
       for (i = 0; i < this.cards_on_game.length; i++) {

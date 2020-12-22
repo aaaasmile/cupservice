@@ -5,13 +5,18 @@ import { Tink } from '../../app/tink.js'
 import { GetMusicManagerInstance } from '../../app/sound-mgr.js'
 import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { PlayerMarkerGfx } from '../../gfx/player-marker-gfx.js'
-import {ScoreBoardGfx} from '../../gfx/scoreboard-gfx.js'
+import { ScoreBoardGfx } from '../../gfx/scoreboard-gfx.js'
 
 
-class BriscAlgGfx { // TODO the name is confusing, it is the full game gfx handling
+class BriscolaGfx {
   constructor(cache, static_scene) {
     this._cache = cache
     this._staticScene = static_scene
+    this._deck_info = null
+  }
+
+  set_deck_info(deck_info){
+    this._deck_info = deck_info
   }
 
   on_all_ev_new_match(args) {
@@ -32,15 +37,22 @@ class BriscAlgGfx { // TODO the name is confusing, it is the full game gfx handl
     markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -70 }, anchor_element: 'canvas', }
     this._staticScene.AddMarker(nameMe, markerMe)
 
-    const scoreBoard = new ScoreBoardGfx(90) //TODO: finire ScoreBoardGfx
+    const scoreBoard = new ScoreBoardGfx(90)
     scoreBoard.Build(nameCpu, nameMe, args.num_segni)
     scoreBoard._infoGfx = { x: { type: 'left_anchor', offset: +30 }, y: { type: 'top_anchor', offset: 70 }, anchor_element: 'canvas', }
-    this._staticScene.AddGfxComponent('scoreBoard',scoreBoard)
+    this._staticScene.AddGfxComponent('scoreBoard', scoreBoard)
   }
 
   on_pl_ev_brisc_new_giocata(args) {
+    console.log('on_pl_ev_brisc_new_giocata', args)
     // TODO: create the deck component, start an animation of card distribution
     //       during the animation stop this._core_state process queue and restore it when the animation is completed
+    const deck = new DeckGfx(80)
+    let deckItemTexture = this._cache.GetTextureFromSymbol('cope')
+    let briscolaTexture = this._cache.GetTextureFromCard(args.brisc, this._deck_info)
+    deck.Build(args.num_card_deck, deckItemTexture, briscolaTexture)
+    deck._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: 70 }, anchor_element: 'canvas', }
+    this._staticScene.AddGfxComponent('deck', deck)
   }
 
   on_all_ev_giocata_end(args) {
@@ -73,7 +85,7 @@ class BriscAlgGfx { // TODO the name is confusing, it is the full game gfx handl
 
 ////////////////////////////////////////////////////////////////////////////////////
 
-export class BriscolaGfx {
+export class BuilderGfx {
 
   constructor() {
     this._tink = null
@@ -94,8 +106,9 @@ export class BriscolaGfx {
     stage.addChild(scContainer)
 
 
-    const algGfx = new BriscAlgGfx(cache, staticSceneGfx)
-    let b2core = PrepareGameVsCpu(algGfx, opt)
+    const briGfx = new BriscolaGfx(cache, staticSceneGfx)
+    let b2core = PrepareGameVsCpu(briGfx, opt)
+    briGfx.set_deck_info(b2core._deck_info)
     this._core_state = b2core._coreStateManager
 
     // // test deck
