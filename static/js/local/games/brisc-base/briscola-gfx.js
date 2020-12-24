@@ -9,10 +9,12 @@ import { ScoreBoardGfx } from '../../gfx/scoreboard-gfx.js'
 
 
 class BriscolaGfx {
-  constructor(cache, static_scene) {
+  constructor(cache, static_scene, tink) {
     this._cache = cache
+    this._tink = tink
     this._staticScene = static_scene
     this._deck_info = null
+    this._core_state = null
   }
 
   set_deck_info(deck_info){
@@ -53,7 +55,11 @@ class BriscolaGfx {
     this._staticScene.AddGfxComponent('deck', deck)
     // TODO: start an animation of card distribution
     //       during the animation stop this._core_state process queue and restore it when the animation is completed
-   
+    // let cards_me = new CardsPlayerGfx()
+    // cards_me.Build()
+    // cards_me._infoGfx = { x: { type: 'center_anchor', offset: 0 }, y: { type: 'bottom_anchor_vert', offset: -50 }, anchor_element: 'canvas', }
+    // this._staticScene.AddGfxComponent('cardsme', cards_me)
+    this._core_state.suspend_proc_gevents('suspend animation new giocata')
   }
 
   on_all_ev_giocata_end(args) {
@@ -107,11 +113,11 @@ export class BuilderGfx {
     stage.addChild(scContainer)
 
 
-    const briGfx = new BriscolaGfx(cache, staticSceneGfx)
+    const briGfx = new BriscolaGfx(cache, staticSceneGfx, tink)
     let b2core = PrepareGameVsCpu(briGfx, opt)
     briGfx.set_deck_info(b2core._deck_info)
     this._core_state = b2core._coreStateManager
-
+    briGfx._core_state = this._core_state
     // // test deck
     // let deckGfx = new DeckGfx();
     // let deckItemTexture = cache.GetTextureFromSymbol('cope')

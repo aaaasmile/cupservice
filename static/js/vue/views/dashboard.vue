@@ -7,14 +7,9 @@
           <v-row align-stretch justify="center" id="pixi"></v-row>
         </v-content>
         <v-card-actions>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn icon @click="playGame" :loading="loadinggame" v-on="on">
-                <v-icon>play_arrow</v-icon>
-              </v-btn>
-            </template>
-            <span>Play game</span>
-          </v-tooltip>
+          <v-btn @click="playGame" :loading="loadinggame">
+            Gioca
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-col>

@@ -33,6 +33,13 @@ export class CardsPlayerGfx {
     }
   }
 
+  Render(isDirty){
+    if (this._isDirty || isDirty){
+      console.log('*** render cards player ...')
+    }
+    this._isDirty = false
+  }
+
   OnClick(funHandler) {
     const event = 'click-card'
     this.clickHandler.set(event, funHandler)
