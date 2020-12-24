@@ -1,5 +1,5 @@
-export class Helper {
-  static MinOnWeightItem1(w_cards) {
+export default {
+  MinOnWeightItem1(w_cards) {
     // expects something like this:
     // let w_cards = [
     //   ['ab', 2],
@@ -13,5 +13,21 @@ export class Helper {
     }));
     let min_obj = w_cards.filter(function (o) { return o[1] === min_ele; })[0];
     return min_obj;
+  },
+  ScaleSprite(sprite, viewWidth, viewHeight) {
+    let viewratio = viewWidth / viewHeight
+    let spratio = sprite.width / sprite.height
+    console.log('Ratio win - sprite', viewratio, spratio)
+    let scale = 1
+    let pos = new PIXI.Point(0, 0)
+    if (viewratio > spratio) {
+      scale = viewWidth / sprite.width
+      pos.y = (viewHeight - sprite.height * scale) / 2
+    } else {
+      scale = viewHeight / sprite.height
+      pos.x = (viewWidth - sprite.width * scale) / 2
+    }
+    sprite.scale.set(scale, scale)
+    sprite.position = pos
   }
 }

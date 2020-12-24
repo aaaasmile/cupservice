@@ -1,5 +1,5 @@
 import { DeckInfo } from '../../shared/deck-info.js'
-import { Helper } from '../../shared/helper.js'
+import Helper  from '../../shared/helper.js'
 
 //////////////////////////////////////////
 //////////////////////////////// AlgBriscBase

@@ -1,3 +1,5 @@
+import Helper  from '../shared/helper.js'
+
 export class StaticSceneGfx {
   constructor() {
     this._backSprite = null
@@ -16,7 +18,7 @@ export class StaticSceneGfx {
     this._backSprite = new PIXI.Sprite(backTexture)
     this._container = new PIXI.Container()
     this._container.addChild(this._backSprite)
-    ScaleSprite(this._backSprite, viewWidth, viewHeight)
+    Helper.ScaleSprite(this._backSprite, viewWidth, viewHeight)
 
     return this._container
   }
@@ -133,22 +135,6 @@ export class StaticSceneGfx {
 
 ///////////////////////////////////////////////////////////
 
-function ScaleSprite(sprite, viewWidth, viewHeight) {
-  let viewratio = viewWidth / viewHeight
-  let spratio = sprite.width / sprite.height
-  console.log('Ratio win - sprite', viewratio, spratio)
-  let scale = 1
-  let pos = new PIXI.Point(0, 0)
-  if (viewratio > spratio) {
-    scale = viewWidth / sprite.width
-    pos.y = (viewHeight - sprite.height * scale) / 2
-  } else {
-    scale = viewHeight / sprite.height
-    pos.x = (viewWidth - sprite.width * scale) / 2
-  }
-  sprite.scale.set(scale, scale)
-  sprite.position = pos
-}
 
 //info_pos:  {type: 'left_anchor', offset: 10}
 function calc_off_pos(info_pos, anch_pos_x, anch_pos_y, anch_w, anch_h, item_w, item_h) {
