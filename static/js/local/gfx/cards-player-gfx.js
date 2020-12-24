@@ -1,3 +1,4 @@
+import Helper from '../shared/helper.js'
 export class CardsPlayerGfx {
   constructor(z_ord, tink, deck_info, cache) {
     this._sprites = []
@@ -14,28 +15,44 @@ export class CardsPlayerGfx {
     this._numCards = numCards
   }
 
-  get_space_x(texture_w, mode){
-    switch(mode){
+  get_space_x(texture_w, mode) {
+    switch (mode) {
       case 'normal':
         return texture_w + 10
+      case 'compact_small':
+        return 15
       case 'compact':
         return 27
     }
     throw (new Error(`get space x: mode => ${mode} not recognized`))
   }
 
-  SetCards(cards,mode) {
-    if(!mode){
+  resize_sprite(sprite, mode) {
+    switch (mode) {
+      case 'compact':
+      case 'normal':
+        return sprite
+      case 'compact_small':
+        let nw = sprite.width - sprite.width / 3
+        let nh = sprite.height - sprite.height / 3
+        Helper.ScaleSprite(sprite, nw, nh)
+        return
+    }
+    throw (new Error(`get space x: mode => ${mode} not recognized`))
+  }
+
+  SetCards(cards, mode) {
+    if (!mode) {
       mode = 'normal'
     }
     let textures = []
     cards.forEach(element => {
-      let cdt = this._cache.GetTextureFromCard(element,this._deck_info)
+      let cdt = this._cache.GetTextureFromCard(element, this._deck_info)
       textures.push(cdt)
     });
 
     for (let index = textures.length; index < this._numCards; index++) {
-      let cdt = this._cache.GetTextureFromSymbol('cope',this._deck_info)
+      let cdt = this._cache.GetTextureFromSymbol('cope', this._deck_info)
       textures.push(cdt)
     }
 
@@ -47,10 +64,11 @@ export class CardsPlayerGfx {
 
     this._container.removeChildren()
     this._sprites = []
-    const  space_x = this.get_space_x(textures[0].width, mode)
+    const space_x = this.get_space_x(textures[0].width, mode)
     for (let index = 0; index < this._numCards; index++) {
       const itemTexture = textures[ixTexture];
       let sprite = new PIXI.Sprite(itemTexture)
+      this.resize_sprite(sprite, mode)
       sprite.cup_data_lbl = itemTexture.cup_data_lbl // recognize the card
       sprite.position.set(x, y)
       this._sprites.push(sprite)
@@ -63,8 +81,8 @@ export class CardsPlayerGfx {
     this._isDirty = true
   }
 
-  Render(isDirty){
-    if (this._isDirty || isDirty){
+  Render(isDirty) {
+    if (this._isDirty || isDirty) {
       console.log('*** render cards player ...')
     }
     this._isDirty = false
