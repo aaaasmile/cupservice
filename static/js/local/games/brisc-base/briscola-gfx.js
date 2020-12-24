@@ -53,15 +53,24 @@ class BriscolaGfx {
     deck.Build(args.num_card_deck, deckItemTexture, briscolaTexture)
     deck._infoGfx = { x: { type: 'left_anchor', offset: 20 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('deck', deck)
-    // TODO: start an animation of card distribution
-    //       during the animation stop this._core_state process queue and restore it when the animation is completed
+    
     let cards_me = new CardsPlayerGfx(70,this._tink,this._deck_info,this._cache)
     cards_me.Build(args.carte.length)
     cards_me.SetCards(args.carte)
     cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsme', cards_me)
-    
+
+    let cards_opp = new CardsPlayerGfx(70,this._tink,this._deck_info,this._cache)
+    cards_opp.Build(args.carte.length)
+    cards_opp.SetCards([],'compact')
+    cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
+    this._staticScene.AddGfxComponent('cardsopp', cards_opp)
+  
     this._core_state.suspend_proc_gevents('suspend animation new giocata')
+    // TODO: start an animation of card distribution
+    //       when the animation is terminated then continue the process with 
+    //       continue_process_events
+    
   }
 
   on_all_ev_giocata_end(args) {
