@@ -1,15 +1,16 @@
 export class CardsPlayerGfx {
-  constructor(tink) {
-    this.sprites = []
-    this.container = new PIXI.Container()
-    this.clickHandler = new Map()
-    this.numCards = 0
+  constructor(z_ord, tink) {
+    this._sprites = []
+    this._container = new PIXI.Container()
+    this._clickHandler = new Map()
+    this._numCards = 0
+    this._z_ord = z_ord
     this._tink = tink
   }
 
   Build(numCards) {
-    this.numCards = numCards
-    return this.container
+    this._numCards = numCards
+    return this._container
   }
 
   SetCards(textures, space_x) {
@@ -19,18 +20,19 @@ export class CardsPlayerGfx {
     let x = iniX
     let y = iniY
 
-    for (let index = 0; index < this.numCards; index++) {
+    for (let index = 0; index < this._numCards; index++) {
       const itemTexture = textures[ixTexture];
       let sprite = new PIXI.Sprite(itemTexture)
       sprite.cup_data_lbl = itemTexture.cup_data_lbl // recognize the card
       sprite.position.set(x, y)
-      this.sprites.push(sprite)
-      this.container.addChild(sprite)
+      this._sprites.push(sprite)
+      this._container.addChild(sprite)
       x += space_x
       if (ixTexture < textures.length) {
         ixTexture += 1
       }
     }
+    this._isDirty = true
   }
 
   Render(isDirty){
@@ -42,10 +44,10 @@ export class CardsPlayerGfx {
 
   OnClick(funHandler) {
     const event = 'click-card'
-    this.clickHandler.set(event, funHandler)
+    this._clickHandler.set(event, funHandler)
 
-    for (let index = 0; index < this.sprites.length; index++) {
-      const sprite = this.sprites[index];
+    for (let index = 0; index < this._sprites.length; index++) {
+      const sprite = this._sprites[index];
       let data = sprite.cup_data_lbl
       this._tink.makeInteractive(sprite);
       this.handlePress(event, data, sprite)
@@ -57,8 +59,8 @@ export class CardsPlayerGfx {
       console.log('Card is pressed')
       //sprite.enabled = false // remove the interactivity
       //sprite.visible = false
-      if (this.clickHandler.has(event)) {
-        this.clickHandler.get(event)(data)
+      if (this._clickHandler.has(event)) {
+        this._clickHandler.get(event)(data)
       }
     }
   }

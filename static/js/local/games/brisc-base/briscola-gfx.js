@@ -17,7 +17,7 @@ class BriscolaGfx {
     this._core_state = null
   }
 
-  set_deck_info(deck_info){
+  set_deck_info(deck_info) {
     this._deck_info = deck_info
   }
 
@@ -55,10 +55,16 @@ class BriscolaGfx {
     this._staticScene.AddGfxComponent('deck', deck)
     // TODO: start an animation of card distribution
     //       during the animation stop this._core_state process queue and restore it when the animation is completed
-    // let cards_me = new CardsPlayerGfx()
-    // cards_me.Build()
-    // cards_me._infoGfx = { x: { type: 'center_anchor', offset: 0 }, y: { type: 'bottom_anchor_vert', offset: -50 }, anchor_element: 'canvas', }
-    // this._staticScene.AddGfxComponent('cardsme', cards_me)
+    let cards_me = new CardsPlayerGfx(70,this._tink)
+    cards_me.Build(args.carte.length)
+
+    const cdT1 = this._cache.GetTextureFromCard('_Ad', this._deck_info)
+    const cdT2 = this._cache.GetTextureFromCard('_Ad', this._deck_info)
+    const cdT3 = this._cache.GetTextureFromCard('_3d', this._deck_info)
+    cards_me.SetCards([cdT1, cdT2, cdT3], cdT1.width + 5)
+
+    cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
+    this._staticScene.AddGfxComponent('cardsme', cards_me)
     this._core_state.suspend_proc_gevents('suspend animation new giocata')
   }
 
