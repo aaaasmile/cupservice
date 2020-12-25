@@ -1,4 +1,4 @@
-import Helper  from '../shared/helper.js'
+import Helper from '../shared/helper.js'
 
 export class StaticSceneGfx {
   constructor() {
@@ -10,6 +10,7 @@ export class StaticSceneGfx {
     this._isDirty = false
     this.canvas_h = 0
     this.canvas_w = 0
+    this._animations = []
   }
 
   Build(backTexture, viewWidth, viewHeight) {
@@ -68,11 +69,44 @@ export class StaticSceneGfx {
       }
       return 1
     })
-    console.log('*** sorted keys: ', sortedKeys)
+    //console.log('*** sorted keys: ', sortedKeys)
     sortedKeys.forEach(element => {
       list.push(element)
     });
     this._sorted_list = list
+  }
+
+  AddAnimation(ani) {
+    this._animations.push(ani)
+  }
+
+  UpdateAnimations(isDirty, delta) {
+    if (this._isDirty || isDirty) {
+      // static scene should be ready before render animations
+      return
+    }
+    this._animations.forEach(ani => {
+      if (ani.CheckForStart()) {
+        const compKey = ani.get_start_comp()
+        if (compKey) {
+          const comp = this.get_component(compKey)
+          const sprite = comp.get_animation_sprite(ani.name())
+          ani.add_sprite(sprite)
+
+          const compStopKey = ani.get_stop_comp()
+          if (compStopKey) {
+            const compStop = this.get_component(compStopKey)
+            compStop.set_animation_sprite_target(ani.name(), sprite)
+            ani.add_sprite(sprite)
+          }
+        }
+        this._container.addChild(ani.get_container())
+      }
+      ani.Update(delta)
+      if (ani.is_terminated()) {
+        this._animations.splice(ani)
+      }
+    });
   }
 
   Render(isDirty) {

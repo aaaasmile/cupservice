@@ -1,9 +1,10 @@
 export class DeckGfx {
-  constructor(z_ord) {
+  constructor(z_ord, cache) {
     this._deckSprite = []
     this._z_ord = z_ord
     this._briscola = null
     this._container = new PIXI.Container()
+    this._cache = cache
   }
 
   Build(numCardsOnDeck, deckItemTexture, briscolaTexture) {
@@ -18,6 +19,12 @@ export class DeckGfx {
       this._container.addChild(sprite)
       x += 1
       y += 1
+    }
+    this._last_x = x
+    this._last_y = y
+    if (numCardsOnDeck > 0) {
+      this._last_x = x - 1
+      this._last_y = y - 1
     }
 
     if (briscolaTexture) {
@@ -36,8 +43,21 @@ export class DeckGfx {
     return this._container
   }
 
-  Render(isDirty){
-    if (this._isDirty || isDirty){
+  get_animation_sprite(name) {
+    if (name === 'distr_card') {
+      let copTexture = this._cache.GetTextureFromSymbol('cope')
+      let sprite = new PIXI.Sprite(copTexture)
+      sprite.x = this._last_x 
+      sprite.y = this._last_y
+      sprite.vx = 1
+      sprite.vy = 1
+      return sprite
+    }
+    throw(new Error(`animation not recognized ${name}`))
+  }
+
+  Render(isDirty) {
+    if (this._isDirty || isDirty) {
       console.log('*** render the deck ...')
     }
     this._isDirty = false

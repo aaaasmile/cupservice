@@ -6,7 +6,7 @@ import { GetMusicManagerInstance } from '../../app/sound-mgr.js'
 import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { PlayerMarkerGfx } from '../../gfx/player-marker-gfx.js'
 import { ScoreBoardGfx } from '../../gfx/scoreboard-gfx.js'
-
+import AniCards from '../../gfx/animation-gfx.js'
 
 class BriscolaGfx {
   constructor(cache, static_scene, tink) {
@@ -47,30 +47,35 @@ class BriscolaGfx {
 
   on_pl_ev_brisc_new_giocata(args) {
     console.log('on_pl_ev_brisc_new_giocata', args)
-    const deck = new DeckGfx(80)
+    const deck = new DeckGfx(80, this._cache)
     let deckItemTexture = this._cache.GetTextureFromSymbol('cope')
     let briscolaTexture = this._cache.GetTextureFromCard(args.brisc, this._deck_info)
     deck.Build(args.num_card_deck, deckItemTexture, briscolaTexture)
     deck._infoGfx = { x: { type: 'left_anchor', offset: 20 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('deck', deck)
-    
-    let cards_me = new CardsPlayerGfx(70,this._tink,this._deck_info,this._cache)
+
+    let cards_me = new CardsPlayerGfx(70, this._tink, this._deck_info, this._cache)
     cards_me.Build(args.carte.length)
     cards_me.SetCards(args.carte)
     cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsme', cards_me)
 
-    let cards_opp = new CardsPlayerGfx(70,this._tink,this._deck_info,this._cache)
+    let cards_opp = new CardsPlayerGfx(70, this._tink, this._deck_info, this._cache)
     cards_opp.Build(args.carte.length)
-    cards_opp.SetCards([],'compact_small')
+    cards_opp.SetCards([], 'compact_small')
     cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsopp', cards_opp)
-  
+
+    let aniDistr = AniCards({name: 'distr_card'}, 'deck', 'cardsme', (nn) => {
+      console.log(`Animation ${nn} is terminated`)
+    })
+    this._staticScene.AddAnimation(aniDistr)
+
     this._core_state.suspend_proc_gevents('suspend animation new giocata')
     // TODO: start an animation of card distribution
     //       when the animation is terminated then continue the process with 
     //       continue_process_events
-    
+
   }
 
   on_all_ev_giocata_end(args) {
@@ -123,7 +128,6 @@ export class BuilderGfx {
     let scContainer = staticSceneGfx.Build(backTexture, viewWidth, viewHeight)
     stage.addChild(scContainer)
 
-
     const briGfx = new BriscolaGfx(cache, staticSceneGfx, tink)
     let b2core = PrepareGameVsCpu(briGfx, opt)
     briGfx.set_deck_info(b2core._deck_info)
@@ -162,6 +166,7 @@ export class BuilderGfx {
 
   Update(delta) {
     this._staticScene.Render(this._isDirty)
+    this._staticScene.UpdateAnimations(this._isDirty, delta)
     this._core_state.process_next()
     this._tink.update();
     this._isDirty = false

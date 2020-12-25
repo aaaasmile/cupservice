@@ -9,6 +9,7 @@ export class CardsPlayerGfx {
     this._tink = tink
     this._deck_info = deck_info
     this._cache = cache
+    this._visibleSprite = []
   }
 
   Build(numCards) {
@@ -46,9 +47,11 @@ export class CardsPlayerGfx {
       mode = 'normal'
     }
     let textures = []
+    this._visibleSprite = []
     cards.forEach(element => {
       let cdt = this._cache.GetTextureFromCard(element, this._deck_info)
       textures.push(cdt)
+      this._visibleSprite.push(false)
     });
 
     for (let index = textures.length; index < this._numCards; index++) {
@@ -79,6 +82,17 @@ export class CardsPlayerGfx {
       }
     }
     this._isDirty = true
+  }
+
+  set_animation_sprite_target(name, sprite) {
+    if (name === "distr_card") {
+      const ix = this._visibleSprite.indexOf(false)
+      const s_src = this._sprites[ix]
+      sprite.end_x = s_src.x
+      sprite.end_y = s_src.y
+      return sprite
+    }
+    throw (new Error(`animation in card player not recognized ${name}`))
   }
 
   Render(isDirty) {
