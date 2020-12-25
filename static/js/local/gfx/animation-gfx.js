@@ -1,8 +1,8 @@
 export default (state, startComp, stopCom, fnTerm) => {
-    let _container = state.container
-    let _sprites = state.sprites
-    let _started = state.started
-    let _terminated = state.terminated
+    let _container =  new PIXI.Container()
+    let _sprites = []
+    let _started = false
+    let _terminated = false
     let _name = state.name
     let _startComp = startComp
     let _stopCom = stopCom
@@ -18,6 +18,7 @@ export default (state, startComp, stopCom, fnTerm) => {
                         console.log('Animation terminated', s)
                         _fnTerm(_name)
                         _started = false
+                        _terminated = true
                     }
                 });
             }
@@ -25,8 +26,6 @@ export default (state, startComp, stopCom, fnTerm) => {
         CheckForStart() { 
             if (!_started){
                 _started = true
-                _sprites = []
-                _container = new PIXI.Container()
                 return true
             }
             return false 
