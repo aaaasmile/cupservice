@@ -47,8 +47,8 @@ export class DeckGfx {
     if (name === 'distr_card') {
       let copTexture = this._cache.GetTextureFromSymbol('cope')
       let sprite = new PIXI.Sprite(copTexture)
-      sprite.x = this._last_x 
-      sprite.y = this._last_y
+      sprite.x = this._last_x + this._container.x
+      sprite.y = this._last_y + this._container.y
       sprite.vx = 1
       sprite.vy = 1
       return sprite

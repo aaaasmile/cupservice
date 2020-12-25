@@ -88,8 +88,8 @@ export class CardsPlayerGfx {
     if (name === "distr_card") {
       const ix = this._visibleSprite.indexOf(false)
       const s_src = this._sprites[ix]
-      sprite.end_x = s_src.x
-      sprite.end_y = s_src.y
+      sprite.end_x = s_src.x + (ix * s_src.width) +  this._container.x
+      sprite.end_y = s_src.y +  this._container.y
       return sprite
     }
     throw (new Error(`animation in card player not recognized ${name}`))
