@@ -66,11 +66,39 @@ class BriscolaGfx {
     cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsopp', cards_opp)
 
-    let aniDistr = AniCards({name: 'distr_card'}, 'deck', 'cardsme', (nn) => {
-      console.log(`Animation ${nn} is terminated`)
+    let cards_anim = []
+    args.carte.forEach(element => {
+      // one animation for each cards on hand
+      cards_anim.push(() => {
+        return new Promise((resolve,rej) => {
+          console.log('Submit animation for ', element)
+          let aniDistr = AniCards({ name: 'distr_card' }, 'deck', 'cardsme', (nn) => {
+            console.log(`Animation ${nn} on ${element} is terminated`)
+            cards_me.set_visible(element)
+            resolve()
+          })
+          this._staticScene.AddAnimation(aniDistr)
+        })
+      })
     })
-    this._staticScene.AddAnimation(aniDistr)
 
+    cards_anim.push(() =>{
+      return new Promise((resolve) => {
+        // finally continue the core processing
+        console.log('All animatios are terminated')
+        this._core_state.continue_process_events('after animation new giocata')
+        resolve()
+      })
+    })
+
+    cards_anim.reduce((p, fn) => {
+      return p.then(() => {
+        fn();
+      });
+    }, Promise.resolve());
+    // let aniDistr = AniCards({name: 'distr_card'}, 'deck', 'cardsme', (nn) => {
+    //   console.log(`Animation ${nn} is terminated`)
+    // })
     this._core_state.suspend_proc_gevents('suspend animation new giocata')
     // TODO: start an animation of card distribution
     //       when the animation is terminated then continue the process with 

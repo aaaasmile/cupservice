@@ -74,6 +74,7 @@ export class CardsPlayerGfx {
       this.resize_sprite(sprite, mode)
       sprite.cup_data_lbl = itemTexture.cup_data_lbl // recognize the card
       sprite.position.set(x, y)
+      sprite.visible = false
       this._sprites.push(sprite)
       this._container.addChild(sprite)
       x += space_x
@@ -93,6 +94,18 @@ export class CardsPlayerGfx {
       return sprite
     }
     throw (new Error(`animation in card player not recognized ${name}`))
+  }
+
+  set_visible(card_lbl){
+    for (let index = 0; index < this._sprites.length; index++) {
+      const element = this._sprites[index];
+      if (element.cup_data_lbl === card_lbl){
+        this._visibleSprite[index] = true
+        element.visible = true
+        return
+      }
+    }
+    throw (new Error(`set_visible on card not found ${card_lbl}`))
   }
 
   Render(isDirty) {
