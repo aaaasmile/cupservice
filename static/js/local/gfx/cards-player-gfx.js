@@ -71,15 +71,15 @@ export class CardsPlayerGfx {
     this._sprites = []
     const space_x = this.get_space_x(cdtempty.width, mode)
     for (let index = 0; index < this._numCards; index++) {
-      if (texturePlaceHolder.length <= index){
+      if (texturePlaceHolder.length <= index) {
         texturePlaceHolder.push(cdtempty)
       }
-      
+
       const itemTexture = texturePlaceHolder[index];
       let sprite = new PIXI.Sprite(itemTexture)
       this.resize_sprite(sprite, mode)
-      if (textureCards.length > index){
-        sprite.cup_data_lbl = textureCards[index].cup_data_lbl 
+      if (textureCards.length > index) {
+        sprite.cup_data_lbl = textureCards[index].cup_data_lbl
       }
       sprite.position.set(x, y)
       this._sprites.push(sprite)
@@ -94,17 +94,29 @@ export class CardsPlayerGfx {
     if (name === "distr_card") {
       const ix = this._visibleSprite.indexOf(false)
       const s_src = this._sprites[ix]
-      sprite.end_x = s_src.x + (ix * s_src.width) +  this._container.x
-      sprite.end_y = s_src.y +  this._container.y
+      const vel = 10
+      sprite.end_x = s_src.x + (ix * s_src.width) + this._container.x
+      sprite.end_y = s_src.y + this._container.y
+      if (this._container.y > s_src.y) {
+        sprite.vy = vel
+      }else{
+        sprite.vy -= vel
+      }
+      if (this._container.x > s_src.x) {
+        sprite.vx = vel
+      }else{
+        sprite.vx -= vel
+      }
+
       return sprite
     }
     throw (new Error(`animation in card player not recognized ${name}`))
   }
 
-  set_visible(card_lbl){
+  set_visible(card_lbl) {
     for (let index = 0; index < this._sprites.length; index++) {
       const element = this._sprites[index];
-      if (element.cup_data_lbl === card_lbl){
+      if (element.cup_data_lbl === card_lbl) {
         this._visibleSprite[index] = true
         element.texture = this._textureCards[index]
         return

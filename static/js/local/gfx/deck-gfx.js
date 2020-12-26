@@ -49,8 +49,6 @@ export class DeckGfx {
       let sprite = new PIXI.Sprite(copTexture)
       sprite.x = this._last_x + this._container.x
       sprite.y = this._last_y + this._container.y
-      sprite.vx = 1
-      sprite.vy = 1
       return sprite
     }
     throw(new Error(`animation not recognized ${name}`))

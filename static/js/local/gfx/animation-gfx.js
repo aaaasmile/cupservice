@@ -9,32 +9,29 @@ export default (name, startComp, stopCom, fnTerm) => {
     let _fnTerm = fnTerm
     return {
         Update(delta) {
-            if (_started) {
-                //console.log('Update animation', delta)
-                _sprites.forEach(s => {
-                    s.x += s.vx
-                    s.y += s.vy
-                    if (s.vx > 0 && s.vy > 0) {
-                        if (s.x < (s.end_x - s.ini_x) / 2 + (s.end_x - s.ini_x) / 4) {
-                            s.vx++
-                            s.vy++
-                        } else {
-                            if (s.vx > 1) {
-                                s.vx--
-                                s.vy--
-                            }
-                        }
-                    }
-
-                    if (s.x > s.end_x && s.y > s.end_y) {
-                        //console.log('Animation terminated', s)
-                        _started = false
-                        _terminated = true
-                        s.visible = false
-                    }
-                });
-            }
-        },
+            if (!_started) return
+            //console.log('Update animation', delta)
+            _sprites.forEach(s => {
+                s.x += s.vx
+                s.y += s.vy
+                let x_on_target = false
+                let y_on_target = false
+                if ((s.x > s.end_x && s.vx > 0) ||
+                    (s.x < s.end_x && s.vx < 0)) {
+                    x_on_target = true
+                }
+                if ((s.y > s.end_y && s.vy > 0) ||
+                    (s.y < s.end_y && s.vy < 0)) {
+                    y_on_target = true
+                }
+                if (x_on_target && y_on_target) {
+                    //console.log('Animation terminated', s)
+                    _started = false
+                    _terminated = true
+                    s.visible = false
+                }
+            })
+        },// end update
         CheckForStart() {
             if (_terminated) {
                 return false
@@ -56,7 +53,7 @@ export default (name, startComp, stopCom, fnTerm) => {
             _sprites.push(ss)
             _container.addChild(ss)
         },
-        complete(){
+        complete() {
             _fnTerm(_name)
         }
     }
