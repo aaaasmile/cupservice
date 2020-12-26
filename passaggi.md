@@ -13,7 +13,7 @@ va aggiornato manualmente.
 I files jsconfig.json mi servono per avere il code complete in VS code.
 
 ## TODO
-- continua con la classe BriscAlgGfx: segnapunti, mazzo, distribuzione, ...
+- Sto cercando di completare la classe BriscolaGfx
 
 ## Problemi
 Ho avuto problemi con i files statici. Specialmente quelli che vanno in module (games-cup.js). 

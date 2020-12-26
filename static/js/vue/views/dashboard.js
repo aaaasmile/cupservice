@@ -9,9 +9,6 @@ export default {
   data() {
     return {
       loadinggame: false,
-      selName: 'Mario',
-      selGame: 'briscola',
-      optGame: {num_segni: 2, namePl1: 'Luisa'},
       is_mobile: false,
       appWidth: 0,
       appHeight: 600,
@@ -20,6 +17,19 @@ export default {
       _gfxGame: null,
       _cache: null,
     }
+  },
+  computed: {
+    ...Vuex.mapState({
+      MeName: state => {
+        return state.pl.me_name
+      },
+      SelGame: state => {
+        return state.pl.curr_game
+      },
+      OptGame: state => {
+        return state.pl.curr_opt
+      }
+    })
   },
   created() {
     console.log('Created')
@@ -32,7 +42,7 @@ export default {
     PIXI.utils.skipHello()
 
     // 1. Create a Pixi renderer and define size and a background color
-   
+
     let app = new PIXI.Application({ width: 800, height: 600, antialias: true, transparent: false });
     app.renderer.backgroundColor = 0x061639;
     app.renderer.autoDensity = true;
@@ -42,12 +52,12 @@ export default {
     mm.Init(() => {
       let loader = GetCardLoaderGfx()
       if (!this._cache) {
-        loader.LoadAssets('piac', (cache) => {
+        loader.LoadAssets(this.$store.state.pl.deck_type, (cache) => {
           this._cache = cache
           this.loadinggame = false
           console.log('Load terminated')
         })
-      }else{
+      } else {
         this.loadinggame = false
       }
     })
@@ -56,28 +66,23 @@ export default {
     document.getElementById('pixi').appendChild(app.view);
 
   },
-  computed: {
-    ...Vuex.mapState({
-
-    })
-  },
   methods: {
     playGame() {
-      console.log("Play game ", this.selGame)
+      console.log("Play game ", this.SelGame)
       let addTick = true
-      if(this._gfxGame){
+      if (this._gfxGame) {
         this._app.ticker.stop()
         addTick = false
       }
-      this.setup(this._cache, this.selGame, this.optGame)
-      if (addTick){
+      this.setup(this._cache, this.SelGame, this.OptGame)
+      if (addTick) {
         this._app.ticker.add(delta => this.gameLoop(delta));  // il ticker sembra vada aggiunto solo una volta
-      }else{
+      } else {
         this._app.ticker.start()
       }
     },
     setup(cache, name, opt) {
-      opt.namePl2 = this.selName
+      opt.namePl2 = this.MeName
       console.log('Setup with cache', name, opt)
       this._app.stage.removeChildren()
       let gfx;
@@ -100,7 +105,7 @@ export default {
   <v-row justify="center">
     <v-col xs="12" sm="12" md="10" lg="8" xl="6">
       <v-card flat tile>
-        <v-card-title>Partita a {{ selGame }} </v-card-title>
+        <v-card-title>Partita a {{ SelGame }} </v-card-title>
         <v-content>
           <v-row align-stretch justify="center" id="pixi"></v-row>
         </v-content>
