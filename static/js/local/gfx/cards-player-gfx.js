@@ -60,7 +60,7 @@ export class CardsPlayerGfx {
       texturePlaceHolder.push(cdt)
     }
 
-    const cdtempty = this._cache.GetTextureFromSymbol('vuot', this._deck_info)
+    const cdtempty = this._cache.GetTextureFromSymbol('vuoto_trasp', this._deck_info)
 
     let iniX = 0
     let iniY = 0

@@ -2,7 +2,7 @@
 import { CardImageCache } from './card-image-cache.js'
 
 const c_nomi_semi = ["basto", "coppe", "denar", "spade"]
-const c_nomi_simboli = ["cope", "zero", "xxxx", "vuot"]
+const c_nomi_simboli = ["cope", "zero", "vuoto_trasp", "vuoto_traspfull"]
 const c_nomi_avatar = ["ade", "christian", "elliot", "jenny", "joe", "nan", "stevie", "zoe"]
 const c_nomi_sfondi = ["table"]
 
