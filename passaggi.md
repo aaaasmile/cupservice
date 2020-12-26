@@ -51,5 +51,8 @@ editare file json invece di programmare, capire
 perché un modulo non viene caricato, come integrare una libreria esterna in type script e alla fine
 avere non funzionante quello che fino a ieri aveva funzionato prima di un'update generica.
 
+### Integrazione con vuex
+Lo store vuex è accessibile dalle classi tipo BriscolaGfx usando semplicemente
+import store from '../../../vue/store/index.js'
 
 

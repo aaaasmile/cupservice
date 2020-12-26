@@ -7,6 +7,7 @@ import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { PlayerMarkerGfx } from '../../gfx/player-marker-gfx.js'
 import { ScoreBoardGfx } from '../../gfx/scoreboard-gfx.js'
 import AniCards from '../../gfx/animation-gfx.js'
+import store from '../../../vue/store/index.js'
 
 class BriscolaGfx {
   constructor(cache, static_scene, tink) {
@@ -27,13 +28,16 @@ class BriscolaGfx {
     //       players: ["Luisa", "Silvio"]
     const nameCpu = args.players[0]
     const markerCpu = new PlayerMarkerGfx(100, this._cache)
-    markerCpu.Build(nameCpu, 'stevie')
+    const avatarCpu = store.state.pl.opp_avatar
+    markerCpu.Build(nameCpu, avatarCpu)
     markerCpu._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'top_anchor', offset: 20 }, anchor_element: 'canvas', }
     this._staticScene.AddMarker(nameCpu, markerCpu)
 
     const nameMe = args.players[1]
     const markerMe = new PlayerMarkerGfx(200, this._cache)
-    markerMe.Build(nameMe, 'joe')
+    //console.log('Player store is: ', store)
+    const avatarMe = store.state.pl.me_avatar
+    markerMe.Build(nameMe, avatarMe)
     markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddMarker(nameMe, markerMe)
 
