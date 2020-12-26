@@ -16,12 +16,11 @@ export class TableCardsPlayedGfx {
     Build(positions, mode) {
         // mode: 'circular'
         // positions: ['nord','sud']
-        const numCards = positions.length
-        this._numCards = numCards
+        this._numCards = positions.length
         const cdtempty = this._cache.GetTextureFromSymbol('vuoto_trasp', this._deck_info)
         this._container.removeChildren()
         this._sprites = []
-        for (let index = 0; index < numcards; index++) {
+        for (let index = 0; index < this._numCards; index++) {
             let sprite = new PIXI.Sprite(cdtempty)
             this.set_sprite_xy(positions[index], mode, sprite)
             this._sprites.push(sprite)
@@ -37,9 +36,11 @@ export class TableCardsPlayedGfx {
             case 'nord':
                 sprite.x -= 15
                 sprite.y -= 10
+                break
             case 'sud':
                 sprite.x += 15
                 sprite.y += 10
+                break
             default:
                 throw(new Error(`position not supported ${poslbl}`))
         }

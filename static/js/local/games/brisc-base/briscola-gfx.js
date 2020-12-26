@@ -5,6 +5,7 @@ import { ScoreBoardGfx } from '../../gfx/scoreboard-gfx.js'
 import AniCards from '../../gfx/animation-gfx.js'
 import store from '../../../vue/store/index.js'
 import { PrepareGameVsCpu } from './core-brisc-base.js'
+import { TableCardsPlayedGfx } from '../../gfx/table-cards-played.js'
 
 export class BriscolaGfx {
   constructor(cache, static_scene, tink) {
@@ -13,6 +14,7 @@ export class BriscolaGfx {
     this._staticScene = static_scene
     this._deck_info = null
     this._core_state = null
+    this._num_players = null
   }
 
   PrepareGameVsCpu(opt) {
@@ -26,6 +28,7 @@ export class BriscolaGfx {
     console.log('on_all_ev_new_match ', args)
     //args: {players: Array(2), num_segni: 2, target_segno: 61}
     //       players: ["Luisa", "Silvio"]
+    this._num_players = args.players.length
     const nameCpu = args.players[0]
     const markerCpu = new PlayerMarkerGfx(100, this._cache)
     const avatarCpu = store.state.pl.opp_avatar
@@ -67,6 +70,11 @@ export class BriscolaGfx {
     cards_opp.Build(args.carte.length, [], 'compact_small')
     cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsopp', cards_opp)
+
+    let table = new TableCardsPlayedGfx(60, this._tink, this._deck_info, this._cache)
+    table.Build(['nord', 'sud'], 'circular')
+    table._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
+    this._staticScene.AddGfxComponent('table', table)
 
     this.animate_distr_cards(args.carte)
 
