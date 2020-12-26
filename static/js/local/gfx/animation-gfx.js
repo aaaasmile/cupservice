@@ -12,19 +12,32 @@ export default (name, startComp, stopCom, fnTerm) => {
             if (!_started) return
             //console.log('Update animation', delta)
             _sprites.forEach(s => {
-                s.x += s.vx
-                s.y += s.vy
                 let x_on_target = false
                 let y_on_target = false
-                if ((s.x > s.end_x && s.vx > 0) ||
-                    (s.x < s.end_x && s.vx < 0)) {
-                    x_on_target = true
+                const im = s.vel_im
+                const iq = s.vel_iq
+               
+                if (s.m_type === 'x_axis') {
+                    // moving on x ...
+                    console.log('Moving on x: ', s.x, s.y)
+                    s.x +=  s.vx
+                    s.y = im * s.x / 1000 + iq;
+                    if ((s.x > s.end_x && s.vx > 0) ||
+                        (s.x < s.end_x && s.vx < 0)) {
+                        x_on_target = true
+                    }
+                } else {
+                    //moving on y ...
+                    console.log('Moving on y: ', s.x, s.y)
+                    s.y +=  s.vy
+                    s.x = im * s.y / 1000 + iq;
+                    if ((s.y > s.end_y && s.vy > 0) ||
+                        (s.y < s.end_y && s.vy < 0)) {
+                        y_on_target = true
+                    }
                 }
-                if ((s.y > s.end_y && s.vy > 0) ||
-                    (s.y < s.end_y && s.vy < 0)) {
-                    y_on_target = true
-                }
-                if (x_on_target && y_on_target) {
+
+                if (x_on_target || y_on_target) {
                     //console.log('Animation terminated', s)
                     _started = false
                     _terminated = true

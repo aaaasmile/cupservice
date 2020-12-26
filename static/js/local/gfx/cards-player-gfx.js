@@ -98,17 +98,37 @@ export class CardsPlayerGfx {
       sprite.end_x = s_src.x + (ix * s_src.width) + this._container.x
       sprite.end_y = s_src.y + this._container.y
       console.log('End x,y for sprite ani ', sprite.end_x, sprite.end_y)
-      if (sprite.end_y > sprite.y) {
-        sprite.vy = vel_y
-      } else {
-        sprite.vy -= vel_y
+      
+      const endpoint_x = sprite.end_x
+      const endpoint_y = sprite.end_y
+      const x0 = sprite.x
+      const y0 = sprite.y
+      let iq = 0, im = 0, v_estimated = 1
+      const step_target = 11
+      if (Math.abs(endpoint_x - x0) > Math.abs(endpoint_y - y0)) {
+        //we are moving on x axis
+        sprite.m_type = 'x_axis'
+        if (endpoint_x - x0 !== 0) {
+          im = (endpoint_y - y0) * 1000 / (endpoint_x - x0)
+          v_estimated = (endpoint_x - x0) / step_target
+        }
+        iq = y0 - im * x0 / 1000
       }
-      const vel_x = (sprite.end_x - sprite.x) / Math.abs(sprite.end_y - sprite.y) * vel_y
-      if (sprite.end_x > sprite.x) {
-        sprite.vx =  vel_x
-      } else {
-        sprite.vx -= vel_x
+      else {
+        // we are moving on y axis
+        sprite.m_type = 'y_axis'
+        if (endpoint_y - y0 != 0) {
+          im = (endpoint_x - x0) * 1000 / (endpoint_y - y0)
+          v_estimated = (endpoint_y - y0) / step_target
+        }
+        iq = x0 - im * y0 / 1000
       }
+    
+      //velocity
+      sprite.vx = v_estimated 
+      sprite.vy = v_estimated
+      sprite.vel_im = im
+      sprite.vel_iq = iq
 
       return sprite
     }
