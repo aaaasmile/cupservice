@@ -66,30 +66,8 @@ class BriscolaGfx {
     cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsopp', cards_opp)
 
-    let cards_anim = []
-    let fnix = 0
-    args.carte.forEach(element => {
-      // one animation for each cards on hand
-      cards_anim.push(() => {
-        console.log('Submit animation for ', element)
-        let aniDistr = AniCards('distr_card', 'deck', 'cardsme', (nn) => {
-          console.log(`Animation ${nn} on ${element} is terminated`)
-          cards_me.set_visible(element)
-          fnix++
-          cards_anim[fnix]()
-        })
-        this._staticScene.AddAnimation(aniDistr)
-      })
-    })
+    this.animate_distr_cards(args.carte)
 
-    cards_anim.push(() => {
-      // finally continue the core processing
-      console.log('All animations are terminated')
-      this._core_state.continue_process_events('after animation new giocata')
-    })
-    cards_anim[fnix]()
-
-    this._core_state.suspend_proc_gevents('suspend animation new giocata')
   }
 
   on_all_ev_giocata_end(args) {
@@ -115,9 +93,35 @@ class BriscolaGfx {
 
   on_all_ev_player_has_played(args) {
   }
-}
 
-//aa["info_tag"] = { x: 23, y:34, anchor_element: 'canvas', x_type: 'left_anchor'}
+  animate_distr_cards(carte) {
+    let cards_anim = []
+    let fnix = 0
+    carte.forEach(card_lbl => {
+      // one animation for each cards on hand
+      cards_anim.push(() => {
+        console.log('Submit animation for ', card_lbl)
+        let aniDistr = AniCards('distr_card', 'deck', 'cardsme', (nn, start_cmp, stop_comp) => {
+          console.log(`Animation ${nn} on ${card_lbl} is terminated`)
+          let cards_me_gfx = this._staticScene.get_component(stop_comp)
+          cards_me_gfx.set_visible(card_lbl)
+          fnix++
+          cards_anim[fnix]()
+        })
+        this._staticScene.AddAnimation(aniDistr)
+      })
+    })
+
+    cards_anim.push(() => {
+      // finally continue the core processing
+      console.log('All animations are terminated')
+      this._core_state.continue_process_events('after animation new giocata')
+    })
+    cards_anim[fnix]()
+
+    this._core_state.suspend_proc_gevents('suspend animation new giocata')
+  }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////

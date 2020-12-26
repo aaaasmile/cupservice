@@ -67,7 +67,7 @@ export default (name, startComp, stopCom, fnTerm) => {
             _container.addChild(ss)
         },
         complete() {
-            _fnTerm(_name)
+            _fnTerm(_name,_startComp, _stopCom)
         }
     }
 }
