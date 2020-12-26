@@ -48,7 +48,7 @@ export class ScoreBoardGfx {
       let y0 = y1
       let x0 = this._text_team1.position.x - offset_x
       let x1 = x0 + control_width
-      this._myGraph.lineStyle(2).moveTo(x0, y0).lineTo(x1, y1);
+      this._myGraph.lineStyle(1).moveTo(x0, y0).lineTo(x1, y1);
       // middle vertical
       let xv0 = x0 + (x1 - x0) / 2
       let xv1 = xv0
@@ -57,7 +57,7 @@ export class ScoreBoardGfx {
       if (this._num_marks === 2) {
         yv1 = yv0 + 75
       }
-      this._myGraph.lineStyle(2).moveTo(xv0, yv0).lineTo(xv1, yv1);
+      this._myGraph.lineStyle(1).moveTo(xv0, yv0).lineTo(xv1, yv1);
 
       //empty points raggi
       let off_y = 18
@@ -69,7 +69,7 @@ export class ScoreBoardGfx {
         let ys0 = off_y * ix + yv0
         let ys1 = ys0;
         points_coord.push({ team1: [xs0, ys0], team2: [xs1, ys1] });
-        this._myGraph.lineStyle(2).moveTo(xs0, ys0).lineTo(xs1, ys1);
+        this._myGraph.lineStyle(1).moveTo(xs0, ys0).lineTo(xs1, ys1);
       }
       // TODO: mostra i punti come cerchio ripieno
     }
