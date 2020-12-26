@@ -10,7 +10,7 @@ export class CardsPlayerGfx {
     this._deck_info = deck_info
     this._cache = cache
     this._visibleSprite = []
-    this._ani_velocity = 30
+    this._ani_velocity = 20
   }
 
   Build(numCards) {
