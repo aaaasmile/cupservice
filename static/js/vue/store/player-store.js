@@ -5,7 +5,7 @@ export default {
         opp_avatar: 'stevie',
         me_name: 'Mario',
         curr_game: 'briscola',
-        curr_opt: { num_segni: 2, namePl1: 'Laura' }
+        curr_opt: { num_segni: 2, namePl1: 'Luisa' }
     },
     mutations: {
         changeAvatar(state, avatar) {

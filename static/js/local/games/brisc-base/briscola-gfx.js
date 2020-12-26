@@ -1,15 +1,11 @@
 import { DeckGfx } from '../../gfx/deck-gfx.js'
 import { CardsPlayerGfx } from '../../gfx/cards-player-gfx.js'
-import { StaticSceneGfx } from '../../gfx/static-scene-gfx.js'
-import { Tink } from '../../app/tink.js'
-import { GetMusicManagerInstance } from '../../app/sound-mgr.js'
-import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { PlayerMarkerGfx } from '../../gfx/player-marker-gfx.js'
 import { ScoreBoardGfx } from '../../gfx/scoreboard-gfx.js'
 import AniCards from '../../gfx/animation-gfx.js'
 import store from '../../../vue/store/index.js'
 
-class BriscolaGfx {
+export class BriscolaGfx {
   constructor(cache, static_scene, tink) {
     this._cache = cache
     this._tink = tink
@@ -125,70 +121,3 @@ class BriscolaGfx {
   }
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////
-
-export class BuilderGfx {
-
-  constructor() {
-    this._tink = null
-    this._core_state = null
-    this._staticScene = null
-    this._isDirty = false
-  }
-
-  Build(opt, cache, renderer) {
-    let tink = new Tink(PIXI, renderer.view)
-    let stage = new PIXI.Container()
-
-    const staticSceneGfx = new StaticSceneGfx()
-    const backTexture = cache.GetTextureFromBackground('table')
-    let viewWidth = (renderer.width / renderer.resolution);
-    let viewHeight = (renderer.height / renderer.resolution);
-    let scContainer = staticSceneGfx.Build(backTexture, viewWidth, viewHeight)
-    stage.addChild(scContainer)
-
-    const briGfx = new BriscolaGfx(cache, staticSceneGfx, tink)
-    let b2core = PrepareGameVsCpu(briGfx, opt)
-    briGfx.set_deck_info(b2core._deck_info)
-    this._core_state = b2core._coreStateManager
-    briGfx._core_state = this._core_state
-    // // test deck
-    // let deckGfx = new DeckGfx();
-    // let deckItemTexture = cache.GetTextureFromSymbol('cope')
-    // let briscolaTexture = cache.GetTextureFromCard('_5s', b2core._deck_info)
-    // let deckContainer = deckGfx.Build(40 - 6 - 1, deckItemTexture, briscolaTexture)
-    // deckContainer.position.set(500, 300)
-    // stage.addChild(deckContainer)
-
-    // // test hand player
-    // let music = GetMusicManagerInstance()
-    // let cardsMeGfx = new CardsPlayerGfx(tink)
-    // let cardMeContainer = cardsMeGfx.Build(3)
-    // const cdT1 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
-    // const cdT2 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
-    // const cdT3 = cache.GetTextureFromCard('_3d', b2core._deck_info)
-    // cardsMeGfx.SetCards([cdT1, cdT2, cdT3], cdT1.width + 5)
-    // cardsMeGfx.OnClick((ev) => {
-    //   console.log('Click rec in handler', ev)
-    //   music.Play('played')
-    //   deckGfx.PopCard(2)
-    // })
-    // cardMeContainer.position.set(20, 300)
-    // stage.addChild(cardMeContainer)
-
-    this._staticScene = staticSceneGfx
-    this._tink = tink
-    this._isDirty = true
-
-    return stage
-  }
-
-  Update(delta) {
-    this._staticScene.Render(this._isDirty)
-    this._staticScene.UpdateAnimations(this._isDirty, delta)
-    this._core_state.process_next()
-    this._tink.update();
-    this._isDirty = false
-  }
-}
