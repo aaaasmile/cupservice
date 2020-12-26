@@ -1,9 +1,9 @@
-export default (state, startComp, stopCom, fnTerm) => {
+export default (name, startComp, stopCom, fnTerm) => {
     let _container = new PIXI.Container()
     let _sprites = []
     let _started = false
     let _terminated = false
-    let _name = state.name
+    let _name = name
     let _startComp = startComp
     let _stopCom = stopCom
     let _fnTerm = fnTerm
@@ -28,9 +28,9 @@ export default (state, startComp, stopCom, fnTerm) => {
 
                     if (s.x > s.end_x && s.y > s.end_y) {
                         //console.log('Animation terminated', s)
-                        _fnTerm(_name)
                         _started = false
                         _terminated = true
+                        s.visible = false
                     }
                 });
             }
@@ -55,6 +55,9 @@ export default (state, startComp, stopCom, fnTerm) => {
             ss.ini_y = ss.y
             _sprites.push(ss)
             _container.addChild(ss)
+        },
+        complete(){
+            _fnTerm(_name)
         }
     }
 }

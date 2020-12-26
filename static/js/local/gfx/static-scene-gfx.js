@@ -91,20 +91,20 @@ export class StaticSceneGfx {
         if (compKey) {
           const comp = this.get_component(compKey)
           const sprite = comp.get_animation_sprite(ani.name())
-          ani.add_sprite(sprite)
-
+          
           const compStopKey = ani.get_stop_comp()
           if (compStopKey) {
             const compStop = this.get_component(compStopKey)
             compStop.set_animation_sprite_target(ani.name(), sprite)
-            ani.add_sprite(sprite)
           }
+          ani.add_sprite(sprite)
         }
         this._container.addChild(ani.get_container())
       }
       ani.Update(delta)
       if (ani.is_terminated()) {
         this._animations.splice(ani)
+        ani.complete()
       }
     });
   }
