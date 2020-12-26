@@ -13,9 +13,7 @@ export class CardsPlayerGfx {
     this._ani_velocity = 20
   }
 
-  Build(numCards) {
-    this._numCards = numCards
-  }
+ 
 
   get_space_x(texture_w, mode) {
     switch (mode) {
@@ -43,7 +41,8 @@ export class CardsPlayerGfx {
     throw (new Error(`get space x: mode => ${mode} not recognized`))
   }
 
-  SetCards(cards, mode) {
+  Build(numCards, cards, mode) {
+    this._numCards = numCards
     if (!mode) {
       mode = 'normal'
     }

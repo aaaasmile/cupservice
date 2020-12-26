@@ -55,14 +55,12 @@ class BriscolaGfx {
     this._staticScene.AddGfxComponent('deck', deck)
 
     let cards_me = new CardsPlayerGfx(70, this._tink, this._deck_info, this._cache)
-    cards_me.Build(args.carte.length)
-    cards_me.SetCards(args.carte)
+    cards_me.Build(args.carte.length, args.carte, 'normal')
     cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsme', cards_me)
 
     let cards_opp = new CardsPlayerGfx(70, this._tink, this._deck_info, this._cache)
-    cards_opp.Build(args.carte.length)
-    cards_opp.SetCards([], 'compact_small')
+    cards_opp.Build(args.carte.length, [], 'compact_small')
     cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsopp', cards_opp)
 
