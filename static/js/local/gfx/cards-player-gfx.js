@@ -46,20 +46,22 @@ export class CardsPlayerGfx {
     if (!mode) {
       mode = 'normal'
     }
-    let textures = []
+    let textureCards = []
+    let texturePlaceHolder = []
     this._visibleSprite = []
     cards.forEach(element => {
       let cdt = this._cache.GetTextureFromCard(element, this._deck_info)
-      textures.push(cdt)
+      textureCards.push(cdt)
       this._visibleSprite.push(false)
     });
 
-    for (let index = textures.length; index < this._numCards; index++) {
+    for (let index = textureCards.length; index < this._numCards; index++) {
       let cdt = this._cache.GetTextureFromSymbol('cope', this._deck_info)
-      textures.push(cdt)
+      texturePlaceHolder.push(cdt)
     }
 
-    let ixTexture = 0
+    const cdtempty = this._cache.GetTextureFromSymbol('vuot', this._deck_info)
+
     let iniX = 0
     let iniY = 0
     let x = iniX
@@ -67,22 +69,25 @@ export class CardsPlayerGfx {
 
     this._container.removeChildren()
     this._sprites = []
-    const space_x = this.get_space_x(textures[0].width, mode)
+    const space_x = this.get_space_x(cdtempty.width, mode)
     for (let index = 0; index < this._numCards; index++) {
-      const itemTexture = textures[ixTexture];
+      if (texturePlaceHolder.length <= index){
+        texturePlaceHolder.push(cdtempty)
+      }
+      
+      const itemTexture = texturePlaceHolder[index];
       let sprite = new PIXI.Sprite(itemTexture)
       this.resize_sprite(sprite, mode)
-      sprite.cup_data_lbl = itemTexture.cup_data_lbl // recognize the card
+      if (textureCards.length > index){
+        sprite.cup_data_lbl = textureCards[index].cup_data_lbl 
+      }
       sprite.position.set(x, y)
-      //sprite.visible = false
       this._sprites.push(sprite)
       this._container.addChild(sprite)
       x += space_x
-      if (ixTexture < textures.length) {
-        ixTexture += 1
-      }
     }
     this._isDirty = true
+    this._textureCards = textureCards
   }
 
   set_animation_sprite_target(name, sprite) {
@@ -101,7 +106,7 @@ export class CardsPlayerGfx {
       const element = this._sprites[index];
       if (element.cup_data_lbl === card_lbl){
         this._visibleSprite[index] = true
-        element.visible = true
+        element.texture = this._textureCards[index]
         return
       }
     }
