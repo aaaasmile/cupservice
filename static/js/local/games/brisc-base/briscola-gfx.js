@@ -73,7 +73,7 @@ export class BriscolaGfx {
 
     let table = new TableCardsPlayedGfx(60, this._tink, this._deck_info, this._cache)
     table.Build(['nord', 'sud'], 'circular')
-    table._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
+    table._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('table', table)
 
     this.animate_distr_cards(args.carte)
