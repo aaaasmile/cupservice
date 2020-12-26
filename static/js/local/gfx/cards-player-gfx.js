@@ -115,7 +115,7 @@ export class CardsPlayerGfx {
 
   Render(isDirty) {
     if (this._isDirty || isDirty) {
-      console.log('*** render cards player ...')
+      //console.log('*** render cards player ...')
     }
     this._isDirty = false
   }

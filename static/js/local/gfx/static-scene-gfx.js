@@ -91,12 +91,13 @@ export class StaticSceneGfx {
         if (compKey) {
           const comp = this.get_component(compKey)
           const sprite = comp.get_animation_sprite(ani.name())
-          
+
           const compStopKey = ani.get_stop_comp()
           if (compStopKey) {
             const compStop = this.get_component(compStopKey)
             compStop.set_animation_sprite_target(ani.name(), sprite)
           }
+          console.log('add sprite ', sprite)
           ani.add_sprite(sprite)
         }
         this._container.addChild(ani.get_container())
@@ -111,7 +112,7 @@ export class StaticSceneGfx {
 
   Render(isDirty) {
     if (this._isDirty) {
-      console.log('*** rebuild the scene')
+      //console.log('*** rebuild the scene')
       this._container.removeChildren()
       this._container.addChild(this._backSprite)
     }

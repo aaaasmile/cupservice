@@ -19,7 +19,7 @@ export class PlayerMarkerGfx {
 
   Render(isDirty){
     if (this._isDirty || isDirty){
-      console.log('*** render the marker ...')
+      //console.log('*** render the marker ...')
       this._text.position.x = this._sprite.width + 10
     }
     this._isDirty = false

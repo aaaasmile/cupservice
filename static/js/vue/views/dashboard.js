@@ -29,6 +29,7 @@ export default {
     this.loadinggame = true
     this.appWidth = (document.getElementById('pixi')).offsetWidth
     console.log("Coordinates: ", this.appWidth, this.appHeight)
+    PIXI.utils.skipHello()
 
     // 1. Create a Pixi renderer and define size and a background color
    
@@ -110,5 +111,6 @@ export default {
         </v-card-actions>
       </v-card>
     </v-col>
-  </v-row>`
+  </v-row>
+`
 }

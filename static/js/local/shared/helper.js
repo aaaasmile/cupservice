@@ -17,7 +17,7 @@ export default {
   ScaleSprite(sprite, viewWidth, viewHeight) {
     let viewratio = viewWidth / viewHeight
     let spratio = sprite.width / sprite.height
-    console.log('Ratio win - sprite', viewratio, spratio)
+    //console.log('Ratio win - sprite', viewratio, spratio)
     let scale = 1
     let pos = new PIXI.Point(0, 0)
     if (viewratio > spratio) {

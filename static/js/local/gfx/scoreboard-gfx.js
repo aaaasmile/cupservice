@@ -30,7 +30,7 @@ export class ScoreBoardGfx {
       return
     }
     if (this._isDirty || isDirty) {
-      console.log('*** render the scoreboard...')
+      //console.log('*** render the scoreboard...')
       let offset_x = 10
       this._text_team1.position.x = offset_x
       this._text_team2.position.x = this._text_team1.x + this._text_team1.width + 30
