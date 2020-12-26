@@ -25,17 +25,15 @@ class BriscolaGfx {
     console.log('on_all_ev_new_match ', args)
     //args: {players: Array(2), num_segni: 2, target_segno: 61}
     //       players: ["Luisa", "Silvio"]
-    const textureCpu = this._cache.GetTextureFromAvatar('stevie')
     const nameCpu = args.players[0]
-    const markerCpu = new PlayerMarkerGfx(100) // z-ord: smaller is in front
-    markerCpu.Build(nameCpu, textureCpu)
+    const markerCpu = new PlayerMarkerGfx(100, this._cache)
+    markerCpu.Build(nameCpu, 'stevie')
     markerCpu._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'top_anchor', offset: 20 }, anchor_element: 'canvas', }
     this._staticScene.AddMarker(nameCpu, markerCpu)
 
-    const textureMe = this._cache.GetTextureFromAvatar('joe')
     const nameMe = args.players[1]
-    const markerMe = new PlayerMarkerGfx(200)
-    markerMe.Build(nameMe, textureMe)
+    const markerMe = new PlayerMarkerGfx(200, this._cache)
+    markerMe.Build(nameMe, 'joe')
     markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddMarker(nameMe, markerMe)
 
@@ -46,6 +44,9 @@ class BriscolaGfx {
   }
 
   on_pl_ev_brisc_new_giocata(args) {
+    // args: {carte: Array(3), brisc: "_5s", num_card_deck: 33}
+    // carte: (3) ["_Rc", "_5c", "_Cd"]
+    
     console.log('on_pl_ev_brisc_new_giocata', args)
 
     const deck = new DeckGfx(80, this._cache, this._deck_info)
