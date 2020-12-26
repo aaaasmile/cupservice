@@ -138,9 +138,10 @@ class CardLoaderGfx {
       }
       // symbols
       console.log("Load all symbols...")
+      let symbols_folder = this.path_prefix + "assets/carte/symbols/"
       for (let i = 0; i < nomi_simboli.length; i++) {
         let nome_simbolo = nomi_simboli[i]
-        card_fname = `${folder_fullpath}01_${nome_simbolo}.png`
+        card_fname = `${symbols_folder}01_${nome_simbolo}.png`
         let imgToLoad = new Image()
         imgToLoad.src = card_fname
 
