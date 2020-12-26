@@ -1,7 +1,6 @@
 import { StaticSceneGfx } from './static-scene-gfx.js'
 import { Tink } from '../app/tink.js'
 import { GetMusicManagerInstance } from '../app/sound-mgr.js'
-import { PrepareGameVsCpu } from '../games/brisc-base/core-brisc-base.js'
 import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js'
 
 export class BuilderGameGfx {
@@ -75,9 +74,6 @@ export class BuilderGameGfx {
     build_briscola(opt, cache, staticSceneGfx) {
         console.log('Build briscola gfx')
         const briGfx = new BriscolaGfx(cache, staticSceneGfx, this._tink)
-        let b2core = PrepareGameVsCpu(briGfx, opt)
-        briGfx.set_deck_info(b2core._deck_info)
-        this._core_state = b2core._coreStateManager
-        briGfx._core_state = this._core_state
+        this._core_state = briGfx.PrepareGameVsCpu(opt)
     }
 }

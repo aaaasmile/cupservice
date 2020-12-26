@@ -4,6 +4,7 @@ import { PlayerMarkerGfx } from '../../gfx/player-marker-gfx.js'
 import { ScoreBoardGfx } from '../../gfx/scoreboard-gfx.js'
 import AniCards from '../../gfx/animation-gfx.js'
 import store from '../../../vue/store/index.js'
+import { PrepareGameVsCpu } from './core-brisc-base.js'
 
 export class BriscolaGfx {
   constructor(cache, static_scene, tink) {
@@ -14,8 +15,11 @@ export class BriscolaGfx {
     this._core_state = null
   }
 
-  set_deck_info(deck_info) {
-    this._deck_info = deck_info
+  PrepareGameVsCpu(opt) {
+    let b2core = PrepareGameVsCpu(this, opt)
+    this._deck_info = b2core._deck_info
+    this._core_state = b2core._coreStateManager
+    return b2core._coreStateManager
   }
 
   on_all_ev_new_match(args) {
@@ -46,7 +50,7 @@ export class BriscolaGfx {
   on_pl_ev_brisc_new_giocata(args) {
     // args: {carte: Array(3), brisc: "_5s", num_card_deck: 33}
     // carte: (3) ["_Rc", "_5c", "_Cd"]
-    
+
     console.log('on_pl_ev_brisc_new_giocata', args)
 
     const deck = new DeckGfx(80, this._cache, this._deck_info)
