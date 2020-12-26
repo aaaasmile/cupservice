@@ -47,10 +47,9 @@ class BriscolaGfx {
 
   on_pl_ev_brisc_new_giocata(args) {
     console.log('on_pl_ev_brisc_new_giocata', args)
-    const deck = new DeckGfx(80, this._cache)
-    let deckItemTexture = this._cache.GetTextureFromSymbol('cope')
-    let briscolaTexture = this._cache.GetTextureFromCard(args.brisc, this._deck_info)
-    deck.Build(args.num_card_deck, deckItemTexture, briscolaTexture)
+
+    const deck = new DeckGfx(80, this._cache, this._deck_info)
+    deck.Build(args.num_card_deck, args.brisc)
     deck._infoGfx = { x: { type: 'left_anchor', offset: 20 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('deck', deck)
 

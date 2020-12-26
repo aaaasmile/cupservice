@@ -1,13 +1,17 @@
 export class DeckGfx {
-  constructor(z_ord, cache) {
+  constructor(z_ord, cache, deck_info) {
     this._deckSprite = []
     this._z_ord = z_ord
     this._briscola = null
     this._container = new PIXI.Container()
     this._cache = cache
+    this._deck_info = deck_info
   }
 
-  Build(numCardsOnDeck, deckItemTexture, briscolaTexture) {
+  Build(numCardsOnDeck, brisc) {
+    let deckItemTexture = this._cache.GetTextureFromSymbol('cope')
+    let briscolaTexture = this._cache.GetTextureFromCard(brisc, this._deck_info)
+
     let iniX = 10
     let intY = 0
     let x = iniX
@@ -51,7 +55,7 @@ export class DeckGfx {
       sprite.y = this._last_y + this._container.y
       return sprite
     }
-    throw(new Error(`animation not recognized ${name}`))
+    throw (new Error(`animation not recognized ${name}`))
   }
 
   Render(isDirty) {
