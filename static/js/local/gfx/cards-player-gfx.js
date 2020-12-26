@@ -94,18 +94,20 @@ export class CardsPlayerGfx {
     if (name === "distr_card") {
       const ix = this._visibleSprite.indexOf(false)
       const s_src = this._sprites[ix]
-      const vel = 10
+      const vel_y = 5
       sprite.end_x = s_src.x + (ix * s_src.width) + this._container.x
       sprite.end_y = s_src.y + this._container.y
-      if (this._container.y > s_src.y) {
-        sprite.vy = vel
-      }else{
-        sprite.vy -= vel
+      console.log('End x,y for sprite ani ', sprite.end_x, sprite.end_y)
+      if (sprite.end_y > sprite.y) {
+        sprite.vy = vel_y
+      } else {
+        sprite.vy -= vel_y
       }
-      if (this._container.x > s_src.x) {
-        sprite.vx = vel
-      }else{
-        sprite.vx -= vel
+      const vel_x = (sprite.end_x - sprite.x) / Math.abs(sprite.end_y - sprite.y) * vel_y
+      if (sprite.end_x > sprite.x) {
+        sprite.vx =  vel_x
+      } else {
+        sprite.vx -= vel_x
       }
 
       return sprite
