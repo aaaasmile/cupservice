@@ -29,5 +29,41 @@ export default {
     }
     sprite.scale.set(scale, scale)
     sprite.position = pos
+  },
+  CalcSpriteVelocity(sprite, step_target) {
+    const endpoint_x = sprite.end_x
+    const endpoint_y = sprite.end_y
+    const x0 = sprite.x
+    const y0 = sprite.y
+    let iq = 0, im = 0, v_estimated = 1
+    if (!step_target) {
+      throw (new Error('Animation step could not be zero'))
+    }
+    if (Math.abs(endpoint_x - x0) > Math.abs(endpoint_y - y0)) {
+      //we are moving on x axis
+      sprite.m_type = 'x_axis'
+      if (endpoint_x - x0 !== 0) {
+        im = (endpoint_y - y0) * 1000 / (endpoint_x - x0)
+        v_estimated = (endpoint_x - x0) / step_target
+      }
+      iq = y0 - im * x0 / 1000
+    }
+    else {
+      // we are moving on y axis
+      sprite.m_type = 'y_axis'
+      if (endpoint_y - y0 != 0) {
+        im = (endpoint_x - x0) * 1000 / (endpoint_y - y0)
+        v_estimated = (endpoint_y - y0) / step_target
+      }
+      iq = x0 - im * y0 / 1000
+    }
+
+    //velocity
+    sprite.vx = v_estimated
+    sprite.vy = v_estimated
+    sprite.vel_im = im
+    sprite.vel_iq = iq
+
+    return sprite
   }
 }
