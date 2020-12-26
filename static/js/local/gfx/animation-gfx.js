@@ -19,7 +19,7 @@ export default (name, startComp, stopCom, fnTerm) => {
                
                 if (s.m_type === 'x_axis') {
                     // moving on x ...
-                    console.log('Moving on x: ', s.x, s.y)
+                    //console.log('Moving on x: ', s.x, s.y)
                     s.x +=  s.vx
                     s.y = im * s.x / 1000 + iq;
                     if ((s.x > s.end_x && s.vx > 0) ||
@@ -28,7 +28,7 @@ export default (name, startComp, stopCom, fnTerm) => {
                     }
                 } else {
                     //moving on y ...
-                    console.log('Moving on y: ', s.x, s.y)
+                    //console.log('Moving on y: ', s.x, s.y)
                     s.y +=  s.vy
                     s.x = im * s.y / 1000 + iq;
                     if ((s.y > s.end_y && s.vy > 0) ||

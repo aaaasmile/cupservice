@@ -10,6 +10,7 @@ export class CardsPlayerGfx {
     this._deck_info = deck_info
     this._cache = cache
     this._visibleSprite = []
+    this._ani_velocity = 30
   }
 
   Build(numCards) {
@@ -94,8 +95,7 @@ export class CardsPlayerGfx {
     if (name === "distr_card") {
       const ix = this._visibleSprite.indexOf(false)
       const s_src = this._sprites[ix]
-      const vel_y = 5
-      sprite.end_x = s_src.x + (ix * s_src.width) + this._container.x
+      sprite.end_x = s_src.x + this._container.x
       sprite.end_y = s_src.y + this._container.y
       console.log('End x,y for sprite ani ', sprite.end_x, sprite.end_y)
       
@@ -104,7 +104,7 @@ export class CardsPlayerGfx {
       const x0 = sprite.x
       const y0 = sprite.y
       let iq = 0, im = 0, v_estimated = 1
-      const step_target = 11
+      const step_target = this._ani_velocity
       if (Math.abs(endpoint_x - x0) > Math.abs(endpoint_y - y0)) {
         //we are moving on x axis
         sprite.m_type = 'x_axis'
