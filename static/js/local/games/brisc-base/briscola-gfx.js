@@ -89,14 +89,7 @@ class BriscolaGfx {
     })
     cards_anim[fnix]()
 
-    // let aniDistr = AniCards({name: 'distr_card'}, 'deck', 'cardsme', (nn) => {
-    //   console.log(`Animation ${nn} is terminated`)
-    // })
     this._core_state.suspend_proc_gevents('suspend animation new giocata')
-    // TODO: start an animation of card distribution
-    //       when the animation is terminated then continue the process with 
-    //       continue_process_events
-
   }
 
   on_all_ev_giocata_end(args) {

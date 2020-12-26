@@ -74,7 +74,7 @@ export class CardsPlayerGfx {
       this.resize_sprite(sprite, mode)
       sprite.cup_data_lbl = itemTexture.cup_data_lbl // recognize the card
       sprite.position.set(x, y)
-      sprite.visible = false
+      //sprite.visible = false
       this._sprites.push(sprite)
       this._container.addChild(sprite)
       x += space_x
