@@ -27,6 +27,7 @@ func RunService(configfile string) error {
 	log.Println("Try this url: ", cupServURL)
 
 	http.Handle(conf.Current.RootURLPattern+"static/", http.StripPrefix(conf.Current.RootURLPattern+"static/", http.FileServer(http.Dir("static"))))
+	http.Handle(conf.Current.RootURLPattern+"static2/", http.StripPrefix(conf.Current.RootURLPattern+"static2/", http.FileServer(http.Dir("static2"))))
 	http.HandleFunc(conf.Current.RootURLPattern, cup.APiHandler)
 	http.HandleFunc("/websocket", cup.WsHandler)
 

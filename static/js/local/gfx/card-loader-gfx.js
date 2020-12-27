@@ -14,6 +14,7 @@ class CardLoaderGfx {
     console.log('CardLoaderGfx created (singleton)')
     this.map_image_cache = new Map()
     this.path_prefix = 'static/'
+    this.path_prefix_card = 'static2/'
     this.current_cache = null
     this.avatars = []
     this.backgrounds = []
@@ -24,7 +25,7 @@ class CardLoaderGfx {
   }
 
   getFolderCardsFullpath(deck_name) {
-    return this.path_prefix + "assets/carte/" + deck_name + "/"
+    return this.path_prefix_card + "carte/" + deck_name + "/"
   }
 
   getonloadImage(cb, ...params) {
@@ -138,7 +139,7 @@ class CardLoaderGfx {
       }
       // symbols
       console.log("Load all symbols...")
-      let symbols_folder = this.path_prefix + "assets/carte/symbols/"
+      let symbols_folder = this.path_prefix + "assets/images/symbols/"
       for (let i = 0; i < nomi_simboli.length; i++) {
         let nome_simbolo = nomi_simboli[i]
         card_fname = `${symbols_folder}01_${nome_simbolo}.png`
