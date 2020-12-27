@@ -30,6 +30,13 @@ export default {
     sprite.scale.set(scale, scale)
     sprite.position = pos
   },
+  ScaleCardSpriteToStdIfNeeded(sprite) {
+    if (sprite.width > 84 || sprite.height > 145) {
+      this.ScaleSprite(sprite, 84, 145) 
+      return true
+    }
+    return false
+  },
   CalcSpriteVelocity(sprite, step_target) {
     const endpoint_x = sprite.end_x
     const endpoint_y = sprite.end_y

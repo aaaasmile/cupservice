@@ -13,8 +13,6 @@ export class CardsPlayerGfx {
     this._ani_velocity = 20
   }
 
- 
-
   get_space_x(texture_w, mode) {
     switch (mode) {
       case 'normal':
@@ -46,6 +44,7 @@ export class CardsPlayerGfx {
     if (!mode) {
       mode = 'normal'
     }
+    this._mode_display = mode
     let textureCards = []
     let texturePlaceHolder = []
     this._visibleSprite = []
@@ -86,8 +85,30 @@ export class CardsPlayerGfx {
       this._container.addChild(sprite)
       x += space_x
     }
-    this._isDirty = true
     this._textureCards = textureCards
+  }
+
+  Render(isDirty) {
+    if (this._isDirty || isDirty) {
+      console.log('*** render cards player ...')
+      if (this._sprites.length > 0) {
+        let iniX = 0
+        let iniY = 0
+        let x = iniX
+        let y = iniY
+        const space_x = this.get_space_x(this._sprites[0].width, this._mode_display)
+        for (let index = 0; index < this._numCards; index++) {
+          const sprite = this._sprites[index]
+          sprite.position.set(x, y)
+          x += space_x
+        }
+      }
+    }
+    this._isDirty = false
+  }
+
+  Redraw(){
+    this._isDirty = true
   }
 
   set_animation_sprite_target(name, sprite) {
@@ -97,28 +118,28 @@ export class CardsPlayerGfx {
       sprite.end_x = s_src.x + this._container.x
       sprite.end_y = s_src.y + this._container.y
       console.log('End x,y for sprite ani ', sprite.end_x, sprite.end_y)
-      return Helper.CalcSpriteVelocity(sprite,this._ani_velocity)
+      return Helper.CalcSpriteVelocity(sprite, this._ani_velocity)
     }
     throw (new Error(`animation in card player not recognized ${name}`))
   }
 
   set_visible(card_lbl) {
     for (let index = 0; index < this._sprites.length; index++) {
-      const element = this._sprites[index];
-      if (element.cup_data_lbl === card_lbl) {
+      const sprite = this._sprites[index];
+      if (sprite.cup_data_lbl === card_lbl) {
         this._visibleSprite[index] = true
-        element.texture = this._textureCards[index]
+        sprite.texture = this._textureCards[index]
+        const old_x = sprite.x
+        const old_y = sprite.y
+        console.log('Sprite pos ', old_x, old_y)
+        Helper.ScaleCardSpriteToStdIfNeeded(sprite)
+        sprite.x = old_x
+        sprite.y = old_y
+
         return
       }
     }
     throw (new Error(`set_visible on card not found ${card_lbl}`))
-  }
-
-  Render(isDirty) {
-    if (this._isDirty || isDirty) {
-      //console.log('*** render cards player ...')
-    }
-    this._isDirty = false
   }
 
   OnClick(funHandler) {
