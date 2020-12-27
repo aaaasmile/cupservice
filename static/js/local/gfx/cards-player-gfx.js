@@ -90,7 +90,7 @@ export class CardsPlayerGfx {
 
   Render(isDirty) {
     if (this._isDirty || isDirty) {
-      console.log('*** render cards player ...')
+      //console.log('*** render cards player ...')
       if (this._sprites.length > 0) {
         let iniX = 0
         let iniY = 0

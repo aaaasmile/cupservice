@@ -97,7 +97,7 @@ export class StaticSceneGfx {
             const compStop = this.get_component(compStopKey)
             compStop.set_animation_sprite_target(ani.name(), sprite)
           }
-          console.log('add sprite ', sprite)
+          //console.log('add sprite ', sprite)
           ani.add_sprite(sprite)
         }
         this._container.addChild(ani.get_container())

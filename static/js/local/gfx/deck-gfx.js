@@ -1,3 +1,4 @@
+import Helper from '../shared/helper.js'
 export class DeckGfx {
   constructor(z_ord, cache, deck_info) {
     this._deckSprite = []
@@ -33,18 +34,30 @@ export class DeckGfx {
 
     if (briscolaTexture) {
       let sprite = new PIXI.Sprite(briscolaTexture)
+      let offset_y = 0
+      if (Helper.ScaleCardSpriteToStdIfNeeded(sprite)) {
+        offset_y = 30
+      }
       this._briscola = sprite
       if (this._deckSprite.length > 0) {
         let last = this._deckSprite[0]
         y = last.y + last.height - ((last.height - last.width) / 2)
         x = last.x + last.width / 2
       }
+      y += offset_y
       console.log('x,y of briscola', x, y)
       sprite.position.set(x, y)
       sprite.rotation = - Math.PI / 2.0
       this._container.addChildAt(sprite, 0)
     }
     return this._container
+  }
+
+  Render(isDirty) {
+    if (this._isDirty || isDirty) {
+      //console.log('*** render the deck ...')
+    }
+    this._isDirty = false
   }
 
   get_animation_sprite(name) {
@@ -56,13 +69,6 @@ export class DeckGfx {
       return sprite
     }
     throw (new Error(`animation not recognized ${name}`))
-  }
-
-  Render(isDirty) {
-    if (this._isDirty || isDirty) {
-      console.log('*** render the deck ...')
-    }
-    this._isDirty = false
   }
 
   PopCard(num) {
