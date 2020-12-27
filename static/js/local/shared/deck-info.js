@@ -147,7 +147,7 @@
         '_Ad', '_2d', '_3d', '_4d', '_5d', '_6d', '_7d', '_8d', '_9d', '_10d', '_Fd', '_Cd', '_Rd',
         '_As', '_2s', '_3s', '_4s', '_5s', '_6s', '_7s', '_8s', '_9s', '_10s', '_Fs', '_Cs', '_Rs'];
 
-      Object.keys(this.deck_info_det).forEach(key => this.deck_info_det52[key] = key);
+      Object.keys(this.deck_info_det).forEach(key => this.deck_info_det52[key] = this.deck_info_det[key]);
       // bastoni 
       this.deck_info_det52._8b = { ix: 7, nome: 'otto bastoni', symb: 'ott', segno: 'B', seed_ix: 0, pos: 8, points: 0, rank: 0 }
       this.deck_info_det52._9b = { ix: 8, nome: 'nove bastoni', symb: 'nov', segno: 'B', seed_ix: 0, pos: 9, points: 0, rank: 0 }

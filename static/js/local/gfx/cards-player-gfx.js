@@ -48,8 +48,8 @@ export class CardsPlayerGfx {
     let textureCards = []
     let texturePlaceHolder = []
     this._visibleSprite = []
-    cards.forEach(element => {
-      let cdt = this._cache.GetTextureFromCard(element, this._deck_info)
+    cards.forEach(card_lbl => {
+      let cdt = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
       textureCards.push(cdt)
       this._visibleSprite.push(false)
     });
@@ -117,7 +117,7 @@ export class CardsPlayerGfx {
       const s_src = this._sprites[ix]
       sprite.end_x = s_src.x + this._container.x
       sprite.end_y = s_src.y + this._container.y
-      console.log('End x,y for sprite ani ', sprite.end_x, sprite.end_y)
+      //console.log('End x,y for sprite ani ', sprite.end_x, sprite.end_y)
       return Helper.CalcSpriteVelocity(sprite, this._ani_velocity)
     }
     throw (new Error(`animation in card player not recognized ${name}`))
@@ -131,7 +131,7 @@ export class CardsPlayerGfx {
         sprite.texture = this._textureCards[index]
         const old_x = sprite.x
         const old_y = sprite.y
-        console.log('Sprite pos ', old_x, old_y)
+        //console.log('Sprite pos ', old_x, old_y)
         Helper.ScaleCardSpriteToStdIfNeeded(sprite)
         sprite.x = old_x
         sprite.y = old_y
