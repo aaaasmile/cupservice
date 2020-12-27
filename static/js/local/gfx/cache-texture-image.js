@@ -1,4 +1,4 @@
-export class CardImageCache {
+export class CacheTextureImage {
   constructor(deck_name) {
     this.current_deck_name = deck_name
     this.cards = []

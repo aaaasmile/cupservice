@@ -1,6 +1,6 @@
 export default {
     state: {
-        deck_type: 'piac',
+        deck_type: 'francesi',
         me_avatar: 'joe',
         opp_avatar: 'stevie',
         me_name: 'Mario',

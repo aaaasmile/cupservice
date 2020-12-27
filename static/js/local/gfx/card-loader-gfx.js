@@ -1,7 +1,8 @@
 
-import { CardImageCache } from './card-image-cache.js'
+import { CacheTextureImage } from './cache-texture-image.js'
 
 const c_nomi_semi = ["basto", "coppe", "denar", "spade"]
+const c_nomi_semi_fr = ["cuori", "fiori", "picch", "quadr"]
 const c_nomi_simboli = ["cope", "zero", "vuoto_trasp", "vuoto_traspfull"]
 const c_nomi_avatar = ["ade", "christian", "elliot", "jenny", "joe", "nan", "stevie", "zoe"]
 const c_nomi_sfondi = ["table"]
@@ -29,7 +30,7 @@ class CardLoaderGfx {
   }
 
   getonloadImage(cb, ...params) {
-    return () => { 
+    return () => {
       // Arrow function in JS should support this contructor at declaration (contex in the new stack)
       // but in golang a go routine inside a for doesn't elevate the stack in a lambda function and async errors could happen. 
       // To avoid rechecking the JS code every time and thinking it is an async error, 
@@ -80,6 +81,10 @@ class CardLoaderGfx {
 
     let nomi_simboli = [...c_nomi_simboli]
     let nomi_semi = [...c_nomi_semi]
+    if (deck_name === 'francesi'){
+      nomi_semi = [...c_nomi_semi_fr]    
+    }
+    
     let num_cards_onsuit = this.getNumCardOnSuit(deck_name)
     if (this.deck_france) {
       num_cards_onsuit = 13
@@ -87,7 +92,7 @@ class CardLoaderGfx {
       nomi_semi = ["fiori", "quadr", "cuori", "picch"]
     }
 
-    let imageCache = new CardImageCache(deck_name)
+    let imageCache = new CacheTextureImage(deck_name)
     let folder_fullpath = this.getFolderCardsFullpath(deck_name)
     this.map_image_cache.set(deck_name, imageCache)
 
@@ -98,7 +103,7 @@ class CardLoaderGfx {
     let obsLoader = rxjs.Observable.create((obs) => {
       let card_fname = ""
 
-      let totItems = nomi_semi.length * num_cards_onsuit + nomi_simboli.length // used onl for notification progress
+      let totItems = nomi_semi.length * num_cards_onsuit + nomi_simboli.length // used only for notification progress
       totItems += c_nomi_avatar.length // avatars
       totItems += c_nomi_sfondi.length // backgrounds
 
