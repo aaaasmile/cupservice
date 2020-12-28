@@ -106,7 +106,7 @@ export class CardsPlayerGfx {
     this._isDirty = false
   }
 
-  Redraw(){
+  Redraw() {
     this._isDirty = true
   }
 
@@ -141,8 +141,20 @@ export class CardsPlayerGfx {
     throw (new Error(`set_visible on card not found ${card_lbl}`))
   }
 
+  UnsubClick(id) {
+    this._clickHandler.splice(id)
+    if (this._clickHandler.length === 0) {
+      for (let index = 0; index < this._sprites.length; index++) {
+        const sprite = this._sprites[index];
+        sprite.interactive = false
+        sprite.removeAllListeners('touchstart')
+        sprite.removeAllListeners('mousedown')
+      }
+    }
+  }
+
   OnClick(funHandler) {
-    this._clickHandler.push(funHandler)
+    const len = this._clickHandler.push(funHandler)
 
     for (let index = 0; index < this._sprites.length; index++) {
       const sprite = this._sprites[index];
@@ -151,11 +163,12 @@ export class CardsPlayerGfx {
       this.handlePress(data, sprite, 'touchstart')
       this.handlePress(data, sprite, 'mousedown')
     }
+    return len - 1
   }
 
   handlePress(data, sprite, event) {
     //console.log('Make interactive sprite ', sprite, event, data)
- 
+
     sprite.on(event, () => {
       //console.log('Card is pressed', data)
       this._clickHandler.forEach(fnItem => {

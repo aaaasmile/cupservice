@@ -384,7 +384,9 @@ export function PrepareGameVsCpu(algGfx, opt) {
   let playerErnesto = new Player(new AlgBriscBase(namePl1), coreStateManager);
   playerErnesto._alg.set_to_master_level()
   let playerLuigi = new Player(new AlgBriscBase(namePl2), coreStateManager);
-  playerLuigi.set_gfx_on_alg(algGfx)
+  const core_caller = playerLuigi.set_gfx_on_alg(algGfx)
+  algGfx.set_core_caller(core_caller)
+
   b2core.AddPlayer(0, playerErnesto)
   b2core.AddPlayer(1, playerLuigi)
   playerErnesto.sit_down(0);

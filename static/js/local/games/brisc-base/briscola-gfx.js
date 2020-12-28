@@ -17,6 +17,10 @@ export class BriscolaGfx {
     this._name_Me = ''
   }
 
+  set_core_caller(core_caller){
+    this._core_caller = core_caller
+  }
+
   BuildGameVsCpu(opt) {
     let b2core = PrepareGameVsCpu(this, opt)
     this._deck_info = b2core._deck_info
@@ -89,9 +93,10 @@ export class BriscolaGfx {
       return
     }
     const cards_me_gfx = this._staticScene.get_component('cardsme')
-    cards_me_gfx.OnClick((ev) => {
-      console.log('Click rec in handler', ev)
-   
+    const subId = cards_me_gfx.OnClick((card_lbl) => {
+      console.log('Click rec in handler', card_lbl)
+      this._core_caller.play_card(card_lbl)
+      cards_me_gfx.UnsubClick(subId)
     })
   }
 

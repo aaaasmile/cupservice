@@ -6,12 +6,14 @@ import { CoreCaller } from './core-caller.js'
 //////////////////////////////////////////
 export class Player {
   constructor(alg, coreStateManager, name) {
+    this._core_caller = null
     this._name = name
     if (alg) {
       this.set_alg(alg, coreStateManager)
     } else {
       this._coreStateManager = coreStateManager
     }
+    
   }
 
   set_avatar(avatar_name, detail){
