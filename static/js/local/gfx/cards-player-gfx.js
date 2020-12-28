@@ -3,7 +3,7 @@ export class CardsPlayerGfx {
   constructor(z_ord, deck_info, cache) {
     this._sprites = []
     this._container = new PIXI.Container()
-    this._clickHandler = new Map()
+    this._clickHandler = []
     this._numCards = 0
     this._z_ord = z_ord
     this._deck_info = deck_info
@@ -142,25 +142,25 @@ export class CardsPlayerGfx {
   }
 
   OnClick(funHandler) {
-    const event = 'click-card'
-    this._clickHandler.set(event, funHandler)
+    this._clickHandler.push(funHandler)
 
     for (let index = 0; index < this._sprites.length; index++) {
       const sprite = this._sprites[index];
       let data = sprite.cup_data_lbl
-      this.handlePress(event, data, sprite)
+      sprite.interactive = true
+      this.handlePress(data, sprite, 'touchstart')
+      this.handlePress(data, sprite, 'mousedown')
     }
   }
 
-  handlePress(event, data, sprite) {
-    sprite.interactive = true
-    console.log('Make interactive sprite ', sprite)
-    sprite.on('mousedown', () => {
-      console.log('Card is pressed', data)
-      
-      if (this._clickHandler.has(event)) {
-        this._clickHandler.get(event)(data)
-      }
+  handlePress(data, sprite, event) {
+    //console.log('Make interactive sprite ', sprite, event, data)
+ 
+    sprite.on(event, () => {
+      //console.log('Card is pressed', data)
+      this._clickHandler.forEach(fnItem => {
+        fnItem(data)
+      });
     })
   }
 }
