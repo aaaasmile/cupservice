@@ -1,12 +1,11 @@
 import Helper from '../shared/helper.js'
 export class TableCardsPlayedGfx {
-    constructor(z_ord, tink, deck_info, cache) {
+    constructor(z_ord, deck_info, cache) {
         this._sprites = []
         this._container = new PIXI.Container()
         this._clickHandler = new Map()
         this._numCards = 0
         this._z_ord = z_ord
-        this._tink = tink
         this._deck_info = deck_info
         this._cache = cache
         this._visibleSprite = []
@@ -28,11 +27,11 @@ export class TableCardsPlayedGfx {
         }
     }
 
-    set_sprite_xy(poslbl, mode, sprite){
-        if (mode !== 'circular'){
-            throw(new Error(`mode in set_sprite_xy not supported ${mode}`))
+    set_sprite_xy(poslbl, mode, sprite) {
+        if (mode !== 'circular') {
+            throw (new Error(`mode in set_sprite_xy not supported ${mode}`))
         }
-        switch(poslbl){
+        switch (poslbl) {
             case 'nord':
                 sprite.x -= 15
                 sprite.y -= 10
@@ -42,7 +41,7 @@ export class TableCardsPlayedGfx {
                 sprite.y += 10
                 break
             default:
-                throw(new Error(`position not supported ${poslbl}`))
+                throw (new Error(`position not supported ${poslbl}`))
         }
     }
 
@@ -50,7 +49,5 @@ export class TableCardsPlayedGfx {
         if (this._isDirty || isDirty) {
         }
         this._isDirty = false
-      }
-    
-
+    }
 }

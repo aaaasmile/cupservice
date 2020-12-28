@@ -1,12 +1,11 @@
 import Helper from '../shared/helper.js'
 export class CardsPlayerGfx {
-  constructor(z_ord, tink, deck_info, cache) {
+  constructor(z_ord, deck_info, cache) {
     this._sprites = []
     this._container = new PIXI.Container()
     this._clickHandler = new Map()
     this._numCards = 0
     this._z_ord = z_ord
-    this._tink = tink
     this._deck_info = deck_info
     this._cache = cache
     this._visibleSprite = []
@@ -149,7 +148,6 @@ export class CardsPlayerGfx {
     for (let index = 0; index < this._sprites.length; index++) {
       const sprite = this._sprites[index];
       let data = sprite.cup_data_lbl
-      this._tink.makeInteractive(sprite);
       this.handlePress(event, data, sprite)
     }
   }

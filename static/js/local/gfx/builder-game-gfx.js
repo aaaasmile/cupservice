@@ -1,12 +1,10 @@
 import { StaticSceneGfx } from './static-scene-gfx.js'
-import { Tink } from '../app/tink.js'
 import { GetMusicManagerInstance } from '../app/sound-mgr.js'
 import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js'
 
 export class BuilderGameGfx {
 
     constructor(game_name) {
-        this._tink = null
         this._core_state = null
         this._staticScene = null
         this._isDirty = false
@@ -14,7 +12,6 @@ export class BuilderGameGfx {
     }
 
     Build(opt, cache, renderer) {
-        let tink = new Tink(PIXI, renderer.view)
         let stage = new PIXI.Container()
 
         const staticSceneGfx = new StaticSceneGfx()
@@ -26,7 +23,7 @@ export class BuilderGameGfx {
 
         switch (this._game_name) {
             case 'briscola':
-                this.build_briscola(opt, cache, staticSceneGfx, tink)
+                this.build_briscola(opt, cache, staticSceneGfx)
                 break;
             default:
                 throw (new Error(`game gfx not supported ${this._game_name}`))
@@ -57,7 +54,6 @@ export class BuilderGameGfx {
         // stage.addChild(cardMeContainer)
 
         this._staticScene = staticSceneGfx
-        this._tink = tink
         this._isDirty = true
 
         return stage
@@ -67,13 +63,12 @@ export class BuilderGameGfx {
         this._staticScene.Render(this._isDirty)
         this._staticScene.UpdateAnimations(this._isDirty, delta)
         this._core_state.process_next()
-        this._tink.update();
         this._isDirty = false
     }
 
-    build_briscola(opt, cache, staticSceneGfx, tink) {
+    build_briscola(opt, cache, staticSceneGfx) {
         console.log('Build briscola gfx')
-        const briGfx = new BriscolaGfx(cache, staticSceneGfx, tink)
+        const briGfx = new BriscolaGfx(cache, staticSceneGfx)
         this._core_state = briGfx.BuildGameVsCpu(opt)
     }
 }

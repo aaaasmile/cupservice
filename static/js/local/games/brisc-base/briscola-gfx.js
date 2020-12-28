@@ -8,9 +8,8 @@ import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { TableCardsPlayedGfx } from '../../gfx/table-cards-played.js'
 
 export class BriscolaGfx {
-  constructor(cache, static_scene, tink) {
+  constructor(cache, static_scene) {
     this._cache = cache
-    this._tink = tink
     this._staticScene = static_scene
     this._deck_info = null
     this._core_state = null
@@ -64,17 +63,17 @@ export class BriscolaGfx {
     deck._infoGfx = { x: { type: 'left_anchor', offset: 20 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('deck', deck)
 
-    let cards_me = new CardsPlayerGfx(70, this._tink, this._deck_info, this._cache)
+    let cards_me = new CardsPlayerGfx(70, this._deck_info, this._cache)
     cards_me.Build(args.carte.length, args.carte, 'normal')
     cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsme', cards_me)
     
-    let cards_opp = new CardsPlayerGfx(70, this._tink, this._deck_info, this._cache)
+    let cards_opp = new CardsPlayerGfx(70, this._deck_info, this._cache)
     cards_opp.Build(args.carte.length, [], 'compact_small')
     cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsopp', cards_opp)
 
-    let table = new TableCardsPlayedGfx(60, this._tink, this._deck_info, this._cache)
+    let table = new TableCardsPlayedGfx(60, this._deck_info, this._cache)
     table.Build(['nord', 'sud'], 'circular')
     table._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('table', table)
