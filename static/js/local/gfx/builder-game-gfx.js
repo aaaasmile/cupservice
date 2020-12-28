@@ -29,29 +29,14 @@ export class BuilderGameGfx {
                 throw (new Error(`game gfx not supported ${this._game_name}`))
         }
 
-        // // test deck
-        // let deckGfx = new DeckGfx();
-        // let deckItemTexture = cache.GetTextureFromSymbol('cope')
-        // let briscolaTexture = cache.GetTextureFromCard('_5s', b2core._deck_info)
-        // let deckContainer = deckGfx.Build(40 - 6 - 1, deckItemTexture, briscolaTexture)
-        // deckContainer.position.set(500, 300)
-        // stage.addChild(deckContainer)
-
         // // test hand player
         // let music = GetMusicManagerInstance()
-        // let cardsMeGfx = new CardsPlayerGfx(tink)
-        // let cardMeContainer = cardsMeGfx.Build(3)
-        // const cdT1 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
-        // const cdT2 = cache.GetTextureFromCard('_Ad', b2core._deck_info)
-        // const cdT3 = cache.GetTextureFromCard('_3d', b2core._deck_info)
-        // cardsMeGfx.SetCards([cdT1, cdT2, cdT3], cdT1.width + 5)
+       
         // cardsMeGfx.OnClick((ev) => {
         //   console.log('Click rec in handler', ev)
         //   music.Play('played')
         //   deckGfx.PopCard(2)
         // })
-        // cardMeContainer.position.set(20, 300)
-        // stage.addChild(cardMeContainer)
 
         this._staticScene = staticSceneGfx
         this._isDirty = true
