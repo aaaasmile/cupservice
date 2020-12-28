@@ -60,4 +60,11 @@ rsync -av carte.7z igor@invido.it:~/app/go/cup_service/current/static2/carte
 Poi su invido.it
  7z x carte.7z
 
+## Tink.js
+Una libreria datata che mi sono ritrovato e che credevo che servisse per l'handling dei click
+sugli sprites e il drag&drop.
+Purtroppo non mi ha funzionato il click in quanto c'è un offset del canvas che influenza
+l'handling. Un problema riportato su github https://github.com/kittykatattack/tink/issues/12
+Risolto togliendo la dipendenza di tink e usato la modalità interactive dello sprite.
+
 
