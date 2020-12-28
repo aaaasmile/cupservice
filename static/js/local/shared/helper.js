@@ -31,7 +31,7 @@ export default {
     sprite.position = pos
   },
   ScaleCardSpriteToStdIfNeeded(sprite) {
-    if (sprite.width > 84 || sprite.height > 145) {
+    if (sprite.width > 180 || sprite.height > 250) {
       this.ScaleSprite(sprite, 84, 145) 
       return true
     }

@@ -107,7 +107,7 @@ export class CacheTextureImage {
     const numCards = this.cards.length
     const deskinfo_size = deckinfo.cards_on_game.length
     console.log('check deck info ', numCards, deskinfo_size)
-    if (deskinfo_size === 40 && numCards == 52){
+    if (deskinfo_size <= 40 && numCards == 52){
       deckinfo.use52deckIn40Deckgame()
     }
   }

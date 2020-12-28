@@ -1,90 +1,12 @@
   //////////////////////////////////////////
   //////////////////////////////// DeckInfo
   //////////////////////////////////////////
-  class DeckInfoItem {
-    constructor() {
-      this.ix;
-      this.nome;
-      this.symb;
-      this.segno;
-      this.seed_ix;
-      this.pos;
-      this.rank;
-      this.points;
-    }
-  }
-
-  class IDeckInfo40 {
-    constructor() {
-      this._Ab = {};
-      this._2b = {};
-      this._3b = {};
-      this._4b = {};
-      this._5b = {};
-      this._6b = {};
-      this._7b = {};
-      this._Fb = {};
-      this._Cb = {};
-      this._Rb = {};
-      this._Ac = {};
-      this._2c = {};
-      this._3c = {};
-      this._4c = {};
-      this._5c = {};
-      this._6c = {};
-      this._7c = {};
-      this._Fc = {};
-      this._Cc = {};
-      this._Rc = {};
-      this._Ad = {};
-      this._2d = {};
-      this._3d = {};
-      this._4d = {};
-      this._5d = {};
-      this._6d = {};
-      this._7d = {};
-      this._Fd = {};
-      this._Cd = {};
-      this._Rd = {};
-      this._As = {};
-      this._2s = {};
-      this._3s = {};
-      this._4s = {};
-      this._5s = {};
-      this._6s = {};
-      this._7s = {};
-      this._Fs = {};
-      this._Cs = {};
-      this._Rs = {};
-    }
-  }
-
- class IDeckInfo52 extends IDeckInfo40 {
-    constructor() {
-      super();
-      this._8b = {};
-      this._9b = {};
-      this._db = {};
-      this._8c = {};
-      this._9c = {};
-      this._dc = {};
-      this._8d = {};
-      this._9d = {};
-      this._dd = {};
-      this._8s = {};
-      this._9s = {};
-      this._ds = {};
-    }
-  }
 
   export class DeckInfo {
 
     constructor() {
-
-      this.deck_info_det52 = new IDeckInfo52()
-      this.deck_info_det = new IDeckInfo40()
-      this.use_52deck = false
-
+      this.deck_info_det = {}
+     
       this.cards_on_game = [
         '_Ab', '_2b', '_3b', '_4b', '_5b', '_6b', '_7b', '_Fb', '_Cb', '_Rb',
         '_Ac', '_2c', '_3c', '_4c', '_5c', '_6c', '_7c', '_Fc', '_Cc', '_Rc',
@@ -95,7 +17,6 @@
     }
 
     setToDeck40() {
-      this.use_52deck = false
       this.deck_info_det._Ab = { ix: 0, nome: 'asso bastoni', symb: 'asso', segno: 'B', seed_ix: 0, pos: 1, points: 0, rank: 0 }
       this.deck_info_det._2b = { ix: 1, nome: 'due bastoni', symb: 'due', segno: 'B', seed_ix: 0, pos: 2, points: 0, rank: 0 }
       this.deck_info_det._3b = { ix: 2, nome: 'tre bastoni', symb: 'tre', segno: 'B', seed_ix: 0, pos: 3, points: 0, rank: 0 }
@@ -140,126 +61,114 @@
 
 
     activateThe52deck() {
-      this.use_52deck = true
       this.cards_on_game = [
         '_Ab', '_2b', '_3b', '_4b', '_5b', '_6b', '_7b', '_8b', '_9b', '_10b', '_Fb', '_Cb', '_Rb',
         '_Ac', '_2c', '_3c', '_4c', '_5c', '_6c', '_7c', '_8c', '_9c', '_10c', '_Fc', '_Cc', '_Rc',
         '_Ad', '_2d', '_3d', '_4d', '_5d', '_6d', '_7d', '_8d', '_9d', '_10d', '_Fd', '_Cd', '_Rd',
         '_As', '_2s', '_3s', '_4s', '_5s', '_6s', '_7s', '_8s', '_9s', '_10s', '_Fs', '_Cs', '_Rs'];
 
-      Object.keys(this.deck_info_det).forEach(key => this.deck_info_det52[key] = this.deck_info_det[key]);
       // bastoni 
-      this.deck_info_det52._8b = { ix: 7, nome: 'otto bastoni', symb: 'ott', segno: 'B', seed_ix: 0, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det52._9b = { ix: 8, nome: 'nove bastoni', symb: 'nov', segno: 'B', seed_ix: 0, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det52._db = { ix: 9, nome: 'dieci bastoni', symb: 'die', segno: 'B', seed_ix: 0, pos: 10, points: 0, rank: 0 }
-      this.deck_info_det52._Fb = { ix: 10, nome: 'fante bastoni', symb: 'fan', segno: 'B', seed_ix: 0, pos: 11, points: 0, rank: 0 }
-      this.deck_info_det52._Cb = { ix: 11, nome: 'cavallo bastoni', symb: 'cav', segno: 'B', seed_ix: 0, pos: 12, points: 0, rank: 0 }
-      this.deck_info_det52._Rb = { ix: 12, nome: 're bastoni', symb: 're', segno: 'B', seed_ix: 0, pos: 13, points: 0, rank: 0 }
+      this.deck_info_det._8b = { ix: 7, nome: 'otto bastoni', symb: 'ott', segno: 'B', seed_ix: 0, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det._9b = { ix: 8, nome: 'nove bastoni', symb: 'nov', segno: 'B', seed_ix: 0, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det._db = { ix: 9, nome: 'dieci bastoni', symb: 'die', segno: 'B', seed_ix: 0, pos: 10, points: 0, rank: 0 }
+      this.deck_info_det._Fb = { ix: 10, nome: 'fante bastoni', symb: 'fan', segno: 'B', seed_ix: 0, pos: 11, points: 0, rank: 0 }
+      this.deck_info_det._Cb = { ix: 11, nome: 'cavallo bastoni', symb: 'cav', segno: 'B', seed_ix: 0, pos: 12, points: 0, rank: 0 }
+      this.deck_info_det._Rb = { ix: 12, nome: 're bastoni', symb: 're', segno: 'B', seed_ix: 0, pos: 13, points: 0, rank: 0 }
       //coppe
-      this.deck_info_det52._Ac.ix = 13
-      this.deck_info_det52._2c.ix = 14
-      this.deck_info_det52._3c.ix = 15
-      this.deck_info_det52._4c.ix = 16
-      this.deck_info_det52._5c.ix = 17
-      this.deck_info_det52._6c.ix = 18
-      this.deck_info_det52._7c.ix = 19
-      this.deck_info_det52._8c = { ix: 20, nome: 'otto coppe', symb: 'ott', segno: 'C', seed_ix: 1, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det52._9c = { ix: 21, nome: 'nove coppe', symb: 'nov', segno: 'C', seed_ix: 1, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det52._dc = { ix: 22, nome: 'dieci coppe', symb: 'die', segno: 'C', seed_ix: 1, pos: 10, points: 0, rank: 0 }
-      this.deck_info_det52._Fc = { ix: 23, nome: 'fante coppe', symb: 'fan', segno: 'C', seed_ix: 1, pos: 11, points: 0, rank: 0 }
-      this.deck_info_det52._Cc = { ix: 24, nome: 'cavallo coppe', symb: 'cav', segno: 'C', seed_ix: 1, pos: 12, points: 0, rank: 0 }
-      this.deck_info_det52._Rc = { ix: 25, nome: 're coppe', symb: 're', segno: 'C', seed_ix: 1, pos: 13, points: 0, rank: 0 }
+      this.deck_info_det._Ac.ix = 13
+      this.deck_info_det._2c.ix = 14
+      this.deck_info_det._3c.ix = 15
+      this.deck_info_det._4c.ix = 16
+      this.deck_info_det._5c.ix = 17
+      this.deck_info_det._6c.ix = 18
+      this.deck_info_det._7c.ix = 19
+      this.deck_info_det._8c = { ix: 20, nome: 'otto coppe', symb: 'ott', segno: 'C', seed_ix: 1, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det._9c = { ix: 21, nome: 'nove coppe', symb: 'nov', segno: 'C', seed_ix: 1, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det._dc = { ix: 22, nome: 'dieci coppe', symb: 'die', segno: 'C', seed_ix: 1, pos: 10, points: 0, rank: 0 }
+      this.deck_info_det._Fc = { ix: 23, nome: 'fante coppe', symb: 'fan', segno: 'C', seed_ix: 1, pos: 11, points: 0, rank: 0 }
+      this.deck_info_det._Cc = { ix: 24, nome: 'cavallo coppe', symb: 'cav', segno: 'C', seed_ix: 1, pos: 12, points: 0, rank: 0 }
+      this.deck_info_det._Rc = { ix: 25, nome: 're coppe', symb: 're', segno: 'C', seed_ix: 1, pos: 13, points: 0, rank: 0 }
       //denari
-      this.deck_info_det52._Ad.ix = 26
-      this.deck_info_det52._2d.ix = 27
-      this.deck_info_det52._3d.ix = 28
-      this.deck_info_det52._4d.ix = 29
-      this.deck_info_det52._5d.ix = 30
-      this.deck_info_det52._6d.ix = 31
-      this.deck_info_det52._7d.ix = 32
-      this.deck_info_det52._8d = { ix: 33, nome: 'otto denari', symb: 'ott', segno: 'D', seed_ix: 2, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det52._9d = { ix: 34, nome: 'nove denari', symb: 'nov', segno: 'D', seed_ix: 2, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det52._dd = { ix: 35, nome: 'dieci denari', symb: 'die', segno: 'D', seed_ix: 2, pos: 10, points: 0, rank: 0 }
-      this.deck_info_det52._Fd = { ix: 36, nome: 'fante denari', symb: 'fan', segno: 'D', seed_ix: 2, pos: 11, points: 0, rank: 0 }
-      this.deck_info_det52._Cd = { ix: 37, nome: 'cavallo denari', symb: 'cav', segno: 'D', seed_ix: 2, pos: 12, points: 0, rank: 0 }
-      this.deck_info_det52._Rd = { ix: 38, nome: 're denari', symb: 're', segno: 'D', seed_ix: 2, pos: 13, points: 0, rank: 0 }
+      this.deck_info_det._Ad.ix = 26
+      this.deck_info_det._2d.ix = 27
+      this.deck_info_det._3d.ix = 28
+      this.deck_info_det._4d.ix = 29
+      this.deck_info_det._5d.ix = 30
+      this.deck_info_det._6d.ix = 31
+      this.deck_info_det._7d.ix = 32
+      this.deck_info_det._8d = { ix: 33, nome: 'otto denari', symb: 'ott', segno: 'D', seed_ix: 2, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det._9d = { ix: 34, nome: 'nove denari', symb: 'nov', segno: 'D', seed_ix: 2, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det._dd = { ix: 35, nome: 'dieci denari', symb: 'die', segno: 'D', seed_ix: 2, pos: 10, points: 0, rank: 0 }
+      this.deck_info_det._Fd = { ix: 36, nome: 'fante denari', symb: 'fan', segno: 'D', seed_ix: 2, pos: 11, points: 0, rank: 0 }
+      this.deck_info_det._Cd = { ix: 37, nome: 'cavallo denari', symb: 'cav', segno: 'D', seed_ix: 2, pos: 12, points: 0, rank: 0 }
+      this.deck_info_det._Rd = { ix: 38, nome: 're denari', symb: 're', segno: 'D', seed_ix: 2, pos: 13, points: 0, rank: 0 }
       //spade
-      this.deck_info_det52._As.ix = 39
-      this.deck_info_det52._2s.ix = 40
-      this.deck_info_det52._3s.ix = 41
-      this.deck_info_det52._4s.ix = 42
-      this.deck_info_det52._5s.ix = 43
-      this.deck_info_det52._6s.ix = 44
-      this.deck_info_det52._7s.ix = 45
-      this.deck_info_det52._8s = { ix: 46, nome: 'otto spade', symb: 'ott', segno: 'S', seed_ix: 3, pos: 8, points: 0, rank: 0 }
-      this.deck_info_det52._9s = { ix: 47, nome: 'nove spade', symb: 'nov', segno: 'S', seed_ix: 3, pos: 9, points: 0, rank: 0 }
-      this.deck_info_det52._ds = { ix: 48, nome: 'dieci spade', symb: 'die', segno: 'S', seed_ix: 3, pos: 10, points: 0, rank: 0 }
-      this.deck_info_det52._Fs = { ix: 49, nome: 'fante spade', symb: 'fan', segno: 'S', seed_ix: 3, pos: 11, points: 0, rank: 0 }
-      this.deck_info_det52._Cs = { ix: 50, nome: 'cavallo spade', symb: 'cav', segno: 'S', seed_ix: 3, pos: 12, points: 0, rank: 0 }
-      this.deck_info_det52._Rs = { ix: 51, nome: 're spade', symb: 're', segno: 'S', seed_ix: 3, pos: 13, points: 0, rank: 0 }
+      this.deck_info_det._As.ix = 39
+      this.deck_info_det._2s.ix = 40
+      this.deck_info_det._3s.ix = 41
+      this.deck_info_det._4s.ix = 42
+      this.deck_info_det._5s.ix = 43
+      this.deck_info_det._6s.ix = 44
+      this.deck_info_det._7s.ix = 45
+      this.deck_info_det._8s = { ix: 46, nome: 'otto spade', symb: 'ott', segno: 'S', seed_ix: 3, pos: 8, points: 0, rank: 0 }
+      this.deck_info_det._9s = { ix: 47, nome: 'nove spade', symb: 'nov', segno: 'S', seed_ix: 3, pos: 9, points: 0, rank: 0 }
+      this.deck_info_det._ds = { ix: 48, nome: 'dieci spade', symb: 'die', segno: 'S', seed_ix: 3, pos: 10, points: 0, rank: 0 }
+      this.deck_info_det._Fs = { ix: 49, nome: 'fante spade', symb: 'fan', segno: 'S', seed_ix: 3, pos: 11, points: 0, rank: 0 }
+      this.deck_info_det._Cs = { ix: 50, nome: 'cavallo spade', symb: 'cav', segno: 'S', seed_ix: 3, pos: 12, points: 0, rank: 0 }
+      this.deck_info_det._Rs = { ix: 51, nome: 're spade', symb: 're', segno: 'S', seed_ix: 3, pos: 13, points: 0, rank: 0 }
     }
 
     use52deckIn40Deckgame() {
       // this function is used to map the ix to deck52 that will be used in a 40 deck game
       // Only need to remap the ix to identify the image name
-      Object.keys(this.deck_info_det).forEach(key => this.deck_info_det52[key] = this.deck_info_det[key]);
       // bastoni / piche
-      this.deck_info_det52._Fb.ix = 10
-      this.deck_info_det52._Cb.ix = 11
-      this.deck_info_det52._Rb.ix = 12
+      this.deck_info_det._Fb.ix = 10
+      this.deck_info_det._Cb.ix = 11
+      this.deck_info_det._Rb.ix = 12
       //coppe / quadri
-      this.deck_info_det52._Ac.ix = 13
-      this.deck_info_det52._2c.ix = 14
-      this.deck_info_det52._3c.ix = 15
-      this.deck_info_det52._4c.ix = 16
-      this.deck_info_det52._5c.ix = 17
-      this.deck_info_det52._6c.ix = 18
-      this.deck_info_det52._7c.ix = 19
-      this.deck_info_det52._Fc.ix = 23
-      this.deck_info_det52._Cc.ix = 24
-      this.deck_info_det52._Rc.ix = 25
+      this.deck_info_det._Ac.ix = 13
+      this.deck_info_det._2c.ix = 14
+      this.deck_info_det._3c.ix = 15
+      this.deck_info_det._4c.ix = 16
+      this.deck_info_det._5c.ix = 17
+      this.deck_info_det._6c.ix = 18
+      this.deck_info_det._7c.ix = 19
+      this.deck_info_det._Fc.ix = 23
+      this.deck_info_det._Cc.ix = 24
+      this.deck_info_det._Rc.ix = 25
       //denari / cuori
-      this.deck_info_det52._Ad.ix = 26
-      this.deck_info_det52._2d.ix = 27
-      this.deck_info_det52._3d.ix = 28
-      this.deck_info_det52._4d.ix = 29
-      this.deck_info_det52._5d.ix = 30
-      this.deck_info_det52._6d.ix = 31
-      this.deck_info_det52._7d.ix = 32
-      this.deck_info_det52._Fd.ix = 36
-      this.deck_info_det52._Cd.ix = 37
-      this.deck_info_det52._Rd.ix = 38
+      this.deck_info_det._Ad.ix = 26
+      this.deck_info_det._2d.ix = 27
+      this.deck_info_det._3d.ix = 28
+      this.deck_info_det._4d.ix = 29
+      this.deck_info_det._5d.ix = 30
+      this.deck_info_det._6d.ix = 31
+      this.deck_info_det._7d.ix = 32
+      this.deck_info_det._Fd.ix = 36
+      this.deck_info_det._Cd.ix = 37
+      this.deck_info_det._Rd.ix = 38
       //spade / fiori
-      this.deck_info_det52._As.ix = 39
-      this.deck_info_det52._2s.ix = 40
-      this.deck_info_det52._3s.ix = 41
-      this.deck_info_det52._4s.ix = 42
-      this.deck_info_det52._5s.ix = 43
-      this.deck_info_det52._6s.ix = 44
-      this.deck_info_det52._7s.ix = 45
-      this.deck_info_det52._Fs.ix = 49
-      this.deck_info_det52._Cs.ix = 50
-      this.deck_info_det52._Rs.ix = 51
+      this.deck_info_det._As.ix = 39
+      this.deck_info_det._2s.ix = 40
+      this.deck_info_det._3s.ix = 41
+      this.deck_info_det._4s.ix = 42
+      this.deck_info_det._5s.ix = 43
+      this.deck_info_det._6s.ix = 44
+      this.deck_info_det._7s.ix = 45
+      this.deck_info_det._Fs.ix = 49
+      this.deck_info_det._Cs.ix = 50
+      this.deck_info_det._Rs.ix = 51
     }
 
     get_rank(card_lbl) {
-      if (this.use_52deck) {
-        return this.deck_info_det52[card_lbl].rank;
-      }
       return this.deck_info_det[card_lbl].rank;
     }
 
     get_points(card_lbl) {
-      if (this.use_52deck) {
-        return this.deck_info_det52[card_lbl].points;
-      }
       return this.deck_info_det[card_lbl].points;
     }
 
     get_card_info(card_lbl) {
-      if (this.use_52deck) {
-        return this.deck_info_det52[card_lbl];
-      }
       return this.deck_info_det[card_lbl];
     }
 
@@ -274,11 +183,8 @@
     set_rank_points(arr_rank, arr_points) {
       var i, symb_card;
       for (i = 0; i < this.cards_on_game.length; i++) {
-        var k = this.cards_on_game[i];
-        var card = this.deck_info_det[k];
-        if (this.use_52deck) {
-          card = this.deck_info_det52[k]
-        }
+        const k = this.cards_on_game[i];
+        let card = this.deck_info_det[k];
         if (card == null) {
           throw (new Error('Error on deck ' + k + ' not found'));
         }
@@ -289,8 +195,8 @@
     }
 
     deck_info_dabriscola() {
-      var val_arr_rank = { sei: 6, cav: 9, qua: 4, re: 10, set: 7, due: 2, cin: 5, asso: 12, fan: 8, tre: 11 };
-      var val_arr_points = { sei: 0, cav: 3, qua: 0, re: 4, set: 0, due: 0, cin: 0, asso: 11, fan: 2, tre: 10 };
+      const val_arr_rank = { sei: 6, cav: 9, qua: 4, re: 10, set: 7, due: 2, cin: 5, asso: 12, fan: 8, tre: 11 };
+      const val_arr_points = { sei: 0, cav: 3, qua: 0, re: 4, set: 0, due: 0, cin: 0, asso: 11, fan: 2, tre: 10 };
 
       this.set_rank_points(val_arr_rank, val_arr_points);
       console.log('Deck briscola created');
