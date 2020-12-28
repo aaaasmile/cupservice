@@ -55,4 +55,9 @@ avere non funzionante quello che fino a ieri aveva funzionato prima di un'update
 Lo store vuex è accessibile dalle classi tipo BriscolaGfx usando semplicemente
 import store from '../../../vue/store/index.js'
 
+### Attualizzare le carte
+rsync -av carte.7z igor@invido.it:~/app/go/cup_service/current/static2/carte
+Poi su invido.it
+ 7z x carte.7z
+
 
