@@ -155,6 +155,7 @@ export class CardsPlayerGfx {
   }
 
   handlePress(event, data, sprite) {
+    sprite.enabled = true
     sprite.press = () => {
       console.log('Card is pressed')
       //sprite.enabled = false // remove the interactivity

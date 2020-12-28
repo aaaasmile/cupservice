@@ -26,7 +26,7 @@ export class BuilderGameGfx {
 
         switch (this._game_name) {
             case 'briscola':
-                this.build_briscola(opt, cache, staticSceneGfx)
+                this.build_briscola(opt, cache, staticSceneGfx, tink)
                 break;
             default:
                 throw (new Error(`game gfx not supported ${this._game_name}`))
@@ -71,9 +71,9 @@ export class BuilderGameGfx {
         this._isDirty = false
     }
 
-    build_briscola(opt, cache, staticSceneGfx) {
+    build_briscola(opt, cache, staticSceneGfx, tink) {
         console.log('Build briscola gfx')
-        const briGfx = new BriscolaGfx(cache, staticSceneGfx, this._tink)
+        const briGfx = new BriscolaGfx(cache, staticSceneGfx, tink)
         this._core_state = briGfx.BuildGameVsCpu(opt)
     }
 }

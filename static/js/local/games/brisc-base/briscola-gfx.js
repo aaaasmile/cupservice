@@ -15,6 +15,7 @@ export class BriscolaGfx {
     this._deck_info = null
     this._core_state = null
     this._num_players = null
+    this._name_Me = ''
   }
 
   BuildGameVsCpu(opt) {
@@ -44,6 +45,7 @@ export class BriscolaGfx {
     markerMe.Build(nameMe, avatarMe)
     markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddMarker(nameMe, markerMe)
+    this._name_Me = nameMe
 
     const scoreBoard = new ScoreBoardGfx(90)
     scoreBoard.Build(nameCpu, nameMe, args.num_segni)
@@ -66,7 +68,7 @@ export class BriscolaGfx {
     cards_me.Build(args.carte.length, args.carte, 'normal')
     cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsme', cards_me)
-
+    
     let cards_opp = new CardsPlayerGfx(70, this._tink, this._deck_info, this._cache)
     cards_opp.Build(args.carte.length, [], 'compact_small')
     cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
@@ -80,6 +82,23 @@ export class BriscolaGfx {
     this.animate_distr_cards(args.carte)
 
   }
+
+  on_all_ev_have_to_play(args) {
+    console.log('on_all_ev_have_to_play', args)
+    const player_onturn = args.player_on_turn
+    if (this._name_Me !== player_onturn){
+      return
+    }
+    const cards_me_gfx = this._staticScene.get_component('cardsme')
+    cards_me_gfx.OnClick((ev) => {
+      console.log('Click rec in handler', ev)
+   
+    })
+  }
+
+  on_all_ev_player_has_played(args) {
+  }
+
 
   on_all_ev_giocata_end(args) {
   }
@@ -97,12 +116,6 @@ export class BriscolaGfx {
   }
 
   on_all_ev_mano_end(args) {
-  }
-
-  on_all_ev_have_to_play(args) {
-  }
-
-  on_all_ev_player_has_played(args) {
   }
 
   animate_distr_cards(carte) {

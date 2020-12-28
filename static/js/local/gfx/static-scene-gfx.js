@@ -85,6 +85,10 @@ export class StaticSceneGfx {
       // static scene should be ready before render animations
       return
     }
+    if (this._animations.length === 0){
+      return
+    }
+    
     this._animations.forEach(ani => {
       if (ani.CheckForStart()) {
         const compKey = ani.get_start_comp()
