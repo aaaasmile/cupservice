@@ -2,7 +2,7 @@
 import { CacheTextureImage } from './cache-texture-image.js'
 
 const c_nomi_semi = ["basto", "coppe", "denar", "spade"]
-const c_nomi_semi_fr = ["cuori", "fiori", "picch", "quadr"]
+const c_nomi_semi_fr = ["picch", "quadr", "cuori", "fiori"]
 const c_nomi_simboli = ["cope", "zero", "vuoto_trasp", "vuoto_traspfull"]
 const c_nomi_avatar = ["ade", "christian", "elliot", "jenny", "joe", "nan", "stevie", "zoe"]
 const c_nomi_sfondi = ["table"]
@@ -81,10 +81,10 @@ class CardLoaderGfx {
 
     let nomi_simboli = [...c_nomi_simboli]
     let nomi_semi = [...c_nomi_semi]
-    if (deck_name === 'francesi'){
-      nomi_semi = [...c_nomi_semi_fr]    
+    if (deck_name === 'francesi') {
+      nomi_semi = [...c_nomi_semi_fr]
     }
-    
+
     let num_cards_onsuit = this.getNumCardOnSuit(deck_name)
     if (this.deck_france) {
       num_cards_onsuit = 13

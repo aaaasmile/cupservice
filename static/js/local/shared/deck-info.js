@@ -199,6 +199,49 @@
       this.deck_info_det52._Rs = { ix: 51, nome: 're spade', symb: 're', segno: 'S', seed_ix: 3, pos: 13, points: 0, rank: 0 }
     }
 
+    use52deckIn40Deckgame() {
+      // this function is used to map the ix to deck52 that will be used in a 40 deck game
+      // Only need to remap the ix to identify the image name
+      Object.keys(this.deck_info_det).forEach(key => this.deck_info_det52[key] = this.deck_info_det[key]);
+      // bastoni / piche
+      this.deck_info_det52._Fb.ix = 10
+      this.deck_info_det52._Cb.ix = 11
+      this.deck_info_det52._Rb.ix = 12
+      //coppe / quadri
+      this.deck_info_det52._Ac.ix = 13
+      this.deck_info_det52._2c.ix = 14
+      this.deck_info_det52._3c.ix = 15
+      this.deck_info_det52._4c.ix = 16
+      this.deck_info_det52._5c.ix = 17
+      this.deck_info_det52._6c.ix = 18
+      this.deck_info_det52._7c.ix = 19
+      this.deck_info_det52._Fc.ix = 23
+      this.deck_info_det52._Cc.ix = 24
+      this.deck_info_det52._Rc.ix = 25
+      //denari / cuori
+      this.deck_info_det52._Ad.ix = 26
+      this.deck_info_det52._2d.ix = 27
+      this.deck_info_det52._3d.ix = 28
+      this.deck_info_det52._4d.ix = 29
+      this.deck_info_det52._5d.ix = 30
+      this.deck_info_det52._6d.ix = 31
+      this.deck_info_det52._7d.ix = 32
+      this.deck_info_det52._Fd.ix = 36
+      this.deck_info_det52._Cd.ix = 37
+      this.deck_info_det52._Rd.ix = 38
+      //spade / fiori
+      this.deck_info_det52._As.ix = 39
+      this.deck_info_det52._2s.ix = 40
+      this.deck_info_det52._3s.ix = 41
+      this.deck_info_det52._4s.ix = 42
+      this.deck_info_det52._5s.ix = 43
+      this.deck_info_det52._6s.ix = 44
+      this.deck_info_det52._7s.ix = 45
+      this.deck_info_det52._Fs.ix = 49
+      this.deck_info_det52._Cs.ix = 50
+      this.deck_info_det52._Rs.ix = 51
+    }
+
     get_rank(card_lbl) {
       if (this.use_52deck) {
         return this.deck_info_det52[card_lbl].rank;

@@ -20,7 +20,7 @@ export class BriscolaGfx {
   BuildGameVsCpu(opt) {
     let b2core = PrepareGameVsCpu(this, opt)
     this._deck_info = b2core._deck_info
-    //this._deck_info.activateThe52deck() // TEST igsa
+    this._cache.check_deckinfo(this._deck_info)
     this._core_state = b2core._coreStateManager
     return b2core._coreStateManager
   }
