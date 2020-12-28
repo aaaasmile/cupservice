@@ -153,15 +153,15 @@ export class CardsPlayerGfx {
   }
 
   handlePress(event, data, sprite) {
-    sprite.enabled = true
-    sprite.press = () => {
-      console.log('Card is pressed')
-      //sprite.enabled = false // remove the interactivity
-      //sprite.visible = false
+    sprite.interactive = true
+    console.log('Make interactive sprite ', sprite)
+    sprite.on('mousedown', () => {
+      console.log('Card is pressed', data)
+      
       if (this._clickHandler.has(event)) {
         this._clickHandler.get(event)(data)
       }
-    }
+    })
   }
 }
 
