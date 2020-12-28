@@ -1,7 +1,3 @@
-  //////////////////////////////////////////
-  //////////////////////////////// DeckInfo
-  //////////////////////////////////////////
-
   export class DeckInfo {
 
     constructor() {
@@ -201,5 +197,4 @@
       this.set_rank_points(val_arr_rank, val_arr_points);
       console.log('Deck briscola created');
     }
-
   }
