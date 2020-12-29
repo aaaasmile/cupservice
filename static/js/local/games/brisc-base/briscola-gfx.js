@@ -17,7 +17,7 @@ export class BriscolaGfx {
     this._name_Me = ''
   }
 
-  set_core_caller(core_caller){
+  set_core_caller(core_caller) {
     this._core_caller = core_caller
   }
 
@@ -71,7 +71,7 @@ export class BriscolaGfx {
     cards_me.Build(args.carte.length, args.carte, 'normal')
     cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsme', cards_me)
-    
+
     let cards_opp = new CardsPlayerGfx(70, this._deck_info, this._cache)
     cards_opp.Build(args.carte.length, [], 'compact_small')
     cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
@@ -88,8 +88,9 @@ export class BriscolaGfx {
 
   on_all_ev_have_to_play(args) {
     console.log('on_all_ev_have_to_play', args)
+    // TODO move the player mark on turn
     const player_onturn = args.player_on_turn
-    if (this._name_Me !== player_onturn){
+    if (this._name_Me !== player_onturn) {
       return
     }
     const cards_me_gfx = this._staticScene.get_component('cardsme')
@@ -98,6 +99,11 @@ export class BriscolaGfx {
       this._core_caller.play_card(card_lbl)
       cards_me_gfx.UnsubClick(subId)
     })
+  }
+
+  on_pl_ev_player_cardnot_allowed(args) {
+    console.log('Player has played wrong: ', args)
+    throw (new Error(`How could you ever played a wrong card (${args.wrong_card}) ?`))
   }
 
   on_all_ev_player_has_played(args) {

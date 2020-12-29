@@ -118,6 +118,9 @@ export class AlgBriscBase {
     this._num_cards_on_deck -= this._players.length;
   }
 
+  on_pl_ev_player_cardnot_allowed(args) {
+  }
+
   on_all_ev_new_mano(args) {
     console.log("[%s] New mano " + JSON.stringify(args), this._player_name);
     this._card_played = [];

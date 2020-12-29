@@ -69,7 +69,7 @@ export class CoreBriscolaBase {
     let data_card_gioc = { player_name: player_name, card_played: lbl_card };
     if (pos !== -1) {
       //_game_core_recorder.store_player_action(player.name, 'cardplayed', player.name, lbl_card);
-      let old_size = this._core_data.carte_in_mano[player_name].length;
+      //let old_size = this._core_data.carte_in_mano[player_name].length;
       this._core_data.carte_in_mano[player_name].splice(pos, 1);
       console.log('++' + this._core_data.mano_count + ',' + this._core_data.carte_gioc_mano_corr.length +
         ',Card ' + lbl_card + ' played from player ' + player_name);
@@ -81,7 +81,7 @@ export class CoreBriscolaBase {
       this._coreStateManager.submit_next_state('st_continua_mano');
     } else {
       console.warn('Card ' + lbl_card + ' not allowed to be played from player ' + player_name);
-      this._coreStateManager.fire_to_player(player_name, 'ev_player_cardnot_allowed', { hand_player: cards, wrong_card: lbl_card });
+      this._coreStateManager.fire_to_player(player_name, 'ev_player_cardnot_allowed', { hand_player: cards, wrong_card: lbl_card, player_on_turn: player_name });
     }
   }
 
