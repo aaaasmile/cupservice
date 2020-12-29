@@ -153,9 +153,10 @@ export class BriscolaGfx {
       cards_me_gfx.Redraw()
       this._core_state.continue_process_events('after animation new giocata')
     })
-    cards_anim[fnix]()
 
     this._core_state.suspend_proc_gevents('suspend animation new giocata')
+
+    cards_anim[fnix]() // start animation
   }
 }
 
