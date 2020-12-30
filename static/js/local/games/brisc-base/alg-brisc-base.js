@@ -152,8 +152,8 @@ export class AlgBriscBase {
   on_all_ev_player_has_played(args) {
     //args = {"cards_played":{"player_name":"Luigi","card_played":"_5c"}}
     console.log("[%s] Player has played " + JSON.stringify(args), this._player_name);
-    const card = args.cards_played.card_played
-    if (args.cards_played.player_name === this._player_name) {
+    const card = args.card_played[0]
+    if (args.player_name === this._player_name) {
       this._cards_on_hand = this._cards_on_hand.filter(x => x !== card)
     } else {
       this._card_played.push(card)

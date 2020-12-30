@@ -47,7 +47,7 @@ export class CoreBriscolaBase {
     this._coreStateManager.submit_next_state('st_new_giocata');
   }
 
-  AddPlayer(ix, player){
+  AddPlayer(ix, player) {
     this._players[0] = player
   }
 
@@ -66,7 +66,7 @@ export class CoreBriscolaBase {
     }
     let cards = this._core_data.carte_in_mano[player_name];
     let pos = cards.indexOf(lbl_card);
-    let data_card_gioc = { player_name: player_name, card_played: lbl_card };
+    let data_card_gioc = { player_name: player_name, card_played: [lbl_card] };
     if (pos !== -1) {
       //_game_core_recorder.store_player_action(player.name, 'cardplayed', player.name, lbl_card);
       //let old_size = this._core_data.carte_in_mano[player_name].length;
@@ -74,7 +74,7 @@ export class CoreBriscolaBase {
       console.log('++' + this._core_data.mano_count + ',' + this._core_data.carte_gioc_mano_corr.length +
         ',Card ' + lbl_card + ' played from player ' + player_name);
       this._core_data.carte_gioc_mano_corr.push({ lbl_card: lbl_card, player: player_name });
-      this._coreStateManager.fire_all('ev_player_has_played', { cards_played: data_card_gioc });
+      this._coreStateManager.fire_all('ev_player_has_played', data_card_gioc);
       this._core_data.round_players.splice(0, 1);
       //console.log('_carte_in_mano ' + player_name + ' size is ' + this._core_data.carte_in_mano[player.name].length + ' _round_players size is ' + this._core_data.round_players.length);
       //console.log('*** new size is ' + this._core_data.carte_in_mano[player.name].length + ' old size is ' + old_size);
@@ -106,7 +106,7 @@ export class CoreBriscolaBase {
       let data_newgioc = {
         carte: this._core_data.carte_in_mano[player],
         brisc: this._briscola_in_tav_lbl,
-        num_card_deck: this._deck_info.get_numofcards_ondeck() - 1 -  this._core_data.carte_in_mano[player].length * this._core_data.players.length,
+        num_card_deck: this._deck_info.get_numofcards_ondeck() - 1 - this._core_data.carte_in_mano[player].length * this._core_data.players.length,
       };
       this._coreStateManager.fire_to_player(player, 'ev_brisc_new_giocata', data_newgioc);
     });

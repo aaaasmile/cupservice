@@ -87,8 +87,11 @@ export class BriscolaGfx {
   }
 
   on_all_ev_have_to_play(args) {
+    //args: {player_on_turn: "Luisa"}
     console.log('on_all_ev_have_to_play', args)
-    // TODO move the player mark on turn
+    const marker = this._staticScene.GetMarker(args.player_on_turn)
+    marker.OnTurn(true)
+    
     const player_onturn = args.player_on_turn
     if (this._name_Me !== player_onturn) {
       return
@@ -102,11 +105,18 @@ export class BriscolaGfx {
   }
 
   on_pl_ev_player_cardnot_allowed(args) {
+    //args: hand_player: Array(3), wrong_card: "_3b", player_on_turn: "Mario"}
     console.log('Player has played wrong: ', args)
     throw (new Error(`How could you ever played a wrong card (${args.wrong_card}) ?`))
   }
 
   on_all_ev_player_has_played(args) {
+    // args: {player_name: "Luisa", card_played: Array(1)
+    // card_played: [_Ab]
+    console.log('on_all_ev_player_has_played ', args)
+    const marker = this._staticScene.GetMarker(args.player_name)
+    marker.OnTurn(false)
+    
   }
 
 
