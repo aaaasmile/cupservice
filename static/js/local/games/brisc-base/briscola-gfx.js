@@ -85,6 +85,9 @@ export class BriscolaGfx {
     this.animate_distr_cards(args.carte)
 
   }
+  
+  on_all_ev_new_mano(args) {
+  }
 
   on_all_ev_have_to_play(args) {
     //args: {player_on_turn: "Luisa"}
@@ -119,6 +122,11 @@ export class BriscolaGfx {
     
   }
 
+  on_all_ev_mano_end(args) {
+  }
+
+  on_pl_ev_pesca_carta(args) {
+  }
 
   on_all_ev_giocata_end(args) {
   }
@@ -129,14 +137,7 @@ export class BriscolaGfx {
   on_all_ev_waiting_tocontinue_game(args) {
   }
 
-  on_pl_ev_pesca_carta(args) {
-  }
-
-  on_all_ev_new_mano(args) {
-  }
-
-  on_all_ev_mano_end(args) {
-  }
+ 
 
   animate_distr_cards(carte) {
     let cards_anim = []
