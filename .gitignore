@@ -1,3 +1,4 @@
 *.exe
 tmp
 static2/carte/*/
+static2/music/*.*
