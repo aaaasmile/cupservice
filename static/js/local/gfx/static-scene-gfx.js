@@ -85,21 +85,23 @@ export class StaticSceneGfx {
       // static scene should be ready before render animations
       return
     }
-    if (this._animations.length === 0){
+    if (this._animations.length === 0) {
       return
     }
-    
+
     this._animations.forEach(ani => {
       if (ani.CheckForStart()) {
         const compKey = ani.get_start_comp()
         if (compKey) {
           const comp = this.get_component(compKey)
-          const sprite = comp.get_animation_sprite(ani.name())
+          const sprite = comp.get_animation_sprite(ani.name(), ani.data())
 
           const compStopKey = ani.get_stop_comp()
           if (compStopKey) {
             const compStop = this.get_component(compStopKey)
-            compStop.set_animation_sprite_target(ani.name(), sprite)
+            compStop.set_animation_sprite_target(ani.name(), sprite, ani.data())
+          } else {
+            throw (new Error('Target component is not set'))
           }
           //console.log('add sprite ', sprite)
           ani.add_sprite(sprite)

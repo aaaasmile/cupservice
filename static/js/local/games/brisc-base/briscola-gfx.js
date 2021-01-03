@@ -119,6 +119,44 @@ export class BriscolaGfx {
     console.log('on_all_ev_player_has_played ', args)
     const marker = this._staticScene.GetMarker(args.player_name)
     marker.OnTurn(false)
+
+    let src_keygfx_comp = 'cardsme'
+    if (args.player_name !== this._name_Me){
+      src_keygfx_comp = 'cardsopp'
+    }
+    const hand_gfx = this._staticScene.get_component(src_keygfx_comp)
+
+    let cards_anim = []
+    let fnix = 0
+    const carte = args.card_played
+    carte.forEach(card_lbl => {
+      //hand_gfx.hide_card(card_lbl)
+
+      cards_anim.push(() => {
+        console.log('Submit animation for ', card_lbl)
+        const aniCardPl = AniCards('card_played', src_keygfx_comp, 'table', card_lbl, (nn, start_cmp, stop_comp) => {
+          console.log(`Animation ${nn} on ${card_lbl} is terminated`)
+          const table_gfx = this._staticScene.get_component(stop_comp)
+          table_gfx.set_visible(card_lbl)
+          fnix++
+          cards_anim[fnix]()
+        })
+        this._staticScene.AddAnimation(aniCardPl)
+      })
+    })
+
+    const aniTitle = 'after animation cards played'
+    cards_anim.push(() => {
+      console.log('All animations are terminated')
+      const comp_gfx = this._staticScene.get_component('table')
+      comp_gfx.Redraw()
+      // finally continue the core processing
+      this._core_state.continue_process_events(aniTitle)
+    })
+
+    this._core_state.suspend_proc_gevents(aniTitle)
+
+    cards_anim[fnix]() // start animation
     
   }
 
@@ -126,6 +164,7 @@ export class BriscolaGfx {
   }
 
   on_pl_ev_pesca_carta(args) {
+    // deckGfx.PopCard(2)
   }
 
   on_all_ev_giocata_end(args) {
@@ -146,7 +185,7 @@ export class BriscolaGfx {
       // one animation for each cards on hand
       cards_anim.push(() => {
         console.log('Submit animation for ', card_lbl)
-        let aniDistr = AniCards('distr_card', 'deck', 'cardsme', (nn, start_cmp, stop_comp) => {
+        let aniDistr = AniCards('distr_card', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
           console.log(`Animation ${nn} on ${card_lbl} is terminated`)
           let cards_me_gfx = this._staticScene.get_component(stop_comp)
           cards_me_gfx.set_visible(card_lbl)

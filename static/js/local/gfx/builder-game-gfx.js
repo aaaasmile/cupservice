@@ -28,16 +28,7 @@ export class BuilderGameGfx {
             default:
                 throw (new Error(`game gfx not supported ${this._game_name}`))
         }
-
-        // // test hand player
-        // let music = GetMusicManagerInstance()
-       
-        // cardsMeGfx.OnClick((ev) => {
-        //   console.log('Click rec in handler', ev)
-        //   music.Play('played')
-        //   deckGfx.PopCard(2)
-        // })
-
+        
         this._staticScene = staticSceneGfx
         this._isDirty = true
 

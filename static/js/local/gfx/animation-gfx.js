@@ -1,12 +1,13 @@
-export default (name, startComp, stopCom, fnTerm) => {
+export default (name, startComp, stopCom, data, fnTerm) => {
     let _container = new PIXI.Container()
     let _sprites = []
     let _started = false
     let _terminated = false
-    let _name = name
-    let _startComp = startComp
-    let _stopCom = stopCom
-    let _fnTerm = fnTerm
+    const _name = name
+    const _startComp = startComp
+    const _stopCom = stopCom
+    const _fnTerm = fnTerm
+    const _data = data
     return {
         Update(delta) {
             if (!_started) return
@@ -16,11 +17,11 @@ export default (name, startComp, stopCom, fnTerm) => {
                 let y_on_target = false
                 const im = s.vel_im
                 const iq = s.vel_iq
-               
+
                 if (s.m_type === 'x_axis') {
                     // moving on x ...
                     //console.log('Moving on x: ', s.x, s.y)
-                    s.x +=  s.vx
+                    s.x += s.vx
                     s.y = im * s.x / 1000 + iq;
                     if ((s.x > s.end_x && s.vx > 0) ||
                         (s.x < s.end_x && s.vx < 0)) {
@@ -29,7 +30,7 @@ export default (name, startComp, stopCom, fnTerm) => {
                 } else {
                     //moving on y ...
                     //console.log('Moving on y: ', s.x, s.y)
-                    s.y +=  s.vy
+                    s.y += s.vy
                     s.x = im * s.y / 1000 + iq;
                     if ((s.y > s.end_y && s.vy > 0) ||
                         (s.y < s.end_y && s.vy < 0)) {
@@ -60,6 +61,7 @@ export default (name, startComp, stopCom, fnTerm) => {
         name() { return _name },
         get_start_comp() { return _startComp },
         get_stop_comp() { return _stopCom },
+        data() { return _data },
         add_sprite(ss) {
             ss.ini_x = ss.x
             ss.ini_y = ss.y
@@ -67,7 +69,7 @@ export default (name, startComp, stopCom, fnTerm) => {
             _container.addChild(ss)
         },
         complete() {
-            _fnTerm(_name,_startComp, _stopCom)
+            _fnTerm(_name, _startComp, _stopCom)
         }
     }
 }

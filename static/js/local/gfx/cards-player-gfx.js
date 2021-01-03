@@ -10,6 +10,8 @@ export class CardsPlayerGfx {
     this._cache = cache
     this._visibleSprite = []
     this._ani_velocity = 20
+    this._emptyTexture = null
+    this._textureCards = []
   }
 
   get_space_x(texture_w, mode) {
@@ -59,7 +61,7 @@ export class CardsPlayerGfx {
     }
 
     const cdtempty = this._cache.GetTextureFromSymbol('vuoto_trasp', this._deck_info)
-
+    this._emptyTexture = cdtempty
     let iniX = 0
     let iniY = 0
     let x = iniX
@@ -110,6 +112,26 @@ export class CardsPlayerGfx {
     this._isDirty = true
   }
 
+  get_animation_sprite(name, data) {
+    if (name === 'card_played') {
+      const card_lbl = data
+      for (let index = 0; index < this._sprites.length; index++) {
+        if (!this._visibleSprite[index]) {
+          continue
+        }
+        const spr_src = this._sprites[index]
+        if ((spr_src.cup_data_lbl && spr_src.cup_data_lbl === card_lbl) || !spr_src.cup_data_lbl) {
+          const cardTexture = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
+          let sprite = new PIXI.Sprite(cardTexture)
+          sprite.x = spr_src.x
+          sprite.y = spr_src.y
+          return sprite
+        }
+      }
+    }
+    throw (new Error(`animation not recognized ${name} and data ${data}`))
+  }
+
   set_animation_sprite_target(name, sprite) {
     if (name === "distr_card") {
       const ix = this._visibleSprite.indexOf(false)
@@ -139,6 +161,26 @@ export class CardsPlayerGfx {
       }
     }
     throw (new Error(`set_visible on card not found ${card_lbl}`))
+  }
+
+  hide_card(card_lbl) {
+    console.log('hide card ', card_lbl)
+    for (let index = 0; index < this._sprites.length; index++) {
+      const sprite = this._sprites[index];
+      if (sprite.cup_data_lbl === card_lbl) {
+        this._visibleSprite[index] = false
+        sprite.texture = this._emptyTexture
+        const old_x = sprite.x
+        const old_y = sprite.y
+        //console.log('Sprite pos ', old_x, old_y)
+        Helper.ScaleCardSpriteToStdIfNeeded(sprite)
+        sprite.x = old_x
+        sprite.y = old_y
+        //this.Redraw()
+        return
+      }
+    }
+    throw (new Error(`hide_card  card not found ${card_lbl}`))
   }
 
   UnsubClick(id) {
