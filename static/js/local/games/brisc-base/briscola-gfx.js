@@ -118,7 +118,7 @@ export class BriscolaGfx {
     // card_played: [_Ab]
     console.log('on_all_ev_player_has_played ', args)
     const marker = this._staticScene.GetMarker(args.player_name)
-    marker.OnTurn(false)
+    
 
     let src_keygfx_comp = 'cardsme'
     if (args.player_name !== this._name_Me){
@@ -130,8 +130,6 @@ export class BriscolaGfx {
     let fnix = 0
     const carte = args.card_played
     carte.forEach(card_lbl => {
-      //hand_gfx.hide_card(card_lbl)
-
       cards_anim.push(() => {
         console.log('Submit animation for ', card_lbl)
         const aniCardPl = AniCards('card_played', src_keygfx_comp, 'table', card_lbl, (nn, start_cmp, stop_comp) => {
@@ -150,6 +148,7 @@ export class BriscolaGfx {
       console.log('All animations are terminated')
       const comp_gfx = this._staticScene.get_component('table')
       comp_gfx.Redraw()
+      marker.OnTurn(false)
       // finally continue the core processing
       this._core_state.continue_process_events(aniTitle)
     })

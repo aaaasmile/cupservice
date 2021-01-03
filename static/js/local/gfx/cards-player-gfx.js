@@ -125,6 +125,7 @@ export class CardsPlayerGfx {
           let sprite = new PIXI.Sprite(cardTexture)
           sprite.x = spr_src.x + this._container.x
           sprite.y = spr_src.y + this._container.y
+          this.hide_card(card_lbl)
           return sprite
         }
       }
@@ -172,9 +173,13 @@ export class CardsPlayerGfx {
   hide_card(card_lbl) {
     console.log('hide card ', card_lbl)
     for (let index = 0; index < this._sprites.length; index++) {
+      if (!this._visibleSprite[index]) {
+        continue
+      }
+      this._visibleSprite[index] = false
+
       const sprite = this._sprites[index];
-      if (sprite.cup_data_lbl === card_lbl) {
-        this._visibleSprite[index] = false
+      if ((sprite.cup_data_lbl && sprite.cup_data_lbl === card_lbl) || (!sprite.cup_data_lbl)) {
         sprite.texture = this._emptyTexture
         const old_x = sprite.x
         const old_y = sprite.y
