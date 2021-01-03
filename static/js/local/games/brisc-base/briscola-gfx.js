@@ -176,8 +176,6 @@ export class BriscolaGfx {
   on_all_ev_waiting_tocontinue_game(args) {
   }
 
- 
-
   animate_distr_cards(carte) {
     let cards_anim = []
     let fnix = 0
@@ -199,8 +197,10 @@ export class BriscolaGfx {
     cards_anim.push(() => {
       // finally continue the core processing
       console.log('All animations are terminated')
-      let cards_me_gfx = this._staticScene.get_component('cardsme')
+      const cards_me_gfx = this._staticScene.get_component('cardsme')
       cards_me_gfx.Redraw()
+      const cards_opp_gfx = this._staticScene.get_component('cardsopp')
+      cards_opp_gfx.set_deck_visible() // oppponent doesn't animate
       this._core_state.continue_process_events('after animation new giocata')
     })
 

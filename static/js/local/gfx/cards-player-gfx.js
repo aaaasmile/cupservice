@@ -123,8 +123,8 @@ export class CardsPlayerGfx {
         if ((spr_src.cup_data_lbl && spr_src.cup_data_lbl === card_lbl) || !spr_src.cup_data_lbl) {
           const cardTexture = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
           let sprite = new PIXI.Sprite(cardTexture)
-          sprite.x = spr_src.x
-          sprite.y = spr_src.y
+          sprite.x = spr_src.x + this._container.x
+          sprite.y = spr_src.y + this._container.y
           return sprite
         }
       }
@@ -142,6 +142,12 @@ export class CardsPlayerGfx {
       return Helper.CalcSpriteVelocity(sprite, this._ani_velocity)
     }
     throw (new Error(`animation in card player not recognized ${name}`))
+  }
+
+  set_deck_visible() {
+    for (let index = 0; index < this._sprites.length; index++) {
+      this._visibleSprite[index] = true
+    }
   }
 
   set_visible(card_lbl) {
