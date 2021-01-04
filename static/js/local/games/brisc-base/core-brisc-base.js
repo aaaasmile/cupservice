@@ -386,8 +386,8 @@ export function PrepareGameVsCpu(algGfx, opt) {
   playerOpp._alg.set_deck_info(b2core._deck_info)
 
   let playerMe = new Player(new AlgBriscBase(namePl2), coreStateManager);
-  const core_caller = playerMe.set_gfx_on_alg(algGfx)
-  algGfx.set_core_caller(core_caller)
+  playerMe.set_gfx_on_alg(algGfx)
+  
 
   b2core.AddPlayer(0, playerOpp)
   b2core.AddPlayer(1, playerMe)

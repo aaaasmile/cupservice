@@ -13,10 +13,9 @@ export class Player {
     } else {
       this._coreStateManager = coreStateManager
     }
-    
   }
 
-  set_avatar(avatar_name, detail){
+  set_avatar(avatar_name, detail) {
     this._avatar_detail = detail
     this._avatar_name = avatar_name
   }
@@ -43,7 +42,7 @@ export class Player {
     );
   }
 
-  set_gfx_on_alg(gfx) {
+  set_gfx_on_alg(algGfx) {
     if (!this._core_caller || !this._alg) {
       throw (new Error('_core_caller or _alg is not available, do you have called set_alg before?'))
     }
@@ -53,11 +52,11 @@ export class Player {
     this._alg.set_automatic_playing(false)
     this._gfxSubscriber = new ActorStateSubjectSubscriber(
       this._coreStateManager,
-      gfx,
+      algGfx,
       { log_all: false, log_missed: true },
       this._name
     );
-    return this._core_caller
+    algGfx.set_core_caller(this._core_caller)
   }
 
   sit_down(pos) {
