@@ -5,22 +5,8 @@ import { CoreCaller } from './core-caller.js'
 //////////////////////////////// Player
 //////////////////////////////////////////
 export class Player {
-  constructor(alg, coreStateManager, name) {
+  constructor(alg, coreStateManager) {
     this._core_caller = null
-    this._name = name
-    if (alg) {
-      this.set_alg(alg, coreStateManager)
-    } else {
-      this._coreStateManager = coreStateManager
-    }
-  }
-
-  set_avatar(avatar_name, detail) {
-    this._avatar_detail = detail
-    this._avatar_name = avatar_name
-  }
-
-  set_alg(alg, coreStateManager) {
     this._name = alg._player_name
     this._coreStateManager = coreStateManager
     this._alg = alg
@@ -42,10 +28,12 @@ export class Player {
     );
   }
 
+  set_avatar(avatar_name, detail) {
+    this._avatar_detail = detail
+    this._avatar_name = avatar_name
+  }
+
   set_gfx_on_alg(algGfx) {
-    if (!this._core_caller || !this._alg) {
-      throw (new Error('_core_caller or _alg is not available, do you have called set_alg before?'))
-    }
     if (this._gfxSubscriber) {
       this._gfxSubscriber.dispose()
     }

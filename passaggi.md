@@ -11,10 +11,6 @@ L'istruzione script type="module" in SpecRunner.html è il bridge.
 I file di spec vanno messi al fianco dell'implementazione delle classi. Il fileSpecRunner.html
 va aggiornato manualmente.
 I files jsconfig.json mi servono per avere il code complete in VS code.
-
-## TODO
-- Sto cercando di completare la classe BriscolaGfx
-
 ## Problemi
 Ho avuto problemi con i files statici. Specialmente quelli che vanno in module (games-cup.js). 
 In questo caso Jasmine (specrunner.html) non va.
@@ -67,4 +63,5 @@ Purtroppo non mi ha funzionato il click in quanto c'è un offset del canvas che 
 l'handling. Un problema riportato su github https://github.com/kittykatattack/tink/issues/12
 Risolto togliendo la dipendenza di tink e usato la modalità interactive dello sprite.
 
-
+## TODO
+- Sto cercando di completare la classe BriscolaGfx. Sono arrivato a mano end
