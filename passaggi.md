@@ -3,10 +3,10 @@ Un service della cuperativa in golang e vuetify. Rendering del gioco delle carte
 
 ## Info generali sul qualcosa che inizia e non finisce mai
 Il gioco della Cuperativa è ispirato all'applicazione scritta in Ruby Cuperativa.
-Il poorting in Javascript/go non è stato immediato, ma pieno di insidie e trappole.
+Il porting in Javascript/go non è stato immediato, ma pieno di insidie e trappole.
 Quella che ha frenato di più lo sviluppo è stata la parte grafica. Molto demotivante
 e quindi molto suscettibile alla procrastinazione. Non rimandare a domani quello che puoi fare tra un anno con una nuova libreria. 
-Ritrovarmi a programmare, per esmpio dei menu con dei construtti del genere:
+Ritrovarmi a programmare, per esempio dei menu con dei construtti del genere:
 ```html
 <ul>
 <ui>Gioca</ui>
@@ -22,9 +22,8 @@ del tuo prossimo e incredibile css: grid-12-sm o grid-10-sp ?
 Forse perché non l'hai scritto in uno splendido package.json? 
 ```
 
-Pian piano però una luce di nuovi tool e metodi appaiono alla fine del tunnel, e anche dei programmatori del piffero come me, finalmente riescono a produrre qualcosa di presentabile in un'applicazione web.   
-Specialmente quando smettono di editare 
-solo file json o scrivere delle sigle strane a fianco di ripetute di _div_.
+Pian piano, però, una luce di nuovi tool e metodi appaiono alla fine del tunnel, così che anche dei programmatori del piffero come me, finalmente, riescono a produrre qualcosa di presentabile in un'applicazione web.   
+Specialmente quando smettono di editare file json o scrivere delle sigle strane a fianco di infinite ripetute di _div_.
 
 
 ## Unit Test
