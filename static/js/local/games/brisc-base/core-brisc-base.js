@@ -381,16 +381,18 @@ export function PrepareGameVsCpu(algGfx, opt) {
 
   const namePl1 = opt.namePl1
   const namePl2 = opt.namePl2
-  let playerErnesto = new Player(new AlgBriscBase(namePl1), coreStateManager);
-  playerErnesto._alg.set_to_master_level()
-  let playerLuigi = new Player(new AlgBriscBase(namePl2), coreStateManager);
-  const core_caller = playerLuigi.set_gfx_on_alg(algGfx)
+  let playerOpp = new Player(new AlgBriscBase(namePl1), coreStateManager);
+  playerOpp._alg.set_to_master_level()
+  playerOpp._alg.set_deck_info(b2core._deck_info)
+
+  let playerMe = new Player(new AlgBriscBase(namePl2), coreStateManager);
+  const core_caller = playerMe.set_gfx_on_alg(algGfx)
   algGfx.set_core_caller(core_caller)
 
-  b2core.AddPlayer(0, playerErnesto)
-  b2core.AddPlayer(1, playerLuigi)
-  playerErnesto.sit_down(0);
-  playerLuigi.sit_down(1);
+  b2core.AddPlayer(0, playerOpp)
+  b2core.AddPlayer(1, playerMe)
+  playerOpp.sit_down(0);
+  playerMe.sit_down(1);
 
   return b2core
 }

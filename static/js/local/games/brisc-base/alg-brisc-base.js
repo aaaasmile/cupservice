@@ -7,7 +7,7 @@ import Helper  from '../../shared/helper.js'
 export class AlgBriscBase {
 
   constructor(name) {
-    this._deck_info = new DeckInfo();
+    this._deck_info = null
     this._points_segno = {};
     this._opp_names = [];
     this._team_mates = [];
@@ -29,6 +29,10 @@ export class AlgBriscBase {
     };
     this._player_name = name
     this._is_auto_alg = true
+  }
+
+  set_deck_info(deckinfo){
+    this._deck_info = deckinfo
   }
 
   set_to_master_level() {
