@@ -91,7 +91,6 @@ export class CardsPlayerGfx {
 
   Render(isDirty) {
     if (this._isDirty || isDirty) {
-      //console.log('*** render cards player ...')
       if (this._sprites.length > 0) {
         let iniX = 0
         let iniY = 0
@@ -139,7 +138,6 @@ export class CardsPlayerGfx {
       const s_src = this._sprites[ix]
       sprite.end_x = s_src.x + this._container.x
       sprite.end_y = s_src.y + this._container.y
-      //console.log('End x,y for sprite ani ', sprite.end_x, sprite.end_y)
       return Helper.CalcSpriteVelocity(sprite, this._ani_velocity)
     }
     throw (new Error(`animation in card player not recognized ${name}`))
@@ -159,7 +157,6 @@ export class CardsPlayerGfx {
         sprite.texture = this._textureCards[index]
         const old_x = sprite.x
         const old_y = sprite.y
-        //console.log('Sprite pos ', old_x, old_y)
         Helper.ScaleCardSpriteToStdIfNeeded(sprite)
         sprite.x = old_x
         sprite.y = old_y
@@ -183,11 +180,9 @@ export class CardsPlayerGfx {
         sprite.texture = this._emptyTexture
         const old_x = sprite.x
         const old_y = sprite.y
-        //console.log('Sprite pos ', old_x, old_y)
         Helper.ScaleCardSpriteToStdIfNeeded(sprite)
         sprite.x = old_x
         sprite.y = old_y
-        //this.Redraw()
         return
       }
     }
@@ -220,10 +215,7 @@ export class CardsPlayerGfx {
   }
 
   handlePress(data, sprite, event) {
-    //console.log('Make interactive sprite ', sprite, event, data)
-
     sprite.on(event, () => {
-      //console.log('Card is pressed', data)
       this._clickHandler.forEach(fnItem => {
         fnItem(data)
       });

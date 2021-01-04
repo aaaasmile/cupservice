@@ -85,7 +85,7 @@ export class BriscolaGfx {
     this.animate_distr_cards(args.carte)
 
   }
-  
+
   on_all_ev_new_mano(args) {
   }
 
@@ -94,7 +94,7 @@ export class BriscolaGfx {
     console.log('on_all_ev_have_to_play', args)
     const marker = this._staticScene.GetMarker(args.player_on_turn)
     marker.OnTurn(true)
-    
+
     const player_onturn = args.player_on_turn
     if (this._name_Me !== player_onturn) {
       return
@@ -118,17 +118,68 @@ export class BriscolaGfx {
     // card_played: [_Ab]
     console.log('on_all_ev_player_has_played ', args)
     const marker = this._staticScene.GetMarker(args.player_name)
-    
 
     let src_keygfx_comp = 'cardsme'
-    if (args.player_name !== this._name_Me){
+    if (args.player_name !== this._name_Me) {
       src_keygfx_comp = 'cardsopp'
     }
-    const hand_gfx = this._staticScene.get_component(src_keygfx_comp)
+
+    const carte = args.card_played
+    this.animate_card_played(carte, src_keygfx_comp, marker)
+  }
+
+  on_all_ev_mano_end(args) {
+  }
+
+  on_pl_ev_pesca_carta(args) {
+    // deckGfx.PopCard(2)
+  }
+
+  on_all_ev_giocata_end(args) {
+  }
+
+  on_all_ev_match_end(args) {
+  }
+
+  on_all_ev_waiting_tocontinue_game(args) {
+  }
+
+  animate_distr_cards(carte) {
+    let cards_anim = []
+    let fnix = 0
+    carte.forEach(card_lbl => {
+      // one animation for each cards on hand
+      cards_anim.push(() => {
+        let aniDistr = AniCards('distr_card', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
+          let cards_me_gfx = this._staticScene.get_component(stop_comp)
+          cards_me_gfx.set_visible(card_lbl)
+          fnix++
+          cards_anim[fnix]()
+        })
+        this._staticScene.AddAnimation(aniDistr)
+      })
+    })
+
+    cards_anim.push(() => {
+      // finally continue the core processing
+      console.log('All animations are terminated')
+      const cards_me_gfx = this._staticScene.get_component('cardsme')
+      cards_me_gfx.Redraw()
+      const cards_opp_gfx = this._staticScene.get_component('cardsopp')
+      cards_opp_gfx.set_deck_visible() // oppponent doesn't animate
+      this._core_state.continue_process_events('after animation new giocata')
+    })
+
+    this._core_state.suspend_proc_gevents('suspend animation new giocata')
+
+    cards_anim[fnix]() // start animation
+  }
+
+  animate_card_played(carte, src_keygfx_comp, marker) {
 
     let cards_anim = []
     let fnix = 0
-    const carte = args.card_played
+
     carte.forEach(card_lbl => {
       cards_anim.push(() => {
         console.log('Submit animation for ', card_lbl)
@@ -154,56 +205,6 @@ export class BriscolaGfx {
     })
 
     this._core_state.suspend_proc_gevents(aniTitle)
-
-    cards_anim[fnix]() // start animation
-    
-  }
-
-  on_all_ev_mano_end(args) {
-  }
-
-  on_pl_ev_pesca_carta(args) {
-    // deckGfx.PopCard(2)
-  }
-
-  on_all_ev_giocata_end(args) {
-  }
-
-  on_all_ev_match_end(args) {
-  }
-
-  on_all_ev_waiting_tocontinue_game(args) {
-  }
-
-  animate_distr_cards(carte) {
-    let cards_anim = []
-    let fnix = 0
-    carte.forEach(card_lbl => {
-      // one animation for each cards on hand
-      cards_anim.push(() => {
-        console.log('Submit animation for ', card_lbl)
-        let aniDistr = AniCards('distr_card', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
-          console.log(`Animation ${nn} on ${card_lbl} is terminated`)
-          let cards_me_gfx = this._staticScene.get_component(stop_comp)
-          cards_me_gfx.set_visible(card_lbl)
-          fnix++
-          cards_anim[fnix]()
-        })
-        this._staticScene.AddAnimation(aniDistr)
-      })
-    })
-
-    cards_anim.push(() => {
-      // finally continue the core processing
-      console.log('All animations are terminated')
-      const cards_me_gfx = this._staticScene.get_component('cardsme')
-      cards_me_gfx.Redraw()
-      const cards_opp_gfx = this._staticScene.get_component('cardsopp')
-      cards_opp_gfx.set_deck_visible() // oppponent doesn't animate
-      this._core_state.continue_process_events('after animation new giocata')
-    })
-
-    this._core_state.suspend_proc_gevents('suspend animation new giocata')
 
     cards_anim[fnix]() // start animation
   }
