@@ -85,7 +85,7 @@ export class BriscolaGfx {
 
     let deck_taken_me = new DeckTakenGfx(350, this._cache)
     deck_taken_me.Build(this._deck_info.get_numofcards_ondeck())
-    deck_taken_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 200 }, y: { type: 'bottom_anchor', offset: -50 }, anchor_element: 'canvas', }
+    deck_taken_me._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'top_anchor', offset: -10 }, anchor_element: `MKR-${this._name_Me}`, }
     this._staticScene.AddGfxComponent('deck_taken_me', deck_taken_me)
 
     this.animate_distr_cards(args.carte)

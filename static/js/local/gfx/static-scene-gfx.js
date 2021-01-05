@@ -164,7 +164,7 @@ export class StaticSceneGfx {
     if (anchor_element === 'canvas') {
       return [0, 0, this.canvas_w, this.canvas_h]
     }
-    let c1 = this._components.get(this._components)
+    let c1 = this._components.get(anchor_element)
     if (c1) {
       return [c1._container.position.x, c1._container.position.y, c1._container.width, c1._container.height]
     }
