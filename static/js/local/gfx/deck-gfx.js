@@ -60,15 +60,17 @@ export class DeckGfx {
     this._isDirty = false
   }
 
-  get_animation_sprite(name) {
-    if (name === 'distr_card') {
-      let copTexture = this._cache.GetTextureFromSymbol('cope')
-      let sprite = new PIXI.Sprite(copTexture)
-      sprite.x = this._last_x + this._container.x
-      sprite.y = this._last_y + this._container.y
-      return sprite
+  set_animation_sprite_start(name) {
+    switch (name) {
+      case 'distr_card':
+        let copTexture = this._cache.GetTextureFromSymbol('cope')
+        let sprite = new PIXI.Sprite(copTexture)
+        sprite.x = this._last_x + this._container.x
+        sprite.y = this._last_y + this._container.y
+        return [sprite]
+      default:
+        throw (new Error(`animation not recognized ${name}`))
     }
-    throw (new Error(`animation not recognized ${name}`))
   }
 
   PopCard(num) {

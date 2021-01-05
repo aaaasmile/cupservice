@@ -144,6 +144,32 @@ export class BriscolaGfx {
   on_all_ev_mano_end(args) {
     //args: {player_best: "Luisa", carte: Array(2), punti: 5}
     console.log('on_all_ev_mano_end', args)
+
+    let src_keygfx_comp = 'deck_taken_me'
+    if (args.player_name !== this._name_Me) {
+      src_keygfx_comp = 'deck_taken_opp'
+    }
+
+    let cards_anim = []
+    let fnix = 0
+    cards_anim.push(() => {
+      let aniDistr = AniCards('mano_end_all', 'table', src_keygfx_comp, args.carte, (nn, start_cmp, stop_comp) => {
+        console.log(`Animation ${nn} on  is terminated`)
+        fnix++
+        cards_anim[fnix]()
+      })
+      this._staticScene.AddAnimation(aniDistr)
+    })
+
+    cards_anim.push(() => {
+      // finally continue the core processing
+      console.log('All animations are terminated')
+      this._core_state.continue_process_events('after animation mano end')
+    })
+
+    this._core_state.suspend_proc_gevents('suspend animation mano end')
+
+    cards_anim[fnix]() // start animation
   }
 
   on_pl_ev_pesca_carta(args) {

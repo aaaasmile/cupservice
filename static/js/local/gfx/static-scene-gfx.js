@@ -94,17 +94,19 @@ export class StaticSceneGfx {
         const compKey = ani.get_start_comp()
         if (compKey) {
           const comp = this.get_component(compKey)
-          const sprite = comp.get_animation_sprite(ani.name(), ani.data())
+          const spritesArr = comp.set_animation_sprite_start(ani.name(), ani.data())
 
-          const compStopKey = ani.get_stop_comp()
-          if (compStopKey) {
-            const compStop = this.get_component(compStopKey)
-            compStop.set_animation_sprite_target(ani.name(), sprite, ani.data())
-          } else {
-            throw (new Error('Target component is not set'))
-          }
-          //console.log('add sprite ', sprite)
-          ani.add_sprite(sprite)
+          spritesArr.forEach(sprite => {
+            const compStopKey = ani.get_stop_comp()
+            if (compStopKey) {
+              const compStop = this.get_component(compStopKey)
+              compStop.set_animation_sprite_target(ani.name(), sprite, ani.data())
+            } else {
+              throw (new Error('Target component is not set'))
+            }
+            //console.log('add sprite ', sprite)
+            ani.add_sprite(sprite)
+          });
         }
         this._container.addChild(ani.get_container())
       }

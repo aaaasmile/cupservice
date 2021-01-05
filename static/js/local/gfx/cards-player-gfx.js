@@ -9,7 +9,7 @@ export class CardsPlayerGfx {
     this._deck_info = deck_info
     this._cache = cache
     this._visibleSprite = []
-    this._ani_velocity = 20
+    this._ani_velocity = 20 // todo main option
     this._emptyTexture = null
     this._textureCards = []
   }
@@ -111,36 +111,43 @@ export class CardsPlayerGfx {
     this._isDirty = true
   }
 
-  get_animation_sprite(name, data) {
-    if (name === 'card_played') {
-      const card_lbl = data
-      for (let index = 0; index < this._sprites.length; index++) {
-        if (!this._visibleSprite[index]) {
-          continue
+  set_animation_sprite_start(name, data) {
+    switch (name) {
+      case 'card_played':
+        const card_lbl = data
+        for (let index = 0; index < this._sprites.length; index++) {
+          if (!this._visibleSprite[index]) {
+            continue
+          }
+          const spr_src = this._sprites[index]
+          if ((spr_src.cup_data_lbl && spr_src.cup_data_lbl === card_lbl) || !spr_src.cup_data_lbl) {
+            const cardTexture = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
+            let sprite = new PIXI.Sprite(cardTexture)
+            sprite.x = spr_src.x + this._container.x
+            sprite.y = spr_src.y + this._container.y
+            this.hide_card(card_lbl)
+            return [sprite]
+          }
         }
-        const spr_src = this._sprites[index]
-        if ((spr_src.cup_data_lbl && spr_src.cup_data_lbl === card_lbl) || !spr_src.cup_data_lbl) {
-          const cardTexture = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
-          let sprite = new PIXI.Sprite(cardTexture)
-          sprite.x = spr_src.x + this._container.x
-          sprite.y = spr_src.y + this._container.y
-          this.hide_card(card_lbl)
-          return sprite
-        }
-      }
+        break;
+
+      default:
+        throw (new Error(`animation not recognized ${name} and data ${data}`))
     }
-    throw (new Error(`animation not recognized ${name} and data ${data}`))
+    throw (new Error(`animation programming error ${name} and data ${data}`))
   }
 
   set_animation_sprite_target(name, sprite) {
-    if (name === "distr_card") {
-      const ix = this._visibleSprite.indexOf(false)
-      const s_src = this._sprites[ix]
-      sprite.end_x = s_src.x + this._container.x
-      sprite.end_y = s_src.y + this._container.y
-      return Helper.CalcSpriteVelocity(sprite, this._ani_velocity)
+    switch (name) {
+      case "distr_card":
+        const ix = this._visibleSprite.indexOf(false)
+        const s_src = this._sprites[ix]
+        sprite.end_x = s_src.x + this._container.x
+        sprite.end_y = s_src.y + this._container.y
+        return Helper.CalcSpriteVelocity(sprite, this._ani_velocity)
+      default:
+        throw (new Error(`animation in card player not recognized ${name}`))
     }
-    throw (new Error(`animation in card player not recognized ${name}`))
   }
 
   set_deck_visible() {
@@ -168,13 +175,11 @@ export class CardsPlayerGfx {
   }
 
   hide_card(card_lbl) {
-    console.log('hide card ', card_lbl)
+    
     for (let index = 0; index < this._sprites.length; index++) {
       if (!this._visibleSprite[index]) {
         continue
       }
-      this._visibleSprite[index] = false
-
       const sprite = this._sprites[index];
       if ((sprite.cup_data_lbl && sprite.cup_data_lbl === card_lbl) || (!sprite.cup_data_lbl)) {
         sprite.texture = this._emptyTexture
@@ -183,6 +188,8 @@ export class CardsPlayerGfx {
         Helper.ScaleCardSpriteToStdIfNeeded(sprite)
         sprite.x = old_x
         sprite.y = old_y
+        console.log('hide card ', card_lbl, index)
+        this._visibleSprite[index] = false
         return
       }
     }
