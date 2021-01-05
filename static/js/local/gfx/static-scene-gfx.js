@@ -190,6 +190,9 @@ function calc_off_pos(info_pos, anch_pos_x, anch_pos_y, anch_w, anch_h, item_w, 
     case 'bottom_anchor':
       calc_pos = anch_pos_y + anch_h - item_h + info_pos.offset
       break
+    case 'bottom_anchor_rel':
+      calc_pos = anch_pos_y + anch_h + info_pos.offset
+      break
     case 'top_anchor':
       calc_pos = anch_pos_y + info_pos.offset
       break

@@ -16,6 +16,7 @@ export class BriscolaGfx {
     this._core_state = null
     this._num_players = null
     this._name_Me = ''
+    this._name_Opp = ''
   }
 
   set_core_caller(core_caller) {
@@ -36,6 +37,7 @@ export class BriscolaGfx {
     //       players: ["Luisa", "Silvio"]
     this._num_players = args.players.length
     const nameCpu = args.players[0]
+    this._name_Opp = nameCpu
     const markerCpu = new PlayerMarkerGfx(100, this._cache)
     const avatarCpu = store.state.pl.opp_avatar
     markerCpu.Build(nameCpu, avatarCpu)
@@ -82,6 +84,11 @@ export class BriscolaGfx {
     table.Build(['nord', 'sud'], 'circular')
     table._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('table', table)
+
+    const deck_taken_opp = new DeckTakenGfx(350, this._cache)
+    deck_taken_opp.Build(this._deck_info.get_numofcards_ondeck())
+    deck_taken_opp._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor_rel', offset: 90 }, anchor_element: `MKR-${this._name_Opp}`, }
+    this._staticScene.AddGfxComponent('deck_taken_opp', deck_taken_opp)
 
     let deck_taken_me = new DeckTakenGfx(350, this._cache)
     deck_taken_me.Build(this._deck_info.get_numofcards_ondeck())
