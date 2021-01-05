@@ -16,7 +16,7 @@ export class TableCardsPlayedGfx {
         // mode: 'circular'
         // positions: ['nord','sud']
         this._numCards = positions.length
-        const cdtempty = this._cache.GetTextureFromSymbol('vuoto_trasp', this._deck_info)
+        const cdtempty = this._cache.GetTextureFromSymbol('vuoto_trasp')
         this._container.removeChildren()
         this._sprites = []
         for (let index = 0; index < this._numCards; index++) {

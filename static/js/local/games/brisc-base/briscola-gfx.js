@@ -6,6 +6,7 @@ import AniCards from '../../gfx/animation-gfx.js'
 import store from '../../../vue/store/index.js'
 import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { TableCardsPlayedGfx } from '../../gfx/table-cards-played.js'
+import { DeckTakenGfx } from '../../gfx/deck-taken-gfx.js'
 
 export class BriscolaGfx {
   constructor(cache, static_scene) {
@@ -82,6 +83,11 @@ export class BriscolaGfx {
     table._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('table', table)
 
+    let deck_taken_me = new DeckTakenGfx(350, this._cache)
+    deck_taken_me.Build(this._deck_info.get_numofcards_ondeck())
+    deck_taken_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 200 }, y: { type: 'bottom_anchor', offset: -50 }, anchor_element: 'canvas', }
+    this._staticScene.AddGfxComponent('deck_taken_me', deck_taken_me)
+
     this.animate_distr_cards(args.carte)
 
   }
@@ -129,6 +135,8 @@ export class BriscolaGfx {
   }
 
   on_all_ev_mano_end(args) {
+    //args: {player_best: "Luisa", carte: Array(2), punti: 5}
+    console.log('on_all_ev_mano_end', args)
   }
 
   on_pl_ev_pesca_carta(args) {
