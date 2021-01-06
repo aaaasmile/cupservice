@@ -175,7 +175,7 @@ export class CardsPlayerGfx {
   }
 
   hide_card(card_lbl) {
-    
+
     for (let index = 0; index < this._sprites.length; index++) {
       if (!this._visibleSprite[index]) {
         continue
@@ -188,6 +188,7 @@ export class CardsPlayerGfx {
         Helper.ScaleCardSpriteToStdIfNeeded(sprite)
         sprite.x = old_x
         sprite.y = old_y
+        sprite.cup_data_lbl = null
         console.log('hide card ', card_lbl, index)
         this._visibleSprite[index] = false
         return
@@ -213,6 +214,9 @@ export class CardsPlayerGfx {
 
     for (let index = 0; index < this._sprites.length; index++) {
       const sprite = this._sprites[index];
+      if (!sprite.cup_data_lbl || !this._visibleSprite[index]) {
+        continue
+      }
       let data = sprite.cup_data_lbl
       sprite.interactive = true
       this.handlePress(data, sprite, 'touchstart')
