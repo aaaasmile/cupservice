@@ -156,6 +156,7 @@ export class BriscolaGfx {
     console.log('on_pl_ev_pesca_carta', args)
     const deckGfx = this._staticScene.get_component('deck')
     deckGfx.PopCard(this._num_players)
+    // TODO animation
   }
 
   on_all_ev_giocata_end(args) {
