@@ -100,7 +100,7 @@ export class StaticSceneGfx {
             const compStopKey = ani.get_stop_comp()
             if (compStopKey) {
               const compStop = this.get_component(compStopKey)
-              compStop.set_animation_sprite_target(ani.name(), sprite, ani.data())
+              compStop.set_animation_sprite_target(ani.name(), sprite, ani.data(), this.canvas_w, this.canvas_h)
             } else {
               throw (new Error('Target component is not set'))
             }

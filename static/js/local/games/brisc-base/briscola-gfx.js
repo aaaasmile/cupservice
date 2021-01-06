@@ -86,12 +86,12 @@ export class BriscolaGfx {
     this._staticScene.AddGfxComponent('table', table)
 
     const deck_taken_opp = new DeckTakenGfx(350, this._cache)
-    deck_taken_opp.Build(this._deck_info.get_numofcards_ondeck())
+    deck_taken_opp.Build(this._deck_info.get_numofcards_ondeck(), 'nord')
     deck_taken_opp._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor_rel', offset: 90 }, anchor_element: `MKR-${this._name_Opp}`, }
     this._staticScene.AddGfxComponent('deck_taken_opp', deck_taken_opp)
 
     let deck_taken_me = new DeckTakenGfx(350, this._cache)
-    deck_taken_me.Build(this._deck_info.get_numofcards_ondeck())
+    deck_taken_me.Build(this._deck_info.get_numofcards_ondeck(), 'sud')
     deck_taken_me._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'top_anchor', offset: -10 }, anchor_element: `MKR-${this._name_Me}`, }
     this._staticScene.AddGfxComponent('deck_taken_me', deck_taken_me)
 
@@ -146,7 +146,7 @@ export class BriscolaGfx {
     console.log('on_all_ev_mano_end', args)
 
     let src_keygfx_comp = 'deck_taken_me'
-    if (args.player_name !== this._name_Me) {
+    if (args.player_best !== this._name_Me) {
       src_keygfx_comp = 'deck_taken_opp'
     }
 
