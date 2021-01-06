@@ -41,17 +41,20 @@ export class DeckTakenGfx {
           case 'nord':
             sprite.end_x = sprite.x
             sprite.end_y = 0 
+            sprite = Helper.CalcSpriteVelocityIncremental(sprite, this._ani_velocity, 1)
             break;
           case 'sud':
             sprite.end_x = sprite.x
             sprite.end_y = canvas_h
+            sprite = Helper.CalcSpriteVelocityIncremental(sprite, this._ani_velocity, 0.8)
             break;
           default:
             throw(new Error(`Player position not suppported: ${this._position}`))
         }
         
         console.log('** ani mano_end_all ', sprite.end_x, sprite.end_y)
-        return Helper.CalcSpriteVelocity(sprite, this._ani_velocity)
+        
+        return sprite
       default:
         throw (new Error(`animation in card player not recognized ${name}`))
     }

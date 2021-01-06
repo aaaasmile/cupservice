@@ -72,5 +72,17 @@ export default {
     sprite.vel_iq = iq
 
     return sprite
-  }
+  },
+  CalcSpriteVelocityIncremental(sprite, step_target, inc) {
+    sprite = this.CalcSpriteVelocity(sprite, step_target)
+    if(sprite.vx > 0){
+      sprite.vx = 1
+      sprite.vx_inc = inc
+    }
+    if(sprite.vy > 0){
+      sprite.vy = 1
+      sprite.vy_inc = inc
+    }
+    return sprite
+  } 
 }

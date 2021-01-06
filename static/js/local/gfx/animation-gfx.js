@@ -3,6 +3,7 @@ export default (name, startComp, stopCom, data, fnTerm) => {
     let _sprites = []
     let _started = false
     let _terminated = false
+    let _toTerminateCount = 0
     const _name = name
     const _startComp = startComp
     const _stopCom = stopCom
@@ -38,13 +39,24 @@ export default (name, startComp, stopCom, data, fnTerm) => {
                     }
                 }
 
+                if (s.vx_inc) {
+                    s.vx += s.vx_inc
+                }
+
+                if (s.vy_inc) {
+                    s.vy += s.vy_inc
+                }
+
                 if (x_on_target || y_on_target) {
-                    //console.log('Animation terminated', s)
-                    _started = false
-                    _terminated = true
+                    //console.log('Animation on sprite terminated', s)
                     s.visible = false
+                    _toTerminateCount--
                 }
             })
+            if (_toTerminateCount <= 0) {
+                _started = false
+                _terminated = true
+            }
         },// end update
         CheckForStart() {
             if (_terminated) {
@@ -63,6 +75,7 @@ export default (name, startComp, stopCom, data, fnTerm) => {
         get_stop_comp() { return _stopCom },
         data() { return _data },
         add_sprite(ss) {
+            _toTerminateCount += 1
             ss.ini_x = ss.x
             ss.ini_y = ss.y
             _sprites.push(ss)
