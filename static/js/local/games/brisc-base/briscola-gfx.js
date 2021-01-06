@@ -149,33 +149,13 @@ export class BriscolaGfx {
     if (args.player_best !== this._name_Me) {
       src_keygfx_comp = 'deck_taken_opp'
     }
-
-    let cards_anim = []
-    let fnix = 0
-    cards_anim.push(() => {
-      let aniDistr = AniCards('mano_end_all', 'table', src_keygfx_comp, args.carte, (nn, start_cmp, stop_comp) => {
-        console.log(`Animation ${nn} on  is terminated`)
-        fnix++
-        cards_anim[fnix]()
-      })
-      this._staticScene.AddAnimation(aniDistr)
-    })
-
-    cards_anim.push(() => {
-      // finally continue the core processing
-      console.log('All animations are terminated')
-      this._core_state.continue_process_events('after animation mano end')
-    })
-
-    this._core_state.suspend_proc_gevents('suspend animation mano end')
-
-    setTimeout(() => {
-      cards_anim[fnix]() // start animation after a little timeout
-    }, 600);
+    this.animate_mano_end(args.carte, src_keygfx_comp)
   }
 
   on_pl_ev_pesca_carta(args) {
-    // deckGfx.PopCard(2)
+    console.log('on_pl_ev_pesca_carta', args)
+    const deckGfx = this._staticScene.get_component('deck')
+    deckGfx.PopCard(this._num_players)
   }
 
   on_all_ev_giocata_end(args) {
@@ -219,7 +199,6 @@ export class BriscolaGfx {
   }
 
   animate_card_played(carte, src_keygfx_comp, marker) {
-
     let cards_anim = []
     let fnix = 0
 
@@ -250,6 +229,31 @@ export class BriscolaGfx {
     this._core_state.suspend_proc_gevents(aniTitle)
 
     cards_anim[fnix]() // start animation
+  }
+
+  animate_mano_end(carte, src_keygfx_comp) {
+    let cards_anim = []
+    let fnix = 0
+    cards_anim.push(() => {
+      let aniDistr = AniCards('mano_end_all', 'table', src_keygfx_comp, carte, (nn, start_cmp, stop_comp) => {
+        console.log(`Animation ${nn} on  is terminated`)
+        fnix++
+        cards_anim[fnix]()
+      })
+      this._staticScene.AddAnimation(aniDistr)
+    })
+
+    cards_anim.push(() => {
+      // finally continue the core processing
+      console.log('All animations are terminated')
+      this._core_state.continue_process_events('after animation mano end')
+    })
+
+    this._core_state.suspend_proc_gevents('suspend animation mano end')
+
+    setTimeout(() => {
+      cards_anim[fnix]() // start animation after a little timeout
+    }, 600);
   }
 }
 
