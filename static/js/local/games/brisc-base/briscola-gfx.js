@@ -169,7 +169,9 @@ export class BriscolaGfx {
 
     this._core_state.suspend_proc_gevents('suspend animation mano end')
 
-    cards_anim[fnix]() // start animation
+    setTimeout(() => {
+      cards_anim[fnix]() // start animation after a little timeout
+    }, 600);
   }
 
   on_pl_ev_pesca_carta(args) {
