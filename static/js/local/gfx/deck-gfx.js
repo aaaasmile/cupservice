@@ -60,14 +60,23 @@ export class DeckGfx {
     this._isDirty = false
   }
 
-  set_animation_sprite_start(name) {
+  set_animation_sprite_start(name, data) {
     switch (name) {
-      case 'distr_card':
-        let copTexture = this._cache.GetTextureFromSymbol('cope')
-        let sprite = new PIXI.Sprite(copTexture)
+      case 'distr_card': {
+        const copTexture = this._cache.GetTextureFromSymbol('cope')
+        const sprite = new PIXI.Sprite(copTexture)
         sprite.x = this._last_x + this._container.x
         sprite.y = this._last_y + this._container.y
         return [sprite]
+      }
+      case 'pesca_carta': {
+        const card_lbl = data
+        const cardTexture = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
+        const sprite = new PIXI.Sprite(cardTexture)
+        sprite.x = this._last_x + this._container.x
+        sprite.y = this._last_y + this._container.y
+        return [sprite]
+      }
       default:
         throw (new Error(`animation not recognized ${name}`))
     }

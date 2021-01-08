@@ -153,10 +153,38 @@ export class BriscolaGfx {
   }
 
   on_pl_ev_pesca_carta(args) {
+    // args: {carte: Array(1)}
     console.log('on_pl_ev_pesca_carta', args)
     const deckGfx = this._staticScene.get_component('deck')
-    deckGfx.PopCard(this._num_players)
-    // TODO animation
+    const carte = args.carte
+    
+    let cards_anim = []
+    let fnix = 0
+    carte.forEach(card_lbl => {
+      cards_anim.push(() => {
+        let aniDistr = AniCards('pesca_carta', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
+          let cards_me_gfx = this._staticScene.get_component(stop_comp)
+          fnix++
+          cards_anim[fnix]()
+        })
+        this._staticScene.AddAnimation(aniDistr)
+      })
+    })
+
+    cards_anim.push(() => {
+      deckGfx.PopCard(this._num_players)
+      console.log('All animations are terminated')
+      const cards_me_gfx = this._staticScene.get_component('cardsme')
+      cards_me_gfx.Redraw()
+      const cards_opp_gfx = this._staticScene.get_component('cardsopp')
+      cards_opp_gfx.set_inv_to_deck(carte.length) // oppponent doesn't animate
+      this._core_state.continue_process_events('after animation pesca carta')
+    })
+
+    this._core_state.suspend_proc_gevents('suspend animation pesca carta')
+
+    cards_anim[fnix]() 
+    
   }
 
   on_all_ev_giocata_end(args) {

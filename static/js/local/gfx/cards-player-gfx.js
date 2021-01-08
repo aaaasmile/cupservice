@@ -11,6 +11,7 @@ export class CardsPlayerGfx {
     this._visibleSprite = []
     this._ani_velocity = 20 // todo main option
     this._emptyTexture = null
+    this._copeTexture = null
     this._textureCards = []
   }
 
@@ -55,8 +56,9 @@ export class CardsPlayerGfx {
       this._visibleSprite.push(false)
     });
 
+    const cdt = this._cache.GetTextureFromSymbol('cope', this._deck_info)
+    this._copeTexture = cdt
     for (let index = textureCards.length; index < this._numCards; index++) {
-      let cdt = this._cache.GetTextureFromSymbol('cope', this._deck_info)
       texturePlaceHolder.push(cdt)
     }
 
@@ -139,15 +141,48 @@ export class CardsPlayerGfx {
 
   set_animation_sprite_target(name, sprite) {
     switch (name) {
-      case "distr_card":
+      case "distr_card": {
         const ix = this._visibleSprite.indexOf(false)
         const s_src = this._sprites[ix]
         sprite.end_x = s_src.x + this._container.x
         sprite.end_y = s_src.y + this._container.y
         return Helper.CalcSpriteVelocity(sprite, this._ani_velocity)
+      }
+      case "pesca_carta": {
+        const ix = this._visibleSprite.indexOf(false)
+        const s_src = this._sprites[ix]
+        s_src.cup_data_lbl = sprite.cup_data_lbl
+        this._textureCards[ix] = sprite.texture
+        sprite.end_x = s_src.x + this._container.x
+        sprite.end_y = s_src.y + this._container.y
+        return Helper.CalcSpriteVelocity(sprite, this._ani_velocity)
+      }
       default:
         throw (new Error(`animation in card player not recognized ${name}`))
     }
+  }
+
+  set_inv_to_deck(numToSet) {
+    let found = 0
+    for (let index = 0; index < this._sprites.length; index++) {
+      if (!this._visibleSprite[index]) {
+        const sprite = this._sprites[index];
+        sprite.texture = this._copeTexture
+        const old_x = sprite.x
+        const old_y = sprite.y
+        Helper.ScaleCardSpriteToStdIfNeeded(sprite)
+        sprite.x = old_x
+        sprite.y = old_y
+        console.log('coperto card ', index)
+        this._visibleSprite[index] = true
+
+        found++
+        if (found >= numToSet) {
+          return
+        }
+      }
+    }
+    throw (new Error(`Unable to set ${numToSet} cards to cop texture`))
   }
 
   set_deck_visible() {
