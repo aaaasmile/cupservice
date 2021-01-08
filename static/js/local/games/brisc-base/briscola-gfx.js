@@ -164,6 +164,7 @@ export class BriscolaGfx {
       cards_anim.push(() => {
         let aniDistr = AniCards('pesca_carta', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
           let cards_me_gfx = this._staticScene.get_component(stop_comp)
+          cards_me_gfx.set_inv_to_card(card_lbl)
           fnix++
           cards_anim[fnix]()
         })
@@ -173,7 +174,7 @@ export class BriscolaGfx {
 
     cards_anim.push(() => {
       deckGfx.PopCard(this._num_players)
-      console.log('All animations are terminated')
+      console.log('Pesca carta animation terminated')
       const cards_me_gfx = this._staticScene.get_component('cardsme')
       cards_me_gfx.Redraw()
       const cards_opp_gfx = this._staticScene.get_component('cardsopp')

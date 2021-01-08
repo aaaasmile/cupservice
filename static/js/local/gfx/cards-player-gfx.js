@@ -151,7 +151,6 @@ export class CardsPlayerGfx {
       case "pesca_carta": {
         const ix = this._visibleSprite.indexOf(false)
         const s_src = this._sprites[ix]
-        s_src.cup_data_lbl = sprite.cup_data_lbl
         this._textureCards[ix] = sprite.texture
         sprite.end_x = s_src.x + this._container.x
         sprite.end_y = s_src.y + this._container.y
@@ -180,6 +179,24 @@ export class CardsPlayerGfx {
         if (found >= numToSet) {
           return
         }
+      }
+    }
+    throw (new Error(`Unable to set ${numToSet} cards to cop texture`))
+  }
+
+  set_inv_to_card(card_lbl) {
+    for (let index = 0; index < this._sprites.length; index++) {
+      if (!this._visibleSprite[index]) {
+        const sprite = this._sprites[index];
+        this._visibleSprite[index] = true
+        sprite.texture = this._textureCards[index]
+        sprite.cup_data_lbl = card_lbl
+        const old_x = sprite.x
+        const old_y = sprite.y
+        Helper.ScaleCardSpriteToStdIfNeeded(sprite)
+        sprite.x = old_x
+        sprite.y = old_y
+        return
       }
     }
     throw (new Error(`Unable to set ${numToSet} cards to cop texture`))
