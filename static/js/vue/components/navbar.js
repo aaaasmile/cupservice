@@ -11,12 +11,31 @@ export default {
     }
   },
   computed: {
+    dialogSimpleMsg: {
+      get() {
+        return this.$store.state.pl.dialog.is_active
+      },
+      set(newval) {
+        if (!newval) {
+          this.$store.commit('hideSimpleDialog')
+        }
+      }
+    },
     ...Vuex.mapState({
-      
+      textMsg: state => {
+        return state.pl.dialog.msg
+      },
+      textTitle: state => {
+        return state.pl.dialog.title
+      },
     }),
-   
+
   },
   methods: {
+    confirmSimpleDialog() {
+      console.log('Confirm the simpe dialog')
+      this.$store.commit('hideSimpleDialog')
+    }
   },
   template: `
   <nav>
@@ -68,5 +87,19 @@ export default {
         </v-row>
       </v-container>
     </v-navigation-drawer>
+    <v-container>
+      <v-dialog v-model="dialogSimpleMsg" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">{{ textTitle }}</v-card-title>
+          <v-card-text>{{ textMsg }}</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="confirmSimpleDialog"
+              >OK</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-container>
   </nav>`
 }

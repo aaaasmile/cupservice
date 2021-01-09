@@ -155,46 +155,21 @@ export class BriscolaGfx {
   on_pl_ev_pesca_carta(args) {
     // args: {carte: Array(1)}
     console.log('on_pl_ev_pesca_carta', args)
-    const deckGfx = this._staticScene.get_component('deck')
     const carte = args.carte
-    
-    let cards_anim = []
-    let fnix = 0
-    carte.forEach(card_lbl => {
-      cards_anim.push(() => {
-        let aniDistr = AniCards('pesca_carta', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
-          let cards_me_gfx = this._staticScene.get_component(stop_comp)
-          cards_me_gfx.set_inv_to_card(card_lbl)
-          fnix++
-          cards_anim[fnix]()
-        })
-        this._staticScene.AddAnimation(aniDistr)
-      })
-    })
-
-    cards_anim.push(() => {
-      deckGfx.PopCard(this._num_players)
-      console.log('Pesca carta animation terminated')
-      const cards_me_gfx = this._staticScene.get_component('cardsme')
-      cards_me_gfx.Redraw()
-      const cards_opp_gfx = this._staticScene.get_component('cardsopp')
-      cards_opp_gfx.set_inv_to_deck(carte.length) // oppponent doesn't animate
-      this._core_state.continue_process_events('after animation pesca carta')
-    })
-
-    this._core_state.suspend_proc_gevents('suspend animation pesca carta')
-
-    cards_anim[fnix]() 
-    
+    this.animate_pesca_carta(carte)
   }
 
   on_all_ev_giocata_end(args) {
-  }
-
-  on_all_ev_match_end(args) {
+    console.log('on_all_ev_giocata_end', args)
   }
 
   on_all_ev_waiting_tocontinue_game(args) {
+    console.log('on_all_ev_waiting_tocontinue_game', args)
+    //this._core_caller.continue_game();
+  }
+
+  on_all_ev_match_end(args) {
+    console.log('on_all_ev_match_end', args)
   }
 
   animate_distr_cards(carte) {
@@ -281,9 +256,50 @@ export class BriscolaGfx {
 
     this._core_state.suspend_proc_gevents('suspend animation mano end')
 
-    setTimeout(() => {
-      cards_anim[fnix]() // start animation after a little timeout
-    }, 600);
+    // TEST some vue communication
+    store.commit('showDialog', {
+      title: 'Giocata finita',
+      msg: 'Segno è treminato con il punteggio di 55 a 65',
+      fncb: () => {
+        console.log('continue the game')
+        setTimeout(() => { // TODO resume
+          cards_anim[fnix]() // start animation after a little timeout
+        }, 600);
+      }
+    })
+
+  }
+
+  animate_pesca_carta(carte) {
+    const deckGfx = this._staticScene.get_component('deck')
+    let cards_anim = []
+    let fnix = 0
+    carte.forEach(card_lbl => {
+      cards_anim.push(() => {
+        let aniDistr = AniCards('pesca_carta', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
+          let cards_me_gfx = this._staticScene.get_component(stop_comp)
+          cards_me_gfx.set_inv_to_card(card_lbl)
+          fnix++
+          cards_anim[fnix]()
+        })
+        this._staticScene.AddAnimation(aniDistr)
+      })
+    })
+
+    cards_anim.push(() => {
+      deckGfx.PopCard(this._num_players)
+      console.log('Pesca carta animation terminated')
+      const cards_me_gfx = this._staticScene.get_component('cardsme')
+      cards_me_gfx.Redraw()
+      const cards_opp_gfx = this._staticScene.get_component('cardsopp')
+      cards_opp_gfx.set_inv_to_deck(carte.length) // oppponent doesn't animate
+      this._core_state.continue_process_events('after animation pesca carta')
+    })
+
+    this._core_state.suspend_proc_gevents('suspend animation pesca carta')
+
+    cards_anim[fnix]()
+
   }
 }
 
