@@ -44,6 +44,6 @@ export class BuilderGameGfx {
   build_briscola(cache, staticSceneGfx) {
     console.log('Build briscola gfx')
     const briGfx = new BriscolaGfx(cache, staticSceneGfx)
-    this._core_state = briGfx.BuildGameVsCpu()
+    this._core_state = briGfx.BuildBriscolaGameVsCpu()
   }
 }

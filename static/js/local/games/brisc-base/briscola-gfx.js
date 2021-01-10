@@ -20,10 +20,12 @@ export class BriscolaGfx {
     this._block_for_ask_continue_game = null
   }
 
-  BuildGameVsCpu() {
+  BuildBriscolaGameVsCpu() {
     const opt = store.state.pl.briscola_opt
     opt.namePl1 = store.state.pl.namePl1
     opt.namePl2 = store.state.pl.namePl2
+    opt.points_to_win = 61
+    opt.cards_in_hand = 3
     this._core_caller = null
     this._alg = null
     let b2core = PrepareGameVsCpu(this, opt, (core_caller, alg) => {
@@ -192,6 +194,11 @@ export class BriscolaGfx {
 
     const score_board = this._staticScene.get_component('scoreBoard')
     score_board.PlayerWonsSegno(name_winner)
+
+    if(store.state.pl.dialog_gfx_no_blocking){
+      console.log('No dialog to show')
+      return
+    }
 
     this._block_for_ask_continue_game = () => { console.log('Dialog giocata end was blocking') }
     let complete_msg = `Il segno è treminato con il punteggio di ${points_best} a ${points_loser}`

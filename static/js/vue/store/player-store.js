@@ -6,7 +6,8 @@ export default {
         curr_game: 'briscola',
         namePl1: 'Luisa',
         namePl2: 'Mario',
-        auto_player_gfx: true,
+        auto_player_gfx: false,
+        dialog_gfx_no_blocking: false,
         briscola_opt: { num_segni: 2 },
         dialog: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
     },

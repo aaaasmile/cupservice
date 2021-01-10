@@ -12,11 +12,15 @@ import { AlgBriscBase } from '../brisc-base/alg-brisc-base.js'
 //////////////////////////////// CoreBriscolaBase
 //////////////////////////////////////////
 export class CoreBriscolaBase {
-  constructor(_coreStateManager, numOfSegni, pointsForWin) {
+  constructor(_coreStateManager, numOfSegni, pointsForWin, numcardsOnHand) {
     this._coreStateStore = new CoreStateStore()
+    if(!numcardsOnHand){
+      throw(new Error(`Cards on hand is not set`))
+    }
     this._myOpt = {
-      tot_num_players: 2, num_segni_match: numOfSegni
-      , target_points_segno: pointsForWin, players: [], num_cards_onhand: 3
+      num_segni_match: numOfSegni,
+      target_points_segno: pointsForWin, 
+      num_cards_onhand: numcardsOnHand,
     };
     this._coreStateManager = _coreStateManager
     this._deck_info = new DeckInfo();
@@ -26,17 +30,14 @@ export class CoreBriscolaBase {
     this._subscriber = new CoreStateSubjectSubscriber(_coreStateManager, that, { log_missed: true });
     this._deck_info.deck_info_dabriscola();
     this._rnd_mgr = new RndMgr()
-    this._players = []
   }
 
-  StartNewMatch(options) {
-    console.log("Start a new match");
-    this._myOpt = options || {}
-    this._myOpt.tot_num_players = this._myOpt.tot_num_players || 2;
-    this._myOpt.num_segni_match = this._myOpt.num_segni_match || 2;
-    this._myOpt.target_points_segno = this._myOpt.target_points_segno || 61;
-    this._myOpt.num_cards_onhand = this._myOpt.num_cards_onhand || 3;
-    this._myOpt.players = this._myOpt.players || ['CPU', 'Me']
+  StartNewMatch(args) {
+    // args: {players: array[2]}
+    console.log("Start a new match", args);
+    const players = args.players
+    this._myOpt.tot_num_players = players.length
+    this._myOpt.players = players
     // this._game_core_recorder = mod_gamerepl.game_core_recorder_ctor();
 
     this._core_data.start(this._myOpt.tot_num_players, this._myOpt.players, this._myOpt.num_cards_onhand);
@@ -45,10 +46,6 @@ export class CoreBriscolaBase {
       , num_segni: this._myOpt.num_segni_match, target_segno: this._myOpt.target_points_segno
     });
     this._coreStateManager.submit_next_state('st_new_giocata');
-  }
-
-  AddPlayer(ix, player) {
-    this._players[0] = player
   }
 
   ignore_state_or_action(state) {
@@ -371,12 +368,13 @@ export class CoreBriscolaBase {
 export function PrepareGameVsCpu(algGfx, opt, fncbSetCaller) {
   console.log('Prepare game vs CPU')
   let coreStateManager = new CoreStateManager('develop');
-  let b2core = new CoreBriscolaBase(coreStateManager, opt.num_segni, 61);
+  let b2core = new CoreBriscolaBase(coreStateManager, opt.num_segni, opt.points_to_win, opt.cards_in_hand);
   let tableStateCore = new TableStateCore(coreStateManager, 2);
-  let subsc = tableStateCore.TableFullSub.subscribe(next => {
+  let subsc = tableStateCore.TableFullSub.subscribe(players => {
+    console.log('Table is full, ready to start a new match')
     subsc.unsubscribe();
     tableStateCore.dispose();
-    b2core.StartNewMatch(next);
+    b2core.StartNewMatch(players);
   });
 
   const namePl1 = opt.namePl1
@@ -389,8 +387,6 @@ export function PrepareGameVsCpu(algGfx, opt, fncbSetCaller) {
   playerMe._alg.set_deck_info(b2core._deck_info)
   playerMe.set_gfx_on_alg(algGfx, fncbSetCaller)
 
-  b2core.AddPlayer(0, playerOpp)
-  b2core.AddPlayer(1, playerMe)
   playerOpp.sit_down(0);
   playerMe.sit_down(1);
 
