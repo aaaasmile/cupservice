@@ -17,6 +17,7 @@ export class BriscolaGfx {
     this._num_players = null
     this._name_Me = ''
     this._name_Opp = ''
+    this._block_for_ask_continue_game = null
   }
 
   set_core_caller(core_caller) {
@@ -101,14 +102,8 @@ export class BriscolaGfx {
 
   on_all_ev_new_mano(args) {
     // TEST code
-    console.log('on_all_ev_new_mano', args)
-    const score_board = this._staticScene.get_component('scoreBoard')
-    score_board.PlayerWonsSegno('Mario')
-    score_board.PlayerWonsSegno('Mario')
-    score_board.PlayerWonsSegno('Luisa')
-    score_board.PlayerWonsSegno('Luisa')
-    this._core_state.suspend_proc_gevents('suspend animation for TEST')
-    // End test code
+    //this._core_state.suspend_proc_gevents('suspend animation for TEST')
+    // TEST end
   }
 
   on_all_ev_have_to_play(args) {
@@ -181,26 +176,47 @@ export class BriscolaGfx {
     const score_board = this._staticScene.get_component('scoreBoard')
     score_board.PlayerWonsSegno(name_winner)
 
-    const complete_mg = `Segno è treminato con il punteggio di ${points_best} a ${points_loser}`
-    complete_mg = `<br \>vince ${name_winner}`
+    this._block_for_ask_continue_game = true
+    let complete_msg = `Il segno è treminato con il punteggio di ${points_best} a ${points_loser}`
+    complete_msg += `. Segno vinto da: ${name_winner}`
     store.commit('showDialog', {
       title: 'Giocata finita',
       msg: complete_msg,
       fncb: () => {
         console.log('Try to continue the game')
-        this._core_caller.continue_game();
+        if(!this._block_for_ask_continue_game){
+          console.log('Time to continue the game after confirm')
+          this._core_caller.continue_game();
+        }else{
+          this._block_for_ask_continue_game = null
+        }
       }
     })
-
   }
 
   on_all_ev_waiting_tocontinue_game(args) {
     console.log('on_all_ev_waiting_tocontinue_game', args)
-    //this._core_caller.continue_game();
+    if(this._block_for_ask_continue_game){
+      this._block_for_ask_continue_game = null
+    }else{
+      console.log('Continue game without wait for user ok')
+      this._core_caller.continue_game();
+    }
   }
 
   on_all_ev_match_end(args) {
     console.log('on_all_ev_match_end', args)
+    // args.info: 'match_info'
+    const match_info = JSON.parse(args.info)
+    const winner_name = match_info.winner_name
+    let complete_msg = `Partita terminata e vinta da ${winner_name}`
+    store.commit('showDialog', {
+      title: 'Partia finita',
+      msg: complete_msg,
+      fncb: () => {
+        console.log('Partita finita')
+      }
+    })
   }
 
   animate_distr_cards(carte) {
