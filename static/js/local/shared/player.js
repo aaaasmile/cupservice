@@ -33,7 +33,7 @@ export class Player {
     this._avatar_name = avatar_name
   }
 
-  set_gfx_on_alg(algGfx) {
+  set_gfx_on_alg(algGfx, fncbSetCaller) {
     if (this._gfxSubscriber) {
       this._gfxSubscriber.dispose()
     }
@@ -44,7 +44,7 @@ export class Player {
       { log_all: false, log_missed: true },
       this._name
     );
-    algGfx.set_core_caller(this._core_caller)
+    fncbSetCaller(this._core_caller, this._alg)
   }
 
   sit_down(pos) {

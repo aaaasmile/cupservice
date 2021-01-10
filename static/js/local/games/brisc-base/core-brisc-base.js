@@ -206,7 +206,7 @@ export class CoreBriscolaBase {
     this._coreStateStore.set_state('st_giocata_end');
     let bestpoints_info = this.giocata_end_update_score();
     //this._game_core_recorder.store_end_giocata(best_pl_points);
-    this._coreStateManager.fire_all('ev_giocata_end', { best: bestpoints_info.best_pl_points });
+    this._coreStateManager.fire_all('ev_giocata_end', bestpoints_info);
     if (bestpoints_info.is_match_end) {
       this._coreStateManager.submit_next_state('st_match_end');
     } else {
@@ -368,7 +368,7 @@ export class CoreBriscolaBase {
   }
 }
 
-export function PrepareGameVsCpu(algGfx, opt) {
+export function PrepareGameVsCpu(algGfx, opt, fncbSetCaller) {
   console.log('Prepare game vs CPU')
   let coreStateManager = new CoreStateManager('develop');
   let b2core = new CoreBriscolaBase(coreStateManager, opt.num_segni, 61);
@@ -387,8 +387,8 @@ export function PrepareGameVsCpu(algGfx, opt) {
 
   let playerMe = new Player(new AlgBriscBase(namePl2), coreStateManager);
   playerMe._alg.set_deck_info(b2core._deck_info)
-  playerMe.set_gfx_on_alg(algGfx)
-  
+  playerMe.set_gfx_on_alg(algGfx, fncbSetCaller)
+
   b2core.AddPlayer(0, playerOpp)
   b2core.AddPlayer(1, playerMe)
   playerOpp.sit_down(0);

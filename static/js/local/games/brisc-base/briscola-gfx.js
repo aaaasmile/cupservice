@@ -20,12 +20,15 @@ export class BriscolaGfx {
     this._block_for_ask_continue_game = null
   }
 
-  set_core_caller(core_caller) {
-    this._core_caller = core_caller
-  }
-
   BuildGameVsCpu(opt) {
-    let b2core = PrepareGameVsCpu(this, opt)
+    this._core_caller = null
+    this._alg = null
+    let b2core = PrepareGameVsCpu(this, opt, (core_caller, alg) => {
+      this._core_caller = core_caller
+      this._alg = alg
+      console.log('Want an automatic player on gfx ')
+      this._alg.set_automatic_playing(true)
+    })
     this._deck_info = b2core._deck_info
     this._cache.check_deckinfo(this._deck_info)
     this._core_state = b2core._coreStateManager
