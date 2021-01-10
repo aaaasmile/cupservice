@@ -107,6 +107,8 @@ export class ScoreBoardGfx {
   }//end Render
 
   fill_circle(x, y, w, h) {
+    this._myGraph.beginFill() 
     this._myGraph.drawCircle(x, y, w)
+    this._myGraph.endFill()
   }
 }
