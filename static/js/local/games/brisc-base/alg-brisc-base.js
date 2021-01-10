@@ -29,6 +29,7 @@ export class AlgBriscBase {
     };
     this._player_name = name
     this._is_auto_alg = true
+    this._is_auto_continuation = true
   }
 
   set_deck_info(deckinfo){
@@ -46,6 +47,10 @@ export class AlgBriscBase {
 
   set_automatic_playing(val) {
     this._is_auto_alg = val
+  }
+
+  set_automatic_continuation(val){
+    this._is_auto_continuation = val
   }
 
   on_all_ev_new_match(args) {
@@ -111,7 +116,7 @@ export class AlgBriscBase {
 
   on_all_ev_waiting_tocontinue_game(args) {
     console.log("[%s] continue game " + JSON.stringify(args), this._player_name);
-    if (this._is_auto_alg) {
+    if (this._is_auto_continuation) {
       this.callcore_continue_game()
     }
   }
