@@ -8,6 +8,7 @@ export class ScoreBoardGfx {
     this.z_ord = z_ord
     this._visible = true
     this._num_marks = 0
+    this._segni = []
   }
 
   Build(name1, name2, num_marks) {
@@ -21,7 +22,20 @@ export class ScoreBoardGfx {
     this._container.addChild(this._text_team2);
     this._container.addChild(this._myGraph);
     this._isDirty = true
+    this._segni = [{ name: name1, segni: 0 }, { name: name2, segni: 0 }]
     return this._container
+  }
+
+  PlayerWonsSegno(name_winner) {
+    for (let index = 0; index < this._segni.length; index++) {
+      const item = this._segni[index];
+      if (item.name === name_winner) {
+        item.segni++
+        this._isDirty = true
+        return
+      }
+    }
+    throw (new Error(`Unable to find info player in segni`))
   }
 
   Render(isDirty) {
@@ -72,8 +86,27 @@ export class ScoreBoardGfx {
         this._myGraph.lineStyle(1).moveTo(xs0, ys0).lineTo(xs1, ys1);
       }
       // TODO: mostra i punti come cerchio ripieno
+      let count_coord = 1
+      const w_circle = 7
+      const team_1_segni = this._segni[0].segni;
+      const team_2_segni = this._segni[1].segni;
+      for (let index = 0; index < points_coord.length; index++) {
+        const coord_pt = points_coord[index]
+        if (team_1_segni >= count_coord) {
+          const pt = coord_pt.team1
+          this.fill_circle(pt[0], pt[1], w_circle)
+        }
+        if (team_2_segni >= count_coord) {
+          const pt = coord_pt.team2
+          this.fill_circle(pt[0], pt[1], w_circle)
+        }
+        count_coord++
+      }
     }
     this._isDirty = false
   }//end Render
 
+  fill_circle(x, y, w, h) {
+    this._myGraph.drawCircle(x, y, w)
+  }
 }

@@ -100,6 +100,15 @@ export class BriscolaGfx {
   }
 
   on_all_ev_new_mano(args) {
+    // TEST code
+    console.log('on_all_ev_new_mano', args)
+    const score_board = this._staticScene.get_component('scoreBoard')
+    score_board.PlayerWonsSegno('Mario')
+    score_board.PlayerWonsSegno('Mario')
+    score_board.PlayerWonsSegno('Luisa')
+    score_board.PlayerWonsSegno('Luisa')
+    this._core_state.suspend_proc_gevents('suspend animation for TEST')
+    // End test code
   }
 
   on_all_ev_have_to_play(args) {
@@ -161,6 +170,28 @@ export class BriscolaGfx {
 
   on_all_ev_giocata_end(args) {
     console.log('on_all_ev_giocata_end', args)
+    // best[0][0] => nome vinc
+    // best[0][1] => punti vinc
+    // best[1][0] => nome perd
+    // best[1][1] => punti perd
+    const points_best = args.best[0][1]
+    const points_loser = args.best[1][1]
+    const name_winner = args.best[0][0]
+
+    const score_board = this._staticScene.get_component('scoreBoard')
+    score_board.PlayerWonsSegno(name_winner)
+
+    const complete_mg = `Segno è treminato con il punteggio di ${points_best} a ${points_loser}`
+    complete_mg = `<br \>vince ${name_winner}`
+    store.commit('showDialog', {
+      title: 'Giocata finita',
+      msg: complete_msg,
+      fncb: () => {
+        console.log('Try to continue the game')
+        this._core_caller.continue_game();
+      }
+    })
+
   }
 
   on_all_ev_waiting_tocontinue_game(args) {
@@ -255,19 +286,10 @@ export class BriscolaGfx {
     })
 
     this._core_state.suspend_proc_gevents('suspend animation mano end')
-
-    // TEST some vue communication
-    store.commit('showDialog', {
-      title: 'Giocata finita',
-      msg: 'Segno è treminato con il punteggio di 55 a 65',
-      fncb: () => {
-        console.log('continue the game')
-        setTimeout(() => { // TODO resume
-          cards_anim[fnix]() // start animation after a little timeout
-        }, 600);
-      }
-    })
-
+    console.log('continue the game')
+    setTimeout(() => {
+      cards_anim[fnix]()
+    }, 600);
   }
 
   animate_pesca_carta(carte) {
