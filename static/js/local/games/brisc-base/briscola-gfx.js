@@ -20,7 +20,8 @@ export class BriscolaGfx {
     this._block_for_ask_continue_game = null
   }
 
-  BuildGameVsCpu(opt) {
+  BuildGameVsCpu() {
+    const opt = store.state.pl.briscola_opt
     this._core_caller = null
     this._alg = null
     let b2core = PrepareGameVsCpu(this, opt, (core_caller, alg) => {
@@ -28,8 +29,10 @@ export class BriscolaGfx {
       this._core_caller = core_caller
       this._alg = alg
       this._alg.set_automatic_continuation(false)
-      console.log('Want an automatic player on gfx ')
-      this._alg.set_automatic_playing(true)
+      if (store.state.pl.auto_player_gfx) {
+        console.log('Want an automatic player on gfx ')
+        this._alg.set_automatic_playing(true)
+      }
       this._alg.set_to_master_level()
     })
     this._deck_info = b2core._deck_info

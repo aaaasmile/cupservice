@@ -3,9 +3,9 @@ export default {
         deck_type: 'piac',
         me_avatar: 'joe',
         opp_avatar: 'stevie',
-        me_name: 'Mario',
         curr_game: 'briscola',
-        curr_opt: { num_segni: 2, namePl1: 'Luisa' },
+        auto_player_gfx: true,
+        briscola_opt: { num_segni: 2, namePl1: 'Luisa', namePl2: 'Mario' },
         dialog: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
     },
     mutations: {

@@ -1,5 +1,4 @@
 import { StaticSceneGfx } from './static-scene-gfx.js'
-import { GetMusicManagerInstance } from '../app/sound-mgr.js'
 import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js'
 
 export class BuilderGameGfx {
@@ -11,7 +10,7 @@ export class BuilderGameGfx {
     this._game_name = game_name
   }
 
-  Build(opt, cache, renderer) {
+  Build(cache, renderer) {
     let stage = new PIXI.Container()
 
     const staticSceneGfx = new StaticSceneGfx()
@@ -23,7 +22,7 @@ export class BuilderGameGfx {
 
     switch (this._game_name) {
       case 'briscola':
-        this.build_briscola(opt, cache, staticSceneGfx)
+        this.build_briscola(cache, staticSceneGfx)
         break;
       default:
         throw (new Error(`game gfx not supported ${this._game_name}`))
@@ -42,9 +41,9 @@ export class BuilderGameGfx {
     this._isDirty = false
   }
 
-  build_briscola(opt, cache, staticSceneGfx) {
+  build_briscola(cache, staticSceneGfx) {
     console.log('Build briscola gfx')
     const briGfx = new BriscolaGfx(cache, staticSceneGfx)
-    this._core_state = briGfx.BuildGameVsCpu(opt)
+    this._core_state = briGfx.BuildGameVsCpu()
   }
 }

@@ -20,15 +20,9 @@ export default {
   },
   computed: {
     ...Vuex.mapState({
-      MeName: state => {
-        return state.pl.me_name
-      },
       SelGame: state => {
         return state.pl.curr_game
       },
-      OptGame: state => {
-        return state.pl.curr_opt
-      }
     })
   },
   created() {
@@ -74,19 +68,18 @@ export default {
         this._app.ticker.stop()
         addTick = false
       }
-      this.setup(this._cache, this.SelGame, this.OptGame)
+      this.setup(this._cache, this.SelGame)
       if (addTick) {
         this._app.ticker.add(delta => this.gameLoop(delta));  // il ticker sembra vada aggiunto solo una volta
       } else {
         this._app.ticker.start()
       }
     },
-    setup(cache, name, opt) {
-      opt.namePl2 = this.MeName
-      console.log('Setup with cache', name, opt)
+    setup(cache, game_name) {
+      console.log('Setup with cache', game_name)
       this._app.stage.removeChildren()
-      const gfx = new BuilderGameGfx(name);
-      let container = gfx.Build(opt, cache, this._app.renderer)
+      const gfx = new BuilderGameGfx(game_name);
+      let container = gfx.Build(cache, this._app.renderer)
       this._app.stage.addChild(container)
       this._gfxGame = gfx
     },
