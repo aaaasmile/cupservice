@@ -22,6 +22,8 @@ export class BriscolaGfx {
 
   BuildGameVsCpu() {
     const opt = store.state.pl.briscola_opt
+    opt.namePl1 = store.state.pl.namePl1
+    opt.namePl2 = store.state.pl.namePl2
     this._core_caller = null
     this._alg = null
     let b2core = PrepareGameVsCpu(this, opt, (core_caller, alg) => {

@@ -4,8 +4,10 @@ export default {
         me_avatar: 'joe',
         opp_avatar: 'stevie',
         curr_game: 'briscola',
+        namePl1: 'Luisa',
+        namePl2: 'Mario',
         auto_player_gfx: true,
-        briscola_opt: { num_segni: 2, namePl1: 'Luisa', namePl2: 'Mario' },
+        briscola_opt: { num_segni: 2 },
         dialog: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
     },
     mutations: {
