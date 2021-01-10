@@ -47,6 +47,17 @@ export class StaticSceneGfx {
     this._isDirty = true
   }
 
+  clear_component(key) {
+    if (this._components.has(key)) {
+      this._components.delete(key)
+      this._isDirty = true
+    } 
+  }
+
+  clear_all_components(){
+    this._components = new Map()
+  }
+
   get_component(key) {
     if (this._components.has(key)) {
       return this._components.get(key)

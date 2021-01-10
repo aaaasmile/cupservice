@@ -30,7 +30,7 @@ export class BriscolaGfx {
       this._alg.set_automatic_continuation(false)
       console.log('Want an automatic player on gfx ')
       this._alg.set_automatic_playing(true)
-      this._alg.set_to_master_level
+      this._alg.set_to_master_level()
     })
     this._deck_info = b2core._deck_info
     this._cache.check_deckinfo(this._deck_info)
@@ -42,6 +42,7 @@ export class BriscolaGfx {
     console.log('on_all_ev_new_match ', args)
     //args: {players: Array(2), num_segni: 2, target_segno: 61}
     //       players: ["Luisa", "Silvio"]
+    this._staticScene.clear_all_components()
     this._num_players = args.players.length
     const nameCpu = args.players[0]
     this._name_Opp = nameCpu
@@ -69,8 +70,13 @@ export class BriscolaGfx {
   on_pl_ev_brisc_new_giocata(args) {
     // args: {carte: Array(3), brisc: "_5s", num_card_deck: 33}
     // carte: (3) ["_Rc", "_5c", "_Cd"]
-
     console.log('on_pl_ev_brisc_new_giocata', args)
+    this._staticScene.clear_component('deck')
+    this._staticScene.clear_component('cardsme')
+    this._staticScene.clear_component('cardsopp')
+    this._staticScene.clear_component('table')
+    this._staticScene.clear_component('deck_taken_opp')
+    this._staticScene.clear_component('deck_taken_me')
 
     const deck = new DeckGfx(80, this._cache, this._deck_info)
     deck.Build(args.num_card_deck, args.brisc)
@@ -182,18 +188,17 @@ export class BriscolaGfx {
     const score_board = this._staticScene.get_component('scoreBoard')
     score_board.PlayerWonsSegno(name_winner)
 
-    this._block_for_ask_continue_game = true
+    this._block_for_ask_continue_game = () => { console.log('Dialog giocata end was blocking') }
     let complete_msg = `Il segno è treminato con il punteggio di ${points_best} a ${points_loser}`
     complete_msg += `. Segno vinto da: ${name_winner}`
     store.commit('showDialog', {
       title: 'Giocata finita',
       msg: complete_msg,
       fncb: () => {
-        console.log('Try to continue the game')
-        if(!this._block_for_ask_continue_game){
-          console.log('Time to continue the game after confirm')
-          this._core_caller.continue_game();
-        }else{
+        console.log('Try to continue the game', this._block_for_ask_continue_game)
+        if (this._block_for_ask_continue_game) {
+          console.log('Time to continue with somethingelse')
+          this._block_for_ask_continue_game()
           this._block_for_ask_continue_game = null
         }
       }
@@ -202,9 +207,10 @@ export class BriscolaGfx {
 
   on_all_ev_waiting_tocontinue_game(args) {
     console.log('on_all_ev_waiting_tocontinue_game', args)
-    if(this._block_for_ask_continue_game){
-      this._block_for_ask_continue_game = null
-    }else{
+    if (this._block_for_ask_continue_game) {
+      this._block_for_ask_continue_game()
+      this._block_for_ask_continue_game = () => { this._core_caller.continue_game() }
+    } else {
       console.log('Continue game without wait for user ok')
       this._core_caller.continue_game();
     }
@@ -215,14 +221,29 @@ export class BriscolaGfx {
     // args.info: 'match_info'
     const match_info = JSON.parse(args.info)
     const winner_name = match_info.winner_name
+    const myTilte = 'Partia finita'
     let complete_msg = `Partita terminata e vinta da ${winner_name}`
-    store.commit('showDialog', {
-      title: 'Partia finita',
-      msg: complete_msg,
-      fncb: () => {
-        console.log('Partita finita')
+
+    if (this._block_for_ask_continue_game) {
+      this._block_for_ask_continue_game()
+      this._block_for_ask_continue_game = () => {
+        // showing the same dilog on closing the previous one is not working, so wait a litle
+        setTimeout(() => {
+          store.commit('showDialog', {
+            title: myTilte,
+            msg: complete_msg,
+            fncb: () => { console.log('Partita finita') }
+          })
+        }, 600);
       }
-    })
+    } else {
+      console.log('Show dialog end game directly')
+      store.commit('showDialog', {
+        title: myTilte,
+        msg: complete_msg,
+        fncb: () => { console.log('Partita finita') }
+      })
+    }
   }
 
   animate_distr_cards(carte) {
@@ -242,7 +263,6 @@ export class BriscolaGfx {
     })
 
     cards_anim.push(() => {
-      // finally continue the core processing
       console.log('All animations are terminated')
       const cards_me_gfx = this._staticScene.get_component('cardsme')
       cards_me_gfx.Redraw()
@@ -253,7 +273,7 @@ export class BriscolaGfx {
 
     this._core_state.suspend_proc_gevents('suspend animation new giocata')
 
-    cards_anim[fnix]() // start animation
+    cards_anim[fnix]()
   }
 
   animate_card_played(carte, src_keygfx_comp, marker) {
@@ -280,13 +300,12 @@ export class BriscolaGfx {
       const comp_gfx = this._staticScene.get_component('table')
       comp_gfx.Redraw()
       marker.OnTurn(false)
-      // finally continue the core processing
       this._core_state.continue_process_events(aniTitle)
     })
 
     this._core_state.suspend_proc_gevents(aniTitle)
 
-    cards_anim[fnix]() // start animation
+    cards_anim[fnix]()
   }
 
   animate_mano_end(carte, src_keygfx_comp) {
@@ -341,9 +360,7 @@ export class BriscolaGfx {
     })
 
     this._core_state.suspend_proc_gevents('suspend animation pesca carta')
-
     cards_anim[fnix]()
-
   }
 }
 
