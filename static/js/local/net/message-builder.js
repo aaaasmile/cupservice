@@ -1,4 +1,4 @@
-import { InfoMessage, VerMessage } from './SocketMessages.js'
+import { InfoMessage, VerMessage } from './socket-messages.js'
 
 // TODO: crea tutti i js mancanti da D:\scratch\angular\cli_app\cli-cup-client6\src\app\data-models
 
