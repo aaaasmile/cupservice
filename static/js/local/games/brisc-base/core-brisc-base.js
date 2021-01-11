@@ -14,12 +14,12 @@ import { AlgBriscBase } from '../brisc-base/alg-brisc-base.js'
 export class CoreBriscolaBase {
   constructor(_coreStateManager, numOfSegni, pointsForWin, numcardsOnHand) {
     this._coreStateStore = new CoreStateStore()
-    if(!numcardsOnHand){
-      throw(new Error(`Cards on hand is not set`))
+    if (!numcardsOnHand) {
+      throw (new Error(`Cards on hand is not set`))
     }
     this._myOpt = {
       num_segni_match: numOfSegni,
-      target_points_segno: pointsForWin, 
+      target_points_segno: pointsForWin,
       num_cards_onhand: numcardsOnHand,
     };
     this._coreStateManager = _coreStateManager
@@ -379,12 +379,8 @@ export function PrepareGameVsCpu(algGfx, opt, fncbSetCaller) {
 
   const namePl1 = opt.namePl1
   const namePl2 = opt.namePl2
-  let playerOpp = new Player(new AlgBriscBase(namePl1), coreStateManager);
-  playerOpp._alg.set_to_master_level()
-  playerOpp._alg.set_deck_info(b2core._deck_info)
-
-  let playerMe = new Player(new AlgBriscBase(namePl2), coreStateManager);
-  playerMe._alg.set_deck_info(b2core._deck_info)
+  let playerOpp = new Player(new AlgBriscBase(namePl1, b2core._deck_info, 'master'), coreStateManager);
+  let playerMe = new Player(new AlgBriscBase(namePl2, b2core._deck_info, 'dummy'), coreStateManager);
   playerMe.set_gfx_on_alg(algGfx, fncbSetCaller)
 
   playerOpp.sit_down(0);

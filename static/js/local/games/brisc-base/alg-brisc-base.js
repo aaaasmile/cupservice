@@ -1,18 +1,18 @@
 import { DeckInfo } from '../../shared/deck-info.js'
-import Helper  from '../../shared/helper.js'
+import Helper from '../../shared/helper.js'
 
 //////////////////////////////////////////
 //////////////////////////////// AlgBriscBase
 //////////////////////////////////////////
 export class AlgBriscBase {
 
-  constructor(name) {
+  constructor(name, deckinfo, level) {
     this._deck_info = null
     this._points_segno = {};
     this._opp_names = [];
     this._team_mates = [];
     this._players = [];
-    this._level_alg = 'dummy';
+    this._level_alg = level
     this._strozzi_on_suite = {};
     this._num_cards_on_deck = 0;
     this._target_points = 61;
@@ -30,9 +30,6 @@ export class AlgBriscBase {
     this._player_name = name
     this._is_auto_alg = true
     this._is_auto_continuation = true
-  }
-
-  set_deck_info(deckinfo){
     this._deck_info = deckinfo
   }
 
@@ -49,7 +46,7 @@ export class AlgBriscBase {
     this._is_auto_alg = val
   }
 
-  set_automatic_continuation(val){
+  set_automatic_continuation(val) {
     this._is_auto_continuation = val
   }
 
