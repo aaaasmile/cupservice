@@ -12,6 +12,8 @@ type Config struct {
 	RootURLPattern string
 	DebugVerbose   bool
 	VueLibName     string
+	UseWebSocket   bool
+	UseUnitTest    bool
 }
 
 var Current = &Config{}

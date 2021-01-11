@@ -61,13 +61,18 @@ func handleIndexGet(w http.ResponseWriter, req *http.Request) error {
 
 	log.Println("GET requested ", u)
 
-	lastPath := getURLForRoute(req.RequestURI)
-	log.Println("Check the last path ", lastPath)
+	//lastPath := getURLForRoute(req.RequestURI)
+	//log.Println("Check the last path ", lastPath)
 
-	if strings.HasPrefix(lastPath, "test-jasmine") {
-		return handleTestJasmine(w, req)
-	}
 	return handleCupApp(w, req)
+}
+
+func HandleTestJasmineGet(w http.ResponseWriter, req *http.Request) {
+	u, _ := url.Parse(req.RequestURI)
+
+	log.Println("GET Test requested ", u)
+
+	handleTestJasmine(w, req)
 }
 
 func handleTestJasmine(w http.ResponseWriter, req *http.Request) error {
@@ -150,7 +155,4 @@ func HandlerShutdown() {
 		break
 	}
 	log.Println("Exit from HandlerShutdown")
-}
-
-func init() {
 }

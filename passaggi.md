@@ -36,6 +36,7 @@ quindi è finito sotto i templates.
 L'istruzione script type="module" in SpecRunner.html è il bridge.
 I file di spec vanno messi al fianco dell'implementazione delle classi. Il file SpecRunner.html
 va aggiornato manualmente.
+La unit test nel deployment va disattivata in confing.toml
 
 ## Websocket
 Quando mi verrà voglia di implementare un protocollo di rete, websocket sarà la scelta.
@@ -70,4 +71,4 @@ Poi su invido.it
 Oltre vue.js, pixi.js, vuetify e vuex, rxjs è rimasto come ricordo dei tempi passati. Solo per questi amari ricordi, avrei voglia di toglierla. Però fa quello che deve fare e funziona.
 
 ### TODO
-- Sto cercando di completare la classe BriscolaGfx. Sono arrivato a mano end
+- Sto cercando di completare la classe BriscolaGfx.

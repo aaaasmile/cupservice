@@ -29,11 +29,18 @@ func RunService(configfile string) error {
 	http.Handle(conf.Current.RootURLPattern+"static/", http.StripPrefix(conf.Current.RootURLPattern+"static/", http.FileServer(http.Dir("static"))))
 	http.Handle(conf.Current.RootURLPattern+"static2/", http.StripPrefix(conf.Current.RootURLPattern+"static2/", http.FileServer(http.Dir("static2"))))
 	http.HandleFunc(conf.Current.RootURLPattern, cup.APiHandler)
-	//http.HandleFunc("/websocket", cup.WsHandler)
+	if conf.Current.UseUnitTest {
+		log.Printf("Unit test suport is enabled: %stest-jasmine", cupServURL)
+		http.HandleFunc(conf.Current.RootURLPattern+"test-jasmine", cup.HandleTestJasmineGet)
+	}
+	if conf.Current.UseWebSocket {
+		log.Println("Websocket handler enabled")
+		http.HandleFunc("/websocket", cup.WsHandler)
+		cup.WsInit()
+	}
 
 	srv := &http.Server{
-		Addr: serverurl,
-		// Good practice to set timeouts to avoid Slowloris attacks.
+		Addr:         serverurl,
 		WriteTimeout: time.Second * 15,
 		ReadTimeout:  time.Second * 15,
 		IdleTimeout:  time.Second * 60,
@@ -49,7 +56,7 @@ func RunService(configfile string) error {
 	}(chShutdown)
 
 	sig := make(chan os.Signal, 1)
-	signal.Notify(sig, os.Interrupt) //We'll accept graceful shutdowns when quit via SIGINT (Ctrl+C)
+	signal.Notify(sig, os.Interrupt)
 	log.Println("Enter in server loop")
 loop:
 	for {
@@ -64,7 +71,9 @@ loop:
 		}
 	}
 
-	cup.HandlerShutdown()
+	if conf.Current.UseWebSocket {
+		cup.HandlerShutdown()
+	}
 
 	wait := 3 * time.Second
 	ctx, cancel := context.WithTimeout(context.Background(), wait)
