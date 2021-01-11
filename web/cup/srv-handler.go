@@ -41,7 +41,7 @@ func APiHandler(w http.ResponseWriter, req *http.Request) {
 	var err error
 	switch req.Method {
 	case "GET":
-		err = handleGet(w, req)
+		err = handleIndexGet(w, req)
 	case "POST":
 		log.Println("POST on ", req.RequestURI)
 		err = handlePost(w, req)
@@ -56,9 +56,39 @@ func APiHandler(w http.ResponseWriter, req *http.Request) {
 	log.Printf("Service %s total call duration: %v\n", idl.Appname, elapsed)
 }
 
-func handleGet(w http.ResponseWriter, req *http.Request) error {
+func handleIndexGet(w http.ResponseWriter, req *http.Request) error {
 	u, _ := url.Parse(req.RequestURI)
+
 	log.Println("GET requested ", u)
+
+	lastPath := getURLForRoute(req.RequestURI)
+	log.Println("Check the last path ", lastPath)
+
+	if strings.HasPrefix(lastPath, "test-jasmine") {
+		return handleTestJasmine(w, req)
+	}
+	return handleCupApp(w, req)
+}
+
+func handleTestJasmine(w http.ResponseWriter, req *http.Request) error {
+	u, _ := url.Parse(req.RequestURI)
+	log.Println("GET requested on cup Test Jasmine", u)
+
+	templName := "templates/SpecRunner.html"
+
+	tmplIndex := template.Must(template.New("AppIndex").ParseFiles(templName))
+
+	pagectx := struct{}{}
+	err := tmplIndex.ExecuteTemplate(w, "base", pagectx)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func handleCupApp(w http.ResponseWriter, req *http.Request) error {
+	u, _ := url.Parse(req.RequestURI)
+	log.Println("GET requested on cup APP", u)
 
 	pagectx := PageCtx{
 		RootUrl:    conf.Current.RootURLPattern,

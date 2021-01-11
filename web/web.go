@@ -29,7 +29,7 @@ func RunService(configfile string) error {
 	http.Handle(conf.Current.RootURLPattern+"static/", http.StripPrefix(conf.Current.RootURLPattern+"static/", http.FileServer(http.Dir("static"))))
 	http.Handle(conf.Current.RootURLPattern+"static2/", http.StripPrefix(conf.Current.RootURLPattern+"static2/", http.FileServer(http.Dir("static2"))))
 	http.HandleFunc(conf.Current.RootURLPattern, cup.APiHandler)
-	http.HandleFunc("/websocket", cup.WsHandler)
+	//http.HandleFunc("/websocket", cup.WsHandler)
 
 	srv := &http.Server{
 		Addr: serverurl,

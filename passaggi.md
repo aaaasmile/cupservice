@@ -28,13 +28,14 @@ Specialmente quando smettono di editare file json o scrivere delle sigle strane 
 
 ## Unit Test
 Ho sviluppatoi col tempo delle unit test che eseguono il check del core.
-Ho usato la unit test di Jasmine  (vedi http://localhost:5571/cup/static/js/test/SpecRunner.html)
-dove uso il file games-cup.js per rendere il namespace cup disponibile alla test suite.
+Ho usato la unit test di Jasmine  
+Usa il link http://localhost:5571/cup/test-jasmine
+Dove uso il file games-cup.js per rendere il namespace cup disponibile alla test suite.
+Il file SpecRunner.html deve essere fornito dal server web e non come file statico,
+quindi è finito sotto i templates.
 L'istruzione script type="module" in SpecRunner.html è il bridge.
-I file di spec vanno messi al fianco dell'implementazione delle classi. Il fileSpecRunner.html
+I file di spec vanno messi al fianco dell'implementazione delle classi. Il file SpecRunner.html
 va aggiornato manualmente.
-I files jsconfig.json mi servono per avere il code complete in VS code.
-Questo è l'unico rimasuglio di json che è rimasto. Chissà se funziona ancora.
 
 ## Websocket
 Quando mi verrà voglia di implementare un protocollo di rete, websocket sarà la scelta.

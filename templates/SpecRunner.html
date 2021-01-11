@@ -1,0 +1,35 @@
+{{define "base"}}
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Jasmine Spec Runner v3.3.0 for Games Cuperativa</title>
+
+  <link rel="shortcut icon" type="image/png" href="./static/js/test/lib/jasmine-3.3.0/jasmine_favicon.png">
+  <link rel="stylesheet" href="./static/js/test/lib/jasmine-3.3.0/jasmine.css">
+
+  <script src="./static/js/test/lib/jasmine-3.3.0/jasmine.js"></script>
+  <script src="./static/js/test/lib/jasmine-3.3.0/jasmine-html.js"></script>
+  <script src="./static/js/test/lib/jasmine-3.3.0/boot.js"></script>
+
+  <!-- include source files here... -->
+  <script src="./static/js/ext/rxjs.umd.min.js"></script>
+
+  <!-- include spec files here... -->
+  <script src="./static/js/local/shared/deck-info.spec.js"></script>
+  <script src="./static/js/local/shared/rnd-mgr.spec.js"></script>
+  <script src="./static/js/local/core/core-data-support.spec.js"></script>
+  <script src="./static/js/local/core/core-state-manager.spec.js"></script>
+  <script src="./static/js/local/games/brisc-base/core-brisc-base.spec.js"></script>
+</head>
+
+<body>
+  <script type="module">
+    import { cup } from './static/js/test/games-cup.js'
+    console.log('Loading cup...', cup)
+    window.cup = cup
+  </script>
+</body>
+
+</html>
+{{end}}
