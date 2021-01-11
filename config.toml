@@ -1,6 +1,7 @@
 ServiceURL =  "127.0.0.1:5571"
 RootURLPattern = "/cup/"
 VueLibName = "vue.js"
+PixiLibName = "pixi.js"
 DebugVerbose = false
 UseWebSocket = false
 UseUnitTest = true

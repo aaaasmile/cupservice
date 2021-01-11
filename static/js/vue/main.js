@@ -29,6 +29,7 @@ export const app = new Vue({
 		let port = location.port;
 		let prefix = (window.location.protocol.match(/https/) ? 'wss' : 'ws')
 		let socketUrl = prefix + "://" + location.hostname + (port ? ':' + port : '') + "/websocket";
+		return
 		this.connection = new WebSocket(socketUrl)
 		console.log("WS socket created")
 
@@ -69,7 +70,8 @@ export const app = new Vue({
         <span>Buildnr: {{Buildnr}}</span>
       </div>
     </v-footer>
-  </v-app>`
+  </v-app>
+`
 })
 
 console.log('Main is here!')

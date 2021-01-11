@@ -12,6 +12,7 @@ type Config struct {
 	RootURLPattern string
 	DebugVerbose   bool
 	VueLibName     string
+	PixiLibName    string
 	UseWebSocket   bool
 	UseUnitTest    bool
 }

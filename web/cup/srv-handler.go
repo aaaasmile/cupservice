@@ -15,9 +15,10 @@ import (
 )
 
 type PageCtx struct {
-	RootUrl    string
-	Buildnr    string
-	VueLibName string
+	RootUrl     string
+	Buildnr     string
+	VueLibName  string
+	PixiLibName string
 }
 
 func getURLForRoute(uri string) string {
@@ -61,9 +62,6 @@ func handleIndexGet(w http.ResponseWriter, req *http.Request) error {
 
 	log.Println("GET requested ", u)
 
-	//lastPath := getURLForRoute(req.RequestURI)
-	//log.Println("Check the last path ", lastPath)
-
 	return handleCupApp(w, req)
 }
 
@@ -96,9 +94,10 @@ func handleCupApp(w http.ResponseWriter, req *http.Request) error {
 	log.Println("GET requested on cup APP", u)
 
 	pagectx := PageCtx{
-		RootUrl:    conf.Current.RootURLPattern,
-		Buildnr:    idl.Buildnr,
-		VueLibName: conf.Current.VueLibName,
+		RootUrl:     conf.Current.RootURLPattern,
+		Buildnr:     idl.Buildnr,
+		VueLibName:  conf.Current.VueLibName,
+		PixiLibName: conf.Current.PixiLibName,
 	}
 	templName := "templates/index.html"
 

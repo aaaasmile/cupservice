@@ -19,27 +19,34 @@ var (
 func main() {
 	const (
 		cupservice = "cupservice"
+		testwin    = "testwin"
 	)
 	var outdir = flag.String("outdir", "",
 		fmt.Sprintf("Output zip directory. If empty use the hardcoded one: %s\n", defOutDir))
 
 	var target = flag.String("target", "",
-		fmt.Sprintf("Target of deployment: %s", cupservice))
+		fmt.Sprintf("Target of deployment: %s %s", cupservice, testwin))
 
 	flag.Parse()
-
+	deployedzipdir := *outdir
 	rootDirRel := ".."
 	pathItems := []string{"cupservice.bin", "static", "templates"}
 	switch *target {
 	case cupservice:
 		pathItems = append(pathItems, "deploy/config_files/cup_config.toml")
 		pathItems[0] = "cupservice.bin"
+	case testwin:
+		pathItems = append(pathItems, "deploy/config_files/cup_config.toml")
+		pathItems[0] = "passaggi.md"
+		if deployedzipdir == "" {
+			deployedzipdir = "..\\..\\deployed"
+		}
 	default:
 		log.Fatalf("Deployment target %s is not recognized or not specified", *target)
 	}
 	log.Printf("Create the zip package for target %s", *target)
 
-	outFn := getOutFileName(*outdir, *target)
+	outFn := getOutFileName(deployedzipdir, *target)
 	depl.CreateDeployZip(rootDirRel, pathItems, outFn, func(pathItem string) string {
 		if strings.HasPrefix(pathItem, "deploy/config_files") {
 			return "config.toml"
