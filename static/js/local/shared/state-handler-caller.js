@@ -7,7 +7,7 @@
 export class StateHandlerCaller {
   constructor(processor, opt) {
     this._processor = processor //CoreBriscolaBase o TableStateCore
-    this.opt = opt
+    this.opt = opt // { log_missed: false, log_all: false }
   }
 
   call(event, name_hand, args) {
