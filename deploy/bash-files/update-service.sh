@@ -42,7 +42,7 @@ destpath=$CURRDIR'/'
 echo "The source is $zippath and destination is $destpath"
 unzip $zippath -d $destpath
 
-chmod +x $destpath'/'cup-service.bin
+chmod +x $destpath'/'cupservice.bin
 
 echo "Start the service"
 sudo systemctl start cup-service
