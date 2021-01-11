@@ -26,7 +26,10 @@ bckdir=$OLDDIR'/'"$(date +"%Y-%m-%d-%H%M%S")"
 echo "Backup dir is: $bckdir"
 [ ! -d "$bckdir" ] && mkdir -p "$bckdir" 
 
-mv $CURRDIR'/'*  $bckdir
+mv $CURRDIR'/static'  $bckdir
+mv $CURRDIR'/templates'  $bckdir
+mv $CURRDIR'/config.toml'  $bckdir
+mv $CURRDIR'/cupservice.bin'  $bckdir
 
 #zips=$(ls $ZIPDIR)
 #echo "$zips"
