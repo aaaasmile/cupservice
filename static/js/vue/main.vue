@@ -7,7 +7,8 @@
     <v-footer>
       <div class="caption">
         {{ new Date().getFullYear() }} —
-        <span>Buildnr: {{Buildnr}}</span>
+        <span>Buildnr: {{Buildnr}}</span> - 
+        <span>I contenuti di questo sito sono perlopiù parole al vento.</span>
       </div>
     </v-footer>
   </v-app>
