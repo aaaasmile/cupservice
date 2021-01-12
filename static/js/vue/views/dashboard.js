@@ -3,8 +3,6 @@ import { GetMusicManagerInstance } from '../../local/app/sound-mgr.js'
 import { GetCardLoaderGfx } from '../../local/gfx/card-loader-gfx.js'
 import { BuilderGameGfx } from '../../local/gfx/builder-game-gfx.js'
 
-var introAnim;
-
 export default {
   data() {
     return {
@@ -102,5 +100,6 @@ export default {
         </v-card-actions>
       </v-card>
     </v-col>
-  </v-row>`
+  </v-row>
+`
 }
