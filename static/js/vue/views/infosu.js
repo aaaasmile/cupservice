@@ -21,7 +21,14 @@ export default {
       reserve(){
         console.log('Riserva spazio')
         this.loading = true
-        setTimeout(() => (this.loading = false), 2000)
+        setTimeout(() => {
+          this.loading = false
+          this.$store.commit('showDialog', {
+            title: 'Prenotazione fallita di un pelo',
+            msg: `Spiacenti, al momento non sono disponibili posti prenotabili online per l'orario richiesto. 
+            Nel frattempo, se volete fare una breve partita a carte, su questo sito ne avete un piccola possibilità. `,
+          })
+        }, 2500)
       }
     },
     template: `
@@ -101,5 +108,6 @@ export default {
         Prenota
       </v-btn>
     </v-card-actions>
-  </v-card>`
+  </v-card>
+`
 }
