@@ -15,7 +15,7 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">{{ AppTitle }}</v-list-item-title>
-          <v-list-item-subtitle>Solo carte</v-list-item-subtitle>
+          <v-list-item-subtitle>Non bere mentre giochi a carte</v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 

@@ -8,7 +8,7 @@
       <div class="caption">
         {{ new Date().getFullYear() }} —
         <span>Buildnr: {{Buildnr}}</span> - 
-        <span>I contenuti di questo sito sono perlopiù parole al vento.</span>
+        <span>I contenuti di questo sito sono perlopiù parole al vento. Copia e Incolla by invido.it.</span>
       </div>
     </v-footer>
   </v-app>
