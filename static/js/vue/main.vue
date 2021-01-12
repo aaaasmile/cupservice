@@ -1,9 +1,9 @@
 <template>
   <v-app class="grey lighten-4">
     <Navbar />
-    <v-content class="mx-4 mb-4" id="reffull">
+    <v-main class="mx-4 mb-4" id="reffull">
       <router-view id="refcont"></router-view>
-    </v-content>
+    </v-main>
     <v-footer>
       <div class="caption">
         {{ new Date().getFullYear() }} —

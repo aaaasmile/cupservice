@@ -3,15 +3,13 @@
     <v-col xs="12" sm="12" md="10" lg="8" xl="6">
       <v-card flat tile>
         <v-card-title>Partita a {{ SelGame }} </v-card-title>
-        <v-content>
-          <v-row align-stretch justify="center">
-            <canvas  id="pixi"></canvas>
-          </v-row>
-        </v-content>
+        <v-main>
+          <v-container>
+            <v-row id="pixi"></v-row>
+          </v-container>
+        </v-main>
         <v-card-actions>
-          <v-btn @click="playGame" :loading="loadinggame">
-            Gioca
-          </v-btn>
+          <v-btn @click="playGame" :loading="loadinggame"> Gioca </v-btn>
         </v-card-actions>
       </v-card>
     </v-col>
