@@ -13,6 +13,7 @@ type Config struct {
 	DebugVerbose   bool
 	VueLibName     string
 	PixiLibName    string
+	VuetifyLibName string
 	UseWebSocket   bool
 	UseUnitTest    bool
 }

@@ -15,10 +15,11 @@ import (
 )
 
 type PageCtx struct {
-	RootUrl     string
-	Buildnr     string
-	VueLibName  string
-	PixiLibName string
+	RootUrl        string
+	Buildnr        string
+	VueLibName     string
+	PixiLibName    string
+	VuetifyLibName string
 }
 
 func getURLForRoute(uri string) string {
@@ -94,10 +95,11 @@ func handleCupApp(w http.ResponseWriter, req *http.Request) error {
 	log.Println("GET requested on cup APP", u)
 
 	pagectx := PageCtx{
-		RootUrl:     conf.Current.RootURLPattern,
-		Buildnr:     idl.Buildnr,
-		VueLibName:  conf.Current.VueLibName,
-		PixiLibName: conf.Current.PixiLibName,
+		RootUrl:        conf.Current.RootURLPattern,
+		Buildnr:        idl.Buildnr,
+		VueLibName:     conf.Current.VueLibName,
+		PixiLibName:    conf.Current.PixiLibName,
+		VuetifyLibName: conf.Current.VuetifyLibName,
 	}
 	templName := "templates/index.html"
 

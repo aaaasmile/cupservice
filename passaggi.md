@@ -69,6 +69,7 @@ Poi su invido.it
 
 ### Altre librerie
 Oltre vue.js, pixi.js, vuetify e vuex, rxjs è rimasto come ricordo dei tempi passati. Solo per questi amari ricordi, avrei voglia di toglierla. Però fa quello che deve fare e funziona.
+La versione di Vuetify che sto usando è la vuetify-v2.4.2.min.js.
 
 ### TODO
 - Sto cercando di completare la classe BriscolaGfx.

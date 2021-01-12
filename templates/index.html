@@ -20,7 +20,7 @@
 
   <!-- vuetify -->
   <link href="./static/js/ext/fontcss.css" rel="stylesheet">
-  <link href="./static/js/ext/vuetify.min.css" rel="stylesheet">
+  <link href="./static/js/ext/vuetify.min.css?{{.Buildnr}}" rel="stylesheet">
   <link href="./static/js/ext/icon.css" rel="stylesheet">
   <link href="./static/js/ext/materialdesignicons.min.css" rel="stylesheet">
 
@@ -31,7 +31,7 @@
   <!-- <script src="{{.RootUrl}}static/js/ext/vue_prod.js"></script> -->
 
   <!-- vuetify after vue-->
-  <script src="./static/js/ext/vuetify.js?{{.Buildnr}}"></script>
+  <script src="./static/js/ext/{{.VuetifyLibName}}?{{.Buildnr}}"></script>
   <script src="./static/js/ext/vue-router.js?{{.Buildnr}}"></script>
   <script src="./static/js/ext/vuex.js?{{.Buildnr}}"></script>
 
