@@ -3,6 +3,7 @@ export default {
         return {
           loading: false,
           value: '',
+          num_click: 0,
           selection: 1,
         }
     },
@@ -19,18 +20,31 @@ export default {
     },
     methods: {
       reserve(){
+        this.num_click += 1
         console.log('Riserva spazio')
         this.loading = true
+        const title1 = `Prenotazione fallita di un pelo` 
+        const msg1 = `Spiacenti, al momento non sono disponibili posti prenotabili online per l'orario richiesto. 
+        Nel frattempo, se volete fare una breve partita a carte, su questo sito ne avete un piccola possibilità. `
+        const title2 = `Ti piace cliccare facile eh!?` 
+        const msg2 = `Per la tua tenacia meriteresti un posto al tavolo centrale. Quello dove si sbaritava di più.`
+        let curr_title = title1
+        let curr_msg = msg1
+        if (this.num_click > 5){
+          curr_title = title2
+          curr_msg = msg2
+          this.num_click = 0
+        }
         setTimeout(() => {
           this.loading = false
           this.$store.commit('showDialog', {
-            title: 'Prenotazione fallita di un pelo',
-            msg: `Spiacenti, al momento non sono disponibili posti prenotabili online per l'orario richiesto. 
-            Nel frattempo, se volete fare una breve partita a carte, su questo sito ne avete un piccola possibilità. `,
+            title: curr_title,
+            msg: curr_msg,
           })
         }, 2500)
       },
       moreinfo(){
+        this.num_click = 0
         open("https://invido.it", "_blank")
       }
     },
@@ -70,11 +84,11 @@ export default {
           <div class="my-4 subtitle-1">$ • Cuperativa Italian Cafe</div>
 
           <div>
-            Posto trnaquillo nell'amabile
+            Posto tranquillo nell'amabile
             <a href="https://invido.it/bredacisoni/index.html" target="_blank"
               >Breda Cisoni</a
-            >, dove viene servito, tra l'altro, un caffè corretto di alta
-            qualità. Ambiente che offre spazi riservati di calma e relax.
+            >, dove viene servito, tra l'altro, un caffè corretto di 
+            qualità superiore. Ambiente che offre spazi riservati di calma e relax.
           </div>
         </v-card-text>
 

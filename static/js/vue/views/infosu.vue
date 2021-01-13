@@ -34,11 +34,11 @@
           <div class="my-4 subtitle-1">$ • Cuperativa Italian Cafe</div>
 
           <div>
-            Posto trnaquillo nell'amabile
+            Posto tranquillo nell'amabile
             <a href="https://invido.it/bredacisoni/index.html" target="_blank"
               >Breda Cisoni</a
-            >, dove viene servito, tra l'altro, un caffè corretto di alta
-            qualità. Ambiente che offre spazi riservati di calma e relax.
+            >, dove viene servito, tra l'altro, un caffè corretto di 
+            qualità superiore. Ambiente che offre spazi riservati di calma e relax.
           </div>
         </v-card-text>
 
