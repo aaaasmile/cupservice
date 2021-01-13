@@ -81,7 +81,7 @@ export default {
         <v-row justify="center">
           <v-col cols="6">
             <v-btn icon text @click.stop="drawer = false"
-              ><v-icon>close</v-icon> Close
+              ><v-icon>close</v-icon> Chiudi
             </v-btn>
           </v-col>
         </v-row>
