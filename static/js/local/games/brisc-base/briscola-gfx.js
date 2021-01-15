@@ -385,6 +385,7 @@ export class BriscolaGfx {
       ask: {val: true, msg: 'Vuoi davvero abbandonare la partita?', title: 'Importante'},
       fncb: () => {
         console.log('Want to call abbandona from briscola-gfx')
+        // TODO call action resign
       }
     })
   }
