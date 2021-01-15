@@ -8,7 +8,6 @@ export default {
       loadinggame: false,
       appWidth: 0,
       appHeight: 600,
-      _music: null,
       _app: null,
       _gfxGame: null,
       _cache: null,
@@ -25,7 +24,7 @@ export default {
       Action1Title: state => {
         return state.ms.action1.title
       },
-      IsWaitForStart: state =>{
+      IsWaitForStart: state => {
         return state.ms.match_state === 'st_waitforstart'
       }
     })
@@ -46,21 +45,22 @@ export default {
     app.renderer.backgroundColor = 0x061639;
     app.renderer.autoDensity = true;
     this._app = app
-    let mm = GetMusicManagerInstance()
-    this._music = mm
-    mm.Init(() => {
-      let loader = GetCardLoaderGfx()
-      if (!this._cache) {
-        loader.LoadAssets(this.$store.state.pl.deck_type, (cache) => {
-          this._cache = cache
+    let loader = GetCardLoaderGfx()
+    if (!this._cache) {
+      loader.LoadAssets(this.$store.state.pl.deck_type, (cache) => {
+        this._cache = cache
+        const mm = GetMusicManagerInstance()
+        mm.Load(() => {
           this.loadinggame = false
           this.$store.commit('changeGameState', 'st_waitforstart')
           console.log('Load terminated')
         })
-      } else {
-        this.loadinggame = false
-      }
-    })
+      })
+    } else {
+      this.loadinggame = false
+      this.$store.commit('changeGameState', 'st_waitforstart')
+      console.log('Loading finished (cache)')
+    }
 
     // 2. Append canvas element to the body
     document.getElementById('pixi').appendChild(app.view);
@@ -92,7 +92,7 @@ export default {
     gameLoop(delta) {
       this._gfxGame.Update(delta)
     },
-    doAction1(){
+    doAction1() {
       console.log('Action1 is called')
     }
   },

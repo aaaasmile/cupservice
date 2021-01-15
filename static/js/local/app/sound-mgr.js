@@ -1,42 +1,43 @@
 import * as snd from './sound.js'
 
 
-export class MusicManager{
-  constructor(){
+const _assetMusicPath = "static/assets/sound/"
+export class MusicManager {
+  constructor() {
     this._sound = snd.sounds
   }
-  Init(cbLoaded){
+  Load(cbLoaded) {
     this._sound.load([
-      "static/assets/sound/mischen1.wav", 
-      "static/assets/sound/click_4bit.wav"
+      _assetMusicPath + "mischen1.wav",
+      _assetMusicPath + "click_4bit.wav"
     ]);
     this._sound.whenLoaded = () => {
       console.log('Sounds loaded OK')
       cbLoaded()
     }
   }
-  Play(name){
+  Play(name) {
     let piece
-    switch (name){
+    switch (name) {
       case 'mix':
-        piece = this._sound["static/assets/sound/mischen1.wav"] 
+        piece = this._sound[_assetMusicPath + "mischen1.wav"]
         break;
       case 'played':
-        piece = this._sound["static/assets/sound/click_4bit.wav"] 
+        piece = this._sound[_assetMusicPath + "click_4bit.wav"]
         break;
     }
-    if(piece){
+    if (piece) {
       piece.play()
-    }else{
+    } else {
       console.error('Sound unavailable: ', name)
     }
   }
 }
 
-let instance
+let _instance
 export function GetMusicManagerInstance() {
-  if(!instance){
-    instance = new MusicManager()
+  if (!_instance) {
+    _instance = new MusicManager()
   }
-  return instance
+  return _instance
 }
