@@ -49,12 +49,9 @@ export default {
     if (!this._cache) {
       loader.LoadAssets(this.$store.state.pl.deck_type, (cache) => {
         this._cache = cache
-        const mm = GetMusicManagerInstance()
-        mm.Load(() => {
-          this.loadinggame = false
-          this.$store.commit('changeGameState', 'st_waitforstart')
-          console.log('Load terminated')
-        })
+        this.loadinggame = false
+        this.$store.commit('changeGameState', 'st_waitforstart')
+        console.log('Load terminated')
       })
     } else {
       this.loadinggame = false
@@ -83,6 +80,8 @@ export default {
     },
     createGfx(cache, game_name) {
       console.log('Create gfx game', game_name)
+      const mm = GetMusicManagerInstance()
+      mm.Load()
       this._app.stage.removeChildren()
       const gfx = new BuilderGameGfx(game_name);
       let container = gfx.Build(cache, this._app.renderer)

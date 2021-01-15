@@ -5,15 +5,22 @@ const _assetMusicPath = "static/assets/sound/"
 export class MusicManager {
   constructor() {
     this._sound = snd.sounds
+    this._loaded = false
   }
   Load(cbLoaded) {
+    if(this._loaded){
+      return
+    }
     this._sound.load([
       _assetMusicPath + "mischen1.wav",
       _assetMusicPath + "click_4bit.wav"
     ]);
     this._sound.whenLoaded = () => {
       console.log('Sounds loaded OK')
-      cbLoaded()
+      this._loaded = true
+      if (cbLoaded) {
+        cbLoaded()
+      }
     }
   }
   Play(name) {
