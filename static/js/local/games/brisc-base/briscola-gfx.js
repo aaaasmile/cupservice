@@ -296,6 +296,16 @@ export class BriscolaGfx {
     console.log('Match is finished')
     this._staticScene.clear_all_components()
 
+    const markerWinner = new PlayerMarkerGfx(100, this._cache)
+    let avatarWinner = store.state.pl.opp_avatar
+    if (name_winn === this._name_Me){
+      avatarWinner = store.state.pl.me_avatar
+    }
+    markerWinner.Build(name_winn, avatarWinner)
+    markerWinner._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 40 }, anchor_element: 'canvas', }
+    this._staticScene.AddMarker(name_winn, markerWinner)
+
+
     const scoreBoard = new ScoreBoardGfx(90)
     scoreBoard.Build(this._name_Opp, this._name_Me, points_winn)
     scoreBoard.PlayerSetSegni(name_winn, points_winn)
