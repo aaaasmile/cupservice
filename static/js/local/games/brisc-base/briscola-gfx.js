@@ -199,6 +199,7 @@ export class BriscolaGfx {
 
   on_all_ev_giocata_end(args) {
     console.log('on_all_ev_giocata_end', args)
+    //{best: Array(2), is_match_end: false, is_draw: true}
     // best[0][0] => nome vinc
     // best[0][1] => punti vinc
     // best[1][0] => nome perd
@@ -206,9 +207,15 @@ export class BriscolaGfx {
     const points_best = args.best[0][1]
     const points_loser = args.best[1][1]
     const name_winner = args.best[0][0]
-
-    const score_board = this._staticScene.get_component('scoreBoard')
-    score_board.PlayerWonsSegno(name_winner)
+    let complete_msg = `Il segno è treminato con il punteggio di ${points_best} a ${points_loser}`
+    
+    if (!args.is_draw) {
+      const score_board = this._staticScene.get_component('scoreBoard')
+      score_board.PlayerWonsSegno(name_winner)
+      complete_msg += `. Segno vinto da: ${name_winner}`
+    }else{
+      complete_msg += `. Segno pareggiato`
+    }
 
     if (store.state.pl.dialog_gfx_no_blocking) {
       console.log('No dialog to show')
@@ -216,8 +223,7 @@ export class BriscolaGfx {
     }
 
     this._block_for_ask_continue_game = () => { console.log('Dialog giocata end was blocking') }
-    let complete_msg = `Il segno è treminato con il punteggio di ${points_best} a ${points_loser}`
-    complete_msg += `. Segno vinto da: ${name_winner}`
+    
     store.commit('showDialog', {
       title: 'Giocata finita',
       msg: complete_msg,

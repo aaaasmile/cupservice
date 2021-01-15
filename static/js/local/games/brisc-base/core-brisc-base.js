@@ -102,7 +102,7 @@ export class CoreBriscolaBase {
     //"final_score":[["Ernesto",2],["Luigi",0]]
     match_info.final_score.push([nome_gioc_max, this._myOpt.num_segni_match]);
     match_info.final_score.push([player, 0]);
-    
+
     match_info.end(nome_gioc_max, 'resign');
 
     this._coreStateManager.submit_next_state('st_match_end');
@@ -258,10 +258,12 @@ export class CoreBriscolaBase {
       return b[1] - a[1];
     });
     let nome_gioc_max = best_pl_points[0][0];
-
+    let is_draw = false
+    
     if (best_pl_points[0][1] == best_pl_points[1][1]) {
       console.log('Game draw all have scored ' + best_pl_points[0][1]);
       giocata_info.set_draw()
+      is_draw = true
     } else {
       console.log('Giocata winner is ' + nome_gioc_max + ' points scored are ' + best_pl_points[0][1]);
       console.log('Giocata result is ' + best_pl_points[0][1] + ' - ' + best_pl_points[1][1]);
@@ -286,6 +288,7 @@ export class CoreBriscolaBase {
 
     let res = {
       best: best_pl_points,
+      is_draw: is_draw,
       is_match_end: is_match_end
     }
     giocata_info.set_giocata_end_score(res)
