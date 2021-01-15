@@ -107,6 +107,19 @@ export class CoreDataSupport {
     console.log('Punteggio attuale: ', pcs);
   }
 
+  get_player_opponent(player){
+    // player: 'Luigi'
+    let ix = this.players.indexOf(player)
+    if (ix < 0) {
+      throw (new Error(`Player not found, ${player}`))
+    }
+    ix +=1
+    if (ix >= this.players.length){
+      ix = 0
+    }
+    return this.players[ix]
+  }
+
   switch_player_on_turn() {
     this.player_on_turn = this.round_players.length > 0 ? this.round_players[0] : null;
     return this.player_on_turn;

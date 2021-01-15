@@ -123,7 +123,7 @@ export default {
           >Qui si gioca a: {{ SelGame }}!
         </v-card-title>
         <v-card-text
-          ><div class="grey--text">
+          ><div class="grey--text" v-show="IsWaitForStart">
             Premi il pulsante "Gioca" per iniziare
           </div></v-card-text
         >
@@ -140,6 +140,5 @@ export default {
         </v-card-actions>
       </v-card>
     </v-col>
-  </v-row>
-`
+  </v-row>`
 }

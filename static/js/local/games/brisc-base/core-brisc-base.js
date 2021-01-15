@@ -92,6 +92,22 @@ export class CoreBriscolaBase {
     }
   }
 
+  act_alg_player_resign(player) {
+    console.log("alg_player_resign", player)
+    const match_info = this._core_data.match_info
+    const m_score = this._core_data.giocata_info.score
+    const nome_gioc_max = this._core_data.get_player_opponent(player)
+    m_score.set(nome_gioc_max, this._myOpt.num_segni_match);
+
+    //"final_score":[["Ernesto",2],["Luigi",0]]
+    match_info.final_score.push([nome_gioc_max, this._myOpt.num_segni_match]);
+    match_info.final_score.push([player, 0]);
+    
+    match_info.end(nome_gioc_max, 'resign');
+
+    this._coreStateManager.submit_next_state('st_match_end');
+  }
+
   st_new_giocata() {
     this._coreStateStore.set_state('st_new_giocata');
     let cards = this._deck_info.get_cards_on_game();
@@ -220,6 +236,8 @@ export class CoreBriscolaBase {
 
   st_match_end() {
     this._coreStateStore.set_state('st_match_end');
+    let giocata_info = this._core_data.match_info
+
     console.log('st_match_end');
     this._coreStateManager.fire_all('ev_match_end', { info: this._core_data.match_info.get_info() });
   }

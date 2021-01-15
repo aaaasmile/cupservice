@@ -48,6 +48,17 @@ export class BriscolaGfx {
     return b2core._coreStateManager
   }
 
+  register_abbandona_action() {
+    store.commit('modifyGameActionState', {
+      id: 1, title: 'Abbandona', enabled: true,
+      ask: { val: true, msg: 'Vuoi davvero abbandonare la partita?', title: 'Importante' },
+      fncb: () => {
+        console.log('Want to call abbandona from briscola-gfx')
+        this._core_caller.player_resign();
+      }
+    })
+  }
+
   on_all_ev_new_match(args) {
     console.log('on_all_ev_new_match ', args)
     //args: {players: Array(2), num_segni: 2, target_segno: 61}
@@ -243,12 +254,12 @@ export class BriscolaGfx {
     if (this._block_for_ask_continue_game) {
       this._block_for_ask_continue_game()
       this._block_for_ask_continue_game = () => {
-        // showing the same dilog on closing the previous one is not working, so wait a litle
+        // showing the same dialog on closing the previous one is not working, so wait a litle
         setTimeout(() => {
           store.commit('showDialog', {
             title: myTilte,
             msg: complete_msg,
-            fncb: () => { console.log('Partita finita') }
+            fncb: () => { this.match_is_finished() }
           })
         }, 600);
       }
@@ -257,9 +268,14 @@ export class BriscolaGfx {
       store.commit('showDialog', {
         title: myTilte,
         msg: complete_msg,
-        fncb: () => { console.log('Partita finita') }
+        fncb: () => { this.match_is_finished() }
       })
     }
+  }
+
+  match_is_finished(){
+    console.log('Match is finished')
+    store.commit('changeGameState', 'st_waitforstart')
   }
 
   animate_distr_cards(carte) {
@@ -377,17 +393,6 @@ export class BriscolaGfx {
 
     this._core_state.suspend_proc_gevents('suspend animation pesca carta')
     cards_anim[fnix]()
-  }
-
-  register_abbandona_action() {
-    store.commit('modifyGameActionState', {
-      id: 1, title: 'Abbandona', enabled: true, 
-      ask: {val: true, msg: 'Vuoi davvero abbandonare la partita?', title: 'Importante'},
-      fncb: () => {
-        console.log('Want to call abbandona from briscola-gfx')
-        // TODO call action resign
-      }
-    })
   }
 }
 
