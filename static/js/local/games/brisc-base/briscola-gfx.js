@@ -34,7 +34,7 @@ export class BriscolaGfx {
       this._alg = alg
       this._alg.set_automatic_continuation(false)
       if (store.state.pl.auto_player_gfx) {
-        console.log('Want an automatic player on gfx ')
+        console.log('Want an automatic player on gfx')
         this._alg.set_automatic_playing(true)
       }
       this._alg.set_to_master_level()
@@ -42,6 +42,9 @@ export class BriscolaGfx {
     this._deck_info = b2core._deck_info
     this._cache.check_deckinfo(this._deck_info)
     this._core_state = b2core._coreStateManager
+
+    store.commit('changeGameState', 'st_match_ongoing')
+
     return b2core._coreStateManager
   }
 
@@ -49,6 +52,9 @@ export class BriscolaGfx {
     console.log('on_all_ev_new_match ', args)
     //args: {players: Array(2), num_segni: 2, target_segno: 61}
     //       players: ["Luisa", "Silvio"]
+    store.commit('modifyGameActionState', {id: 1, title: 'Abbandona', enabled: true, fncb: () => {
+      console.log('Want to call abbandona from briscola-gfx')
+    }})
     this._staticScene.clear_all_components()
     this._num_players = args.players.length
     const nameCpu = args.players[0]
@@ -195,7 +201,7 @@ export class BriscolaGfx {
     const score_board = this._staticScene.get_component('scoreBoard')
     score_board.PlayerWonsSegno(name_winner)
 
-    if(store.state.pl.dialog_gfx_no_blocking){
+    if (store.state.pl.dialog_gfx_no_blocking) {
       console.log('No dialog to show')
       return
     }

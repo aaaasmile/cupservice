@@ -74,15 +74,15 @@ export default {
         this._app.ticker.stop()
         addTick = false
       }
-      this.setup(this._cache, this.SelGame)
+      this.createGfx(this._cache, this.SelGame)
       if (addTick) {
         this._app.ticker.add(delta => this.gameLoop(delta));  // il ticker sembra vada aggiunto solo una volta
       } else {
         this._app.ticker.start()
       }
     },
-    setup(cache, game_name) {
-      console.log('Setup with cache', game_name)
+    createGfx(cache, game_name) {
+      console.log('Create gfx game', game_name)
       this._app.stage.removeChildren()
       const gfx = new BuilderGameGfx(game_name);
       let container = gfx.Build(cache, this._app.renderer)
@@ -94,6 +94,15 @@ export default {
     },
     doAction1() {
       console.log('Action1 is called')
+      if (this.$store.state.ms.action1.ask_before){
+        console.log('Ask confirm before continue')
+        this.$store.commit('showDialog', {msg: 'Sei sicuro?', title: 'Domanda', fncb: () => {
+          console.log('confirmed by user')  
+          this.$store.commit('callGameActionState', 1)
+        }})
+      }else{
+        this.$store.commit('callGameActionState', 1)
+      }
     }
   },
   template: `
