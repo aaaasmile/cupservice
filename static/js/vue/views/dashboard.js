@@ -1,4 +1,3 @@
-import API from '../apicaller.js'
 import { GetMusicManagerInstance } from '../../local/app/sound-mgr.js'
 import { GetCardLoaderGfx } from '../../local/gfx/card-loader-gfx.js'
 import { BuilderGameGfx } from '../../local/gfx/builder-game-gfx.js'
@@ -7,7 +6,6 @@ export default {
   data() {
     return {
       loadinggame: false,
-      is_mobile: false,
       appWidth: 0,
       appHeight: 600,
       _music: null,
@@ -21,6 +19,15 @@ export default {
       SelGame: state => {
         return state.pl.curr_game
       },
+      EnabledAction1: state => {
+        return state.pl.match.enabled_action1
+      },
+      Action1: state => {
+        return state.pl.match.action1_title
+      },
+      IsWaitForStart: state =>{
+        return state.pl.match.match_state === 'st_waitforstart'
+      }
     })
   },
   created() {
@@ -47,6 +54,7 @@ export default {
         loader.LoadAssets(this.$store.state.pl.deck_type, (cache) => {
           this._cache = cache
           this.loadinggame = false
+          this.$store.commit('changeGameState', 'st_waitforstart')
           console.log('Load terminated')
         })
       } else {
@@ -59,8 +67,8 @@ export default {
 
   },
   methods: {
-    playGame() {
-      console.log("Play game ", this.SelGame)
+    startGame() {
+      console.log("start game ", this.SelGame)
       let addTick = true
       if (this._gfxGame) {
         this._app.ticker.stop()
@@ -83,23 +91,43 @@ export default {
     },
     gameLoop(delta) {
       this._gfxGame.Update(delta)
+    },
+    doAction1(){
+      console.log('Action1 is called')
     }
   },
   template: `
   <v-row justify="center">
     <v-col xs="12" sm="12" md="10" lg="8" xl="6">
-      <v-card flat tile>
-        <v-card-title class="mx-0">Qui si gioca a: {{ SelGame }}! </v-card-title>
-        <v-card-text><div class="grey--text">Premi il pulsante "Gioca" per iniziare</div></v-card-text>
+      <v-card :loading="loadinggame" flat tile>
+        <template slot="progress">
+          <v-progress-linear
+            color="blue darken-4"
+            height="10"
+            indeterminate
+          ></v-progress-linear>
+        </template>
+        <v-card-title class="mx-0"
+          >Qui si gioca a: {{ SelGame }}!
+        </v-card-title>
+        <v-card-text
+          ><div class="grey--text">
+            Premi il pulsante "Gioca" per iniziare
+          </div></v-card-text
+        >
         <v-main>
           <v-container>
             <v-row id="pixi"></v-row>
           </v-container>
         </v-main>
         <v-card-actions>
-          <v-btn @click="playGame" :loading="loadinggame"> Gioca </v-btn>
+          <v-btn @click="startGame" v-show="IsWaitForStart"> Gioca </v-btn>
+          <v-btn @click="doAction1" v-show="EnabledAction1">
+            {{ Action1 }}
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-col>
-  </v-row>`
+  </v-row>
+`
 }

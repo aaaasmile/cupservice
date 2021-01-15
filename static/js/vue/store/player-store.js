@@ -10,6 +10,7 @@ export default {
         dialog_gfx_no_blocking: false,
         briscola_opt: { num_segni: 2 },
         dialog: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
+        match: { enabled_action1: false, action1_title: '', match_state: 'st_undef' }
     },
     mutations: {
         changeAvatar(state, avatar) {
@@ -27,6 +28,10 @@ export default {
                 state.dialog.fncb()
             }
             state.dialog.is_active = false
+        },
+        changeGameState(state, val) {
+            console.log('Changing the game state to', val)
+            state.match.match_state = val
         }
     }
 }
