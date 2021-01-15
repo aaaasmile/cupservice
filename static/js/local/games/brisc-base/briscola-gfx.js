@@ -259,7 +259,7 @@ export class BriscolaGfx {
           store.commit('showDialog', {
             title: myTilte,
             msg: complete_msg,
-            fncb: () => { this.match_is_finished() }
+            fncb: () => { this.match_is_finished(args) }
           })
         }, 600);
       }
@@ -268,13 +268,30 @@ export class BriscolaGfx {
       store.commit('showDialog', {
         title: myTilte,
         msg: complete_msg,
-        fncb: () => { this.match_is_finished() }
+        fncb: () => { this.match_is_finished(args) }
       })
     }
   }
 
-  match_is_finished(){
+  match_is_finished(args) {
+    // {info: "{"match_state":"end","final_score":[["Luisa",2],["…,0]],"end_reason":"resign","winner_name":"Luisa"}"}
+    const info = JSON.parse(args.info)
+    const name_winn = info.final_score[0][0]
+    const points_winn = info.final_score[0][1]
+
+    const name_loser = info.final_score[1][0]
+    const points_loser = info.final_score[1][1]
+
     console.log('Match is finished')
+    this._staticScene.clear_all_components()
+
+    const scoreBoard = new ScoreBoardGfx(90)
+    scoreBoard.Build(this._name_Opp, this._name_Me, points_winn)
+    scoreBoard.PlayerSetSegni(name_winn, points_winn)
+    scoreBoard.PlayerSetSegni(name_loser, points_loser)
+    scoreBoard._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
+    this._staticScene.AddGfxComponent('scoreBoard', scoreBoard)
+
     store.commit('changeGameState', 'st_waitforstart')
   }
 

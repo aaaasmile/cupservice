@@ -38,6 +38,18 @@ export class ScoreBoardGfx {
     throw (new Error(`Unable to find info player in segni`))
   }
 
+  PlayerSetSegni(player_name, segni) {
+    for (let index = 0; index < this._segni.length; index++) {
+      const item = this._segni[index];
+      if (item.name === player_name) {
+        item.segni = segni
+        this._isDirty = true
+        return
+      }
+    }
+    throw (new Error(`Unable to find info player in segni`))
+  }
+
   Render(isDirty) {
     if (!this._visible) {
       this._isDirty = false
