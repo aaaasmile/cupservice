@@ -19,14 +19,14 @@ export default {
       SelGame: state => {
         return state.pl.curr_game
       },
-      EnabledAction1: state => {
-        return state.pl.match.enabled_action1
+      Action1Enabled: state => {
+        return state.ms.action1.enabled
       },
-      Action1: state => {
-        return state.pl.match.action1_title
+      Action1Title: state => {
+        return state.ms.action1.title
       },
       IsWaitForStart: state =>{
-        return state.pl.match.match_state === 'st_waitforstart'
+        return state.ms.match_state === 'st_waitforstart'
       }
     })
   },
@@ -122,8 +122,8 @@ export default {
         </v-main>
         <v-card-actions>
           <v-btn @click="startGame" v-show="IsWaitForStart"> Gioca </v-btn>
-          <v-btn @click="doAction1" v-show="EnabledAction1">
-            {{ Action1 }}
+          <v-btn @click="doAction1" v-show="Action1Enabled">
+            {{ Action1Title }}
           </v-btn>
         </v-card-actions>
       </v-card>
