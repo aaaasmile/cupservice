@@ -7,6 +7,7 @@ import store from '../../../vue/store/index.js'
 import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { TableCardsPlayedGfx } from '../../gfx/table-cards-played.js'
 import { DeckTakenGfx } from '../../gfx/deck-taken-gfx.js'
+import { GetMusicManagerInstance } from '../../../local/app/sound-mgr.js'
 
 export class BriscolaGfx {
   constructor(cache, static_scene) {
@@ -152,8 +153,10 @@ export class BriscolaGfx {
     }
     const cards_me_gfx = this._staticScene.get_component('cardsme')
     const subId = cards_me_gfx.OnClick((card_lbl) => {
-      console.log('Click rec in handler', card_lbl)
+      console.log('Click to play a card', card_lbl)
       this._core_caller.play_card(card_lbl)
+      const mm = GetMusicManagerInstance()
+      mm.Play('played')
       cards_me_gfx.UnsubClick(subId)
     })
   }
@@ -173,6 +176,8 @@ export class BriscolaGfx {
     let src_keygfx_comp = 'cardsme'
     if (args.player_name !== this._name_Me) {
       src_keygfx_comp = 'cardsopp'
+      const mm = GetMusicManagerInstance()
+      mm.Play('played')
     }
 
     const carte = args.card_played
