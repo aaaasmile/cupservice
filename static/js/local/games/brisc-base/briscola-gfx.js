@@ -52,9 +52,7 @@ export class BriscolaGfx {
     console.log('on_all_ev_new_match ', args)
     //args: {players: Array(2), num_segni: 2, target_segno: 61}
     //       players: ["Luisa", "Silvio"]
-    store.commit('modifyGameActionState', {id: 1, title: 'Abbandona', enabled: true, fncb: () => {
-      console.log('Want to call abbandona from briscola-gfx')
-    }})
+    this.register_abbandona_action()
     this._staticScene.clear_all_components()
     this._num_players = args.players.length
     const nameCpu = args.players[0]
@@ -379,6 +377,16 @@ export class BriscolaGfx {
 
     this._core_state.suspend_proc_gevents('suspend animation pesca carta')
     cards_anim[fnix]()
+  }
+
+  register_abbandona_action() {
+    store.commit('modifyGameActionState', {
+      id: 1, title: 'Abbandona', enabled: true, 
+      ask: {val: true, msg: 'Vuoi davvero abbandonare la partita?', title: 'Importante'},
+      fncb: () => {
+        console.log('Want to call abbandona from briscola-gfx')
+      }
+    })
   }
 }
 

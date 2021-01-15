@@ -94,13 +94,17 @@ export default {
     },
     doAction1() {
       console.log('Action1 is called')
-      if (this.$store.state.ms.action1.ask_before){
+      if (this.$store.state.ms.action1.ask_before) {
         console.log('Ask confirm before continue')
-        this.$store.commit('showDialogYesNo', {msg: 'Sei sicuro?', title: 'Domanda', fncb: () => {
-          console.log('confirmed by user')  
-          this.$store.commit('callGameActionState', 1)
-        }})
-      }else{
+        this.$store.commit('showDialogYesNo', {
+          title: this.$store.state.ms.action1.ask_before.title,
+          msg: this.$store.state.ms.action1.ask_before.msg,
+          fncb: () => {
+            console.log('confirmed by user')
+            this.$store.commit('callGameActionState', 1)
+          }
+        })
+      } else {
         this.$store.commit('callGameActionState', 1)
       }
     }
