@@ -21,12 +21,28 @@ export default {
         }
       }
     },
+    dialogYesNoMsg: {
+      get() {
+        return this.$store.state.pl.dialog_yesno.is_active
+      },
+      set(newval) {
+        if (!newval) {
+          this.$store.commit('hideYesDialog', false)
+        }
+      }
+    },
     ...Vuex.mapState({
       textMsg: state => {
         return state.pl.dialog.msg
       },
       textTitle: state => {
         return state.pl.dialog.title
+      },
+      textYesNoMsg: state => {
+        return state.pl.dialog_yesno.msg
+      },
+      textYesNoTitle: state => {
+        return state.pl.dialog_yesno.title
       },
     }),
 
@@ -35,6 +51,10 @@ export default {
     confirmSimpleDialog() {
       console.log('Confirm the simpe dialog')
       this.$store.commit('hideSimpleDialog')
+    },
+    confirmYesDialog() {
+      console.log('Confirm the simpe dialog')
+      this.$store.commit('hideYesDialog', true)
     }
   },
   template: `
@@ -54,7 +74,9 @@ export default {
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">{{ AppTitle }}</v-list-item-title>
-          <v-list-item-subtitle>Non bere mentre giochi a carte</v-list-item-subtitle>
+          <v-list-item-subtitle
+            >Non bere mentre giochi a carte</v-list-item-subtitle
+          >
         </v-list-item-content>
       </v-list-item>
 
@@ -100,6 +122,23 @@ export default {
           </v-card-actions>
         </v-card>
       </v-dialog>
+
+      <v-dialog v-model="dialogYesNoMsg" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">{{ textYesNoTitle }}</v-card-title>
+          <v-card-text>{{ textYesNoMsg }}</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="confirmYesDialog"
+              >SI</v-btn
+            >
+            <v-btn color="green darken-1" text @click="dialogYesNoMsg = false"
+              >No</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-container>
-  </nav>`
+  </nav>
+`
 }

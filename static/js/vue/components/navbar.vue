@@ -15,7 +15,9 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="title">{{ AppTitle }}</v-list-item-title>
-          <v-list-item-subtitle>Non bere mentre giochi a carte</v-list-item-subtitle>
+          <v-list-item-subtitle
+            >Non bere mentre giochi a carte</v-list-item-subtitle
+          >
         </v-list-item-content>
       </v-list-item>
 
@@ -57,6 +59,22 @@
             <v-spacer></v-spacer>
             <v-btn color="green darken-1" text @click="confirmSimpleDialog"
               >OK</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+
+      <v-dialog v-model="dialogYesNoMsg" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">{{ textYesNoTitle }}</v-card-title>
+          <v-card-text>{{ textYesNoMsg }}</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="confirmYesDialog"
+              >SI</v-btn
+            >
+            <v-btn color="green darken-1" text @click="dialogYesNoMsg = false"
+              >No</v-btn
             >
           </v-card-actions>
         </v-card>

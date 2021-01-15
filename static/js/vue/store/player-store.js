@@ -10,6 +10,7 @@ export default {
         dialog_gfx_no_blocking: false,
         briscola_opt: { num_segni: 2 },
         dialog: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
+        dialog_yesno: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
     },
     mutations: {
         changeAvatar(state, avatar) {
@@ -21,12 +22,27 @@ export default {
             state.dialog.title = data.title
             state.dialog.is_active = true
         },
+        showDialogYesNo(state, data) {
+            state.dialog_yesno.msg = data.msg
+            state.dialog_yesno.fncb = data.fncb
+            state.dialog_yesno.title = data.title
+            state.dialog_yesno.is_active = true
+        },
         hideSimpleDialog(state) {
             console.log('Request to close the dialog')
             if (state.dialog.fncb) {
                 state.dialog.fncb()
             }
             state.dialog.is_active = false
+        },
+        hideYesDialog(state, isyes) {
+            console.log('Request to close the yes/no dialog: ', isyes)
+            if (isyes) {
+                if (state.dialog_yesno.fncb) {
+                    state.dialog_yesno.fncb()
+                }
+            }
+            state.dialog_yesno.is_active = false
         }
     }
 }

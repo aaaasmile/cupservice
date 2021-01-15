@@ -96,7 +96,7 @@ export default {
       console.log('Action1 is called')
       if (this.$store.state.ms.action1.ask_before){
         console.log('Ask confirm before continue')
-        this.$store.commit('showDialog', {msg: 'Sei sicuro?', title: 'Domanda', fncb: () => {
+        this.$store.commit('showDialogYesNo', {msg: 'Sei sicuro?', title: 'Domanda', fncb: () => {
           console.log('confirmed by user')  
           this.$store.commit('callGameActionState', 1)
         }})
