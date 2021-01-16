@@ -134,8 +134,8 @@ export default {
         <v-card-text
           ><div class="grey--text" v-show="IsWaitForStart">
             Premi il pulsante "Gioca" per iniziare
-          </div></v-card-text
-        >
+          </div>
+        </v-card-text>
         <v-main>
           <v-container>
             <v-row id="pixi"></v-row>
@@ -146,18 +146,19 @@ export default {
           <v-btn @click="doAction1" v-show="Action1Enabled">
             {{ Action1Title }}
           </v-btn>
-
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on }">
-              <v-btn icon v-on="on" @click="toggleMute">
-                <v-icon>{{ Muted ? "volume_off" : "volume_mute" }}</v-icon>
-              </v-btn>
-            </template>
-            <span>{{ Muted ? "Unmute" : "Mute" }}</span>
-          </v-tooltip>
+           <v-spacer></v-spacer>
+          <v-toolbar flat dense>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn icon v-on="on" @click="toggleMute">
+                  <v-icon>{{ Muted ? "volume_off" : "volume_mute" }}</v-icon>
+                </v-btn>
+              </template>
+              <span>{{ Muted ? "Unmute" : "Mute" }}</span>
+            </v-tooltip>
+          </v-toolbar>
         </v-card-actions>
       </v-card>
     </v-col>
-  </v-row>
-`
+  </v-row>`
 }
