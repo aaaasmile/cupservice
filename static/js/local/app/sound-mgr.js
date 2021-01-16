@@ -6,7 +6,14 @@ export class MusicManager {
   constructor() {
     this._sound = snd.sounds
     this._loaded = false
+    this._needresume = false
+    this._muted = false
   }
+
+  Mute(){
+    this._muted = !this._muted
+  }
+
   Load(cbLoaded) {
     if(this._loaded){
       return
@@ -18,13 +25,18 @@ export class MusicManager {
     this._sound.whenLoaded = () => {
       console.log('Sounds loaded OK')
       this._loaded = true
+      this._needresume = true
       if (cbLoaded) {
         cbLoaded()
       }
     }
   }
+    
   Play(name) {
     let piece
+    if (this._muted){
+      return
+    }
     switch (name) {
       case 'mix':
         piece = this._sound[_assetMusicPath + "mischen1.wav"]
@@ -34,6 +46,11 @@ export class MusicManager {
         break;
     }
     if (piece) {
+      if (this._needresume){
+        piece.resume()
+        this._needresume = false
+      }
+      
       piece.play()
     } else {
       console.error('Sound unavailable: ', name)

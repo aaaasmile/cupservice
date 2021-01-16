@@ -49,9 +49,12 @@ export default {
     if (!this._cache) {
       loader.LoadAssets(this.$store.state.pl.deck_type, (cache) => {
         this._cache = cache
-        this.loadinggame = false
-        this.$store.commit('changeGameState', 'st_waitforstart')
-        console.log('Load terminated')
+        const mm = GetMusicManagerInstance()
+        mm.Load(() => {
+          this.loadinggame = false
+          this.$store.commit('changeGameState', 'st_waitforstart')
+          console.log('Load terminated')
+        })
       })
     } else {
       this.loadinggame = false
@@ -80,8 +83,7 @@ export default {
     },
     createGfx(cache, game_name) {
       console.log('Create gfx game', game_name)
-      const mm = GetMusicManagerInstance()
-      mm.Load()
+
       this._app.stage.removeChildren()
       const gfx = new BuilderGameGfx(game_name);
       let container = gfx.Build(cache, this._app.renderer)
@@ -140,5 +142,6 @@ export default {
         </v-card-actions>
       </v-card>
     </v-col>
-  </v-row>`
+  </v-row>
+`
 }

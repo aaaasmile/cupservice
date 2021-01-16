@@ -408,6 +408,11 @@ function makeSound(source, loadHandler, shouldLoadSound, xhr, failHandler) {
   o.reverb = false;
   o.reverbImpulse = null;
 
+  o.resume = function(){
+    // funzione messa per chiamare il resume del context
+    actx.resume()
+  };
+
   //The sound object's methods.
   o.play = function () {
 
