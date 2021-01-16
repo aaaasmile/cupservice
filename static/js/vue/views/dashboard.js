@@ -26,7 +26,10 @@ export default {
       },
       IsWaitForStart: state => {
         return state.ms.match_state === 'st_waitforstart'
-      }
+      },
+      Muted: state => {
+        return state.pl.muted
+      },
     })
   },
   created() {
@@ -93,6 +96,10 @@ export default {
     gameLoop(delta) {
       this._gfxGame.Update(delta)
     },
+    toggleMute(){
+      console.log('Toggle mute')
+      this.$store.commit('toggleMute')
+    },
     doAction1() {
       console.log('Action1 is called')
       if (this.$store.state.ms.action1.ask_before) {
@@ -139,6 +146,15 @@ export default {
           <v-btn @click="doAction1" v-show="Action1Enabled">
             {{ Action1Title }}
           </v-btn>
+
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on" @click="toggleMute">
+                <v-icon>{{ Muted ? "volume_off" : "volume_mute" }}</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ Muted ? "Unmute" : "Mute" }}</span>
+          </v-tooltip>
         </v-card-actions>
       </v-card>
     </v-col>

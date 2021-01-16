@@ -6,6 +6,7 @@ export default {
         curr_game: 'briscola',
         namePl1: 'Luisa',
         namePl2: 'Mario',
+        muted: false,
         auto_player_gfx: false,
         dialog_gfx_no_blocking: false,
         briscola_opt: { num_segni: 2 },
@@ -15,6 +16,9 @@ export default {
     mutations: {
         changeAvatar(state, avatar) {
             state.me_avatar = avatar
+        },
+        toggleMute(state){
+            state.muted = !state.muted
         },
         showDialog(state, data) {
             state.dialog.msg = data.msg

@@ -27,6 +27,15 @@
           <v-btn @click="doAction1" v-show="Action1Enabled">
             {{ Action1Title }}
           </v-btn>
+
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on }">
+              <v-btn icon v-on="on" @click="toggleMute">
+                <v-icon>{{ Muted ? "volume_off" : "volume_mute" }}</v-icon>
+              </v-btn>
+            </template>
+            <span>{{ Muted ? "Unmute" : "Mute" }}</span>
+          </v-tooltip>
         </v-card-actions>
       </v-card>
     </v-col>

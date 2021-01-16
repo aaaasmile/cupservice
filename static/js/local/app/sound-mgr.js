@@ -1,5 +1,5 @@
 import * as snd from './sound.js'
-
+import store from '../../vue/store/index.js'
 
 const _assetMusicPath = "static/assets/sound/"
 export class MusicManager {
@@ -8,10 +8,6 @@ export class MusicManager {
     this._loaded = false
     this._needresume = false
     this._muted = false
-  }
-
-  Mute(){
-    this._muted = !this._muted
   }
 
   Load(cbLoaded) {
@@ -34,7 +30,7 @@ export class MusicManager {
     
   Play(name) {
     let piece
-    if (this._muted){
+    if (store.state.pl.muted){
       return
     }
     switch (name) {
