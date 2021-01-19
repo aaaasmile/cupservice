@@ -29,6 +29,7 @@ export default {
     }
     sprite.scale.set(scale, scale)
     sprite.position = pos
+    return sprite
   },
   ScaleCardSpriteToStdIfNeeded(sprite) {
     if (sprite.width > 180 || sprite.height > 250) {
