@@ -59,6 +59,10 @@ export default {
           console.log('Load terminated')
         })
       })
+      setTimeout( () => {
+        this.loadinggame = false
+        console.log('Something is wrong with loading')
+      }, 10000)
     } else {
       this.loadinggame = false
       this.$store.commit('changeGameState', 'st_waitforstart')
@@ -160,5 +164,6 @@ export default {
         </v-card-actions>
       </v-card>
     </v-col>
-  </v-row>`
+  </v-row>
+`
 }

@@ -6,7 +6,7 @@ export default {
         curr_game: 'briscola',
         namePl1: 'Luisa',
         namePl2: 'Mario',
-        muted: false,
+        muted: true,
         auto_player_gfx: false,
         dialog_gfx_no_blocking: false,
         briscola_opt: { num_segni: 2 },

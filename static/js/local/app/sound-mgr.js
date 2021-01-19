@@ -12,7 +12,10 @@ export class MusicManager {
 
   Load(cbLoaded) {
     if(this._loaded){
-      return
+      if(cbLoaded){
+        cbLoaded()
+      }
+      return 
     }
     this._sound.load([
       _assetMusicPath + "mischen1.wav",
