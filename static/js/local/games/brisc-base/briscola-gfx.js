@@ -384,6 +384,8 @@ export class BriscolaGfx {
     cards_anim.push(() => {
       let aniDistr = AniCards('mano_end_all', 'table', src_keygfx_comp, carte, (nn, start_cmp, stop_comp) => {
         console.log(`Animation ${nn} on  is terminated`)
+        const cardtaken_gfx = this._staticScene.get_component(stop_comp)
+        cardtaken_gfx.take_cards(carte)
         fnix++
         cards_anim[fnix]()
       })
