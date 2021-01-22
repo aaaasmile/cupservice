@@ -26,6 +26,12 @@ export class CoreCaller {
     }
   }
 
+  player_abort_segno(){
+    if (this._coreStateManager) {
+      this._coreStateManager.submit_action('alg_player_abortsegno', [this._player_name])
+    }
+  }
+
   dispose() {
     if (this._coreStateManager) {
       this._coreStateManager = null

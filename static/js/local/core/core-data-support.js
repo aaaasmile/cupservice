@@ -5,25 +5,25 @@ import { MatchInfo } from '../shared/match-info.js'
 //////////////////////////////////////////
 export class CoreDataSupport {
   constructor() {
-    this.giocata_info = { 
+    this.giocata_info = {
       score: new Map(), // NOTA: Map usa SEMPRE get e set. 
-      points_curr:  new Map(),
-      giocata_state: '' ,
+      points_curr: new Map(),
+      giocata_state: '',
       bestpoints_info: {},
-      is_started(){
+      is_started() {
         return this.giocata_state === 'Started'
       },
-      set_draw(){
+      set_draw() {
         this.giocata_state = 'draw'
       },
-      set_end(){
+      set_end() {
         this.giocata_state = 'end'
       },
-      set_started(){
+      set_started() {
         this.giocata_state = 'Started'
         this.bestpoints_info = {}
       },
-      set_giocata_end_score(info){
+      set_giocata_end_score(info) {
         this.bestpoints_info = info
       }
     };
@@ -37,28 +37,36 @@ export class CoreDataSupport {
     this.first_player_ix = 0;
     this.round_players = [];
     this.mazzo_gioco = [];
-    this.num_of_cards_onhandplayer = 3;
+    this.num_of_cards_onhandplayer = null
+    this.max_possible_points = null
     this.player_on_turn = null;
     this.continue_to_cfm = []
   }
 
-  getNumCardInHand(player_name){
-    if(this.carte_in_mano[player_name]){
+  getNumCardInHand(player_name) {
+    if (this.carte_in_mano[player_name]) {
       return this.carte_in_mano[player_name].length
     }
     return 0
   }
 
-  getCardInHand(player_name, posIx){
-    if(this.carte_in_mano[player_name]){
+  getCardInHand(player_name, posIx) {
+    if (this.carte_in_mano[player_name]) {
       return this.carte_in_mano[player_name][posIx]
     }
     return null
   }
 
-  start(num_of_players, players, hand_player_size) {
+  
+  get_maxpossible_points = () => {
+    return this.max_possible_points
+  }
+
+  start(num_of_players, players, hand_player_size, max_possible_points) {
     // players: ["Luigi", "Ernesto"]
-    this.match_info.start();
+    console.log('CoreDataSupport start')
+    this.max_possible_points = max_possible_points
+      this.match_info.start();
     this.players = [];
     if (hand_player_size === undefined) {
       throw (new Error('hand_player_size is undefined'));
@@ -86,7 +94,7 @@ export class CoreDataSupport {
     for (let i = 0; i < this.round_players.length; i++) {
       let player = this.round_players[i];
       console.log('On this game play the player: ' + this.round_players[i]);
-      this.giocata_info.points_curr.set(player,0);
+      this.giocata_info.points_curr.set(player, 0);
       this.carte_prese[player] = [];
       this.carte_in_mano[player] = [];
     }
@@ -103,18 +111,18 @@ export class CoreDataSupport {
     let pcs = this.giocata_info.points_curr
     let new_val = pcs.get(player) + points
     pcs.set(player, new_val)
-   
+
     console.log('Punteggio attuale: ', pcs);
   }
 
-  get_player_opponent(player){
+  get_player_opponent(player) {
     // player: 'Luigi'
     let ix = this.players.indexOf(player)
     if (ix < 0) {
       throw (new Error(`Player not found, ${player}`))
     }
-    ix +=1
-    if (ix >= this.players.length){
+    ix += 1
+    if (ix >= this.players.length) {
       ix = 0
     }
     return this.players[ix]

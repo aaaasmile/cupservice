@@ -3,7 +3,7 @@ describe('brisc-base-core test', function () {
   prepareGame = (rnd_mgr) => {
     console.log('Prepare game for test')
     let coreStateManager = new cup.CoreStateManager('develop');
-    let b2core = new cup.CoreBriscolaBase(coreStateManager, 2, 61, 3);
+    let b2core = new cup.CoreBriscolaBase(coreStateManager, 2, 61, 3, 120);
     if (rnd_mgr) {
       b2core._rnd_mgr = rnd_mgr
     }
@@ -77,7 +77,7 @@ describe('brisc-base-core test', function () {
   })
 
   it('Calcola punteggio', () => {
-    let b2core = new cup.CoreBriscolaBase(new cup.CoreStateManager('develop'), 2, 61, 3);
+    let b2core = new cup.CoreBriscolaBase(new cup.CoreStateManager('develop'), 2, 61, 3, 120);
     let points = b2core.calc_punteggio(['_As', '_7c'])
     expect(points).toEqual(11)
     points = b2core.calc_punteggio(['_3s', '_Fc'])

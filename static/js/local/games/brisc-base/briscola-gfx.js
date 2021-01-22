@@ -27,6 +27,7 @@ export class BriscolaGfx {
     opt.namePl2 = store.state.pl.namePl2
     opt.points_to_win = 61
     opt.cards_in_hand = 3
+    opt.max_points = 120
     this._core_caller = null
     this._alg = null
     let b2core = PrepareGameVsCpu(this, opt, (core_caller, alg) => {
@@ -314,7 +315,7 @@ export class BriscolaGfx {
   match_is_finished(args) {
     // {info: "{"match_state":"end","final_score":[["Luisa",2],["…,0]],"end_reason":"resign","winner_name":"Luisa"}"}
     this.unregister_giocata_action()
-    
+
     const info = JSON.parse(args.info)
     const name_winn = info.final_score[0][0]
     const points_winn = info.final_score[0][1]
