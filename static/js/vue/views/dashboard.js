@@ -85,7 +85,7 @@ export default {
       })
       setTimeout(() => {
         this.loadinggame = false
-        console.log('Something is wrong with loading')
+        console.warn('Something is wrong with loading')
       }, 10000)
     } else {
       this.loadinggame = false

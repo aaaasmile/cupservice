@@ -55,17 +55,25 @@ export default {
           state.action1.enabled = data.enabled
           state.action1.title = data.title
           state.action1.fncb = data.fncb
-          state.action1.ask_before.val = data.ask.val
-          state.action1.ask_before.msg = data.ask.msg
-          state.action1.ask_before.title = data.ask.title
+          state.action1.ask_before.enabled = false
+          if (data.ask) {
+            state.action1.ask_before.val = data.ask.val
+            state.action1.ask_before.msg = data.ask.msg
+            state.action1.ask_before.title = data.ask.title
+            state.action1.ask_before.enabled = true
+          }
           break;
         case 2:
           state.action2.enabled = data.enabled
           state.action2.title = data.title
           state.action2.fncb = data.fncb
-          state.action2.ask_before.val = data.ask.val
-          state.action2.ask_before.msg = data.ask.msg
-          state.action2.ask_before.title = data.ask.title
+          state.action2.ask_before.enabled = false
+          if (data.ask) {
+            state.action2.ask_before.val = data.ask.val
+            state.action2.ask_before.msg = data.ask.msg
+            state.action2.ask_before.title = data.ask.title
+            state.action2.ask_before.enabled = true
+          }
           break;
         case 3:
           state.action3.enabled = data.enabled
@@ -83,17 +91,25 @@ export default {
           state.action4.enabled = data.enabled
           state.action4.title = data.title
           state.action4.fncb = data.fncb
-          state.action4.ask_before.val = data.ask.val
-          state.action4.ask_before.msg = data.ask.msg
-          state.action4.ask_before.title = data.ask.title
+          state.action4.ask_before.enabled = false
+          if (data.ask) {
+            state.action4.ask_before.val = data.ask.val
+            state.action4.ask_before.msg = data.ask.msg
+            state.action4.ask_before.title = data.ask.title
+            state.action4.ask_before.enabled = true
+          }
           break;
         case 5:
           state.action5.enabled = data.enabled
           state.action5.title = data.title
           state.action5.fncb = data.fncb
-          state.action5.ask_before.val = data.ask.val
-          state.action5.ask_before.msg = data.ask.msg
-          state.action5.ask_before.title = data.ask.title
+          state.action3.ask_before.enabled = false
+          if (data.ask) {
+            state.action5.ask_before.val = data.ask.val
+            state.action5.ask_before.msg = data.ask.msg
+            state.action5.ask_before.title = data.ask.title
+            state.action5.ask_before.enabled = true
+          }
           break;
         default:
           throw (new Error(`Action not supported for modify ${id}`))

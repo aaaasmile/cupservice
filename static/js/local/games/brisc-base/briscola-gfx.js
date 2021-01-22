@@ -200,6 +200,7 @@ export class BriscolaGfx {
     // best[0][1] => punti vinc
     // best[1][0] => nome perd
     // best[1][1] => punti perd
+    this.unregister_giocata_action()
     const points_best = args.best[0][1]
     const points_loser = args.best[1][1]
     const name_winner = args.best[0][0]
@@ -299,14 +300,21 @@ export class BriscolaGfx {
     store.commit('modifyGameActionState', {
       id: 3, title: 'Conta', enabled: true,
       fncb: () => {
-        console.log('Please show a nice control that count cards')
+        console.warn('TODO: Please show a nice control that count cards')
         // TODO
       }
     })
   }
 
+  unregister_giocata_action() {
+    store.commit('modifyGameActionState', {id: 2,  enabled: false})
+    store.commit('modifyGameActionState', {id: 3,  enabled: false})
+  }
+
   match_is_finished(args) {
     // {info: "{"match_state":"end","final_score":[["Luisa",2],["…,0]],"end_reason":"resign","winner_name":"Luisa"}"}
+    this.unregister_giocata_action()
+    
     const info = JSON.parse(args.info)
     const name_winn = info.final_score[0][0]
     const points_winn = info.final_score[0][1]
