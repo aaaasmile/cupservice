@@ -24,6 +24,30 @@ export default {
       Action1Title: state => {
         return state.ms.action1.title
       },
+      Action2Enabled: state => {
+        return state.ms.action2.enabled
+      },
+      Action2Title: state => {
+        return state.ms.action2.title
+      },
+      Action3Enabled: state => {
+        return state.ms.action3.enabled
+      },
+      Action3Title: state => {
+        return state.ms.action3.title
+      },
+      Action4Enabled: state => {
+        return state.ms.action4.enabled
+      },
+      Action4Title: state => {
+        return state.ms.action4.title
+      },
+      Action5Enabled: state => {
+        return state.ms.action5.enabled
+      },
+      Action5Title: state => {
+        return state.ms.action5.title
+      },
       IsWaitForStart: state => {
         return state.ms.match_state === 'st_waitforstart'
       },
@@ -59,7 +83,7 @@ export default {
           console.log('Load terminated')
         })
       })
-      setTimeout( () => {
+      setTimeout(() => {
         this.loadinggame = false
         console.log('Something is wrong with loading')
       }, 10000)
@@ -100,26 +124,70 @@ export default {
     gameLoop(delta) {
       this._gfxGame.Update(delta)
     },
-    toggleMute(){
+    toggleMute() {
       console.log('Toggle mute')
       this.$store.commit('toggleMute')
     },
     doAction1() {
       console.log('Action1 is called')
-      if (this.$store.state.ms.action1.ask_before) {
+      this.doactionNr(
+        this.$store.state.ms.action1.ask_before,
+        this.$store.state.ms.action2.ask_before.title,
+        this.$store.state.ms.action1.ask_before.msg,
+        1
+      )
+    },
+    doAction2() {
+      console.log('Action2 is called')
+      this.doactionNr(
+        this.$store.state.ms.action2.ask_before,
+        this.$store.state.ms.action2.ask_before.title,
+        this.$store.state.ms.action2.ask_before.msg,
+        2
+      )
+    },
+    doAction3() {
+      console.log('Action3 is called')
+      this.doactionNr(
+        this.$store.state.ms.action3.ask_before,
+        this.$store.state.ms.action3.ask_before.title,
+        this.$store.state.ms.action3.ask_before.msg,
+        3
+      )
+    },
+    doAction4() {
+      console.log('Action4 is called')
+      this.doactionNr(
+        this.$store.state.ms.action4.ask_before,
+        this.$store.state.ms.action4.ask_before.title,
+        this.$store.state.ms.action4.ask_before.msg,
+        4
+      )
+    },
+    doAction5() {
+      console.log('Action5 is called')
+      this.doactionNr(
+        this.$store.state.ms.action5.ask_before,
+        this.$store.state.ms.action5.ask_before.title,
+        this.$store.state.ms.action5.ask_before.msg,
+        5
+      )
+    },
+    doactionNr(ask_before, actitle, actmsg, actid) {
+      if (ask_before && ask_before.enabled) {
         console.log('Ask confirm before continue')
         this.$store.commit('showDialogYesNo', {
-          title: this.$store.state.ms.action1.ask_before.title,
-          msg: this.$store.state.ms.action1.ask_before.msg,
+          title: actitle,
+          msg: actmsg,
           fncb: () => {
             console.log('confirmed by user')
-            this.$store.commit('callGameActionState', 1)
+            this.$store.commit('callGameActionState', actid)
           }
         })
       } else {
-        this.$store.commit('callGameActionState', 1)
+        this.$store.commit('callGameActionState', actid)
       }
-    }
+    },
   },
   template: `
   <v-row justify="center">
@@ -149,6 +217,18 @@ export default {
           <v-btn @click="startGame" v-show="IsWaitForStart"> Gioca </v-btn>
           <v-btn @click="doAction1" v-show="Action1Enabled">
             {{ Action1Title }}
+          </v-btn>
+          <v-btn @click="doAction2" v-show="Action2Enabled">
+            {{ Action2Title }}
+          </v-btn>
+          <v-btn @click="doAction3" v-show="Action3Enabled">
+            {{ Action3Title }}
+          </v-btn>
+          <v-btn @click="doAction4" v-show="Action4Enabled">
+            {{ Action4Title }}
+          </v-btn>
+          <v-btn @click="doAction5" v-show="Action5Enabled">
+            {{ Action5Title }}
           </v-btn>
            <v-spacer></v-spacer>
           <v-toolbar flat dense>

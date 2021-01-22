@@ -27,6 +27,18 @@
           <v-btn @click="doAction1" v-show="Action1Enabled">
             {{ Action1Title }}
           </v-btn>
+          <v-btn @click="doAction2" v-show="Action2Enabled">
+            {{ Action2Title }}
+          </v-btn>
+          <v-btn @click="doAction3" v-show="Action3Enabled">
+            {{ Action3Title }}
+          </v-btn>
+          <v-btn @click="doAction4" v-show="Action4Enabled">
+            {{ Action4Title }}
+          </v-btn>
+          <v-btn @click="doAction5" v-show="Action5Enabled">
+            {{ Action5Title }}
+          </v-btn>
            <v-spacer></v-spacer>
           <v-toolbar flat dense>
             <v-tooltip bottom>

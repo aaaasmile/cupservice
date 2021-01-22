@@ -71,5 +71,12 @@ Poi su invido.it
 Oltre vue.js, pixi.js, vuetify e vuex, rxjs è rimasto come ricordo dei tempi passati. Solo per questi amari ricordi, avrei voglia di toglierla. Però fa quello che deve fare e funziona.
 La versione di Vuetify che sto usando è la vuetify-v2.4.2.min.js.
 
+### Comunicazione Gfx Game BriscolaGfx e dashboard
+I comandi mostrati nella dashboard durante il gioco vengono abilitati dal gfx del gioco,
+vale a dire BriscolaGfx.
+Il comando abbandona viene abilitato durante la notifica on_all_ev_new_match.
+Lo store funziona da bus attraverso la mutazione modifyGameActionState per la registrazione.
+La mutazione callGameActionState viene usata per l'esecuzione.
+
 ### TODO
 - Sto cercando di completare la classe BriscolaGfx.

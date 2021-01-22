@@ -49,22 +49,11 @@ export class BriscolaGfx {
     return b2core._coreStateManager
   }
 
-  register_abbandona_action() {
-    store.commit('modifyGameActionState', {
-      id: 1, title: 'Abbandona', enabled: true,
-      ask: { val: true, msg: 'Vuoi davvero abbandonare la partita?', title: 'Importante' },
-      fncb: () => {
-        console.log('Want to call abbandona from briscola-gfx')
-        this._core_caller.player_resign();
-      }
-    })
-  }
-
   on_all_ev_new_match(args) {
     console.log('on_all_ev_new_match ', args)
     //args: {players: Array(2), num_segni: 2, target_segno: 61}
     //       players: ["Luisa", "Silvio"]
-    this.register_abbandona_action()
+    this.register_newmatch_action()
     this._staticScene.clear_all_components()
     this._num_players = args.players.length
     const nameCpu = args.players[0]
@@ -93,6 +82,8 @@ export class BriscolaGfx {
   on_pl_ev_brisc_new_giocata(args) {
     // args: {carte: Array(3), brisc: "_5s", num_card_deck: 33}
     // carte: (3) ["_Rc", "_5c", "_Cd"]
+    this.register_newgiocata_action()
+
     console.log('on_pl_ev_brisc_new_giocata', args)
     this._staticScene.clear_component('deck')
     this._staticScene.clear_component('cardsme')
@@ -212,7 +203,7 @@ export class BriscolaGfx {
     const points_best = args.best[0][1]
     const points_loser = args.best[1][1]
     const name_winner = args.best[0][0]
-    let complete_msg = `Il segno è treminato con il punteggio di ${points_best} a ${points_loser}`
+    let complete_msg = `Il segno è terminato con il punteggio di ${points_best} a ${points_loser}`
     
     if (!args.is_draw) {
       const score_board = this._staticScene.get_component('scoreBoard')
@@ -282,6 +273,36 @@ export class BriscolaGfx {
         fncb: () => { this.match_is_finished(args) }
       })
     }
+  }
+
+  register_newmatch_action() {
+    store.commit('modifyGameActionState', {
+      id: 1, title: 'Abbandona', enabled: true,
+      ask: { val: true, msg: 'Vuoi davvero abbandonare la partita e perdere infamamente?', title: 'Importante' },
+      fncb: () => {
+        console.log('Want to call abbandona from briscola-gfx')
+        this._core_caller.player_resign();
+      }
+    })
+  }
+
+  register_newgiocata_action() {
+    store.commit('modifyGameActionState', {
+      id: 2, title: 'Vai dentro', enabled: true,
+      ask: { val: true, msg: 'Vuoi davvero buttare dentro il segno?', title: 'Importante' },
+      fncb: () => {
+        console.log('Want to call vai dentro from briscola-gfx')
+        this._core_caller.player_abort_segno();
+      }
+    })
+
+    store.commit('modifyGameActionState', {
+      id: 3, title: 'Conta', enabled: true,
+      fncb: () => {
+        console.log('Please show a nice control that count cards')
+        // TODO
+      }
+    })
   }
 
   match_is_finished(args) {
