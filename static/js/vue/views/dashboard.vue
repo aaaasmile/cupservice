@@ -52,6 +52,7 @@
           </v-toolbar>
         </v-card-actions>
       </v-card>
+      <Conta></Conta>
     </v-col>
   </v-row>
 </template>

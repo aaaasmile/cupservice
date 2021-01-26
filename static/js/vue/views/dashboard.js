@@ -1,8 +1,10 @@
 import { GetMusicManagerInstance } from '../../local/app/sound-mgr.js'
 import { GetCardLoaderGfx } from '../../local/gfx/card-loader-gfx.js'
 import { BuilderGameGfx } from '../../local/gfx/builder-game-gfx.js'
+import Conta from '../components/conta.js'
 
 export default {
+  components: { Conta },
   data() {
     return {
       loadinggame: false,
@@ -243,6 +245,7 @@ export default {
           </v-toolbar>
         </v-card-actions>
       </v-card>
+      <Conta></Conta>
     </v-col>
   </v-row>
 `

@@ -206,12 +206,12 @@ export class BriscolaGfx {
     const points_loser = args.best[1][1]
     const name_winner = args.best[0][0]
     let complete_msg = `Il segno è terminato con il punteggio di ${points_best} a ${points_loser}`
-    
+
     if (!args.is_draw) {
       const score_board = this._staticScene.get_component('scoreBoard')
       score_board.PlayerWonsSegno(name_winner)
       complete_msg += `. Segno vinto da: ${name_winner}`
-    }else{
+    } else {
       complete_msg += `. Segno pareggiato`
     }
 
@@ -221,7 +221,7 @@ export class BriscolaGfx {
     }
 
     this._block_for_ask_continue_game = () => { console.log('Dialog giocata end was blocking') }
-    
+
     store.commit('showDialog', {
       title: 'Giocata finita',
       msg: complete_msg,
@@ -301,15 +301,19 @@ export class BriscolaGfx {
     store.commit('modifyGameActionState', {
       id: 3, title: 'Conta', enabled: true,
       fncb: () => {
-        console.warn('TODO: Please show a nice control that count cards')
-        // TODO
+        console.log('Request a nice control that count cards')
+        this._core_state.suspend_proc_gevents('suspend conta')
+        store.commit('showContaDialog', {
+          deck_cards_lbl: this._alg._card_taken,
+          fncb: () => { this._core_state.continue_process_events('after conta') }
+        })
       }
     })
   }
 
   unregister_giocata_action() {
-    store.commit('modifyGameActionState', {id: 2,  enabled: false})
-    store.commit('modifyGameActionState', {id: 3,  enabled: false})
+    store.commit('modifyGameActionState', { id: 2, enabled: false })
+    store.commit('modifyGameActionState', { id: 3, enabled: false })
   }
 
   match_is_finished(args) {
@@ -328,7 +332,7 @@ export class BriscolaGfx {
 
     const markerWinner = new PlayerMarkerGfx(100, this._cache)
     let avatarWinner = store.state.pl.opp_avatar
-    if (name_winn === this._name_Me){
+    if (name_winn === this._name_Me) {
       avatarWinner = store.state.pl.me_avatar
     }
     markerWinner.Build(name_winn, avatarWinner)

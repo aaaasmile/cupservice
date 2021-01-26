@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     confirmSimpleDialog() {
-      console.log('Confirm the simpe dialog')
+      console.log('Confirm the simple dialog')
       this.$store.commit('hideSimpleDialog')
     },
     confirmYesDialog() {
