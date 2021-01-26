@@ -50,10 +50,10 @@ export default {
       </v-main>
       <v-card-actions>
         <v-btn icon  @click="prevCard">
-          <v-icon>mdi-skip-previous-circle-outline</v-icon>
+          <v-icon>mdi-skip-previous</v-icon>
         </v-btn>
         <v-btn icon @click="nextCard">
-          <v-icon>mdi-skip-next-circle-outline</v-icon>
+          <v-icon>mdi-skip-next</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
         <v-btn color="green darken-1" text @click="confirmConta">OK</v-btn>
