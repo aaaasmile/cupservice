@@ -3,13 +3,12 @@ export default {
   data() {
     return {
       curr_ix_l: 0,
-      curr_ix_r: 1,
+      curr_ix_r: -1,
       emtpy_url: './static/assets/images/symbols/01_vuoto_trasp.png',
     }
   },
   mounted(){
-    this.$store.commit('contarighturi', this.emtpy_url)
-    this.$store.commit('contaleftturi', this.emtpy_url)
+    this.reset()
   },
   computed: {
     right_url: {
@@ -54,24 +53,22 @@ export default {
     confirmConta() {
       console.log('Confirm the conta dialog')
       this.$store.commit('hideContaDialog')
+      this.reset()
     },
     prevCard() {
       console.log('Previous card')
       const deck = this.$store.state.pl.dialogconta.deck_cards_lbl
-      if (this.curr_ix_r > 1) {
+
+      this.curr_ix_l = this.curr_ix_r 
+      if (this.curr_ix_r > -1) {
         this.curr_ix_r--;
-      }
-      if (this.curr_ix_l > 0) {
-        this.curr_ix_l--;
       }
       this.showCards()
     },
     nextCard() {
       console.log('Next card')
       const deck = this.$store.state.pl.dialogconta.deck_cards_lbl
-      if (this.curr_ix_r < deck.length) {
-        this.curr_ix_r++;
-      }
+      this.curr_ix_r = this.curr_ix_l;
       if (this.curr_ix_l < deck.length) {
         this.curr_ix_l++;
       }
@@ -83,13 +80,13 @@ export default {
       let ru = this.emtpy_url
       let path_to_img = "./static2/carte/"
       path_to_img += this.$store.state.pl.deck_type + '/'
-      if (this.curr_ix_l < deck.length) {
+      if (this.curr_ix_l < deck.length && this.curr_ix_l >= 0) {
         const fninfo_l = this.info_tofilename(deck[this.curr_ix_l])
         if (fninfo_l) {
           lu = `${path_to_img}${fninfo_l.ixname}_${fninfo_l.suit}.png`
         }
       }
-      if (this.curr_ix_r < deck.length) {
+      if (this.curr_ix_r < deck.length && this.curr_ix_r >= 0) {
         const fninfo_r = this.info_tofilename(deck[this.curr_ix_r])
         if (fninfo_r) {
           ru = `${path_to_img}${fninfo_r.ixname}_${fninfo_r.suit}.png`
@@ -120,6 +117,12 @@ export default {
       }
 
       return res
+    },
+    reset(){
+      this.$store.commit('contarighturi', this.emtpy_url)
+      this.$store.commit('contaleftturi', this.emtpy_url)
+      this.curr_ix_l =  0
+      this.curr_ix_r = -1
     }
   },
   template: `
