@@ -11,6 +11,17 @@ export default {
     this.reset()
   },
   computed: {
+    disabled_prv:{
+      get(){
+        return this.curr_ix_l <= 0;
+      }
+    },
+    disabled_nxt:{
+      get(){
+        const deck = this.$store.state.pl.dialogconta.deck_cards_lbl
+        return this.curr_ix_r >= deck.length - 1;
+      }
+    },
     right_url: {
       get() {
         const ur = this.$store.state.pl.dialogconta.right_url
@@ -143,10 +154,10 @@ export default {
         </v-container>
       </v-main>
       <v-card-actions>
-        <v-btn icon  @click="prevCard">
+        <v-btn icon :disabled="disabled_prv" @click="prevCard">
           <v-icon>mdi-skip-previous</v-icon>
         </v-btn>
-        <v-btn icon @click="nextCard">
+        <v-btn icon :disabled="disabled_nxt"  @click="nextCard">
           <v-icon>mdi-skip-next</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
