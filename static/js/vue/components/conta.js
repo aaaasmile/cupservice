@@ -9,28 +9,6 @@ export default {
     }
   },
   computed: {
-    right_url: {
-      get() {
-        if (this._right_url === '') {
-          return this.emtpy_url
-        }
-        return this._right_url
-      },
-      set(newVal) {
-        this._right_url = newVal
-      }
-    },
-    left_url: {
-      get() {
-        if (this._left_url === '') {
-          return this.emtpy_url
-        }
-        return this._left_url
-      },
-      set(newVal) {
-        this._left_url = newVal
-      }
-    },
     dialogConta: {
       get() {
         return this.$store.state.pl.dialogconta.is_active
@@ -83,11 +61,11 @@ export default {
       console.log('Provides file info for ', card_lbl)
       const deck_info = this.$store.state.pl.dialogconta.deck_info
       const det = deck_info.get_card_info(card_lbl)
-      res = {
+      const res = {
         ixname: '',
         suit: '',
       }
-      res.ixname = `${det.ix}`
+      res.ixname = `${det.pos}`
       if (res.ixname.length === 1) {
         res.ixname = '0' + res.ixname
       }
