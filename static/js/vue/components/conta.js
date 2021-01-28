@@ -9,6 +9,28 @@ export default {
     }
   },
   computed: {
+    right_url: {
+      get() {
+        if (this._right_url === '') {
+          return this.emtpy_url
+        }
+        return this._right_url
+      },
+      set(newVal) {
+        this._right_url = newVal
+      }
+    },
+    left_url: {
+      get() {
+        if (this._left_url === '') {
+          return this.emtpy_url
+        }
+        return this._left_url
+      },
+      set(newVal) {
+        this._left_url = newVal
+      }
+    },
     dialogConta: {
       get() {
         return this.$store.state.pl.dialogconta.is_active
