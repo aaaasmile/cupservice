@@ -2,13 +2,40 @@
 export default {
   data() {
     return {
-      left_url: '',
-      right_url: '',
-      curr_ix: 0,
+      curr_ix_l: 0,
+      curr_ix_r: 1,
       emtpy_url: './static/assets/images/symbols/01_vuoto_trasp.png',
     }
   },
+  mounted(){
+    this.$store.commit('contarighturi', this.emtpy_url)
+    this.$store.commit('contaleftturi', this.emtpy_url)
+  },
   computed: {
+    right_url: {
+      get() {
+        const ur = this.$store.state.pl.dialogconta.right_url
+        if (ur === '') {
+          return this.emtpy_url
+        }
+        return ur
+      },
+      set(newVal) {
+        this.$store.commit('contarighturi', newVal)
+      }
+    },
+    left_url: {
+      get() {
+        const lr = this.$store.state.pl.dialogconta.left_url
+        if (lr === '') {
+          return this.emtpy_url
+        }
+        return lr
+      },
+      set(newVal) {
+        this.$store.commit('contaleftturi', newVal)
+      }
+    },
     dialogConta: {
       get() {
         return this.$store.state.pl.dialogconta.is_active
@@ -30,9 +57,24 @@ export default {
     },
     prevCard() {
       console.log('Previous card')
+      const deck = this.$store.state.pl.dialogconta.deck_cards_lbl
+      if (this.curr_ix_r > 1) {
+        this.curr_ix_r--;
+      }
+      if (this.curr_ix_l > 0) {
+        this.curr_ix_l--;
+      }
+      this.showCards()
     },
     nextCard() {
       console.log('Next card')
+      const deck = this.$store.state.pl.dialogconta.deck_cards_lbl
+      if (this.curr_ix_r < deck.length) {
+        this.curr_ix_r++;
+      }
+      if (this.curr_ix_l < deck.length) {
+        this.curr_ix_l++;
+      }
       this.showCards()
     },
     showCards() {
@@ -41,17 +83,16 @@ export default {
       let ru = this.emtpy_url
       let path_to_img = "./static2/carte/"
       path_to_img += this.$store.state.pl.deck_type + '/'
-      if (this.curr_ix < deck.length) {
-        const fninfo = this.info_tofilename(deck[this.curr_ix])
-        if (fninfo) {
-          lu = `${path_to_img}${fninfo.ixname}_${fninfo.suit}.png`
-          this.curr_ix++;
-          if (this.curr_ix < deck.length) {
-            const fninfo_r = this.info_tofilename(deck[this.curr_ix])
-            if (fninfo_r) {
-              ru = `${path_to_img}${fninfo.ixname}_${fninfo.suit}.png`
-            }
-          }
+      if (this.curr_ix_l < deck.length) {
+        const fninfo_l = this.info_tofilename(deck[this.curr_ix_l])
+        if (fninfo_l) {
+          lu = `${path_to_img}${fninfo_l.ixname}_${fninfo_l.suit}.png`
+        }
+      }
+      if (this.curr_ix_r < deck.length) {
+        const fninfo_r = this.info_tofilename(deck[this.curr_ix_r])
+        if (fninfo_r) {
+          ru = `${path_to_img}${fninfo_r.ixname}_${fninfo_r.suit}.png`
         }
       }
       this.left_url = lu
