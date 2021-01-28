@@ -12,7 +12,7 @@ export default {
     briscola_opt: { num_segni: 2 },
     dialog: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
     dialog_yesno: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
-    dialogconta: { deck_cards_lbl: [], fncb: null, is_active: false }
+    dialogconta: { deck_cards_lbl: [], fncb: null, is_active: false, deck_info: null }
   },
   mutations: {
     changeAvatar(state, avatar) {
@@ -58,6 +58,7 @@ export default {
         });
       }
       state.dialogconta.fncb = data.fncb
+      state.dialogconta.deck_info = data.deck_info
       state.dialogconta.is_active = true
     },
     hideContaDialog(state) {

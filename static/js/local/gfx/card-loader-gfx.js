@@ -118,13 +118,13 @@ class CardLoaderGfx {
       // cards
       obs.next(totItems)
       for (let i = 0; i < nomi_semi.length; i++) {
-        let seed = nomi_semi[i]
+        let suit = nomi_semi[i]
         for (let index = 1; index <= num_cards_onsuit; index++) {
           let ixname = `${index}`
           if (index < 10) {
             ixname = '0' + ixname
           }
-          card_fname = `${folder_fullpath}${ixname}_${seed}.png`
+          card_fname = `${folder_fullpath}${ixname}_${suit}.png`
           //console.log('Card fname is: ', card_fname)
           let imgToLoad = new Image()
           imgToLoad.src = card_fname

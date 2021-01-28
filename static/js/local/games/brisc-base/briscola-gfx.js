@@ -305,7 +305,8 @@ export class BriscolaGfx {
         this._core_state.suspend_proc_gevents('suspend conta')
         store.commit('showContaDialog', {
           deck_cards_lbl: this._alg._card_taken,
-          fncb: () => { this._core_state.continue_process_events('after conta') }
+          fncb: () => { this._core_state.continue_process_events('after conta') },
+          deck_info: this._deck_info,
         })
       }
     })

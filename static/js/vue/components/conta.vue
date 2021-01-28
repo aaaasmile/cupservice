@@ -6,10 +6,10 @@
         <v-container>
           <v-row justify="center">
             <v-col>
-              <v-img src="./static2/carte/piac/01_basto.png"> </v-img>
+              <v-img :src=left_url> </v-img>
             </v-col>
             <v-col>
-              <v-img src="./static/assets/images/symbols/01_vuoto_trasp.png">
+              <v-img :src=right_url>
               </v-img>
             </v-col>
           </v-row>
