@@ -48,7 +48,11 @@ export default {
     },
     dialogConta: {
       get() {
-        return this.$store.state.pl.dialogconta.is_active
+        const is_active = this.$store.state.pl.dialogconta.is_active
+        if(is_active){
+          this.showCards()
+        }
+        return is_active
       },
       set(newval) {
         if (!newval) {
