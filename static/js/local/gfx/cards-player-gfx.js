@@ -62,7 +62,7 @@ export class CardsPlayerGfx {
       texturePlaceHolder.push(cdt)
     }
 
-    const cdtempty = this._cache.GetTextureFromSymbol('vuoto_trasp', this._deck_info)
+    const cdtempty = this._cache.GetTextureFromSymbol('vuoto_traspfull', this._deck_info)
     this._emptyTexture = cdtempty
     let iniX = 0
     let iniY = 0

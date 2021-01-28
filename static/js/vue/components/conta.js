@@ -143,7 +143,7 @@ export default {
   template: `
   <v-dialog v-model="dialogConta" persistent max-width="300">
     <v-card>
-      <v-card-title class="headline">Conta le carte</v-card-title>
+      <v-card-title class="headline">Conta le tue carte</v-card-title>
       <v-main>
         <v-container>
           <v-row justify="center">
@@ -168,6 +168,5 @@ export default {
         <v-btn color="green darken-1" text @click="confirmConta">OK</v-btn>
       </v-card-actions>
     </v-card>
-  </v-dialog>
-`
+  </v-dialog>`
 }

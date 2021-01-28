@@ -39,7 +39,7 @@ export class DeckTakenGfx {
         throw (new Error(`Player position not suppported: ${this._position}`))
     }
     this._max_cards = max_cards
-    const cdtempty = this._cache.GetTextureFromSymbol('vuoto_trasp')
+    const cdtempty = this._cache.GetTextureFromSymbol('vuoto_traspfull')
     const sprite = new PIXI.Sprite(cdtempty)
 
     const cdt = this._cache.GetTextureFromSymbol('cope', this._deck_info)
