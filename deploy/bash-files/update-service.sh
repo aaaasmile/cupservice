@@ -1,5 +1,5 @@
 #!/bin/bash
-read -p "Update the cup-service (cup-service on invido.it) y/n ? " -n 1 -r
+read -p "Update the cup-invido (cup-invido on invido.it) y/n ? " -n 1 -r
 echo
 if [[ $REPLY =~ ^[Nn]$ ]]
 then
@@ -8,7 +8,7 @@ then
 
 fi
 echo "Stop the service"
-sudo systemctl stop cup-service
+sudo systemctl stop cup-invido
 
 ZIPDIR="./zips"
 CURRDIR="./current"
@@ -48,7 +48,7 @@ unzip $zippath -d $destpath
 chmod +x $destpath'/'cupservice.bin
 
 echo "Start the service"
-sudo systemctl start cup-service
+sudo systemctl start cup-invido
 
 
 echo "That's all folks!"

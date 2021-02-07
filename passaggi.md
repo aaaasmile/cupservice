@@ -80,3 +80,13 @@ La mutazione callGameActionState viene usata per l'esecuzione.
 
 ### TODO
 - Sto cercando di completare la classe BriscolaGfx.
+
+## Service
+Start del service:
+sudo systemctl start cup-invido
+
+Per vedere i logs si usa:
+sudo journalctl -f -u cup-invido
+
+Se ci sono dei problemi si può vedere con:
+sudo systemctl status cup-invido.service
