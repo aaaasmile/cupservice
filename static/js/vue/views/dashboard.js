@@ -192,6 +192,9 @@ export default {
         this.$store.commit('callGameActionState', actid)
       }
     },
+    gameOptions(){
+      console.log('Show game options')
+    },
   },
   template: `
   <v-row justify="center">
@@ -234,7 +237,7 @@ export default {
           <v-btn @click="doAction5" v-show="Action5Enabled">
             {{ Action5Title }}
           </v-btn>
-           <v-spacer></v-spacer>
+          <v-spacer></v-spacer>
           <v-toolbar flat dense>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
@@ -244,11 +247,18 @@ export default {
               </template>
               <span>{{ Muted ? "Unmute" : "Mute" }}</span>
             </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" icon @click="gameOptions" v-show="IsWaitForStart">
+                  <v-icon>settings</v-icon>
+                </v-btn>
+              </template>
+              <span>Opzioni</span>
+            </v-tooltip>
           </v-toolbar>
         </v-card-actions>
       </v-card>
       <Conta></Conta>
     </v-col>
-  </v-row>
-`
+  </v-row>`
 }
