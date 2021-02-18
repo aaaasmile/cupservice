@@ -6,12 +6,12 @@
         <v-container>
           <v-row justify="center">
             <v-list dense nav>
-              <v-list-item
-                v-for="option in options"
-                :key="option.caption"
-              >
+              <v-list-item v-for="option in options" :key="option.caption">
                 <v-list-item-content>
-                  <v-list-item-title>{{ option.caption }}</v-list-item-title>
+                  <v-text-field
+                    v-model="option.val"
+                    :label="option.caption"
+                  ></v-text-field>
                 </v-list-item-content>
               </v-list-item>
             </v-list>
