@@ -13,20 +13,23 @@ export default {
       },
       set(newval) {
         if (!newval) {
-          this.$store.commit('hideOptGameDialog')
+          this.$store.commit('hideOptGameDialog',false)
         }
       }
     },
     ...Vuex.mapState({
       titleMsg: state => {
-        return state.pl.dialogconta.title
+        return state.pl.dialogopt.title
       },
+      options: state => {
+        return state.pl.dialogopt.opt
+      }
     })
   },
   methods: {
     confirmOptGame() {
       console.log('Confirm game option dialog')
-      this.$store.commit('hideOptGameDialog')
+      this.$store.commit('hideOptGameDialog',true)
     },
   },
   template: `
@@ -36,7 +39,16 @@ export default {
       <v-main>
         <v-container>
           <v-row justify="center">
-            <v-col> Numero dei segni </v-col>
+            <v-list dense nav>
+              <v-list-item
+                v-for="option in options"
+                :key="option.caption"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>{{ option.caption }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
           </v-row>
         </v-container>
       </v-main>
@@ -48,5 +60,6 @@ export default {
         >
       </v-card-actions>
     </v-card>
-  </v-dialog>`
+  </v-dialog>
+`
 }  

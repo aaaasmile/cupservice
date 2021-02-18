@@ -80,9 +80,13 @@ export default {
       switch (state.curr_game) {
         case 'briscola':
           state.dialogopt.title = 'Opzioni della Briscola'
-          state.dialogopt.opt = [{ num_segni: state.briscola_opt.num_segni, bool: false }]
+          state.dialogopt.opt = [
+            { val: state.briscola_opt.num_segni, caption: 'Numero dei segni', type: 'int' },
+            { val: state.briscola_opt.num_segni, caption: 'Numero dei segni 2', type: 'int' }
+          ]
           state.dialogopt.fncb = () => {
-            state.briscola_opt.num_segni = state.dialogopt.opt.num_segni
+            console.log('Assign options')
+            state.briscola_opt.num_segni = state.dialogopt.opt[0].val
           }
           break;
         default:

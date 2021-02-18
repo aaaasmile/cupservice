@@ -5,7 +5,16 @@
       <v-main>
         <v-container>
           <v-row justify="center">
-            <v-col> Numero dei segni </v-col>
+            <v-list dense nav>
+              <v-list-item
+                v-for="option in options"
+                :key="option.caption"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>{{ option.caption }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </v-list>
           </v-row>
         </v-container>
       </v-main>

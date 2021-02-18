@@ -172,7 +172,7 @@ export default {
         </v-card-text>
         <v-card-actions>
           <v-btn text color="deep-purple accent-4" @click="moreinfo">
-            Learn More
+            Maggiori informazioni
           </v-btn>
         </v-card-actions>
       </v-card>
