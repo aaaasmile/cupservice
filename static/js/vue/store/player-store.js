@@ -12,7 +12,8 @@ export default {
     briscola_opt: { num_segni: 2 },
     dialog: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
     dialog_yesno: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
-    dialogconta: { deck_cards_lbl: [], fncb: null, is_active: false, deck_info: null, left_url: '', right_url: '', }
+    dialogconta: { deck_cards_lbl: [], fncb: null, is_active: false, deck_info: null, left_url: '', right_url: '', },
+    dialogopt: { title: '', fncb: null, opt: {}, is_active: false },
   },
   mutations: {
     changeAvatar(state, avatar) {
@@ -68,11 +69,25 @@ export default {
       }
       state.dialogconta.is_active = false
     },
-    contarighturi(state, newval){
+    contarighturi(state, newval) {
       state.dialogconta.right_url = newval
     },
-    contaleftturi(state, newval){
+    contaleftturi(state, newval) {
       state.dialogconta.left_url = newval
+    },
+    showOptGameDialog(state){
+      console.log('Show option game')
+      state.dialogopt.title = data.title
+      state.dialogopt.opt = data.opt
+      state.dialogopt.fncb = data.fncb
+      state.dialogopt.is_active = true
+    },
+    hideOptGameDialog(state){
+      console.log('Hide option game')
+      if (state.dialogopt.fncb) {
+        state.dialogopt.fncb()
+      }
+      state.dialogopt.is_active = false
     }
   }
 }

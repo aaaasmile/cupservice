@@ -194,6 +194,7 @@ export default {
     },
     gameOptions(){
       console.log('Show game options')
+      this.$store.commit('showOptGameDialog')
     },
   },
   template: `
@@ -260,5 +261,6 @@ export default {
       </v-card>
       <Conta></Conta>
     </v-col>
-  </v-row>`
+  </v-row>
+`
 }
