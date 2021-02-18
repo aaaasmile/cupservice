@@ -2,9 +2,10 @@ import { GetMusicManagerInstance } from '../../local/app/sound-mgr.js'
 import { GetCardLoaderGfx } from '../../local/gfx/card-loader-gfx.js'
 import { BuilderGameGfx } from '../../local/gfx/builder-game-gfx.js'
 import Conta from '../components/conta.js'
+import Options from '../components/optgame.js'
 
 export default {
-  components: { Conta },
+  components: { Conta, Options },
   data() {
     return {
       loadinggame: false,
@@ -260,7 +261,7 @@ export default {
         </v-card-actions>
       </v-card>
       <Conta></Conta>
+      <Options></Options>
     </v-col>
-  </v-row>
-`
+  </v-row>`
 }

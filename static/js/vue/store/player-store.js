@@ -13,7 +13,7 @@ export default {
     dialog: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
     dialog_yesno: { title: '', msg: '', fncb: null, is_active: false }, //  you can change fields but not the object dialog
     dialogconta: { deck_cards_lbl: [], fncb: null, is_active: false, deck_info: null, left_url: '', right_url: '', },
-    dialogopt: { title: '', fncb: null, opt: {}, is_active: false },
+    dialogopt: { title: '', opt: {}, fncb: null, is_active: false },
   },
   mutations: {
     changeAvatar(state, avatar) {
@@ -75,16 +75,25 @@ export default {
     contaleftturi(state, newval) {
       state.dialogconta.left_url = newval
     },
-    showOptGameDialog(state){
+    showOptGameDialog(state) {
       console.log('Show option game')
-      state.dialogopt.title = data.title
-      state.dialogopt.opt = data.opt
-      state.dialogopt.fncb = data.fncb
+      switch (state.curr_game) {
+        case 'briscola':
+          state.dialogopt.title = 'Opzioni della Briscola'
+          state.dialogopt.opt = [{ num_segni: state.briscola_opt.num_segni, bool: false }]
+          state.dialogopt.fncb = () => {
+            state.briscola_opt.num_segni = state.dialogopt.opt.num_segni
+          }
+          break;
+        default:
+          throw (new Error(`option not supported on ${state.curr_game}`))
+      }
+
       state.dialogopt.is_active = true
     },
-    hideOptGameDialog(state){
+    hideOptGameDialog(state, ok) {
       console.log('Hide option game')
-      if (state.dialogopt.fncb) {
+      if (ok) {
         state.dialogopt.fncb()
       }
       state.dialogopt.is_active = false

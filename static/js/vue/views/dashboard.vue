@@ -61,6 +61,7 @@
         </v-card-actions>
       </v-card>
       <Conta></Conta>
+      <Options></Options>
     </v-col>
   </v-row>
 </template>
