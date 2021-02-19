@@ -82,11 +82,13 @@ export default {
           state.dialogopt.title = 'Opzioni della Briscola'
           state.dialogopt.opt = [
             { val: state.briscola_opt.num_segni, caption: 'Numero dei segni', type: 'int' },
-            { val: state.briscola_opt.num_segni, caption: 'Numero dei segni 2', type: 'int' }
           ]
           state.dialogopt.fncb = () => {
             console.log('Assign options')
-            state.briscola_opt.num_segni = state.dialogopt.opt[0].val
+            const parsed = parseInt(state.dialogopt.opt[0].val, 10)
+            if (!isNaN(parsed) && parsed > 0 && parsed < 6){
+              state.briscola_opt.num_segni = parsed
+            } 
           }
           break;
         default:
