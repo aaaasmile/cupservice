@@ -34,6 +34,7 @@
             <v-radio value="stevie" label="Stevie"></v-radio>
             <v-radio value="zoe" label="Zoe"></v-radio>
           </v-radio-group>
+          <v-img style="width: 64px;height:64px;" :src=avatar_gioc_url> </v-img>
         </v-col>
       </v-row>
     </v-container>

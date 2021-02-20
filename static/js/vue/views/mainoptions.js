@@ -1,6 +1,7 @@
 export default {
     data() {
         return {
+            avatar_path: './static/assets/images/avatar/',
             selgame: 'briscola',
             tipomazzo: 'piac',
             nomegiocatore: 'Mario',
@@ -8,6 +9,13 @@ export default {
         }
     },
     computed: {
+        avatar_gioc_url: {
+            get() {
+              const avatar = this.$store.state.pl.me_avatar
+              let url = this.avatar_path + avatar + '.jpg'
+              return url
+            }
+          },
         ...Vuex.mapState({
 
         })
@@ -56,9 +64,9 @@ export default {
             <v-radio value="stevie" label="Stevie"></v-radio>
             <v-radio value="zoe" label="Zoe"></v-radio>
           </v-radio-group>
+          <v-img style="width: 64px;height:64px;" :src=avatar_gioc_url> </v-img>
         </v-col>
       </v-row>
     </v-container>
-  </v-card>
-`
+  </v-card>`
 }
