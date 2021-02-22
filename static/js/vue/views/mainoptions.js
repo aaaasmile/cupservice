@@ -4,12 +4,19 @@ export default {
       avatar_path: './static/assets/images/avatar/',
       deck_path: './static2/carte/',
       selgame: 'briscola',
-      tipomazzo: 'piac',
       nomegiocatore: 'Mario',
       avatargiocatore: 'joe'
     }
   },
   computed: {
+    tipomazzo: {
+      get() {
+        return this.$store.state.pl.deck_type
+      },
+      set(newVal) {
+        this.$store.commit('setNewDeckType', newVal)
+      }
+    },
     sample_carte_url: {
       get() {
         const mazzo = this.$store.state.pl.deck_type
@@ -55,9 +62,9 @@ export default {
             <v-radio value="napoli" label="Napoletane"></v-radio>
             <v-radio value="bergamo" label="Bergamasche"></v-radio>
             <v-radio value="sicilia" label="Siciliane"></v-radio>
-            <v-radio value="terviso" label="Trevigiane"></v-radio>
+            <v-radio value="treviso" label="Trevigiane"></v-radio>
           </v-radio-group>
-          <v-img style="width: 110px;" :src=sample_carte_url> </v-img>
+          <v-img class="mt-5" style="width: 80px;height=120px;" :src=sample_carte_url> </v-img>
         </v-col>
         <v-col cols="12" sm="6" md="4">
           <v-subheader>Giocatore</v-subheader>
@@ -73,10 +80,9 @@ export default {
             <v-radio value="stevie" label="Stevie"></v-radio>
             <v-radio value="zoe" label="Zoe"></v-radio>
           </v-radio-group>
-          <v-img style="width: 64px;height:64px;" :src=avatar_gioc_url> </v-img>
+          <v-img class="mt-5" style="width: 64px;height:64px;" :src=avatar_gioc_url> </v-img>
         </v-col>
       </v-row>
     </v-container>
-  </v-card>
-`
+  </v-card>`
 }

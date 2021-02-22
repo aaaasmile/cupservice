@@ -86,9 +86,9 @@ export default {
           state.dialogopt.fncb = () => {
             console.log('Assign options')
             const parsed = parseInt(state.dialogopt.opt[0].val, 10)
-            if (!isNaN(parsed) && parsed > 0 && parsed < 6){
+            if (!isNaN(parsed) && parsed > 0 && parsed < 6) {
               state.briscola_opt.num_segni = parsed
-            } 
+            }
           }
           break;
         default:
@@ -103,6 +103,10 @@ export default {
         state.dialogopt.fncb()
       }
       state.dialogopt.is_active = false
+    },
+    setNewDeckType(state, newVal) {
+      console.log('new deck ', newVal)
+      state.deck_type = newVal
     }
   }
 }
