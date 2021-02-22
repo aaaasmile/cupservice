@@ -23,6 +23,9 @@ export const app = new Vue({
 
 		})
 	},
+	beforeCreate() {
+		this.$store.commit('initialiseStore');
+	},
 	created() {
 		// keep in mind that all that is comming from index.html is a string. Boolean or numerics need to be parsed.
 		this.Buildnr = window.myapp.buildnr
@@ -47,7 +50,8 @@ export const app = new Vue({
         <span>I contenuti di questo sito sono perlopiù parole al vento. Copia e Incolla by invido.it.</span>
       </div>
     </v-footer>
-  </v-app>`
+  </v-app>
+`
 })
 
 console.log('Main is here!')

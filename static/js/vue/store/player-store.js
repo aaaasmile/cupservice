@@ -1,5 +1,6 @@
 export default {
   state: {
+    cache_version: '1.0.0',
     deck_type: 'piac',
     me_avatar: 'joe',
     opp_avatar: 'stevie',
@@ -16,6 +17,27 @@ export default {
     dialogopt: { title: '', opt: {}, fncb: null, is_active: false },
   },
   mutations: {
+    initialiseStore(state) {
+      
+      if (localStorage.getItem('cache_version') !== state.cache_version) {
+        localStorage.setItem('cache_version', state.cache_version)
+        console.warn('Cache has been changed, please update your options to ', state.cache_version )
+        return
+      }
+        
+      if (localStorage.getItem('curr_game')) {
+        state.curr_game = localStorage.getItem('curr_game')
+      }
+      if (localStorage.getItem('namePl2')) {
+        state.namePl2 = localStorage.getItem('namePl2')
+      }
+      if (localStorage.getItem('me_avatar')) {
+        state.me_avatar = localStorage.getItem('me_avatar')
+      }
+      if (localStorage.getItem('deck_type')) {
+        state.deck_type = localStorage.getItem('deck_type')
+      }
+    },
     changeAvatar(state, avatar) {
       state.me_avatar = avatar
     },
@@ -107,18 +129,22 @@ export default {
     setNewDeckType(state, newVal) {
       console.log('new deck ', newVal)
       state.deck_type = newVal
+      localStorage.setItem('deck_type', newVal);
     },
     setAvatarMe(state, newVal) {
       console.log('new avatar me ', newVal)
       state.me_avatar = newVal
+      localStorage.setItem('me_avatar', newVal);
     },
     setNameMe(state, newVal) {
       console.log('new name me ', newVal)
       state.namePl2 = newVal
+      localStorage.setItem('namePl2', newVal);
     },
     setSelGame(state, newVal) {
       console.log('new game selected ', newVal)
       state.curr_game = newVal
+      localStorage.setItem('curr_game', newVal);
     }
   }
 }
