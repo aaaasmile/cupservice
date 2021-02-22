@@ -3,12 +3,33 @@ export default {
     return {
       avatar_path: './static/assets/images/avatar/',
       deck_path: './static2/carte/',
-      selgame: 'briscola',
-      nomegiocatore: 'Mario',
-      avatargiocatore: 'joe'
     }
   },
   computed: {
+    selgame: {
+      get() {
+        return this.$store.state.pl.curr_game
+      },
+      set(newVal) {
+        this.$store.commit('setSelGame', newVal)
+      }
+    },
+    avatargiocatore: {
+      get() {
+        return this.$store.state.pl.me_avatar
+      },
+      set(newVal) {
+        this.$store.commit('setAvatarMe', newVal)
+      }
+    },
+    nomegiocatore: {
+      get() {
+        return this.$store.state.pl.namePl2
+      },
+      set(newVal) {
+        this.$store.commit('setNameMe', newVal)
+      }
+    },
     tipomazzo: {
       get() {
         return this.$store.state.pl.deck_type
@@ -84,5 +105,6 @@ export default {
         </v-col>
       </v-row>
     </v-container>
-  </v-card>`
+  </v-card>
+`
 }

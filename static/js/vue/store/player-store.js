@@ -107,6 +107,18 @@ export default {
     setNewDeckType(state, newVal) {
       console.log('new deck ', newVal)
       state.deck_type = newVal
+    },
+    setAvatarMe(state, newVal) {
+      console.log('new avatar me ', newVal)
+      state.me_avatar = newVal
+    },
+    setNameMe(state, newVal) {
+      console.log('new name me ', newVal)
+      state.namePl2 = newVal
+    },
+    setSelGame(state, newVal) {
+      console.log('new game selected ', newVal)
+      state.curr_game = newVal
     }
   }
 }
