@@ -1,34 +1,42 @@
 export default {
-    data() {
-        return {
-            avatar_path: './static/assets/images/avatar/',
-            selgame: 'briscola',
-            tipomazzo: 'piac',
-            nomegiocatore: 'Mario',
-            avatargiocatore: 'joe',
-        }
+  data() {
+    return {
+      avatar_path: './static/assets/images/avatar/',
+      deck_path: './static2/carte/',
+      selgame: 'briscola',
+      tipomazzo: 'piac',
+      nomegiocatore: 'Mario',
+      avatargiocatore: 'joe'
+    }
+  },
+  computed: {
+    sample_carte_url: {
+      get() {
+        const mazzo = this.$store.state.pl.deck_type
+        let url = this.deck_path + mazzo + '/02_basto.png'
+        return url
+      }
     },
-    computed: {
-        avatar_gioc_url: {
-            get() {
-              const avatar = this.$store.state.pl.me_avatar
-              let url = this.avatar_path + avatar + '.jpg'
-              return url
-            }
-          },
-        ...Vuex.mapState({
+    avatar_gioc_url: {
+      get() {
+        const avatar = this.$store.state.pl.me_avatar
+        let url = this.avatar_path + avatar + '.jpg'
+        return url
+      }
+    },
+    ...Vuex.mapState({
 
-        })
-    },
-    created() {
-    },
-    mounted() {
-    },
-    methods: {
-        reserve() {
-        }
-    },
-    template: `
+    })
+  },
+  created() {
+  },
+  mounted() {
+  },
+  methods: {
+    reserve() {
+    }
+  },
+  template: `
   <v-card id="create">
     <v-card-title>Opzioni e preferenze</v-card-title>
     <v-container fluid>
@@ -49,6 +57,7 @@ export default {
             <v-radio value="sicilia" label="Siciliane"></v-radio>
             <v-radio value="terviso" label="Trevigiane"></v-radio>
           </v-radio-group>
+          <v-img style="width: 110px;" :src=sample_carte_url> </v-img>
         </v-col>
         <v-col cols="12" sm="6" md="4">
           <v-subheader>Giocatore</v-subheader>
@@ -68,5 +77,6 @@ export default {
         </v-col>
       </v-row>
     </v-container>
-  </v-card>`
+  </v-card>
+`
 }

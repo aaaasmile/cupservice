@@ -19,6 +19,7 @@
             <v-radio value="sicilia" label="Siciliane"></v-radio>
             <v-radio value="terviso" label="Trevigiane"></v-radio>
           </v-radio-group>
+          <v-img style="width: 110px;" :src=sample_carte_url> </v-img>
         </v-col>
         <v-col cols="12" sm="6" md="4">
           <v-subheader>Giocatore</v-subheader>
