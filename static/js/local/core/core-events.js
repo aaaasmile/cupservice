@@ -17,8 +17,11 @@ CoreEvent.prototype.unregisterCallback = function (callback) {
     }
 }
 
+const nextEventName = 'next'
+
 export function CoreReactor() {
     this.events = {};
+    this.registerEvent(nextEventName)
 }
 
 CoreReactor.prototype.registerEvent = function (eventName) {
@@ -28,6 +31,12 @@ CoreReactor.prototype.registerEvent = function (eventName) {
 
 CoreReactor.prototype.dispatchEvent = function (eventName, eventArgs) {
     this.events[eventName].callbacks.forEach(function (callback) {
+        callback(eventArgs);
+    });
+};
+
+CoreReactor.prototype.dispatchNextEvent = function (eventArgs) {
+    this.events[nextEventName].callbacks.forEach(function (callback) {
         callback(eventArgs);
     });
 };

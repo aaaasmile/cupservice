@@ -18,9 +18,7 @@ export class CoreStateManager {
     this._alg_action_queue = new CoreQueue("alg-action", this);
     this._core_state_queue = new CoreQueue("core-state", this);
     this._subjectStateAction = new CoreReactor();
-    this._subjectStateAction.registerEvent('next');
     this.event_for_all = new CoreReactor();
-    this.event_for_all.registerEvent('next');
 
     this.event_for_player = {};
     this._internalStateProc = new InternalStateProc(this._alg_action_queue, this._core_state_queue);
@@ -34,16 +32,16 @@ export class CoreStateManager {
 
   submit_next_state(name_st) {
     this._core_state_queue.submit((args) => {
-      this._subjectStateAction.dispatchEvent('next', args)
+      this._subjectStateAction.dispatchNextEvent(args)
     }, { is_action: false, name: name_st, args_arr: [] });
   }
 
   fire_all(event_name, args_payload) {
-    this.event_for_all.dispatchEvent('next', { event: event_name, args: args_payload });
+    this.event_for_all.dispatchNextEvent({ event: event_name, args: args_payload });
   }
 
   fire_to_player(player, event_name, args_payload) {
-    this.get_subject_for_player(player).dispatchEvent('next', { event: event_name, args: args_payload });
+    this.get_subject_for_player(player).dispatchNextEvent({ event: event_name, args: args_payload });
   }
 
   clear_gevent() {
@@ -54,8 +52,8 @@ export class CoreStateManager {
   continue_process_events(str) { this._internalStateProc.continue_process_events(str); }
 
   submit_action(action_name, act_args) {
-    this._alg_action_queue.submit((args) =>  {
-      this._subjectStateAction.dispatchEvent('next', args)
+    this._alg_action_queue.submit((args) => {
+      this._subjectStateAction.dispatchNextEvent(args)
     }, { is_action: true, name: action_name, args_arr: act_args })
   }
 
@@ -69,7 +67,6 @@ export class CoreStateManager {
     }
     if (this.event_for_player[player] == null) { // Oh yes use == instead of ===
       this.event_for_player[player] = new CoreReactor();
-      this.event_for_player[player].registerEvent('next')
     }
     return this.event_for_player[player];
   }
