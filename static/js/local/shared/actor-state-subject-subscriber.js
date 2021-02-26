@@ -12,7 +12,7 @@ export class ActorStateSubjectSubscriber {
     this._playerSubject = null;
     this._processor = processor
     this._subscription = coreStateManager.get_subject_for_all_players()
-    this.subsc_cb = this._subscription.addEventListener('next', next => {
+    this.subsc_cb = this._subscription.addNextEventListener( next => {
       try {
         if (opt.log_all) { console.log(next); }
         let name_hand = 'on_all_' + next.event;
@@ -22,7 +22,7 @@ export class ActorStateSubjectSubscriber {
       }
     });
     this._playerSubject = this._coreStateManager.get_subject_for_player(player_name)
-    this.subsc_cb2 = this._playerSubject.addEventListener('next', next => {
+    this.subsc_cb2 = this._playerSubject.addNextEventListener(next => {
       try {
         if (this.opt.log_all) { console.log(next); }
         let name_hand = 'on_pl_' + next.event;
@@ -40,11 +40,11 @@ export class ActorStateSubjectSubscriber {
 
   dispose() {
     if (this._playerSubject != null) {
-      this._playerSubject.removeEventListener('next', this.subsc_cb2)
+      this._playerSubject.removeNextEventListener(this.subsc_cb2)
       this._playerSubject = null;
     }
     if (this._subscription != null) {
-      this._subscription.removeEventListener('next', this.subsc_cb)
+      this._subscription.removeNextEventListener(this.subsc_cb)
       this._subscription = null;
     }
   }

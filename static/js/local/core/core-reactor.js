@@ -1,3 +1,16 @@
+// CoreReactor very simple event / dispacth / subscribe pattern
+// 'next' is a builtin event
+// Code example:
+
+// var subj = new CoreReactor();
+
+// cb = subj.addNextEventListener((args) => {
+//   console.log('next event is raised with args ', args);
+// });
+
+// subj.dispatchNextEvent('hello');
+// subj.removeNextEventListener(cb)
+
 function CoreEvent(name) {
     this.name = name;
     this.callbacks = [];
@@ -41,6 +54,16 @@ CoreReactor.prototype.dispatchNextEvent = function (eventArgs) {
     });
 };
 
+
+CoreReactor.prototype.addNextEventListener = function (callback) {
+    this.events[nextEventName].registerCallback(callback);
+    return callback
+};
+
+CoreReactor.prototype.removeNextEventListener = function (callback) {
+    this.events[nextEventName].unregisterCallback(callback);
+};
+
 CoreReactor.prototype.addEventListener = function (eventName, callback) {
     this.events[eventName].registerCallback(callback);
     return callback
@@ -49,3 +72,5 @@ CoreReactor.prototype.addEventListener = function (eventName, callback) {
 CoreReactor.prototype.removeEventListener = function (eventName, callback) {
     this.events[eventName].unregisterCallback(callback);
 };
+
+
