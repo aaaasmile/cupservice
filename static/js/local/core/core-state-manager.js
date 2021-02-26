@@ -19,7 +19,9 @@ export class CoreStateManager {
     this._alg_action_queue = new CoreQueue("alg-action", that);
     this._core_state_queue = new CoreQueue("core-state", that);
     this._subjectStateAction = new CoreReactor();
+    this._subjectStateAction.registerEvent('next');
     this.event_for_all = new CoreReactor();
+    this.event_for_all.registerEvent('next');
 
     this.event_for_player = {};
     this._internalStateProc = new InternalStateProc(this._alg_action_queue, this._core_state_queue);
@@ -33,7 +35,7 @@ export class CoreStateManager {
 
   submit_next_state(name_st) {
     this._core_state_queue.submit((args) => {
-      that._subjectStateAction.dispatchEvent('next', args)
+      this._subjectStateAction.dispatchEvent('next', args)
     }, { is_action: false, name: name_st, args_arr: [] });
   }
 
@@ -69,6 +71,7 @@ export class CoreStateManager {
     }
     if (this.event_for_player[player] == null) { // Oh yes use == instead of ===
       this.event_for_player[player] = new CoreReactor();
+      this.event_for_player[player].registerEvent('next')
     }
     return this.event_for_player[player];
   }
