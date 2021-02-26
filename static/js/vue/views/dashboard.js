@@ -77,17 +77,25 @@ export default {
     this._app = app
     let loader = GetCardLoaderGfx()
     if (!this._cache) {
-      loader.LoadAssets(this.$store.state.pl.deck_type, (cache) => {
-        this._cache = cache
-        const mm = GetMusicManagerInstance()
-        mm.Load(() => {
-          this.loadinggame = false
-          this.$store.commit('changeGameState', 'st_waitforstart')
-          console.log('Load terminated')
-        })
+      const stateLoader = Vue.observable({
+        items: 0, 
+        totitems: 0, 
+        termnated: false, 
+        cbLoaded: (cache) => {
+          console.log('All images are loaded')
+          this._cache = cache
+          const mm = GetMusicManagerInstance()
+          mm.Load(() => {
+            this.loadinggame = false
+            this.$store.commit('changeGameState', 'st_waitforstart')
+            console.log('Load terminated')
+          })
+        }
       })
+
+      loader.LoadAssets(this.$store.state.pl.deck_type, stateLoader)
       setTimeout(() => {
-        if(this.loadinggame){
+        if (this.loadinggame) {
           this.loadinggame = false
           console.warn('Something is wrong with loading')
         }
@@ -193,7 +201,7 @@ export default {
         this.$store.commit('callGameActionState', actid)
       }
     },
-    gameOptions(){
+    gameOptions() {
       console.log('Show game options')
       this.$store.commit('showOptGameDialog')
     },
@@ -263,5 +271,6 @@ export default {
       <Conta></Conta>
       <Options></Options>
     </v-col>
-  </v-row>`
+  </v-row>
+`
 }
