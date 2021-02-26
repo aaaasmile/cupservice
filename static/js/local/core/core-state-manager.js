@@ -15,9 +15,8 @@ export class CoreStateManager {
   // dell'unico oggetto che contiene lo stato attuale e le sue code di eventi. 
   // internalStateProc invece gestisce internamente le code e gli switch degli stati.
   constructor() {
-    let that = this;
-    this._alg_action_queue = new CoreQueue("alg-action", that);
-    this._core_state_queue = new CoreQueue("core-state", that);
+    this._alg_action_queue = new CoreQueue("alg-action", this);
+    this._core_state_queue = new CoreQueue("core-state", this);
     this._subjectStateAction = new CoreReactor();
     this._subjectStateAction.registerEvent('next');
     this.event_for_all = new CoreReactor();
@@ -55,9 +54,8 @@ export class CoreStateManager {
   continue_process_events(str) { this._internalStateProc.continue_process_events(str); }
 
   submit_action(action_name, act_args) {
-    let that = this;
-    this._alg_action_queue.submit(function (args) {
-      that._subjectStateAction.dispatchEvent('next', args)
+    this._alg_action_queue.submit((args) =>  {
+      this._subjectStateAction.dispatchEvent('next', args)
     }, { is_action: true, name: action_name, args_arr: act_args })
   }
 
