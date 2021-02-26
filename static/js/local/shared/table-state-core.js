@@ -1,6 +1,6 @@
 import { CoreStateStore } from '../core/core-state-store.js'
 import { CoreStateSubjectSubscriber } from '../core/core-state-subject-subscriber.js'
-import { CoreReactor } from '../core/core-events.js'
+import { CoreReactor } from '../core/core-reactor.js'
 
 //////////////////////////////////////////
 //////////////////////////////// TableStateCore
