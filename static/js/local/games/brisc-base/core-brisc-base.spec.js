@@ -8,8 +8,8 @@ describe('brisc-base-core test', function () {
       b2core._rnd_mgr = rnd_mgr
     }
     let tableStateCore = new cup.TableStateCore(coreStateManager, 2);
-    let subsc = tableStateCore.TableFullSub.subscribe(next => {
-      subsc.unsubscribe();
+    let subsc = tableStateCore.TableFullSub.addEventListener('next', next => {
+      tableStateCore.TableFullSub.removeEventListener('next', subsc)
       tableStateCore.dispose();
       b2core.StartNewMatch(next);
     });

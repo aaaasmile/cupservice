@@ -19,15 +19,7 @@ let yeldInternalProcess = function* (intStProc) {
       yield 0;
     }
     if (intStProc._action_queued.has_items()) {
-      try {
-        intStProc._action_queued.process_first();
-      } catch (e) {
-        if (intStProc._env === 'develop') {
-          throw (new Error(e));
-        } else {
-          console.warn('Action ignored beacuse: ' + e);
-        }
-      }
+      intStProc._action_queued.process_first();
     }
     if (intStProc._suspend_queue_proc) {
       yield 0;
@@ -44,10 +36,9 @@ let yeldInternalProcess = function* (intStProc) {
 //////////////////////////////////////////
 export class InternalStateProc {
 
-  constructor(action_queued, proc_queue, env) {
+  constructor(action_queued, proc_queue) {
     this._suspend_queue_proc = false;
     this._num_of_suspend = 0;
-    this._env = env;
     this._proc_queue = proc_queue;
     this._action_queued = action_queued;
   }

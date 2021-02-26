@@ -1,5 +1,6 @@
 import { CoreStateStore } from '../core/core-state-store.js'
 import { CoreStateSubjectSubscriber } from '../core/core-state-subject-subscriber.js'
+import { CoreReactor } from '../core/core-events.js'
 
 //////////////////////////////////////////
 //////////////////////////////// TableStateCore
@@ -12,7 +13,7 @@ export class TableStateCore {
     this._numOfPlayers = numOfPlayers
     this._players = []; //array of names as string. Ex: ['CPU', 'ME']
     this._coreStateStore = new CoreStateStore()
-    this.TableFullSub = new rxjs.Subject();
+    this.TableFullSub = new CoreReactor();
     let that = this;
     this._subscriber = new CoreStateSubjectSubscriber(coreStateManager, that, { log_missed: false });
     this._coreStateManager.submit_next_state('st_waiting_for_players');
@@ -36,7 +37,7 @@ export class TableStateCore {
   st_table_full() {
     this._coreStateStore.set_state('st_table_full')
     console.log("Table is full with " + this._currNumPlayers + " players: " + this._players.join(','));
-    this.TableFullSub.next({ players: this._players })
+    this.TableFullSub.dispatchEvent('next', { players: this._players })
   }
 
   act_player_sit_down(name, pos) {

@@ -17,30 +17,28 @@ export class CoreStateSubjectSubscriber {
     this._processor = processor
     this._stateHandlerCaller = new StateHandlerCaller(processor, opt)
     this._subscription = coreStateManager.get_subject_state_action()
-      .subscribe(next => {
-        try {
-          if (opt.log_all) { console.log(next); }
-          let name_hand = next.name;
-          if (next.is_action) {
-            name_hand = 'act_' + name_hand;
-          }
-          this._stateHandlerCaller.call(next.name, name_hand, next.args_arr);
-        } catch (e) {
-          this.handle_error(e)
-
-          //throw(e)
+    this.subsc_next_cb = this._subscription.addEventListener('next', next => {
+      try {
+        if (opt.log_all) { console.log(next); }
+        let name_hand = next.name;
+        if (next.is_action) {
+          name_hand = 'act_' + name_hand;
         }
-      });
+        this._stateHandlerCaller.call(next.name, name_hand, next.args_arr);
+      } catch (e) {
+        this.handle_error(e)
+      }
+    });
   }
 
-  handle_error(ex){
+  handle_error(ex) {
     console.error(`Processor is ${this._processor.constructor.name}`, ex);
     this.dispose()
   }
 
   dispose() {
     if (this._subscription != null) {
-      this._subscription.unsubscribe();
+      this._subscription.removeEventListener('next', this.subsc_next_cb);
       this._subscription = null;
     }
   }

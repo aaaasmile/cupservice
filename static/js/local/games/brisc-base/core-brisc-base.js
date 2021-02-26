@@ -417,9 +417,9 @@ export function PrepareGameVsCpu(algGfx, opt, fncbSetCaller) {
   const coreStateManager = new CoreStateManager('develop');
   const b2core = new CoreBriscolaBase(coreStateManager, opt.num_segni, opt.points_to_win, opt.cards_in_hand, opt.max_points);
   const tableStateCore = new TableStateCore(coreStateManager, 2);
-  const subsc = tableStateCore.TableFullSub.subscribe(players => {
+  const subsc = tableStateCore.TableFullSub.addEventListener('next', players => {
     console.log('Table is full, ready to start a new match')
-    subsc.unsubscribe();
+    tableStateCore.TableFullSub.removeEventListener('next', subsc)
     tableStateCore.dispose();
     b2core.StartNewMatch(players);
   });
