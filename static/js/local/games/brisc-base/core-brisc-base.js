@@ -414,11 +414,11 @@ export function PrepareGameVsCpu(algGfx, opt, fncbSetCaller) {
   console.log('Prepare game vs CPU')
   const coreStateManager = new CoreStateManager('develop');
   const b2core = algGfx.get_core_instance(coreStateManager, opt.num_segni, opt.points_to_win, opt.cards_in_hand, opt.max_points)
-  
+
   const tableStateCore = new TableStateCore(coreStateManager, 2);
   const subsc = tableStateCore.TableFullSub.addNextEventListener(players => {
     console.log('Table is full, ready to start a new match')
-    tableStateCore.TableFullSub.removeNextEventListener( subsc)
+    tableStateCore.TableFullSub.removeNextEventListener(subsc)
     tableStateCore.dispose();
     b2core.StartNewMatch(players);
   });
