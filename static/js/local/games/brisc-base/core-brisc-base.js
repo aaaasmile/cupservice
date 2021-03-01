@@ -6,7 +6,6 @@ import { RndMgr } from '../../shared/rnd-mgr.js'
 import { CoreStateManager } from '../../core/core-state-manager.js'
 import { TableStateCore } from '../../shared/table-state-core.js'
 import { Player } from '../../shared/player.js'
-import { AlgBriscBase } from '../brisc-base/alg-brisc-base.js'
 
 //////////////////////////////////////////
 //////////////////////////////// CoreBriscolaBase
@@ -262,7 +261,6 @@ export class CoreBriscolaBase {
 
   st_match_end() {
     this._coreStateStore.set_state('st_match_end');
-    let giocata_info = this._core_data.match_info
 
     console.log('st_match_end');
     this._coreStateManager.fire_all('ev_match_end', { info: this._core_data.match_info.get_info() });
