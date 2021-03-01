@@ -1,3 +1,13 @@
+function get_game_tilte(nn){
+  switch(nn){
+    case 'briscola':
+      return 'Briscola in due'
+    case 'briscolascoperta':
+      return 'Briscola Scoperta'
+  }
+  throw new Error(`game not recognized: ${nn}`)
+}
+
 export default {
   state: {
     cache_version: '1.0.0',
@@ -5,6 +15,7 @@ export default {
     me_avatar: 'joe',
     opp_avatar: 'stevie',
     curr_game: 'briscola',
+    curr_game_title: '',
     namePl1: 'Luisa',
     namePl2: 'Mario',
     muted: true,
@@ -28,6 +39,7 @@ export default {
       if (localStorage.getItem('curr_game')) {
         state.curr_game = localStorage.getItem('curr_game')
       }
+      state.curr_game_title = get_game_tilte(state.curr_game)
       if (localStorage.getItem('namePl2')) {
         state.namePl2 = localStorage.getItem('namePl2')
       }
@@ -100,8 +112,9 @@ export default {
     showOptGameDialog(state) {
       console.log('Show option game')
       switch (state.curr_game) {
+        case 'briscolascoperta':
         case 'briscola':
-          state.dialogopt.title = 'Opzioni della Briscola'
+          state.dialogopt.title = `Opzioni ${state.curr_game_title}`
           state.dialogopt.opt = [
             { val: state.briscola_opt.num_segni, caption: 'Numero dei segni', type: 'int' },
           ]
@@ -144,6 +157,7 @@ export default {
     setSelGame(state, newVal) {
       console.log('new game selected ', newVal)
       state.curr_game = newVal
+      state.curr_game_title = get_game_tilte(state.curr_game)
       localStorage.setItem('curr_game', newVal);
     }
   }

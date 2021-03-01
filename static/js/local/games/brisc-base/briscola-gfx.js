@@ -8,6 +8,8 @@ import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { TableCardsPlayedGfx } from '../../gfx/table-cards-played.js'
 import { DeckTakenGfx } from '../../gfx/deck-taken-gfx.js'
 import { GetMusicManagerInstance } from '../../../local/app/sound-mgr.js'
+import { CoreBriscolaBase } from './core-brisc-base.js'
+import { AlgBriscBase } from './alg-brisc-base.js'
 
 export class BriscolaGfx {
   constructor(cache, static_scene) {
@@ -21,7 +23,7 @@ export class BriscolaGfx {
     this._block_for_ask_continue_game = null
   }
 
-  BuildBriscolaGameVsCpu() {
+  BuildGameVsCpu() {
     const opt = store.state.pl.briscola_opt
     opt.namePl1 = store.state.pl.namePl1
     opt.namePl2 = store.state.pl.namePl2
@@ -48,6 +50,14 @@ export class BriscolaGfx {
     store.commit('changeGameState', 'st_match_ongoing')
 
     return b2core._coreStateManager
+  }
+
+  get_core_instance(coreStateManager, numOfSegni, pointsForWin, numcardsOnHand, max_points) {
+    return new CoreBriscolaBase(coreStateManager, numOfSegni, pointsForWin, numcardsOnHand, max_points)
+  }
+
+  get_alg_core(name, deckinfo, level) {
+    return new AlgBriscBase(name, deckinfo, level)
   }
 
   on_all_ev_new_match(args) {

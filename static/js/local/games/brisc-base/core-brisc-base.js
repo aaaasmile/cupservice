@@ -12,7 +12,7 @@ import { AlgBriscBase } from '../brisc-base/alg-brisc-base.js'
 //////////////////////////////// CoreBriscolaBase
 //////////////////////////////////////////
 export class CoreBriscolaBase {
-  constructor(_coreStateManager, numOfSegni, pointsForWin, numcardsOnHand, max_points) {
+  constructor(coreStateManager, numOfSegni, pointsForWin, numcardsOnHand, max_points) {
     this._coreStateStore = new CoreStateStore()
     if (!numcardsOnHand) {
       throw (new Error(`Cards on hand is not set`))
@@ -25,12 +25,12 @@ export class CoreBriscolaBase {
       tot_num_players: null,
       players: null,
     };
-    this._coreStateManager = _coreStateManager
+    this._coreStateManager = coreStateManager
     this._deck_info = new DeckInfo();
     this._core_data = new CoreDataSupport();
     this._briscola_in_tav_lbl = '';
     let that = this;
-    this._subscriber = new CoreStateSubjectSubscriber(_coreStateManager, that, { log_missed: true });
+    this._subscriber = new CoreStateSubjectSubscriber(coreStateManager, that, { log_missed: true });
     this._deck_info.deck_info_dabriscola();
     this._rnd_mgr = new RndMgr()
   }
@@ -415,7 +415,8 @@ export class CoreBriscolaBase {
 export function PrepareGameVsCpu(algGfx, opt, fncbSetCaller) {
   console.log('Prepare game vs CPU')
   const coreStateManager = new CoreStateManager('develop');
-  const b2core = new CoreBriscolaBase(coreStateManager, opt.num_segni, opt.points_to_win, opt.cards_in_hand, opt.max_points);
+  const b2core = algGfx.get_core_instance(coreStateManager, opt.num_segni, opt.points_to_win, opt.cards_in_hand, opt.max_points)
+  
   const tableStateCore = new TableStateCore(coreStateManager, 2);
   const subsc = tableStateCore.TableFullSub.addNextEventListener(players => {
     console.log('Table is full, ready to start a new match')
@@ -426,8 +427,8 @@ export function PrepareGameVsCpu(algGfx, opt, fncbSetCaller) {
 
   const namePl1 = opt.namePl1
   const namePl2 = opt.namePl2
-  const playerOpp = new Player(new AlgBriscBase(namePl1, b2core._deck_info, 'master'), coreStateManager);
-  const playerMe = new Player(new AlgBriscBase(namePl2, b2core._deck_info, 'dummy'), coreStateManager);
+  const playerOpp = new Player(algGfx.get_alg_core(namePl1, b2core._deck_info, 'master'), coreStateManager);
+  const playerMe = new Player(algGfx.get_alg_core(namePl2, b2core._deck_info, 'dummy'), coreStateManager);
   playerMe.set_gfx_on_alg(algGfx, fncbSetCaller)
 
   playerOpp.sit_down(0);

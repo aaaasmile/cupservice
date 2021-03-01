@@ -7,6 +7,7 @@
           <v-subheader>Gioco selezionato</v-subheader>
           <v-radio-group v-model="selgame" hide-details>
             <v-radio value="briscola" label="Briscola"></v-radio>
+            <v-radio value="briscolascoperta" label="Briscola Scoperta"></v-radio>
           </v-radio-group>
         </v-col>
         <v-col cols="12" sm="6" md="4">

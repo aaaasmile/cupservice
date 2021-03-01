@@ -18,7 +18,10 @@ export default {
   },
   computed: {
     ...Vuex.mapState({
-      SelGame: state => {
+      SelGameTitle: state => {
+        return state.pl.curr_game_title
+      },
+      SelGameCore: state => {
         return state.pl.curr_game
       },
       Action1Enabled: state => {
@@ -112,13 +115,13 @@ export default {
   },
   methods: {
     startGame() {
-      console.log("start game ", this.SelGame)
+      console.log("start game ", this.SelGameCore)
       let addTick = true
       if (this._gfxGame) {
         this._app.ticker.stop()
         addTick = false
       }
-      this.createGfx(this._cache, this.SelGame)
+      this.createGfx(this._cache, this.SelGameCore)
       if (addTick) {
         this._app.ticker.add(delta => this.gameLoop(delta));  // il ticker sembra vada aggiunto solo una volta
       } else {
@@ -218,7 +221,7 @@ export default {
           ></v-progress-linear>
         </template>
         <v-card-title class="mx-0"
-          >Qui si gioca a: {{ SelGame }}!
+          >Qui si gioca a: {{ SelGameTitle }}!
         </v-card-title>
         <v-card-text
           ><div class="grey--text" v-show="IsWaitForStart">

@@ -1,5 +1,6 @@
 import { StaticSceneGfx } from './static-scene-gfx.js'
 import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js'
+import { BriscolaScopertaGfx } from '../games/brisc-base/briscola-scoperta-gfx.js'
 
 export class BuilderGameGfx {
 
@@ -24,6 +25,9 @@ export class BuilderGameGfx {
       case 'briscola':
         this.build_briscola(cache, staticSceneGfx)
         break;
+      case 'briscolascoperta':
+        this.build_briscola_scuperta(cache, staticSceneGfx)
+        break;
       default:
         throw (new Error(`game gfx not supported ${this._game_name}`))
     }
@@ -44,6 +48,12 @@ export class BuilderGameGfx {
   build_briscola(cache, staticSceneGfx) {
     console.log('Build briscola gfx')
     const briGfx = new BriscolaGfx(cache, staticSceneGfx)
-    this._core_state = briGfx.BuildBriscolaGameVsCpu()
+    this._core_state = briGfx.BuildGameVsCpu()
+  }
+
+  build_briscola_scuperta(cache, staticSceneGfx) {
+    console.log('Build briscola scoperata gfx')
+    const gfx = new BriscolaScopertaGfx(cache, staticSceneGfx)
+    this._core_state = gfx.BuildGameVsCpu()
   }
 }

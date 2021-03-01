@@ -10,7 +10,7 @@
           ></v-progress-linear>
         </template>
         <v-card-title class="mx-0"
-          >Qui si gioca a: {{ SelGame }}!
+          >Qui si gioca a: {{ SelGameTitle }}!
         </v-card-title>
         <v-card-text
           ><div class="grey--text" v-show="IsWaitForStart">
