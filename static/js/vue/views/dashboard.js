@@ -1,4 +1,4 @@
-import { GetMusicManagerInstance } from '../../local/app/sound-mgr.js'
+import { GetMusicManagerInstance } from '../../local/sound/sound-mgr.js'
 import { GetCardLoaderGfx } from '../../local/gfx/card-loader-gfx.js'
 import { BuilderGameGfx } from '../../local/gfx/builder-game-gfx.js'
 import Conta from '../components/conta.js'

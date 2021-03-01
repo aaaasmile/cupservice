@@ -7,7 +7,7 @@ import store from '../../../vue/store/index.js'
 import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { TableCardsPlayedGfx } from '../../gfx/table-cards-played.js'
 import { DeckTakenGfx } from '../../gfx/deck-taken-gfx.js'
-import { GetMusicManagerInstance } from '../../../local/app/sound-mgr.js'
+import { GetMusicManagerInstance } from '../../sound/sound-mgr.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
 
