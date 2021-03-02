@@ -2,6 +2,7 @@ import { BriscolaGfx } from '../briscola-gfx.js'
 import AniCards from '../../../gfx/animation-gfx.js'
 import { CoreBriscolaScoperta } from './briscola-scoperta-core.js'
 import { AlgBriscScoperta } from './briscola-scoperta-alg.js'
+import { CardsPlayerGfx } from '../../../gfx/cards-player-gfx.js'
 
 export class BriscolaScopertaGfx extends BriscolaGfx {
   constructor(cache, static_scene) {
@@ -16,16 +17,40 @@ export class BriscolaScopertaGfx extends BriscolaGfx {
     return new AlgBriscScoperta(name, deckinfo, level)
   }
 
-  animate_distr_cards(carte) {
+  on_pl_ev_brisc_new_giocata(args) {
+    console.log('Scoperta gfx on_pl_ev_brisc_new_giocata')
+    super.on_pl_ev_brisc_new_giocata(args)
+    this._staticScene.clear_component('cardsopp')
+    const cards_opp = new CardsPlayerGfx(70, this._deck_info, this._cache)
+    cards_opp.Build(args.carte_opp.length, args.carte_opp, 'normal')
+    cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
+    this._staticScene.AddGfxComponent('cardsopp', cards_opp)
+  }
+
+  animate_distr_cards(args) {
     console.log('scuperta distr carte...')
+    const carte_me = args.carte
+    const carte_opp = args.carte_opp
+
     let cards_anim = []
     let fnix = 0
-    carte.forEach(card_lbl => {
-      // one animation for each cards on hand
+    carte_me.forEach(card_lbl => {
       cards_anim.push(() => {
-        let aniDistr = AniCards('distr_card', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
-          let cards_me_gfx = this._staticScene.get_component(stop_comp)
+        const aniDistr = AniCards('distr_card', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
+          const cards_me_gfx = this._staticScene.get_component(stop_comp)
           cards_me_gfx.set_visible(card_lbl)
+          fnix++
+          cards_anim[fnix]()
+        })
+        this._staticScene.AddAnimation(aniDistr)
+      })
+    })
+
+    carte_opp.forEach(card_lbl => {
+      cards_anim.push(() => {
+        const aniDistr = AniCards('distr_card', 'deck', 'cardsopp', card_lbl, (nn, start_cmp, stop_comp) => {
+          const cards_opp_gfx = this._staticScene.get_component(stop_comp)
+          cards_opp_gfx.set_visible(card_lbl)
           fnix++
           cards_anim[fnix]()
         })
@@ -38,7 +63,7 @@ export class BriscolaScopertaGfx extends BriscolaGfx {
       const cards_me_gfx = this._staticScene.get_component('cardsme')
       cards_me_gfx.Redraw()
       const cards_opp_gfx = this._staticScene.get_component('cardsopp')
-      cards_opp_gfx.set_deck_visible() // oppponent doesn't animate
+      cards_opp_gfx.Redraw()
       this._core_state.continue_process_events('after animation new giocata')
     })
 

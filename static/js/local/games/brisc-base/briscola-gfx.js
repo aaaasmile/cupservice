@@ -133,7 +133,7 @@ export class BriscolaGfx {
     deck_taken_me._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'top_anchor', offset: -10 }, anchor_element: `MKR-${this._name_Me}`, }
     this._staticScene.AddGfxComponent('deck_taken_me', deck_taken_me)
 
-    this.animate_distr_cards(args.carte)
+    this.animate_distr_cards(args)
 
   }
 
@@ -361,7 +361,8 @@ export class BriscolaGfx {
     store.commit('changeGameState', 'st_waitforstart')
   }
 
-  animate_distr_cards(carte) {
+  animate_distr_cards(args) {
+    const carte = args.carte
     let cards_anim = []
     let fnix = 0
     carte.forEach(card_lbl => {
