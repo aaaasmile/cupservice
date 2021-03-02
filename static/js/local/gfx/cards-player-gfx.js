@@ -17,6 +17,9 @@ export class CardsPlayerGfx {
 
   get_space_x(texture_w, mode) {
     switch (mode) {
+      case 'normal_x_small_y':
+        const nw = texture_w - texture_w / 3
+        return nw + 30
       case 'normal':
         return texture_w + 10
       case 'compact_small':
@@ -32,9 +35,10 @@ export class CardsPlayerGfx {
       case 'compact':
       case 'normal':
         return sprite
+      case 'normal_x_small_y':
       case 'compact_small':
-        let nw = sprite.width - sprite.width / 3
-        let nh = sprite.height - sprite.height / 3
+        const nw = sprite.width - sprite.width / 3
+        const nh = sprite.height - sprite.height / 3
         Helper.ScaleSprite(sprite, nw, nh)
         return
     }
