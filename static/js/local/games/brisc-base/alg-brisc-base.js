@@ -1,4 +1,3 @@
-import { DeckInfo } from '../../shared/deck-info.js'
 import Helper from '../../shared/helper.js'
 
 //////////////////////////////////////////
@@ -86,7 +85,6 @@ export class AlgBriscBase {
 
   on_pl_ev_brisc_new_giocata(args) {
     console.log("[%s] New giorcata " + JSON.stringify(args), this._player_name);
-    let str_card = '';
     ["b", "d", "s", "c"].forEach(segno => {
       this._strozzi_on_suite[segno] = 2;
     });
