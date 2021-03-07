@@ -20,12 +20,7 @@ export class CoreQueue {
       return;
     }
     var funinfo = this.registry.shift();
-    try {
-      funinfo.func.apply(this._coreStateManager, funinfo.parameters);
-    } catch (e) {
-      console.error('Error on executing action handler process_first \nparam ' + JSON.stringify(funinfo.parameters) + '\nError: ' + e + '\n Stack: ' + e.stack);
-      throw (e);
-    }
+    funinfo.func.apply(this._coreStateManager, funinfo.parameters);
     //console.log('item process END, queue size: ' + this.registry.length + ' on ' + this._queue_name)
   }
 

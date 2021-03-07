@@ -34,4 +34,49 @@ export class CoreBriscolaScoperta extends CoreBriscolaBase {
         });
         this._coreStateManager.submit_next_state('st_new_mano');
     }
+
+    st_pesca_carta() {
+        console.log('st_pesca_carta in scuperta gfx');
+        this._coreStateStore.set_state('st_pesca_carta');
+        let brisc_tav_available = true;
+        if (this._core_data.mazzo_gioco.length <= 0) {
+            throw (new Error('Deck is empty, programming error'));
+        }
+        const info_pesca = {}
+        this._core_data.round_players.forEach(player => {
+            let carte_player = [];
+            if (this._core_data.mazzo_gioco.length > 0) {
+                carte_player.push(this._core_data.mazzo_gioco.pop());
+            } else if (brisc_tav_available) {
+                carte_player.push(this._briscola_in_tav_lbl);
+                brisc_tav_available = false;
+            } else {
+                throw (new Error('Briscola already assigned, programming error'));
+            }
+            carte_player.forEach(c => {
+                this._core_data.carte_in_mano[player].push(c)
+            });
+            if (this._core_data.carte_in_mano[player].length > this._core_data.num_of_cards_onhandplayer) {
+                throw (new Error('To many cards in hand player ' + player));
+            }
+            info_pesca[player] = carte_player
+        });
+
+        let top_deck = undefined
+        if (this._core_data.mazzo_gioco.length > 1) {
+            top_deck = this._core_data.mazzo_gioco[this._core_data.mazzo_gioco.length - 1]
+        }
+        this._core_data.players.forEach(player => {
+            const data_cartapesc = {
+                carte: info_pesca[player],
+                carte_opp: info_pesca[this.get_opp_name(player)],
+                top_deck: top_deck,
+            }
+            this._coreStateManager.fire_to_player(player, 'ev_pesca_carta', data_cartapesc);
+        })
+
+
+        console.log('Mazzo rimanenti: ' + this._core_data.mazzo_gioco.length);
+        this._coreStateManager.submit_next_state('st_new_mano');
+    }
 }

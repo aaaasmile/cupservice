@@ -200,8 +200,7 @@ export class BriscolaGfx {
   on_pl_ev_pesca_carta(args) {
     // args: {carte: Array(1)}
     console.log('on_pl_ev_pesca_carta', args)
-    const carte = args.carte
-    this.animate_pesca_carta(carte)
+    this.animate_pesca_carta(args)
   }
 
   on_all_ev_giocata_end(args) {
@@ -451,7 +450,8 @@ export class BriscolaGfx {
     }, 600);
   }
 
-  animate_pesca_carta(carte) {
+  animate_pesca_carta(args) {
+    const carte = args.carte
     const deckGfx = this._staticScene.get_component('deck')
     let cards_anim = []
     let fnix = 0
