@@ -300,6 +300,7 @@ export class AlgBriscBase {
     this._cards_on_hand.forEach(card_lbl => {
       card_s = card_lbl;
       bcurr_card_take = false;
+      const curr_card_isbrisc = card_s[2] === this._briscola[2]
       card_curr_info = this._deck_info.get_card_info(card_lbl);
       if (card_s[2] === card_avv_s[2]) {
         //same suit
@@ -323,8 +324,8 @@ export class AlgBriscBase {
         max_card_take = card_lbl;
         max_points_take = points;
       }
-      // or it leave
-      if (!bcurr_card_take && points < min_points_leave) {
+      // or leave it
+      if (!bcurr_card_take && (points < min_points_leave) || (points === min_points_leave && !curr_card_isbrisc)) {
         min_card_leave = card_lbl;
         min_points_leave = points;
       }

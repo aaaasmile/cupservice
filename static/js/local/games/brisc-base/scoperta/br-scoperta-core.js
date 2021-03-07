@@ -67,7 +67,7 @@ export class CoreBriscolaScoperta extends CoreBriscolaBase {
         });
 
         let top_deck = undefined
-        if (this._core_data.mazzo_gioco.length > 1) {
+        if (this._core_data.mazzo_gioco.length > 0) {
             top_deck = this._core_data.mazzo_gioco[this._core_data.mazzo_gioco.length - 1]
         }
         this._core_data.players.forEach(player => {
