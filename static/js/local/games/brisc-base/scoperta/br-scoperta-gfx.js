@@ -83,29 +83,36 @@ export class BriscolaScopertaGfx extends BriscolaGfx {
     const deckGfx = this._staticScene.get_component('deck')
     let cards_anim = []
     let fnix = 0
-    carte.forEach(card_lbl => {
-      cards_anim.push(() => {
-        let aniDistr = AniCards('pesca_carta', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
-          let cards_me_gfx = this._staticScene.get_component(stop_comp)
-          cards_me_gfx.set_inv_to_card(card_lbl)
-          fnix++
-          cards_anim[fnix]()
+    for (let index = 0; index < 2; index++) {
+      if ((index === 0 && args.first === this._name_Me) ||
+        (index === 1 && args.first === this._name_Opp)) {
+        carte.forEach(card_lbl => {
+          cards_anim.push(() => {
+            let aniDistr = AniCards('pesca_carta', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
+              let cards_me_gfx = this._staticScene.get_component(stop_comp)
+              cards_me_gfx.set_inv_to_card(card_lbl)
+              fnix++
+              cards_anim[fnix]()
+            })
+            this._staticScene.AddAnimation(aniDistr)
+          })
         })
-        this._staticScene.AddAnimation(aniDistr)
-      })
-    })
-
-    carte_opp.forEach(card_lbl => {
-      cards_anim.push(() => {
-        const aniDistr = AniCards('pesca_carta', 'deck', 'cardsopp', card_lbl, (nn, start_cmp, stop_comp) => {
-          const cards_opp_gfx = this._staticScene.get_component(stop_comp)
-          cards_opp_gfx.set_inv_to_card(card_lbl)
-          fnix++
-          cards_anim[fnix]()
+      }
+      if ((index === 0 && args.first === this._name_Opp) ||
+        (index === 0 && args.first === this._name_Me)) {
+        carte_opp.forEach(card_lbl => {
+          cards_anim.push(() => {
+            const aniDistr = AniCards('pesca_carta', 'deck', 'cardsopp', card_lbl, (nn, start_cmp, stop_comp) => {
+              const cards_opp_gfx = this._staticScene.get_component(stop_comp)
+              cards_opp_gfx.set_inv_to_card(card_lbl)
+              fnix++
+              cards_anim[fnix]()
+            })
+            this._staticScene.AddAnimation(aniDistr)
+          })
         })
-        this._staticScene.AddAnimation(aniDistr)
-      })
-    })
+      }
+    }
 
     cards_anim.push(() => {
       deckGfx.PopCard(this._num_players)

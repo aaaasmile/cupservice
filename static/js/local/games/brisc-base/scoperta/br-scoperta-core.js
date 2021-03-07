@@ -43,7 +43,11 @@ export class CoreBriscolaScoperta extends CoreBriscolaBase {
             throw (new Error('Deck is empty, programming error'));
         }
         const info_pesca = {}
+        let first = undefined
         this._core_data.round_players.forEach(player => {
+            if (!first){
+                first = player
+            }
             let carte_player = [];
             if (this._core_data.mazzo_gioco.length > 0) {
                 carte_player.push(this._core_data.mazzo_gioco.pop());
@@ -71,6 +75,7 @@ export class CoreBriscolaScoperta extends CoreBriscolaBase {
                 carte: info_pesca[player],
                 carte_opp: info_pesca[this.get_opp_name(player)],
                 top_deck: top_deck,
+                first: first,
             }
             this._coreStateManager.fire_to_player(player, 'ev_pesca_carta', data_cartapesc);
         })
