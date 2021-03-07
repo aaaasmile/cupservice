@@ -61,12 +61,12 @@ export class DeckGfx {
   }
 
   SetTopVisibleCard(card_lbl) {
-    if(this._deckSprite.length < 1 ){
+    if (this._deckSprite.length < 1) {
       throw new Error(`Deck does not contains a top`)
     }
     const cardTexture = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
     if (cardTexture) {
-      const sprite = this._deckSprite[this._deckSprite.length -1]
+      const sprite = this._deckSprite[this._deckSprite.length - 1]
       sprite.texture = cardTexture
       const old_x = sprite.x
       const old_y = sprite.y
@@ -96,6 +96,10 @@ export class DeckGfx {
       default:
         throw (new Error(`animation not recognized ${name}`))
     }
+  }
+
+  Redraw() {
+    this._isDirty = true
   }
 
   PopCard(num) {

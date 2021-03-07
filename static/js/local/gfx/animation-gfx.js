@@ -1,4 +1,4 @@
-export default (name, startComp, stopCom, data, fnTerm) => {
+export default (name, startComp, stopCom, data, fnTerm, fnStart) => {
     let _container = new PIXI.Container()
     let _sprites = []
     let _started = false
@@ -8,6 +8,7 @@ export default (name, startComp, stopCom, data, fnTerm) => {
     const _startComp = startComp
     const _stopCom = stopCom
     const _fnTerm = fnTerm
+    const _fnsStart = fnStart
     const _data = data
     return {
         Update(delta) {
@@ -81,8 +82,15 @@ export default (name, startComp, stopCom, data, fnTerm) => {
             _sprites.push(ss)
             _container.addChild(ss)
         },
-        complete() {
-            _fnTerm(_name, _startComp, _stopCom)
+        completed() {
+            if (_fnTerm) {
+                _fnTerm(_name, _startComp, _stopCom)
+            }
+        },
+        started() {
+            if (_fnsStart) {
+                _fnsStart()
+            }
         }
     }
 }

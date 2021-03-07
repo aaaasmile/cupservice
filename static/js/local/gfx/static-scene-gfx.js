@@ -120,11 +120,12 @@ export class StaticSceneGfx {
           });
         }
         this._container.addChild(ani.get_container())
+        ani.started()
       }
       ani.Update(delta)
       if (ani.is_terminated()) {
         this._animations.splice(ani)
-        ani.complete()
+        ani.completed()
       }
     });
   }
