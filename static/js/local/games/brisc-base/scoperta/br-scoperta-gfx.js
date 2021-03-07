@@ -20,6 +20,7 @@ export class BriscolaScopertaGfx extends BriscolaGfx {
   on_pl_ev_brisc_new_giocata(args) {
     console.log('Scoperta gfx on_pl_ev_brisc_new_giocata')
     super.on_pl_ev_brisc_new_giocata(args)
+
     this._staticScene.clear_component('cardsopp')
     const cards_opp = new CardsPlayerGfx(70, this._deck_info, this._cache)
     cards_opp.Build(args.carte_opp.length, args.carte_opp, 'normal') //'normal_x_small_y')
@@ -64,6 +65,8 @@ export class BriscolaScopertaGfx extends BriscolaGfx {
       cards_me_gfx.Redraw()
       const cards_opp_gfx = this._staticScene.get_component('cardsopp')
       cards_opp_gfx.Redraw()
+      const deck = this._staticScene.get_component('deck')
+      deck.SetTopVisibleCard(args.top_deck)
       this._core_state.continue_process_events('after animation new giocata')
     })
 
