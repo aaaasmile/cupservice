@@ -1,7 +1,7 @@
 import { BriscolaGfx } from '../briscola-gfx.js'
 import AniCards from '../../../gfx/animation-gfx.js'
-import { CoreBriscolaScoperta } from './briscola-scoperta-core.js'
-import { AlgBriscScoperta } from './briscola-scoperta-alg.js'
+import { CoreBriscolaScoperta } from './br-scoperta-core.js'
+import { AlgBriscScoperta } from './br-scoperta-alg.js'
 import { CardsPlayerGfx } from '../../../gfx/cards-player-gfx.js'
 
 export class BriscolaScopertaGfx extends BriscolaGfx {
