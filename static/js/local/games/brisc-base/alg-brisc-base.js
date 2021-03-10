@@ -21,7 +21,7 @@ export class AlgBriscBase {
     this._max_numcards_ondeck = 33;
     this._cards_on_hand = [];
     this._briscola = undefined;
-    this._card_played = [];
+    this._card_mano_played = [];
     this._card_taken = []
     this._options = {
       use_delay_before_play: false,
@@ -129,7 +129,7 @@ export class AlgBriscBase {
 
   on_all_ev_new_mano(args) {
     console.log("[%s] New mano " + JSON.stringify(args), this._player_name);
-    this._card_played = [];
+    this._card_mano_played = [];
   }
 
   on_all_ev_mano_end(args) {
@@ -164,7 +164,7 @@ export class AlgBriscBase {
     if (args.player_name === this._player_name) {
       this._cards_on_hand = this._cards_on_hand.filter(x => x !== card)
     } else {
-      this._card_played.push(card)
+      this._card_mano_played.push(card)
     }
     const segno = card[2]
     if (card[1] === 'A' || card[1] === '3') {
@@ -229,7 +229,7 @@ export class AlgBriscBase {
 
   play_like_a_master() {
     let card = 'Error';
-    switch (this._card_played.length) {
+    switch (this._card_mano_played.length) {
       case 0:
         card = this.play_as_master_first();
         break;
@@ -290,8 +290,8 @@ export class AlgBriscBase {
     let curr_points_me, tot_points_if_take, curr_points_opp, max_card_take_s;
     let card_best_taken_s;
 
-    card_avv_s = this._card_played[0];
-    card_avv_info = this._deck_info.get_card_info(this._card_played[0]);
+    card_avv_s = this._card_mano_played[0];
+    card_avv_info = this._deck_info.get_card_info(this._card_mano_played[0]);
     max_card_take = this._cards_on_hand[0];
     min_card_leave = this._cards_on_hand[0];
     // build takeit leaveit arrays and store max take and min leave
