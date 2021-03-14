@@ -30,6 +30,10 @@ export class AlgBriscScoperta extends AlgBriscBase {
         if (deph === 0 || position.is_last_card_toplay()) {
             return position.static_evalposition()
         }
+        if (position.get_num_children() === 0) {
+            position.build_position()
+        }
+
         if (maximizingplayer) {
             let maxeval = -255
             for (let index = 0; index < position.get_num_children(); index++) {
@@ -91,6 +95,6 @@ export class AlgBriscScoperta extends AlgBriscBase {
         return card
     }
 
-    
+
 
 }

@@ -34,6 +34,7 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
     const _points_me = points_me
     const _points_opp = points_opp
     const _is_maximizingplayer = is_max
+    const _cards_on_child = []
 
     const _deck_info = new DeckInfo
     const _rnd_mgr = new RndMgr
@@ -72,6 +73,7 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
             });
 
             cards_to_play.forEach(card_lbl => {
+                _cards_on_child.push(card_lbl)
                 const stateNext = this.me_play_card(card_lbl)
                 const child = AlgPosition(
                     stateNext.cards_on_hand,
@@ -190,7 +192,7 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
             }
             return false
         },
-        calc_cards_points(arr_cards){
+        calc_cards_points(arr_cards) {
             let points = 0
             arr_cards.forEach(card_lbl => {
                 const card_info = _deck_info.get_card_info(card_lbl);
@@ -202,18 +204,57 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
         get_card_on_score(score) {
             for (let index = 0; index < _children.length; index++) {
                 const child = _children[index];
-                if (child.score === score) {
-                    return this._cards_on_hand[index]
+                if (child.get_score() === score) {
+                    return _cards_on_child[index]
                 }
             }
             throw (new Error(`Something is worng with minmax algorithm`))
+        },
+        get_score() {
+            return _score
         },
         is_last_card_toplay() {
             return _cards_on_hand.length === 1;
         },
         static_evalposition() {
-            console.warn('Stati evaluate position')
-            throw (new Error(`TODO evaluate position`))
+            console.log('Static evaluate position')
+            if (_points_me > 60) {
+                _score = 100000
+            }else{
+                _score = 0    
+            }
+            _score += _card_taken.length
+            _score += _points_me * 3
+            _score -= _card_opp_taken.length
+            _score -= _points_opp * 2
+            const points_to_win = 61 - _points_me
+            if (points_to_win < 10) {
+                _score += (10 - points_to_win) * 3
+            }
+            _cards_on_hand.forEach(card_lbl => {
+                const cardinfo = _deck_info.get_card_info(card_lbl)
+                _score += cardinfo.points
+                if (_briscola[2] === card_lbl[2]) {
+                    _score += 10
+                }
+            });
+            _card_taken.forEach(card_lbl => {
+                const cardinfo = _deck_info.get_card_info(card_lbl)
+                if (_briscola[2] === card_lbl[2]) {
+                    _score -= (5 + cardinfo.points)
+                }
+                if (card_lbl[1] === 'A') { _score += 100; }
+                if (card_lbl[1] === '3') { _score += 70; }
+            });
+            _card_opp_taken.forEach(card_lbl => {
+                const cardinfo = _deck_info.get_card_info(card_lbl)
+                if (_briscola[2] === card_lbl[2]) {
+                    _score += 4 + cardinfo.points
+                }
+                if (card_lbl[1] === 'A') { _score -= 60; }
+                if (card_lbl[1] === '3') { _score -= 40; }
+            });
+            console.log('Position score: ', _score)
         },
         get_num_children() {
             return _children.length
