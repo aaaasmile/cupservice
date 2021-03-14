@@ -80,7 +80,6 @@ export class AlgBriscScoperta extends AlgBriscBase {
             this._points_segno[this._player_name],
             this._points_segno[this._opp_names[0]],
             this._card_mano_played,
-            null,
             true
         )
         position.build_position(best_choice_card)

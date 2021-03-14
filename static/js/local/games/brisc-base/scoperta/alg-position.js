@@ -1,4 +1,5 @@
 import { DeckInfo } from '../../../shared/deck-info.js'
+import { RndMgr } from '../../../shared/rnd-mgr.js'
 
 function removeItemOnce(arr, value) {
     if (!value) {
@@ -7,8 +8,8 @@ function removeItemOnce(arr, value) {
     const index = arr.indexOf(value);
     if (index > -1) {
         arr.splice(index, 1);
-    }else{
-        throw(new Error(`Don not expect to remove an item that is not found ${value}`))
+    } else {
+        throw (new Error(`Don not expect to remove an item that is not found ${value}`))
     }
     return arr;
 }
@@ -20,11 +21,11 @@ function removeItems(arr, arrval) {
     return arr
 }
 
-const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken, card_opp_taken, points_me, points_opp, card_mano_played, card_playing, is_max) => {
+const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken, card_opp_taken, points_me, points_opp, card_mano_played, is_max) => {
     let _score = 0
-    let _children = []
+    const _children = []
     const _cards_on_hand = cards_on_hand.slice()
-    let _cards_on_opp = cards_on_opp.slice()
+    const _cards_on_opp = cards_on_opp.slice()
     const _top_deck = top_deck
     const _briscola = briscola
     const _card_taken = card_taken.slice()
@@ -32,15 +33,11 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
     const _card_mano_played = card_mano_played.slice()
     const _points_me = points_me
     const _points_opp = points_opp
-    const _card_playing = card_playing
     const _is_maximizingplayer = is_max
-    if(_card_playing){
-        _cards_on_opp = removeItemOnce(_cards_on_opp, _card_playing)
-    }
-    
-    
-    const _deck = new DeckInfo
-    let _deck_remain = _deck.get_cards_on_game()
+
+    const _deck_info = new DeckInfo
+    const _rnd_mgr = new RndMgr
+    let _deck_remain = _deck_info.get_cards_on_game()
     _deck_remain = removeItemOnce(_deck_remain, _top_deck)
     _deck_remain = removeItemOnce(_deck_remain, _briscola)
     _deck_remain = removeItems(_deck_remain, _cards_on_hand)
@@ -48,7 +45,18 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
     _deck_remain = removeItems(_deck_remain, _card_taken)
     _deck_remain = removeItems(_deck_remain, _card_mano_played)
     _deck_remain = removeItems(_deck_remain, _card_opp_taken)
-    //console.log('*** deck remain ', _deck_remain,  _deck_remain.length)
+
+    const _utilized_cards = _cards_on_hand.length + _cards_on_opp.length + _card_taken.length
+        + _card_mano_played.length + _card_opp_taken.length
+    if (_utilized_cards < 40) {
+        if (_deck_remain.length > 0) {
+            _deck_remain = _rnd_mgr.get_deck(_deck_remain) // Question: each position shuffle the deck?
+        }
+        _deck_remain = [_top_deck].concat(_deck_remain)
+        _deck_remain.push(_briscola)
+    }
+
+    console.log('*** deck remain ', _deck_remain, _deck_remain.length, _utilized_cards)
 
     return {
         build_position(best_choice_card) {
@@ -64,35 +72,132 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
             });
 
             cards_to_play.forEach(card_lbl => {
-                if (this.is_swap_player(card_lbl)) {
-                    console.log('*** swap player ')
-                    const child = AlgPosition(
-                        _cards_on_opp,
-                        _cards_on_hand,
-                        _top_deck,
-                        _briscola,
-                        _card_opp_taken,
-                        _card_taken,
-                        _points_opp,
-                        _points_me,
-                        _card_mano_played,
-                        card_lbl,
-                        !_is_maximizingplayer
-                    )
-                    _children.push(child)
-                } else {
-                    console.log('*** no player swap: new mano same player')
-                    throw (new Error(`TODO position on the same player`))
-                }
-
+                const stateNext = this.me_play_card(card_lbl)
+                const child = AlgPosition(
+                    stateNext.cards_on_hand,
+                    stateNext.cards_on_opp,
+                    stateNext.top_deck,
+                    stateNext.briscola,
+                    stateNext.card_taken,
+                    stateNext.card_opp_taken,
+                    stateNext.points_me,
+                    stateNext.points_opp,
+                    stateNext.card_mano_played,
+                    stateNext.is_max
+                )
+                _children.push(child)
             });
 
         },
-        is_swap_player(card_lbl) {
+        me_play_card(card_lbl) {
+            console.log('** Me play a card')
+            let stateNext = {}
             if (_card_mano_played.length === 0) {
+                // me playing first, next ist the opponet: swap player
+                stateNext.cards_on_hand = _cards_on_opp
+                stateNext.cards_on_opp = removeItemOnce(_cards_on_hand.slice(), card_lbl)
+                stateNext.top_deck = _top_deck
+                stateNext.briscola = _briscola
+                stateNext.card_taken = _card_taken
+                stateNext.card_opp_taken = _card_opp_taken
+                stateNext.points_me = _points_me
+                stateNext.points_opp = _points_opp
+                stateNext.card_mano_played = [card_lbl]
+                stateNext.is_max = !_is_maximizingplayer
+                return stateNext
+            }
+            // me playing second
+            const copy_deck_remain = _deck_remain.slice()
+            let first_card_on_deck = null
+            let second_card_on_deck = null
+            let next_top_deck = null
+            if (copy_deck_remain.length > 0) {
+                first_card_on_deck = copy_deck_remain[0]
+                copy_deck_remain.splice(0, 1);
+            }
+            if (copy_deck_remain.length > 0) {
+                second_card_on_deck = copy_deck_remain[0]
+                copy_deck_remain.splice(0, 1);
+            }
+            if (copy_deck_remain.length > 0) {
+                next_top_deck = copy_deck_remain[0]
+            }
+            const points_cards_played = this.calc_cards_points([card_lbl, _card_mano_played[0]])
+
+            if (this.is_me_play_win_mano(card_lbl, _card_mano_played[0])) {
+                // me is still on turn
+                stateNext.cards_on_hand = _cards_on_hand.slice()
+                if (first_card_on_deck) {
+                    stateNext.cards_on_hand.push(first_card_on_deck)
+                }
+                stateNext.cards_on_opp = _cards_on_opp.splice()
+                if (second_card_on_deck) {
+                    stateNext.cards_on_opp.push(second_card_on_deck)
+                }
+                stateNext.top_deck = next_top_deck
+                stateNext.briscola = _briscola
+                stateNext.card_taken = _card_taken.slice()
+                stateNext.card_taken.push(_card_mano_played[0])
+                stateNext.card_taken.push(card_lbl)
+                stateNext.card_opp_taken = _card_opp_taken
+                stateNext.points_me = _points_me + points_cards_played
+                stateNext.points_opp = _points_opp
+                stateNext.card_mano_played = []
+                stateNext.is_max = _is_maximizingplayer
+                return stateNext
+            }
+            // opponent wins mano, swap player
+            stateNext.cards_on_hand = _cards_on_opp.slice()
+            if (first_card_on_deck) {
+                stateNext.cards_on_hand.push(first_card_on_deck)
+            }
+            stateNext.cards_on_opp = _cards_on_hand.splice()
+            if (second_card_on_deck) {
+                stateNext.cards_on_opp.push(second_card_on_deck)
+            }
+            stateNext.top_deck = next_top_deck
+            stateNext.briscola = _briscola
+            stateNext.card_taken = _card_taken
+
+            stateNext.card_opp_taken = _card_opp_taken.slice()
+            stateNext.card_opp_taken.push(_card_mano_played[0])
+            stateNext.card_opp_taken.push(card_lbl)
+
+            stateNext.points_me = _points_me
+            stateNext.points_opp = _points_opp + points_cards_played
+            stateNext.card_mano_played = []
+            stateNext.is_max = !_is_maximizingplayer
+
+            return stateNext
+        },
+        is_me_play_win_mano(me_card, opp_first_play_lbl) {
+            const card_opp_info = _deck_info.get_card_info(opp_first_play_lbl);
+            const card_me_info = _deck_info.get_card_info(me_card);
+            const card_info_briscola = _deck_info.get_card_info(_briscola)
+            if (card_opp_info.segno === card_info_briscola.segno &&
+                card_me_info.segno !== card_info_briscola.segno) {
+                return false
+            }
+            if (card_me_info.segno === card_info_briscola.segno &&
+                card_opp_info.segno !== card_info_briscola.segno) {
+                return true
+            }
+            if (card_opp_info.segno !== card_me_info.segno) {
+                return false
+            }
+            if (card_opp_info.rank < card_me_info.rank) {
                 return true
             }
             return false
+        },
+        calc_cards_points(arr_cards){
+            let points = 0
+            arr_cards.forEach(card_lbl => {
+                const card_info = _deck_info.get_card_info(card_lbl);
+                points += card_info.points
+            });
+            return points
+
         },
         get_card_on_score(score) {
             for (let index = 0; index < _children.length; index++) {
