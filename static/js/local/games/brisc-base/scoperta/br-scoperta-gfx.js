@@ -60,14 +60,18 @@ export class BriscolaScopertaGfx extends BriscolaGfx {
     })
 
     cards_anim.push(() => {
-      console.log('All animations are terminated')
+      console.log('All animations are terminated, render final state')
       const cards_me_gfx = this._staticScene.get_component('cardsme')
       cards_me_gfx.Redraw()
       const cards_opp_gfx = this._staticScene.get_component('cardsopp')
       cards_opp_gfx.Redraw()
       const deck = this._staticScene.get_component('deck')
       deck.SetTopVisibleCard(args.top_deck)
-      this._core_state.continue_process_events('after animation new giocata')
+      deck.Redraw()
+      this._staticScene.AddFinalNtfy( () => {
+        console.log('Now we are ready to continue process')
+        this._core_state.continue_process_events('after animation new giocata')
+      })
     })
 
     this._core_state.suspend_proc_gevents('suspend animation new giocata')

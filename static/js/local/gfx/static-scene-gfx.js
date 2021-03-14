@@ -11,6 +11,7 @@ export class StaticSceneGfx {
     this.canvas_h = 0
     this.canvas_w = 0
     this._animations = []
+    this._aniFinalNfy = []
   }
 
   Build(backTexture, viewWidth, viewHeight) {
@@ -51,10 +52,10 @@ export class StaticSceneGfx {
     if (this._components.has(key)) {
       this._components.delete(key)
       this._isDirty = true
-    } 
+    }
   }
 
-  clear_all_components(){
+  clear_all_components() {
     this._components = new Map()
   }
 
@@ -91,11 +92,22 @@ export class StaticSceneGfx {
     this._animations.push(ani)
   }
 
+  AddFinalNtfy(ntfy) {
+    this._aniFinalNfy.push(ntfy)
+  }
+
   UpdateAnimations(isDirty, delta) {
     if (this._isDirty || isDirty) {
       // static scene should be ready before render animations
       return
     }
+    if (this._aniFinalNfy.length > 0) {
+      this._aniFinalNfy.forEach(ntfy => {
+        ntfy()
+        this._aniFinalNfy.splice(ntfy)
+      })
+    }
+
     if (this._animations.length === 0) {
       return
     }

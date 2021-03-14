@@ -57,7 +57,7 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
         _deck_remain.push(_briscola)
     }
 
-    console.log('*** deck remain ', _deck_remain, _deck_remain.length, _utilized_cards)
+    console.log('*** AlgPosition ', _deck_remain.length, _utilized_cards, _cards_on_hand, _cards_on_opp)
 
     return {
         build_position(best_choice_card) {
@@ -128,7 +128,7 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
 
             if (this.is_me_play_win_mano(card_lbl, _card_mano_played[0])) {
                 // me is still on turn
-                stateNext.cards_on_hand = _cards_on_hand.slice()
+                stateNext.cards_on_hand = removeItemOnce(_cards_on_hand.slice(), card_lbl) 
                 if (first_card_on_deck) {
                     stateNext.cards_on_hand.push(first_card_on_deck)
                 }
@@ -153,7 +153,7 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
             if (first_card_on_deck) {
                 stateNext.cards_on_hand.push(first_card_on_deck)
             }
-            stateNext.cards_on_opp = _cards_on_hand.splice()
+            stateNext.cards_on_opp = removeItemOnce(_cards_on_hand.slice(), card_lbl) 
             if (second_card_on_deck) {
                 stateNext.cards_on_opp.push(second_card_on_deck)
             }

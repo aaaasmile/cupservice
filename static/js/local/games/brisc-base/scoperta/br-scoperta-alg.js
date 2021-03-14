@@ -18,6 +18,14 @@ export class AlgBriscScoperta extends AlgBriscBase {
         this._top_deck = args.top_deck
     }
 
+    on_all_ev_player_has_played(args) {
+        super.on_all_ev_player_has_played(args)
+        
+        if (args.player_name !== this._player_name) {
+            this._cards_on_opp = this._cards_on_opp.filter(x => x !== card)
+        }
+    }
+
     on_pl_ev_pesca_carta(args) {
         super.on_pl_ev_pesca_carta(args)
 
