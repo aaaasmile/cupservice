@@ -20,7 +20,8 @@ export class AlgBriscScoperta extends AlgBriscBase {
 
     on_all_ev_player_has_played(args) {
         super.on_all_ev_player_has_played(args)
-        
+        const card = args.card_played[0]
+
         if (args.player_name !== this._player_name) {
             this._cards_on_opp = this._cards_on_opp.filter(x => x !== card)
         }
@@ -32,41 +33,6 @@ export class AlgBriscScoperta extends AlgBriscBase {
         this._top_deck = args.top_deck
         this._cards_on_opp.push(args.carte_opp[0]);
         this._num_cards_on_deck -= this._players.length;
-    }
-
-    minmax(position, deph, alpha, beta, maximizingplayer) {
-        if (deph === 0 || position.is_last_card_toplay()) {
-            return position.static_evalposition()
-        }
-        if (position.get_num_children() === 0) {
-            position.build_position()
-        }
-
-        if (maximizingplayer) {
-            let maxeval = -255
-            for (let index = 0; index < position.get_num_children(); index++) {
-                const child = position.get_child(index);
-                const myeval = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())
-                maxeval = Math.max(maxeval, myeval)
-                alpha = Math.max(alpha, maxeval)
-                if (beta <= alpha) {
-                    break;
-                }
-            };
-            return maxeval
-        } else {
-            let mineval = 255
-            for (let index = 0; index < position.get_num_children(); index++) {
-                const child = position.get_child(index);
-                const myeval = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())
-                mineval = Math.min(mineval, myeval)
-                beta = Math.min(beta, mineval)
-                if (beta <= alpha) {
-                    break;
-                }
-            };
-            return mineval
-        }
     }
 
     play_as_master_first() {
@@ -96,13 +62,48 @@ export class AlgBriscScoperta extends AlgBriscBase {
         )
         position.build_position(best_choice_card)
 
-        const score = this.minmax(position, 4, -255, +255, true)
+        const score = this.minmax(position, 2, -255, +255, true)
         console.log('Score found ', score)
         const card = position.get_card_on_score(score)
         console.log('Card on score ', card, score)
         return card
     }
 
+    minmax(position, deph, alpha, beta, maximizingplayer) {
+        if (deph === 0 || position.is_last_card_toplay()) {
+            return position.static_evalposition()
+        }
+        if (position.get_num_children() === 0) {
+            position.build_position()
+        }
 
+        if (maximizingplayer) {
+            let maxeval = -255
+            for (let index = 0; index < position.get_num_children(); index++) {
+                const child = position.get_child(index);
+                const myeval = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())
+                child.set_score_from_bestchild(myeval)
+                maxeval = Math.max(maxeval, myeval)
+                alpha = Math.max(alpha, maxeval)
+                if (beta <= alpha) {
+                    break;
+                }
+            };
+            return maxeval
+        } else {
+            let mineval = 255
+            for (let index = 0; index < position.get_num_children(); index++) {
+                const child = position.get_child(index);
+                const myeval = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())
+                child.set_score_from_bestchild(myeval)
+                mineval = Math.min(mineval, myeval)
+                beta = Math.min(beta, mineval)
+                if (beta <= alpha) {
+                    break;
+                }
+            };
+            return mineval
+        }
+    }
 
 }

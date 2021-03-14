@@ -3,6 +3,11 @@ import { CoreBriscolaBase } from '../core-brisc-base.js'
 export class CoreBriscolaScoperta extends CoreBriscolaBase {
     constructor(coreStateManager, numOfSegni, pointsForWin, numcardsOnHand, max_points) {
         super(coreStateManager, numOfSegni, pointsForWin, numcardsOnHand, max_points)
+
+        // NOTE this is a test code to a predifined deck
+        console.warn('Using a predifend deck')
+        this._rnd_mgr.set_predefined_deck('_3s,_5c,_6b,_6c,_Ad,_Fb,_As,_3b,_Cd,_4c,_Fd,_5d,_4b,_6s,_5s,_2b,_Cs,_Fs,_7c,_Cb,_Rc,_7d,_2s,_5b,_7b,_Ab,_3d,_7s,_4d,_Rd,_2c,_2d,_Fc,_Ac,_3c,_Rb,_6d,_Rs,_4s,_Cc')
+        this._rnd_mgr.set_predefined_player(0)
     }
 
     get_opp_name(player) {
