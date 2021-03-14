@@ -23,6 +23,7 @@ export class AlgBriscBase {
     this._briscola = undefined;
     this._card_mano_played = [];
     this._card_taken = []
+    this._card_opp_taken = []
     this._options = {
       use_delay_before_play: false,
       timeout_haveplay: 300
@@ -89,6 +90,7 @@ export class AlgBriscBase {
       this._strozzi_on_suite[segno] = 2;
     });
     this._card_taken = []
+    this._card_opp_taken = []
     this._num_cards_on_deck = this._deck_size - this._num_cards_on_player_hand * this._players.length - this._num_brisc_intavola;
     this.assign_cards_on_hand(args.carte);
     this._briscola = args.brisc;
@@ -137,6 +139,8 @@ export class AlgBriscBase {
     const player_best = args.player_best
     if (player_best === this._player_name) {
       this._card_taken = this._card_taken.concat(args.carte)
+    } else {
+      this._card_opp_taken = this._card_opp_taken.concat(args.carte)
     }
     const punti_presi = args.punti;
     this._points_segno[player_best] += punti_presi

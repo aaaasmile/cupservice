@@ -1,5 +1,5 @@
 import { AlgBriscBase } from '../alg-brisc-base.js'
-import Helper from '../../../shared/helper.js'
+import AlgPosition from './alg-position.js'
 
 export class AlgBriscScoperta extends AlgBriscBase {
     constructor(name, deckinfo, level) {
@@ -27,13 +27,13 @@ export class AlgBriscScoperta extends AlgBriscBase {
     }
 
     minmax(position, deph, alpha, beta, maximizingplayer) {
-        if (deph === 0 || this.is_giocata_end(position)) {
-            return static_evalposition(position)
+        if (deph === 0 || position.is_last_card_toplay()) {
+            return position.static_evalposition()
         }
         if (maximizingplayer) {
             let maxeval = -255
-            for (let index = 0; index < position.children.length; index++) {
-                const child = position.children[index];
+            for (let index = 0; index < position.get_num_children(); index++) {
+                const child = position.get_child(index);
                 const myeval = this.minmax(child, deph - 1, alpha, beta, !maximizingplayer)
                 maxeval = Math.max(maxeval, myeval)
                 alpha = Math.max(alpha, maxeval)
@@ -44,8 +44,8 @@ export class AlgBriscScoperta extends AlgBriscBase {
             return maxeval
         } else {
             let mineval = 255
-            for (let index = 0; index < position.children.length; index++) {
-                const child = position.children[index];
+            for (let index = 0; index < position.get_num_children(); index++) {
+                const child = position.get_child(index);
                 const myeval = this.minmax(child, deph - 1, alpha, beta, !maximizingplayer)
                 mineval = Math.min(mineval, myeval)
                 beta = Math.min(beta, mineval)
@@ -57,33 +57,38 @@ export class AlgBriscScoperta extends AlgBriscBase {
         }
     }
 
-    is_giocata_end(position) {
-        return position._cards_on_hand.length === 1;
-    }
-
     play_as_master_first() {
         console.log('Scuperta ALG - first ')
-        const card = this.play_minmax(super.play_as_master_first())
+        const card = this.start_minmax(super.play_as_master_first())
         return card
     }
 
     play_as_master_second() {
         console.log('Scuperta ALG - second ')
-        const card = this.play_minmax(super.play_as_master_second())
+        const card = this.start_minmax(super.play_as_master_second())
         return card
     }
 
-    play_minmax(best_choice_card) {
-        const position = { score: 0, children: [], _cards_on_hand: [] }
-        // TODO Start evaluating the position using the best_choice_card
+    start_minmax(best_choice_card) {
+        const position = AlgPosition(
+            this._cards_on_hand,
+            this._cards_on_opp,
+            this._top_deck,
+            this._briscola,
+            this._card_taken,
+            this._card_opp_taken,
+            this._points_segno[this._player_name],
+            this._points_segno[this._opp_names[0]],
+        )
+        position.build_position(best_choice_card)
+
         const score = this.minmax(position, 4, -255, +255, true)
-        for (let index = 0; index < position.children.length; index++) {
-            const child = position.children[index];
-            if (child.score === score) {
-                return this._cards_on_hand[index]
-            }
-        }
-        throw (new Error(`Something is worng with minmax algorithm. TODO??`))
+        console.log('Score found ', score)
+        const card = position.get_card_on_score(score)
+        console.log('Card on score ', card, score)
+        return card
     }
+
+    
 
 }

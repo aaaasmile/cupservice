@@ -367,7 +367,7 @@ export class BriscolaGfx {
     carte.forEach(card_lbl => {
       // one animation for each cards on hand
       cards_anim.push(() => {
-        let aniDistr = AniCards('distr_card', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
+        const aniDistr = AniCards('distr_card', 'deck', 'cardsme', card_lbl, (nn, start_cmp, stop_comp) => {
           let cards_me_gfx = this._staticScene.get_component(stop_comp)
           cards_me_gfx.set_visible(card_lbl)
           fnix++
