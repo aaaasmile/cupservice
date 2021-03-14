@@ -1,6 +1,9 @@
 import { DeckInfo } from '../../../shared/deck-info.js'
 
 function removeItemOnce(arr, value) {
+    if (!value) {
+        return arr
+    }
     const index = arr.indexOf(value);
     if (index > -1) {
         arr.splice(index, 1);
@@ -8,14 +11,14 @@ function removeItemOnce(arr, value) {
     return arr;
 }
 
-function removeItems(arr, arrval){
+function removeItems(arr, arrval) {
     arrval.forEach(element => {
         arr = removeItemOnce(arr, element)
     });
     return arr
 }
 
-export default (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken, card_opp_taken, points_me, points_opp) => {
+const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken, card_opp_taken, points_me, points_opp) => {
     let _score = 0
     let _children = []
     const _cards_on_hand = cards_on_hand.slice()
@@ -39,7 +42,9 @@ export default (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken, car
     return {
         build_position(best_choice_card) {
             console.log('Build position starting with ', best_choice_card)
+            _cards_on_hand.forEach(card_lbl => {
 
+            });
         },
         get_card_on_score(score) {
             for (let index = 0; index < _children.length; index++) {
@@ -53,14 +58,16 @@ export default (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken, car
         is_last_card_toplay() {
             return _cards_on_hand.length === 1;
         },
-        static_evalposition(){
+        static_evalposition() {
             console.warn('Stati evaluate position : TODO')
         },
-        get_num_children(){
+        get_num_children() {
             return _children.length
         },
-        get_child(index){
+        get_child(index) {
             return _children[index]
         }
     }
 }
+
+export default AlgPosition;
