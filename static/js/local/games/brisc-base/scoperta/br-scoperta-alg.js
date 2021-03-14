@@ -34,7 +34,7 @@ export class AlgBriscScoperta extends AlgBriscBase {
             let maxeval = -255
             for (let index = 0; index < position.get_num_children(); index++) {
                 const child = position.get_child(index);
-                const myeval = this.minmax(child, deph - 1, alpha, beta, !maximizingplayer)
+                const myeval = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())
                 maxeval = Math.max(maxeval, myeval)
                 alpha = Math.max(alpha, maxeval)
                 if (beta <= alpha) {
@@ -46,7 +46,7 @@ export class AlgBriscScoperta extends AlgBriscBase {
             let mineval = 255
             for (let index = 0; index < position.get_num_children(); index++) {
                 const child = position.get_child(index);
-                const myeval = this.minmax(child, deph - 1, alpha, beta, !maximizingplayer)
+                const myeval = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())
                 mineval = Math.min(mineval, myeval)
                 beta = Math.min(beta, mineval)
                 if (beta <= alpha) {
@@ -79,6 +79,9 @@ export class AlgBriscScoperta extends AlgBriscBase {
             this._card_opp_taken,
             this._points_segno[this._player_name],
             this._points_segno[this._opp_names[0]],
+            this._card_mano_played,
+            null,
+            true
         )
         position.build_position(best_choice_card)
 
