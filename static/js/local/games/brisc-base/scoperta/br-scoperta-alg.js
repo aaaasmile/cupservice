@@ -78,7 +78,7 @@ export class AlgBriscScoperta extends AlgBriscBase {
         }
 
         if (maximizingplayer) {
-            let maxeval = -255
+            let maxeval = -12255000
             for (let index = 0; index < position.get_num_children(); index++) {
                 const child = position.get_child(index);
                 const myeval = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())
@@ -91,7 +91,7 @@ export class AlgBriscScoperta extends AlgBriscBase {
             };
             return maxeval
         } else {
-            let mineval = 255
+            let mineval = 12255000
             for (let index = 0; index < position.get_num_children(); index++) {
                 const child = position.get_child(index);
                 const myeval = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())

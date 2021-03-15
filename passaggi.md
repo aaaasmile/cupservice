@@ -82,8 +82,12 @@ Il comando abbandona viene abilitato durante la notifica on_all_ev_new_match.
 Lo store funziona da bus attraverso la mutazione modifyGameActionState per la registrazione.
 La mutazione callGameActionState viene usata per l'esecuzione.
 
+## Briscola scoperta
+TODO:
+Uso un algoritmo minimax ma non funziona un granché bene. Bisogna seguire bene
+quello che calcola e scarta.
+
 ### TODO
-- Briscola scoperta
 - Mariazza
 
 ## Service

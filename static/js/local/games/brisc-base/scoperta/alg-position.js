@@ -21,7 +21,7 @@ function removeItems(arr, arrval) {
     return arr
 }
 
-const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken, card_opp_taken, points_me, points_opp, card_mano_played, is_max) => {
+const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken, card_opp_taken, points_me, points_opp, card_mano_played, is_max, deck_remain) => {
     let _score = 0
     const _children = []
     const _cards_on_hand = cards_on_hand.slice()
@@ -38,24 +38,28 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
 
     const _deck_info = new DeckInfo
     _deck_info.deck_info_dabriscola();
-    const _rnd_mgr = new RndMgr
-    let _deck_remain = _deck_info.get_cards_on_game()
-    _deck_remain = removeItemOnce(_deck_remain, _top_deck)
-    _deck_remain = removeItemOnce(_deck_remain, _briscola)
-    _deck_remain = removeItems(_deck_remain, _cards_on_hand)
-    _deck_remain = removeItems(_deck_remain, _cards_on_opp)
-    _deck_remain = removeItems(_deck_remain, _card_taken)
-    _deck_remain = removeItems(_deck_remain, _card_mano_played)
-    _deck_remain = removeItems(_deck_remain, _card_opp_taken)
-
+    let _deck_remain = []
     const _utilized_cards = _cards_on_hand.length + _cards_on_opp.length + _card_taken.length
         + _card_mano_played.length + _card_opp_taken.length
     if (_utilized_cards < 40) {
-        if (_deck_remain.length > 0) {
-            _deck_remain = _rnd_mgr.get_deck(_deck_remain) // Question: each position shuffle the deck?
+        if (!deck_remain) {
+            console.log('*** prepare deck for the root calculation')
+            const _rnd_mgr = new RndMgr
+            _deck_remain = _deck_info.get_cards_on_game()
+            _deck_remain = removeItemOnce(_deck_remain, _top_deck)
+            _deck_remain = removeItemOnce(_deck_remain, _briscola)
+            _deck_remain = removeItems(_deck_remain, _cards_on_hand)
+            _deck_remain = removeItems(_deck_remain, _cards_on_opp)
+            _deck_remain = removeItems(_deck_remain, _card_taken)
+            _deck_remain = removeItems(_deck_remain, _card_mano_played)
+            _deck_remain = removeItems(_deck_remain, _card_opp_taken)
+            _deck_remain = _rnd_mgr.get_deck(_deck_remain)
+            _deck_remain = [_top_deck].concat(_deck_remain)
+            _deck_remain.push(_briscola)
+            console.log('*** deck guessed ', _deck_remain)
+        } else {
+            _deck_remain = deck_remain.slice()
         }
-        _deck_remain = [_top_deck].concat(_deck_remain)
-        _deck_remain.push(_briscola)
     }
 
     console.log('*** AlgPosition ', _deck_remain.length, _utilized_cards, _cards_on_hand, _cards_on_opp, _card_mano_played)
@@ -86,7 +90,8 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
                     stateNext.points_me,
                     stateNext.points_opp,
                     stateNext.card_mano_played,
-                    stateNext.is_max
+                    stateNext.is_max,
+                    stateNext.deck_remain
                 )
                 _children.push(child)
             });
@@ -107,6 +112,7 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
                 stateNext.points_opp = _points_me
                 stateNext.card_mano_played = [card_lbl]
                 stateNext.is_max = !_is_maximizingplayer
+                stateNext.deck_remain = _deck_remain
                 return stateNext
             }
             // me playing second
@@ -147,6 +153,7 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
                 stateNext.points_opp = _points_opp
                 stateNext.card_mano_played = []
                 stateNext.is_max = _is_maximizingplayer
+                stateNext.deck_remain = copy_deck_remain
                 return stateNext
             }
             // opponent wins mano, swap player
@@ -169,7 +176,7 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
             stateNext.points_opp = _points_me
             stateNext.card_mano_played = []
             stateNext.is_max = !_is_maximizingplayer
-
+            stateNext.deck_remain = copy_deck_remain
             return stateNext
         },
         is_me_play_win_mano(me_card, opp_first_play_lbl) {
@@ -214,12 +221,12 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
             return _score
         },
         is_last_card_toplay() {
-            return _cards_on_hand.length === 1;
+            return _cards_on_hand.length === 0;
         },
         static_evalposition() {
             console.log('Static evaluate position')
             if (_points_me > 60) {
-                _score = 100000
+                _score = 1000
             } else {
                 _score = 0
             }

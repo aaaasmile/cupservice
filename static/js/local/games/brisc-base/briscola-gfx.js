@@ -415,7 +415,10 @@ export class BriscolaGfx {
       const comp_gfx = this._staticScene.get_component('table')
       comp_gfx.Redraw()
       marker.OnTurn(false)
-      this._core_state.continue_process_events(aniTitle)
+      this._staticScene.AddFinalNtfy( () => {
+        console.log('Now we are ready to continue process')
+        this._core_state.continue_process_events(aniTitle)
+      })
     })
 
     this._core_state.suspend_proc_gevents(aniTitle)
