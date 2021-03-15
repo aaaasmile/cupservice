@@ -62,10 +62,10 @@ export class AlgBriscScoperta extends AlgBriscBase {
         )
         position.build_position(best_choice_card)
 
-        const score = this.minmax(position, 2, -255, +255, true)
-        console.log('Score found ', score)
-        const card = position.get_card_on_score(score)
-        console.log('Card on score ', card, score)
+        const score_info = this.minmax(position, 6, -255, +255, true)
+        const card_seq_info = position.get_card_on_score(score_info.score)
+        const card = card_seq_info.card_lbl
+        console.log('Best card score: ', score_info, card_seq_info)
         return card
     }
 
@@ -79,30 +79,38 @@ export class AlgBriscScoperta extends AlgBriscBase {
 
         if (maximizingplayer) {
             let maxeval = -12255000
+            let mymaxeval_info
             for (let index = 0; index < position.get_num_children(); index++) {
                 const child = position.get_child(index);
-                const myeval = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())
-                child.set_score_from_bestchild(myeval)
-                maxeval = Math.max(maxeval, myeval)
+                mymaxeval_info = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())
+                child.set_score_from_bestchild(mymaxeval_info)
+                maxeval = Math.max(maxeval, mymaxeval_info.score)
                 alpha = Math.max(alpha, maxeval)
                 if (beta <= alpha) {
                     break;
                 }
             };
-            return maxeval
+            return {
+                score: maxeval,
+                seq: mymaxeval_info.seq
+            }
         } else {
             let mineval = 12255000
+            let mymineval_info
             for (let index = 0; index < position.get_num_children(); index++) {
                 const child = position.get_child(index);
-                const myeval = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())
-                child.set_score_from_bestchild(myeval)
-                mineval = Math.min(mineval, myeval)
+                mymineval_info = this.minmax(child, deph - 1, alpha, beta, child.is_maximizingplayer())
+                child.set_score_from_bestchild(mymineval_info)
+                mineval = Math.min(mineval, mymineval_info.score)
                 beta = Math.min(beta, mineval)
                 if (beta <= alpha) {
                     break;
                 }
             };
-            return mineval
+            return {
+                score: mineval,
+                seq: mymineval_info.seq
+            }
         }
     }
 

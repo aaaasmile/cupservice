@@ -21,7 +21,7 @@ function removeItems(arr, arrval) {
     return arr
 }
 
-const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken, card_opp_taken, points_me, points_opp, card_mano_played, is_max, deck_remain) => {
+const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken, card_opp_taken, points_me, points_opp, card_mano_played, is_max, deck_remain, seq_cards) => {
     let _score = 0
     const _children = []
     const _cards_on_hand = cards_on_hand.slice()
@@ -35,6 +35,8 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
     const _points_opp = points_opp
     const _is_maximizingplayer = is_max
     const _cards_on_child = []
+    const _seq_cards = seq_cards || []
+    let _seq_from_child = []
 
     const _deck_info = new DeckInfo
     _deck_info.deck_info_dabriscola();
@@ -43,7 +45,7 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
         + _card_mano_played.length + _card_opp_taken.length
     if (_utilized_cards < 40) {
         if (!deck_remain) {
-            console.log('*** prepare deck for the root calculation')
+            //console.log('*** prepare deck for the root calculation')
             const _rnd_mgr = new RndMgr
             _deck_remain = _deck_info.get_cards_on_game()
             _deck_remain = removeItemOnce(_deck_remain, _top_deck)
@@ -62,11 +64,11 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
         }
     }
 
-    console.log('*** AlgPosition ', _deck_remain.length, _utilized_cards, _cards_on_hand, _cards_on_opp, _card_mano_played)
+    //console.log('*** AlgPosition ', _deck_remain.length, _utilized_cards, _cards_on_hand, _cards_on_opp, _card_mano_played, _seq_cards)
 
     return {
         build_position(best_choice_card) {
-            console.log('Build position starting with ', best_choice_card)
+            //console.log('Build position starting with ', best_choice_card)
             const cards_to_play = []
             if (best_choice_card) {
                 cards_to_play.push(best_choice_card)
@@ -80,6 +82,8 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
             cards_to_play.forEach(card_lbl => {
                 _cards_on_child.push(card_lbl)
                 const stateNext = this.me_play_card(card_lbl)
+                const seq_cards = _seq_cards.slice()
+                seq_cards.push(card_lbl)
                 const child = AlgPosition(
                     stateNext.cards_on_hand,
                     stateNext.cards_on_opp,
@@ -91,14 +95,15 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
                     stateNext.points_opp,
                     stateNext.card_mano_played,
                     stateNext.is_max,
-                    stateNext.deck_remain
+                    stateNext.deck_remain,
+                    seq_cards
                 )
                 _children.push(child)
             });
 
         },
         me_play_card(card_lbl) {
-            console.log('** play a card ', card_lbl, _is_maximizingplayer)
+            //console.log('** play a card ', card_lbl, _is_maximizingplayer)
             let stateNext = {}
             if (_card_mano_played.length === 0) {
                 // me playing first, next ist the opponet: swap player
@@ -212,7 +217,11 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
             for (let index = 0; index < _children.length; index++) {
                 const child = _children[index];
                 if (child.get_score() === score) {
-                    return _cards_on_child[index]
+                    return {
+                        card_lbl: _cards_on_child[index],
+                        seq: _seq_cards,
+                        seq_child: _seq_from_child
+                    }
                 }
             }
             throw (new Error(`Something is worng with minmax algorithm`))
@@ -224,7 +233,6 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
             return _cards_on_hand.length === 0;
         },
         static_evalposition() {
-            console.log('Static evaluate position')
             if (_points_me > 60) {
                 _score = 1000
             } else {
@@ -261,11 +269,15 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
                 if (card_lbl[1] === 'A') { _score -= 60; }
                 if (card_lbl[1] === '3') { _score -= 40; }
             });
-            console.log('Position score: ', _score)
-            return _score
+            console.log('Position score: ', _score, _seq_cards)
+            return {
+                score: _score,
+                seq: _seq_cards
+            }
         },
-        set_score_from_bestchild(score) {
-            _score = score
+        set_score_from_bestchild(score_info) {
+            _score = score_info.score
+            _seq_from_child = score_info.seq
         },
         get_num_children() {
             return _children.length

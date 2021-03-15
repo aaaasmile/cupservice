@@ -195,6 +195,6 @@
       const val_arr_points = { sei: 0, cav: 3, qua: 0, re: 4, set: 0, due: 0, cin: 0, asso: 11, fan: 2, tre: 10 };
 
       this.set_rank_points(val_arr_rank, val_arr_points);
-      console.log('Deck briscola created');
+      //console.log('Deck briscola created');
     }
   }
