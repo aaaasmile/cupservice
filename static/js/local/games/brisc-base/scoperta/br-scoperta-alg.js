@@ -63,9 +63,11 @@ export class AlgBriscScoperta extends AlgBriscBase {
         position.build_position(best_choice_card)
 
         const score_info = this.minmax(position, 6, -255, +255, true)
-        const card_seq_info = position.get_card_on_score(score_info.score)
-        const card = card_seq_info.card_lbl
-        console.log('Best card score: ', score_info, card_seq_info)
+        if(score_info.seq.length === 0){
+            throw (new Error(`Wrong algorithm minmax`))
+        }
+        const card = score_info.seq[0]
+        console.log('Best card score: ', card, score_info)
         return card
     }
 

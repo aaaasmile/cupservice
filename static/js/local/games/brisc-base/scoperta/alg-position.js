@@ -213,19 +213,6 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
             return points
 
         },
-        get_card_on_score(score) {
-            for (let index = 0; index < _children.length; index++) {
-                const child = _children[index];
-                if (child.get_score() === score) {
-                    return {
-                        card_lbl: _cards_on_child[index],
-                        seq: _seq_cards,
-                        seq_child: _seq_from_child
-                    }
-                }
-            }
-            throw (new Error(`Something is worng with minmax algorithm`))
-        },
         get_score() {
             return _score
         },
