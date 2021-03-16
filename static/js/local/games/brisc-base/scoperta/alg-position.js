@@ -225,6 +225,7 @@ const AlgPosition = (cards_on_hand, cards_on_opp, top_deck, briscola, card_taken
             } else {
                 _score = 0
             }
+            // si deve valutare la sequnza giocata, non il totale. Dove le prime 2 carte giocate hanno molto più peso.
             _score += _card_taken.length
             _score += _points_me * 3
             _score -= _card_opp_taken.length
