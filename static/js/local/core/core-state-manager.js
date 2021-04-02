@@ -36,6 +36,14 @@ export class CoreStateManager {
     }, { is_action: false, name: name_st, args_arr: [] });
   }
 
+  force_next_state(name_st) {
+    this._internalStateProc.clear()
+    this._core_state_queue.clear()
+    this._core_state_queue.submit((args) => {
+      this._subjectStateAction.dispatchNextEvent(args)
+    }, { is_action: false, name: name_st, args_arr: [] });
+  }
+
   fire_all(event_name, args_payload) {
     this.event_for_all.dispatchNextEvent({ event: event_name, args: args_payload });
   }

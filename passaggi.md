@@ -88,6 +88,8 @@ Uso un algoritmo minimax ma non funziona un granché bene. Bisogna seguire bene
 quello che calcola e scarta.
 
 ### TODO
+- set_game_state dal br-scoperta.alg.spec.js
+- minmax nella soperta
 - Mariazza
 
 ## Service

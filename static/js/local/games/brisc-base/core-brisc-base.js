@@ -34,10 +34,32 @@ export class CoreBriscolaBase {
     this._rnd_mgr = new RndMgr()
   }
 
+  set_game_state(str_state) {
+    const new_state = JSON.parse(str_state)
+    console.log('setting the new state: ', new_state)
+    this._briscola_in_tav_lbl = new_state.briscola
+    this.preparecoreStartData(new_state.players)
+    this._core_data.setdataFromState(new_state)
+    // TODO: set player algorithm state in order to be able to play
+    //somethig like: 
+    //    this._coreStateManager.fire_to_player(player, 'ev_new_state', data_newstate);
+    this._coreStateManager.force_next_state(new_state.core_state);
+  }
+
   StartNewMatch(args) {
     // args: {players: array[2]}
     console.log("Start a new match", args);
     const players = args.players
+    this.preparecoreStartData(players)
+
+    this._coreStateManager.fire_all('ev_new_match', {
+      players: this._core_data.players
+      , num_segni: this._myOpt.num_segni_match, target_segno: this._myOpt.target_points_segno
+    });
+    this._coreStateManager.submit_next_state('st_new_giocata');
+  }
+
+  preparecoreStartData(players) {
     this._myOpt.tot_num_players = players.length
     this._myOpt.players = players
     // this._game_core_recorder = mod_gamerepl.game_core_recorder_ctor();
@@ -48,11 +70,6 @@ export class CoreBriscolaBase {
       this._myOpt.num_cards_onhand,
       this._myOpt.max_points
     );
-    this._coreStateManager.fire_all('ev_new_match', {
-      players: this._core_data.players
-      , num_segni: this._myOpt.num_segni_match, target_segno: this._myOpt.target_points_segno
-    });
-    this._coreStateManager.submit_next_state('st_new_giocata');
   }
 
   ignore_state_or_action(state) {
@@ -78,7 +95,7 @@ export class CoreBriscolaBase {
         ',Card ' + lbl_card + ' played from player ' + player_name);
       this._core_data.carte_gioc_mano_corr.push({ lbl_card: lbl_card, player: player_name });
       this._coreStateManager.fire_all('ev_player_has_played', data_card_gioc);
-      this._core_data.round_players.splice(0, 1);
+      this._core_data.round_player_has_played();
       //console.log('_carte_in_mano ' + player_name + ' size is ' + this._core_data.carte_in_mano[player.name].length + ' _round_players size is ' + this._core_data.round_players.length);
       //console.log('*** new size is ' + this._core_data.carte_in_mano[player.name].length + ' old size is ' + old_size);
       this._coreStateManager.submit_next_state('st_continua_mano');
@@ -298,7 +315,7 @@ export class CoreBriscolaBase {
     if (m_score.get(nome_gioc_max) >= this._myOpt.num_segni_match) {
       //throw (new Error('Stop! check it before continue'))
       console.log('Game terminated, winner is ' + nome_gioc_max);
-      let match_info = this._core_data.match_info
+      const match_info = this._core_data.match_info
       arr = [...m_score.entries()].sort(function (a, b) {
         return b[1] - a[1];
       });
@@ -310,7 +327,7 @@ export class CoreBriscolaBase {
       is_match_end = true
     }
 
-    let res = {
+    const res = {
       best: best_pl_points,
       is_draw: is_draw,
       is_match_end: is_match_end

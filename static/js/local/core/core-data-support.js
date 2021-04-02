@@ -43,6 +43,18 @@ export class CoreDataSupport {
     this.continue_to_cfm = []
   }
 
+  setdataFromState(gamestate) {
+    console.log('Core data set from state')
+    const num_players = gamestate.num_players
+    if (num_players !== this.players.length) { throw new Error(`Game state error. Players num do not match ${this.players.length}`) }
+    this.first_player_ix = gamestate.first_giocata_player_ix
+    this.round_players_by_player_ix(gamestate.curr_first_mano_player_ix)
+    for (let index = 0; index < gamestate.curr_mano_played.length; index++) {
+      this.round_player_has_played()
+    }
+    // TODO: set all other game_state information
+  }
+
   getNumCardInHand(player_name) {
     if (this.carte_in_mano[player_name]) {
       return this.carte_in_mano[player_name].length
@@ -57,7 +69,7 @@ export class CoreDataSupport {
     return null
   }
 
-  
+
   get_maxpossible_points = () => {
     return this.max_possible_points
   }
@@ -66,7 +78,7 @@ export class CoreDataSupport {
     // players: ["Luigi", "Ernesto"]
     console.log('CoreDataSupport start')
     this.max_possible_points = max_possible_points
-      this.match_info.start();
+    this.match_info.start();
     this.players = [];
     if (hand_player_size === undefined) {
       throw (new Error('hand_player_size is undefined'));
@@ -88,7 +100,7 @@ export class CoreDataSupport {
     this.history_mano = [];
     this.mano_count = 0;
     this.first_player_ix = first_ix;
-    this.round_players = this.calc_round_players(first_ix);
+    round_players_by_player_ix(first_ix);
     console.log('First player to play is ' + this.round_players[0] + ' with index ' + this.first_player_ix);
     console.log('Number of round_players is ' + this.round_players.length + ' players size is ' + this.players.length);
     for (let i = 0; i < this.round_players.length; i++) {
@@ -133,6 +145,10 @@ export class CoreDataSupport {
     return this.player_on_turn;
   }
 
+  round_player_has_played() {
+    this.round_players.splice(0, 1);
+  }
+
   calc_round_players(first_ix) {
     let ins_point = -1, round_players = [], onlast = true;
     for (let i = 0; i < this.players.length; i++) {
@@ -152,11 +168,15 @@ export class CoreDataSupport {
   }
 
   round_players_by_player(player) {
-    // palyer = "Luigi"
-    let ix = this.players.indexOf(player)
+    // player = "Luigi"
+    const ix = this.players.indexOf(player)
     if (ix < 0) {
       throw (new Error(`Player not found, ${player}`))
     }
+    this.round_players_by_player_ix(ix)
+  }
+
+  round_players_by_player_ix(ix) {
     this.round_players = this.calc_round_players(ix)
   }
 }
