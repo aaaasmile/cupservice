@@ -101,3 +101,11 @@ sudo journalctl -f -u cup-invido
 
 Se ci sono dei problemi si può vedere con:
 sudo systemctl status cup-invido.service
+
+## Mobile
+Sul mio iphone ho questa risoluzione di schermo:
+320x568
+Come si fa a vederla?
+In Chrome si mette chrome://inspect in un nuovo tab. Poi si torna alla app della cuperativa
+e si fa un reload. Ora si torna nel chrome://inspect tab e si vede le info dello schermo. 
+Url che uso: http://192.168.2.254:5571/cup

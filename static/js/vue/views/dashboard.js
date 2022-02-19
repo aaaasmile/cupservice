@@ -9,11 +9,11 @@ export default {
   data() {
     return {
       loadinggame: false,
-      appWidth: 0,
-      appHeight: 600,
       _app: null,
       _gfxGame: null,
       _cache: null,
+      isdesktop: true,
+      needload: false,
     }
   },
   computed: {
@@ -68,22 +68,22 @@ export default {
   mounted() {
     console.log('Mounted')
     this.loadinggame = true
-    this.appWidth = (document.getElementById('pixi')).offsetWidth
-    console.log("Coordinates: ", this.appWidth, this.appHeight)
+    let canv_info = this.detectCanvasSize()
+
     PIXI.utils.skipHello()
 
     // 1. Create a Pixi renderer and define size and a background color
-
-    let app = new PIXI.Application({ width: 800, height: 600, antialias: true, transparent: false });
+    console.log("Canvas to ", canv_info.width, canv_info.height)  
+    let app = new PIXI.Application({ width: canv_info.width, height: canv_info.height, antialias: true, transparent: false });
     app.renderer.backgroundColor = 0x061639;
     app.renderer.autoDensity = true;
     this._app = app
     let loader = GetCardLoaderGfx()
     if (!this._cache) {
       const stateLoader = Vue.observable({
-        items: 0, 
-        totitems: 0, 
-        termnated: false, 
+        items: 0,
+        totitems: 0,
+        termnated: false,
         cbLoaded: (cache) => {
           console.log('All images are loaded')
           this._cache = cache
@@ -208,24 +208,51 @@ export default {
       console.log('Show game options')
       this.$store.commit('showOptGameDialog')
     },
+    detectCanvasSize() {
+      var ratio = window.devicePixelRatio || 1;
+      var is_touch_device = 'ontouchstart' in document.documentElement;
+      var touch_status = (is_touch_device) ? 'touch' : 'no-touch';
+      touch_status = ' ts:' + touch_status;
+      var width_height = 'wh:' + screen.width + 'x' + screen.height;
+      var client_width_height = ' cwh:' + document.documentElement.clientWidth + 'x' + document.documentElement.clientHeight;
+      var rw = screen.width * ratio;
+      var rh = screen.height * ratio;
+      var ratio_width_height = ' r:' + ratio + ' rwh:' + rw + 'x' + rh;
+      var data_string = width_height + client_width_height + ratio_width_height + touch_status;
+      console.log("Device screen info: ", data_string)
+      let res_w = screen.width - 30
+      let res_h = screen.height - 10
+      const rr_std = 600 / 800
+      if (res_w > 800){
+        res_w = 800
+      }
+      if (res_h >= 600){
+        res_h = 600
+        this.isdesktop = true
+      }else{
+        res_h = rr_std * res_h - 1
+        this.isdesktop = false
+      }
+      return {width : res_w, height: res_h}
+    }
   },
   template: `
   <v-row justify="center">
     <v-col xs="12" sm="12" md="10" lg="8" xl="6">
       <v-card :loading="loadinggame" flat tile>
-        <template slot="progress">
+        <template slot="progress" v-if="needload">
           <v-progress-linear
             color="blue darken-4"
             height="10"
             indeterminate
           ></v-progress-linear>
         </template>
-        <v-card-title class="mx-0"
-          >Qui si gioca a: {{ SelGameTitle }}!
+        <v-card-title 
+          ><span v-if="isdesktop">Qui si gioca a:&nbsp;</span> {{ SelGameTitle }}!
         </v-card-title>
-        <v-card-text
+        <v-card-text v-if="isdesktop"
           ><div class="grey--text" v-show="IsWaitForStart">
-            Premi il pulsante "Gioca" per iniziare
+            Premi il pulsante "Gioca" qui sotto per iniziare
           </div>
         </v-card-text>
         <v-main>
@@ -270,10 +297,14 @@ export default {
             </v-tooltip>
           </v-toolbar>
         </v-card-actions>
+        <v-card-text v-if="!isdesktop"
+          ><div class="grey--text" v-show="IsWaitForStart">
+            Premi il pulsante "Gioca" per iniziare
+          </div>
+        </v-card-text>
       </v-card>
       <Conta></Conta>
       <Options></Options>
     </v-col>
-  </v-row>
-`
+  </v-row>`
 }

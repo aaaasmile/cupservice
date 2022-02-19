@@ -50,8 +50,7 @@ export const app = new Vue({
         <span>I contenuti di questo sito sono perlopiù parole al vento. Copia e Incolla by invido.it.</span>
       </div>
     </v-footer>
-  </v-app>
-`
+  </v-app>`
 })
 
 console.log('Main is here!')

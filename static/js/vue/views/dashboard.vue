@@ -2,19 +2,19 @@
   <v-row justify="center">
     <v-col xs="12" sm="12" md="10" lg="8" xl="6">
       <v-card :loading="loadinggame" flat tile>
-        <template slot="progress">
+        <template slot="progress" v-if="needload">
           <v-progress-linear
             color="blue darken-4"
             height="10"
             indeterminate
           ></v-progress-linear>
         </template>
-        <v-card-title class="mx-0"
-          >Qui si gioca a: {{ SelGameTitle }}!
+        <v-card-title 
+          ><span v-if="isdesktop">Qui si gioca a:&nbsp;</span> {{ SelGameTitle }}!
         </v-card-title>
-        <v-card-text
+        <v-card-text v-if="isdesktop"
           ><div class="grey--text" v-show="IsWaitForStart">
-            Premi il pulsante "Gioca" per iniziare
+            Premi il pulsante "Gioca" qui sotto per iniziare
           </div>
         </v-card-text>
         <v-main>
@@ -59,6 +59,11 @@
             </v-tooltip>
           </v-toolbar>
         </v-card-actions>
+        <v-card-text v-if="!isdesktop"
+          ><div class="grey--text" v-show="IsWaitForStart">
+            Premi il pulsante "Gioca" per iniziare
+          </div>
+        </v-card-text>
       </v-card>
       <Conta></Conta>
       <Options></Options>

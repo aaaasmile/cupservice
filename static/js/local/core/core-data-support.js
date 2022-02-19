@@ -100,7 +100,7 @@ export class CoreDataSupport {
     this.history_mano = [];
     this.mano_count = 0;
     this.first_player_ix = first_ix;
-    round_players_by_player_ix(first_ix);
+    this.round_players_by_player_ix(first_ix);
     console.log('First player to play is ' + this.round_players[0] + ' with index ' + this.first_player_ix);
     console.log('Number of round_players is ' + this.round_players.length + ' players size is ' + this.players.length);
     for (let i = 0; i < this.round_players.length; i++) {
