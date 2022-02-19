@@ -9,14 +9,14 @@
             indeterminate
           ></v-progress-linear>
         </template>
-        <v-card-title 
-          ><span v-if="isdesktop">Qui si gioca a:&nbsp;</span> {{ SelGameTitle }}!
-        </v-card-title>
-        <v-card-text v-if="isdesktop"
+        <h3>
+          <span v-if="isdesktop">Qui si gioca a:&nbsp;</span> {{ SelGameTitle }}!
+        </h3>
+        <div v-if="isdesktop"
           ><div class="grey--text" v-show="IsWaitForStart">
             Premi il pulsante "Gioca" qui sotto per iniziare
           </div>
-        </v-card-text>
+        </div>
         <v-main>
           <v-container>
             <v-row id="pixi"></v-row>
