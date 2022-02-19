@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-col xs="12" sm="12" md="10" lg="8" xl="6">
       <v-card :loading="loadinggame" flat tile>
-        <template slot="progress" v-if="needload">
+        <template slot="progress">
           <v-progress-linear
             color="blue darken-4"
             height="10"

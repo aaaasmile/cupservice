@@ -9,7 +9,7 @@ export class DeckGfx {
     this._deck_info = deck_info
   }
 
-  Build(numCardsOnDeck, brisc) {
+  Build(numCardsOnDeck, brisc, mode) {
     let deckItemTexture = this._cache.GetTextureFromSymbol('cope')
     let briscolaTexture = this._cache.GetTextureFromCard(brisc, this._deck_info)
 
@@ -20,6 +20,9 @@ export class DeckGfx {
     for (let index = 0; index < numCardsOnDeck; index++) {
       let sprite = new PIXI.Sprite(deckItemTexture)
       sprite.position.set(x, y)
+      if (mode === "compact_small"){
+        this.resize_sprite(sprite, "compact_small")   
+      }
       this._deckSprite.push(sprite)
       this._container.addChild(sprite)
       x += 1
@@ -35,7 +38,9 @@ export class DeckGfx {
     if (briscolaTexture) {
       let sprite = new PIXI.Sprite(briscolaTexture)
       let offset_y = 0
-      if (Helper.ScaleCardSpriteToStdIfNeeded(sprite)) {
+      if (mode === "compact_small"){
+        this.resize_sprite(sprite, "compact_small")   
+      }else if (Helper.ScaleCardSpriteToStdIfNeeded(sprite)) {
         offset_y = 30
       }
       this._briscola = sprite
@@ -51,6 +56,21 @@ export class DeckGfx {
       this._container.addChildAt(sprite, 0)
     }
     return this._container
+  }
+
+  resize_sprite(sprite, mode) {
+    switch (mode) {
+      case 'compact':
+      case 'normal':
+        return sprite
+      case 'normal_x_small_y':
+      case 'compact_small':
+        const nw = sprite.width - sprite.width / 3
+        const nh = sprite.height - sprite.height / 3
+        Helper.ScaleSprite(sprite, nw, nh)
+        return
+    }
+    throw (new Error(`get space x: mode => ${mode} not recognized`))
   }
 
   Render(isDirty) {

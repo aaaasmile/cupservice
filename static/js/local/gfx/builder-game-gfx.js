@@ -11,7 +11,7 @@ export class BuilderGameGfx {
     this._game_name = game_name
   }
 
-  Build(cache, renderer) {
+  Build(cache, renderer, screen_mode) {
     let stage = new PIXI.Container()
 
     const staticSceneGfx = new StaticSceneGfx()
@@ -25,11 +25,11 @@ export class BuilderGameGfx {
     switch (this._game_name) {
       case 'briscola':
         console.log('Build briscola gfx')
-        gfx = new BriscolaGfx(cache, staticSceneGfx)
+        gfx = new BriscolaGfx(cache, staticSceneGfx, screen_mode)
         break;
       case 'briscolascoperta':
         console.log('Build briscola scoperata gfx')
-        gfx = new BriscolaScopertaGfx(cache, staticSceneGfx)
+        gfx = new BriscolaScopertaGfx(cache, staticSceneGfx, screen_mode)
         break;
       default:
         throw (new Error(`game gfx not supported ${this._game_name}`))

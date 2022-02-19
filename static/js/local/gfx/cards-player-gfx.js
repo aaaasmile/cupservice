@@ -88,6 +88,7 @@ export class CardsPlayerGfx {
         sprite.cup_data_lbl = textureCards[index].cup_data_lbl
       }
       sprite.position.set(x, y)
+      Helper.ScaleSprite(sprite, 50, 50) // Test IGSA
       this._sprites.push(sprite)
       this._container.addChild(sprite)
       x += space_x

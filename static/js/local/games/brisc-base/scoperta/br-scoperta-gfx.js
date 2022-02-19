@@ -5,8 +5,8 @@ import { AlgBriscScoperta } from './br-scoperta-alg.js'
 import { CardsPlayerGfx } from '../../../gfx/cards-player-gfx.js'
 
 export class BriscolaScopertaGfx extends BriscolaGfx {
-  constructor(cache, static_scene) {
-    super(cache, static_scene)
+  constructor(cache, static_scene, screen_mode) {
+    super(cache, static_scene, screen_mode)
   }
 
   get_core_instance(coreStateManager, numOfSegni, pointsForWin, numcardsOnHand, max_points) {

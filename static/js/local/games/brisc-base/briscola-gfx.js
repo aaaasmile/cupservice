@@ -12,7 +12,7 @@ import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
 
 export class BriscolaGfx {
-  constructor(cache, static_scene) {
+  constructor(cache, static_scene, screen_mode) {
     this._cache = cache
     this._staticScene = static_scene
     this._deck_info = null
@@ -21,6 +21,7 @@ export class BriscolaGfx {
     this._name_Me = ''
     this._name_Opp = ''
     this._block_for_ask_continue_game = null
+    this._screen_mode = screen_mode
   }
 
   BuildGameVsCpu() {
@@ -95,7 +96,7 @@ export class BriscolaGfx {
     // carte: (3) ["_Rc", "_5c", "_Cd"]
     this.register_newgiocata_action()
 
-    console.log('on_pl_ev_brisc_new_giocata', args)
+    console.log('on_pl_ev_brisc_new_giocata', args, this._screen_mode)
     this._staticScene.clear_component('deck')
     this._staticScene.clear_component('cardsme')
     this._staticScene.clear_component('cardsopp')
@@ -104,12 +105,20 @@ export class BriscolaGfx {
     this._staticScene.clear_component('deck_taken_me')
 
     const deck = new DeckGfx(80, this._cache, this._deck_info)
-    deck.Build(args.num_card_deck, args.brisc)
+    if (this._screen_mode === 'small') {
+      deck.Build(args.num_card_deck, args.brisc, 'compact_small')
+    }else{
+      deck.Build(args.num_card_deck, args.brisc, 'normal')
+    }
     deck._infoGfx = { x: { type: 'left_anchor', offset: 20 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('deck', deck)
 
     let cards_me = new CardsPlayerGfx(70, this._deck_info, this._cache)
-    cards_me.Build(args.carte.length, args.carte, 'normal')
+    if (this._screen_mode === 'small') {
+      cards_me.Build(args.carte.length, args.carte, 'compact_small')
+    }else{
+      cards_me.Build(args.carte.length, args.carte, 'normal')
+    }
     cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsme', cards_me)
 
@@ -415,7 +424,7 @@ export class BriscolaGfx {
       const comp_gfx = this._staticScene.get_component('table')
       comp_gfx.Redraw()
       marker.OnTurn(false)
-      this._staticScene.AddFinalNtfy( () => {
+      this._staticScene.AddFinalNtfy(() => {
         console.log('Now we are ready to continue process')
         this._core_state.continue_process_events(aniTitle)
       })

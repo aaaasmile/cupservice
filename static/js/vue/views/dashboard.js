@@ -13,7 +13,7 @@ export default {
       _gfxGame: null,
       _cache: null,
       isdesktop: true,
-      needload: false,
+      screen_mode: '',
     }
   },
   computed: {
@@ -121,19 +121,19 @@ export default {
         this._app.ticker.stop()
         addTick = false
       }
-      this.createGfx(this._cache, this.SelGameCore)
+      this.createGfx(this._cache, this.SelGameCore, this.screen_mode)
       if (addTick) {
         this._app.ticker.add(delta => this.gameLoop(delta));  // il ticker sembra vada aggiunto solo una volta
       } else {
         this._app.ticker.start()
       }
     },
-    createGfx(cache, game_name) {
+    createGfx(cache, game_name, screen_mode) {
       console.log('Create gfx game', game_name)
 
       this._app.stage.removeChildren()
       const gfx = new BuilderGameGfx(game_name);
-      let container = gfx.Build(cache, this._app.renderer)
+      let container = gfx.Build(cache, this._app.renderer, screen_mode)
       this._app.stage.addChild(container)
       this._gfxGame = gfx
     },
@@ -223,8 +223,11 @@ export default {
       let res_w = screen.width - 30
       let res_h = screen.height - 10
       const rr_std = 600 / 800
+      this.screen_mode = ''
       if (res_w > 800){
         res_w = 800
+      }else if (res_w < 450){
+        this.screen_mode = 'small'
       }
       if (res_h >= 600){
         res_h = 600
@@ -240,7 +243,7 @@ export default {
   <v-row justify="center">
     <v-col xs="12" sm="12" md="10" lg="8" xl="6">
       <v-card :loading="loadinggame" flat tile>
-        <template slot="progress" v-if="needload">
+        <template slot="progress">
           <v-progress-linear
             color="blue darken-4"
             height="10"
@@ -306,5 +309,6 @@ export default {
       <Conta></Conta>
       <Options></Options>
     </v-col>
-  </v-row>`
+  </v-row>
+`
 }

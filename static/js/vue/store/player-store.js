@@ -15,7 +15,7 @@ export default {
     me_avatar: 'joe',
     opp_avatar: 'stevie',
     curr_game: 'briscola',
-    curr_game_title: '',
+    curr_game_title: get_game_tilte('briscola'),
     namePl1: 'Luisa',
     namePl2: 'Mario',
     muted: true,
