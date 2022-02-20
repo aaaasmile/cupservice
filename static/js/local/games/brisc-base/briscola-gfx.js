@@ -74,15 +74,26 @@ export class BriscolaGfx {
     this._name_Opp = nameCpu
     const markerCpu = new PlayerMarkerGfx(100, this._cache)
     const avatarCpu = store.state.pl.opp_avatar
-    markerCpu.Build(nameCpu, avatarCpu)
-    markerCpu._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'top_anchor', offset: 20 }, anchor_element: 'canvas' }
+    if (this._screen_mode === 'small') {
+      markerCpu.Build(nameCpu, avatarCpu, 'compact_small_maxvisible')
+      markerCpu._infoGfx = { x: { type: 'right_anchor', offset: -10 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas' }
+    } else {
+      markerCpu.Build(nameCpu, avatarCpu, 'normal')
+      markerCpu._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'top_anchor', offset: 20 }, anchor_element: 'canvas' }
+
+    }
     this._staticScene.AddMarker(nameCpu, markerCpu)
 
     const nameMe = args.players[1]
     const markerMe = new PlayerMarkerGfx(200, this._cache)
     const avatarMe = store.state.pl.me_avatar
-    markerMe.Build(nameMe, avatarMe)
-    markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas' }
+    if (this._screen_mode === 'small') {
+      markerMe.Build(nameMe, avatarMe, 'compact_small_maxvisible')
+      markerMe._infoGfx = { x: { type: 'right_anchor', offset: -10 }, y: { type: 'bottom_anchor', offset: -10 }, anchor_element: 'canvas' }
+    } else {
+      markerMe.Build(nameMe, avatarMe, 'normal')
+      markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas' }
+    }
     this._staticScene.AddMarker(nameMe, markerMe)
     this._name_Me = nameMe
 
