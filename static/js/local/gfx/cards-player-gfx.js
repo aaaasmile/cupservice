@@ -44,13 +44,9 @@ export class CardsPlayerGfx {
       case 'normal_x_small_y':
       case 'compact_small':
       case 'compact_small_maxvisible':
+      case 'very_compact_small':
         nw = sprite.width - sprite.width / 3
         nh = sprite.height - sprite.height / 3
-        Helper.ScaleSprite(sprite, nw, nh)
-        return
-      case 'very_compact_small':
-        nw = sprite.width - sprite.width / 4
-        nh = sprite.height - sprite.height / 4
         Helper.ScaleSprite(sprite, nw, nh)
         return
     }
