@@ -1,30 +1,6 @@
 ## cup-service
 Un service della cuperativa in golang e vuetify. Rendering del gioco delle carte in pixi.js.
 
-## Info generali sul qualcosa che inizia e non finisce mai
-Il gioco della Cuperativa è ispirato all'applicazione scritta in Ruby Cuperativa.
-Il porting in Javascript/go non è stato immediato, ma pieno di insidie e trappole.
-Quella che ha frenato di più lo sviluppo è stata la parte grafica. Molto demotivante
-e quindi molto suscettibile alla procrastinazione. Non rimandare a domani quello che puoi fare tra un anno con una nuova libreria. 
-Ritrovarmi a programmare, per esempio, dei menu con dei construtti del genere:
-```html
-<ul>
-<ui>Gioca</ui>
-</ul>
-```
-Oppure interfacce grafiche complesse con:
-```html
-<canvas>Qui la tua meraviglia!</canvas>
-<div>Che cosa sarebbe il mondo senza un div?</div>
-<p>Forse un mondo fatto di p h1 h2 h3 </p>
-E alla fine indovina come si chiama la classe che serve da mettere nel div 
-del tuo prossimo e incredibile css: grid-12-sm o grid-10-sp ?
-Forse perché non l'hai scritto in uno splendido package.json? 
-```
-
-Pian piano, però, una luce di nuovi tool e metodi appaiono alla fine del tunnel, così che anche dei programmatori del piffero come me, finalmente, riescono a produrre qualcosa di apparentemente presentabile in un'applicazione web.   
-Specialmente quando smettono di editare file json o scrivere delle sigle strane a fianco di infinite ripetute di _div_.
-
 ## Unit Test
 Ho sviluppato col tempo delle unit test che eseguono il check del core.
 Ho usato la unit test di Jasmine  
@@ -49,10 +25,10 @@ In tmp/reference_app.js_copy.js ho messo alcune prove per quanto riguarda la pro
 ## Vue
 La grafica è realizzata con vuetify senza nessun node.js. Go fa da server, Chrome esegue il refresh.
 L'applicazione vue è nel solo file js, dove però la sezione _template_ non è editata direttamente,
-ma copiata dal file _<componente>.vue_. Per ogni coponente che usa Vue esistono due files:
+ma copiata dal file _<componente>.vue_. Per ogni componente che usa Vue esistono due files:
   _<componente>.js_  
   _<componente>.vue_   
-con il file .vue usato solo per avere un confort nel'editor di vscode.
+con il file .vue usato solo nell'editor di vscode.
 
 Per fare andare l'applicazione non bisogna editare nessun json file, settare dei transpiler,
 lint vari o quant'altro simile. Bare Javascript + Vue template. 
@@ -82,6 +58,32 @@ Il comando abbandona viene abilitato durante la notifica on_all_ev_new_match.
 Lo store funziona da bus attraverso la mutazione modifyGameActionState per la registrazione.
 La mutazione callGameActionState viene usata per l'esecuzione.
 
+
+## Cosiderazioni su altre possibilità rispetto vuetify&pixi
+Il gioco della Cuperativa è ispirato all'applicazione scritta in Ruby Cuperativa.
+Il porting in Javascript/go non è stato immediato, ma pieno di insidie e trappole.
+Quella che ha frenato di più lo sviluppo è stata la parte grafica. Molto demotivante
+e quindi molto suscettibile alla procrastinazione. Non rimandare a domani quello che puoi fare tra un anno con una nuova libreria. 
+Ritrovarmi a programmare, per esempio, dei menu con dei construtti del genere:
+```html
+<ul>
+<ui>Gioca</ui>
+</ul>
+```
+Oppure interfacce grafiche complesse con:
+```html
+<canvas>Qui la tua meraviglia!</canvas>
+<div>Che cosa sarebbe il mondo senza un div?</div>
+<p>Forse un mondo fatto di p h1 h2 h3 </p>
+E alla fine indovina come si chiama la classe che serve da mettere nel div 
+del tuo prossimo e incredibile css: grid-12-sm o grid-10-sp ?
+Forse perché non l'hai scritto in uno splendido package.json? 
+```
+
+Pian piano, però, una luce di nuovi tool e metodi appaiono alla fine del tunnel, così che anche dei programmatori del piffero come me, finalmente, riescono a produrre qualcosa di apparentemente presentabile in un'applicazione web.   
+Specialmente quando smettono di editare file json o scrivere delle sigle strane a fianco di infinite ripetute di _div_.
+
+
 ## Briscola scoperta
 TODO:
 Uso un algoritmo minimax ma non funziona un granché bene. Bisogna seguire bene
@@ -109,3 +111,9 @@ Come si fa a vederla?
 In Chrome si mette chrome://inspect in un nuovo tab. Poi si torna alla app della cuperativa
 e si fa un reload. Ora si torna nel chrome://inspect tab e si vede le info dello schermo. 
 Url che uso: http://192.168.2.254:5571/cup
+
+## Deployment
+Sul target si esegue (~/build/cup-service):
+
+    git pull --all
+    ./publish-cup.sh
