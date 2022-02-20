@@ -25,24 +25,10 @@ export class DeckTakenGfx {
   Build(max_cards, position, mode) {
     this._mode_display = mode
     this._position = position
-    switch (this._position) {
-      case 'nord':
-        this._last_y = -20
-        this._last_x = -2
-        this._show_x = -20
-        break;
-      case 'sud':
-        this._last_y = -10
-        this._last_x = -2
-        this._show_y = -170
-        this._show_x = -20
-        break;
-      default:
-        throw (new Error(`Player position not suppported: ${this._position}`))
-    }
+    this.set_position(this._mode_display)
     this._max_cards = max_cards
     const cdtempty = this._cache.GetTextureFromSymbol('vuoto_traspfull')
-    
+
     const cdt = this._cache.GetTextureFromSymbol('cope', this._deck_info)
     this._copeTexture = cdt
 
@@ -60,6 +46,46 @@ export class DeckTakenGfx {
     if (this._isDirty || isDirty) {
     }
     this._isDirty = false
+  }
+
+  set_position(mode) {
+    switch (mode) {
+      case 'normal':
+        switch (this._position) {
+          case 'nord':
+            this._last_y = -20
+            this._last_x = -2
+            this._show_x = -20
+            break;
+          case 'sud':
+            this._last_y = -10
+            this._last_x = -2
+            this._show_y = -170
+            this._show_x = -20
+            break;
+          default:
+            throw (new Error(`Player position not suppported: ${this._position}`))
+        }
+        return
+      case 'compact_small':
+        switch (this._position) {
+          case 'nord':
+            this._last_y = -20
+            this._last_x = -2
+            this._show_x = -20
+            break;
+          case 'sud':
+            this._last_y = -10
+            this._last_x = -2
+            this._show_y = -100
+            this._show_x = -20
+            break;
+          default:
+            throw (new Error(`Player position not suppported: ${this._position}`))
+        }    
+        return
+    }
+    throw (new Error(`set_position: mode => ${mode} not recognized`))
   }
 
   resize_sprite(sprite, mode) {
@@ -86,6 +112,7 @@ export class DeckTakenGfx {
     let x = 0
     const rescale = (this._taken_lbl.length === 0)
     const offset_x = this.get_offset_x(this._mode_display)
+    this.set_position(this._mode_display)
     for (let index = 0; index < cards.length; index++) {
       const card_lbl = cards[index]
       if (this._last_toshow.length <= index) {
@@ -115,7 +142,7 @@ export class DeckTakenGfx {
   get_offset_x(mode) {
     switch (mode) {
       case 'normal':
-        return  15
+        return 15
       case 'compact_small':
         return 3
     }
@@ -125,7 +152,7 @@ export class DeckTakenGfx {
   check_to_add_cope(mode) {
     switch (mode) {
       case 'normal':
-        return  (this._taken_lbl.length / 5 > this._deckSprite.length)
+        return (this._taken_lbl.length / 5 > this._deckSprite.length)
       case 'compact_small':
         return false
     }
