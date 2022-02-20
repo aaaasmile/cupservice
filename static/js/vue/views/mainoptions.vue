@@ -5,9 +5,8 @@
       <v-row class="child-flex">
         <v-col cols="12" sm="6" md="4">
           <v-subheader>Gioco selezionato</v-subheader>
-          <v-radio-group v-model="selgame" hide-details>
-            <v-radio value="briscola" label="Briscola"></v-radio>
-            <v-radio value="briscolascoperta" label="Briscola Scoperta"></v-radio>
+          <v-radio-group  v-for="game in GameList" :key="game.name" v-model="selgame" hide-details>
+            <v-radio :value="game.name" :label="game.label"></v-radio>
           </v-radio-group>
         </v-col>
         <v-col cols="12" sm="6" md="4">

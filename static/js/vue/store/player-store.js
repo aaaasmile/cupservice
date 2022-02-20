@@ -1,5 +1,5 @@
-function get_game_tilte(nn){
-  switch(nn){
+function get_game_tilte(nn) {
+  switch (nn) {
     case 'briscola':
       return 'Briscola in due'
     case 'briscolascoperta':
@@ -19,6 +19,10 @@ export default {
     namePl1: 'Luisa',
     namePl2: 'Mario',
     screen_mode: '',
+    game_list: [
+      { name: 'briscola', label: 'Briscola', enabled: true },
+      { name: 'briscolascoperta', label: 'Briscola Scoperta', enabled: false },
+    ],
     muted: true,
     auto_player_gfx: false,
     dialog_gfx_no_blocking: false,
@@ -30,13 +34,13 @@ export default {
   },
   mutations: {
     initialiseStore(state) {
-      
+
       if (localStorage.getItem('cache_version') !== state.cache_version) {
         localStorage.setItem('cache_version', state.cache_version)
-        console.warn('Cache has been changed, please update your options to ', state.cache_version )
+        console.warn('Cache has been changed, please update your options to ', state.cache_version)
         return
       }
-        
+
       if (localStorage.getItem('curr_game')) {
         state.curr_game = localStorage.getItem('curr_game')
       }
@@ -118,12 +122,12 @@ export default {
       switch (state.curr_game) {
         case 'briscolascoperta':
         case 'briscola':
-          if (state.screen_mode === 'small'){
-            state.dialogopt.title = `${state.curr_game_title}`    
-          }else{
+          if (state.screen_mode === 'small') {
+            state.dialogopt.title = `${state.curr_game_title}`
+          } else {
             state.dialogopt.title = `Opzioni ${state.curr_game_title}`
           }
-          
+
           state.dialogopt.opt = [
             { val: state.briscola_opt.num_segni, caption: 'Numero dei segni', type: 'int' },
           ]
@@ -169,7 +173,7 @@ export default {
       state.curr_game_title = get_game_tilte(state.curr_game)
       localStorage.setItem('curr_game', newVal);
     },
-    setScreenMode(state, newVal){
+    setScreenMode(state, newVal) {
       console.log('new screen mode ', newVal)
       state.screen_mode = newVal
       localStorage.setItem('screen_mode', newVal);
