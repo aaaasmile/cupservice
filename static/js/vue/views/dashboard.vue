@@ -22,7 +22,7 @@
             <v-row id="pixi"></v-row>
           </v-container>
         </v-main>
-        <v-card-actions>
+        <v-card-actions class="d-flex flex-wrap">
           <v-btn @click="startGame" v-show="IsWaitForStart"> Gioca </v-btn>
           <v-btn @click="doAction1" v-show="Action1Enabled">
             {{ Action1Title }}

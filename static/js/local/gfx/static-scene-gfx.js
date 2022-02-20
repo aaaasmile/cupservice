@@ -30,6 +30,11 @@ export class StaticSceneGfx {
     this.set_component(key, comp)
   }
 
+  RemoveMarker(nameMarker) {
+    const key = 'MKR-' + nameMarker
+    this.clear_component(key)
+  }
+
   GetMarker(nameMarker) {
     const key = 'MKR-' + nameMarker
     return this.get_component(key)

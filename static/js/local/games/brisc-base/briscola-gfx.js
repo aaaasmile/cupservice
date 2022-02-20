@@ -65,12 +65,12 @@ export class BriscolaGfx {
     console.log('on_all_ev_new_match ', args)
     //args: {players: Array(2), num_segni: 2, target_segno: 61}
     //       players: ["Luisa", "Silvio"]
-    this._staticScene.clear_component('scoreBoard')
+    const nameCpu = args.players[0]
+    const nameMe = args.players[1]
+    this._staticScene.clear_all_components()
 
     this.register_newmatch_action()
-    this._staticScene.clear_all_components()
     this._num_players = args.players.length
-    const nameCpu = args.players[0]
     this._name_Opp = nameCpu
     const markerCpu = new PlayerMarkerGfx(100, this._cache)
     const avatarCpu = store.state.pl.opp_avatar
@@ -84,7 +84,6 @@ export class BriscolaGfx {
     }
     this._staticScene.AddMarker(nameCpu, markerCpu)
 
-    const nameMe = args.players[1]
     const markerMe = new PlayerMarkerGfx(200, this._cache)
     const avatarMe = store.state.pl.me_avatar
     if (this._screen_mode === 'small') {
@@ -174,7 +173,7 @@ export class BriscolaGfx {
     let deck_taken_me = new DeckTakenGfx(350, this._cache)
     if (this._screen_mode === 'small') {
       deck_taken_me.Build(this._deck_info.get_numofcards_ondeck(), 'sud', 'compact_small')
-      deck_taken_me._infoGfx = { x: { type: 'left_anchor', offset: 0}, y: { type: 'top_anchor', offset: -5 }, anchor_element: `MKR-${this._name_Me}`, }  
+      deck_taken_me._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'top_anchor', offset: -5 }, anchor_element: `MKR-${this._name_Me}`, }
     } else {
       deck_taken_me.Build(this._deck_info.get_numofcards_ondeck(), 'sud', 'normal')
       deck_taken_me._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'top_anchor', offset: -10 }, anchor_element: `MKR-${this._name_Me}`, }
@@ -335,8 +334,9 @@ export class BriscolaGfx {
   }
 
   register_newmatch_action() {
+    // use the store to set an action button outside the canvas
     store.commit('modifyGameActionState', {
-      id: 1, title: 'Abbandona', enabled: true,
+      id: 3, title: 'Abbandona', enabled: true,
       ask: { val: true, msg: 'Vuoi davvero abbandonare la partita e perdere infamamente?', title: 'Importante' },
       fncb: () => {
         console.log('Want to call abbandona from briscola-gfx')
@@ -347,16 +347,7 @@ export class BriscolaGfx {
 
   register_newgiocata_action() {
     store.commit('modifyGameActionState', {
-      id: 2, title: 'Vai dentro', enabled: true,
-      ask: { val: true, msg: 'Vuoi davvero buttare dentro il segno?', title: 'Importante' },
-      fncb: () => {
-        console.log('Want to call vai dentro from briscola-gfx')
-        this._core_caller.player_abort_segno();
-      }
-    })
-
-    store.commit('modifyGameActionState', {
-      id: 3, title: 'Conta', enabled: true,
+      id: 1, title: 'Conta', enabled: true,
       fncb: () => {
         console.log('Request a nice control that count cards')
         this._core_state.suspend_proc_gevents('suspend conta')
@@ -367,16 +358,30 @@ export class BriscolaGfx {
         })
       }
     })
+    store.commit('modifyGameActionState', {
+      id: 2, title: 'Vai dentro', enabled: true,
+      ask: { val: true, msg: 'Vuoi davvero buttare dentro il segno?', title: 'Importante' },
+      fncb: () => {
+        console.log('Want to call vai dentro from briscola-gfx')
+        this._core_caller.player_abort_segno();
+      }
+    })
   }
 
   unregister_giocata_action() {
+    store.commit('modifyGameActionState', { id: 1, enabled: false })
+    store.commit('modifyGameActionState', { id: 2, enabled: false })
+  }
+
+  unregister_match_action() {
+    store.commit('modifyGameActionState', { id: 1, enabled: false })
     store.commit('modifyGameActionState', { id: 2, enabled: false })
     store.commit('modifyGameActionState', { id: 3, enabled: false })
   }
 
   match_is_finished(args) {
     // {info: "{"match_state":"end","final_score":[["Luisa",2],["…,0]],"end_reason":"resign","winner_name":"Luisa"}"}
-    this.unregister_giocata_action()
+    this.unregister_match_action()
 
     const info = JSON.parse(args.info)
     const name_winn = info.final_score[0][0]
@@ -393,7 +398,7 @@ export class BriscolaGfx {
     if (name_winn === this._name_Me) {
       avatarWinner = store.state.pl.me_avatar
     }
-    markerWinner.Build(name_winn, avatarWinner)
+    markerWinner.Build(name_winn, avatarWinner, 'normal')
     markerWinner._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 40 }, anchor_element: 'canvas', }
     this._staticScene.AddMarker(name_winn, markerWinner)
 
