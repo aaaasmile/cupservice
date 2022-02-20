@@ -13,11 +13,13 @@ export default {
       _gfxGame: null,
       _cache: null,
       isdesktop: true,
-      screen_mode: '',
     }
   },
   computed: {
     ...Vuex.mapState({
+      ScreenMode: state => {
+        return state.pl.screen_mode
+      },
       SelGameTitle: state => {
         return state.pl.curr_game_title
       },
@@ -121,7 +123,7 @@ export default {
         this._app.ticker.stop()
         addTick = false
       }
-      this.createGfx(this._cache, this.SelGameCore, this.screen_mode)
+      this.createGfx(this._cache, this.SelGameCore, this.ScreenMode)
       if (addTick) {
         this._app.ticker.add(delta => this.gameLoop(delta));  // il ticker sembra vada aggiunto solo una volta
       } else {
@@ -223,11 +225,11 @@ export default {
       let res_w = screen.width - 30
       let res_h = screen.height - 10
       const rr_std = 600 / 800
-      this.screen_mode = ''
+      let screen_mode = ''
       if (res_w > 800){
         res_w = 800
       }else if (res_w < 450){
-        this.screen_mode = 'small'
+        screen_mode = 'small'
       }
       if (res_h >= 600){
         res_h = 600
@@ -236,6 +238,7 @@ export default {
         res_h = rr_std * res_h - 1
         this.isdesktop = false
       }
+      this.$store.commit('setScreenMode', screen_mode)
       return {width : res_w, height: res_h}
     }
   },
@@ -309,5 +312,6 @@ export default {
       <Conta></Conta>
       <Options></Options>
     </v-col>
-  </v-row>`
+  </v-row>
+`
 }

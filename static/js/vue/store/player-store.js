@@ -18,6 +18,7 @@ export default {
     curr_game_title: get_game_tilte('briscola'),
     namePl1: 'Luisa',
     namePl2: 'Mario',
+    screen_mode: '',
     muted: true,
     auto_player_gfx: false,
     dialog_gfx_no_blocking: false,
@@ -48,6 +49,9 @@ export default {
       }
       if (localStorage.getItem('deck_type')) {
         state.deck_type = localStorage.getItem('deck_type')
+      }
+      if (localStorage.getItem('screen_mode')) {
+        state.screen_mode = localStorage.getItem('screen_mode')
       }
     },
     changeAvatar(state, avatar) {
@@ -114,7 +118,12 @@ export default {
       switch (state.curr_game) {
         case 'briscolascoperta':
         case 'briscola':
-          state.dialogopt.title = `Opzioni ${state.curr_game_title}`
+          if (state.screen_mode === 'small'){
+            state.dialogopt.title = `${state.curr_game_title}`    
+          }else{
+            state.dialogopt.title = `Opzioni ${state.curr_game_title}`
+          }
+          
           state.dialogopt.opt = [
             { val: state.briscola_opt.num_segni, caption: 'Numero dei segni', type: 'int' },
           ]
@@ -159,6 +168,11 @@ export default {
       state.curr_game = newVal
       state.curr_game_title = get_game_tilte(state.curr_game)
       localStorage.setItem('curr_game', newVal);
+    },
+    setScreenMode(state, newVal){
+      console.log('new screen mode ', newVal)
+      state.screen_mode = newVal
+      localStorage.setItem('screen_mode', newVal);
     }
   }
 }

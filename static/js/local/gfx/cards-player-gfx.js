@@ -70,7 +70,7 @@ export class CardsPlayerGfx {
       let cdt = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
       textureCards.push(cdt)
       this._visibleSprite.push(false)
-      texturePlaceHolder.push(cdtempty)
+      texturePlaceHolder.push(cdtempty) // the card texture will be swap when the card became visible
     });
     
     // for a player without visible cards, only place holder textures will be filled
@@ -83,11 +83,11 @@ export class CardsPlayerGfx {
     this._container.removeChildren()
     this._sprites = []
     let x = 0
-    const space_x = this.get_space_x(cdtempty.width, mode)
     for (let index = 0; index < this._numCards; index++) {
       const itemTexture = texturePlaceHolder[index];
       let sprite = new PIXI.Sprite(itemTexture)
       this.resize_sprite(sprite, mode)
+      let space_x = this.get_space_x(sprite.width, mode)
       if (textureCards.length > index) {
         sprite.cup_data_lbl = textureCards[index].cup_data_lbl
       }
