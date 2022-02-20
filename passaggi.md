@@ -93,6 +93,10 @@ quello che calcola e scarta.
 - set_game_state dal br-scoperta.alg.spec.js
 - minmax nella soperta
 - Mariazza
+- Un problema molto fastidioso sulle update. Il file /static/js/vue/main.js è collegato al buildnr
+che viene incrementato. Solo che tutti gli altri files che sono dipendenti (per esempio card-loader-gfx.js)
+non vengono aggiornati in Chrome. L'unica soluzione trovata fino ad ora è andare CTRL +H e cancellare i dati 
+della storia (immagini e dati).
 
 ## Service
 Start del service:
