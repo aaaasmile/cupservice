@@ -72,13 +72,13 @@ export class DeckTakenGfx {
           case 'nord':
             this._last_y = -20
             this._last_x = -2
-            this._show_x = -20
+            this._show_x = -5
             break;
           case 'sud':
             this._last_y = -10
             this._last_x = -2
             this._show_y = -100
-            this._show_x = -20
+            this._show_x = -5
             break;
           default:
             throw (new Error(`Player position not suppported: ${this._position}`))

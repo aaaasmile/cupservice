@@ -76,7 +76,7 @@ export class BriscolaGfx {
     const avatarCpu = store.state.pl.opp_avatar
     if (this._screen_mode === 'small') {
       markerCpu.Build(nameCpu, avatarCpu, 'compact_small_maxvisible')
-      markerCpu._infoGfx = { x: { type: 'right_anchor', offset: -10 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas' }
+      markerCpu._infoGfx = { x: { type: 'left_anchor', offset: 10 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas' }
     } else {
       markerCpu.Build(nameCpu, avatarCpu, 'normal')
       markerCpu._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'top_anchor', offset: 20 }, anchor_element: 'canvas' }
@@ -88,7 +88,7 @@ export class BriscolaGfx {
     const avatarMe = store.state.pl.me_avatar
     if (this._screen_mode === 'small') {
       markerMe.Build(nameMe, avatarMe, 'compact_small_maxvisible')
-      markerMe._infoGfx = { x: { type: 'right_anchor', offset: -10 }, y: { type: 'bottom_anchor', offset: -10 }, anchor_element: 'canvas' }
+      markerMe._infoGfx = { x: { type: 'left_anchor', offset: 10 }, y: { type: 'bottom_anchor', offset: -10 }, anchor_element: 'canvas' }
     } else {
       markerMe.Build(nameMe, avatarMe, 'normal')
       markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas' }
@@ -130,7 +130,7 @@ export class BriscolaGfx {
     let cards_me = new CardsPlayerGfx(70, this._deck_info, this._cache)
     if (this._screen_mode === 'small') {
       cards_me.Build(args.carte.length, args.carte, 'compact_small_maxvisible')
-      cards_me._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'bottom_anchor', offset: -10 }, anchor_element: 'canvas' }
+      cards_me._infoGfx = { x: { type: 'right_anchor', offset: -5 }, y: { type: 'bottom_anchor', offset: -10 }, anchor_element: 'canvas' }
     } else {
       cards_me.Build(args.carte.length, args.carte, 'normal')
       cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas' }
@@ -140,7 +140,7 @@ export class BriscolaGfx {
     let cards_opp = new CardsPlayerGfx(70, this._deck_info, this._cache)
     if (this._screen_mode === 'small') {
       cards_opp.Build(args.carte.length, [], 'very_compact_small')
-      cards_opp._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas' }
+      cards_opp._infoGfx = { x: { type: 'right_anchor', offset: -5 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas' }
     } else {
       cards_opp.Build(args.carte.length, [], 'compact')
       cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas' }
