@@ -65,6 +65,8 @@ export class BriscolaGfx {
     console.log('on_all_ev_new_match ', args)
     //args: {players: Array(2), num_segni: 2, target_segno: 61}
     //       players: ["Luisa", "Silvio"]
+    this._staticScene.clear_component('scoreBoard')
+
     this.register_newmatch_action()
     this._staticScene.clear_all_components()
     this._num_players = args.players.length
@@ -73,22 +75,23 @@ export class BriscolaGfx {
     const markerCpu = new PlayerMarkerGfx(100, this._cache)
     const avatarCpu = store.state.pl.opp_avatar
     markerCpu.Build(nameCpu, avatarCpu)
-    markerCpu._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'top_anchor', offset: 20 }, anchor_element: 'canvas', }
+    markerCpu._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'top_anchor', offset: 20 }, anchor_element: 'canvas' }
     this._staticScene.AddMarker(nameCpu, markerCpu)
 
     const nameMe = args.players[1]
     const markerMe = new PlayerMarkerGfx(200, this._cache)
-    //console.log('Player store is: ', store)
     const avatarMe = store.state.pl.me_avatar
     markerMe.Build(nameMe, avatarMe)
-    markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
+    markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas' }
     this._staticScene.AddMarker(nameMe, markerMe)
     this._name_Me = nameMe
 
-    const scoreBoard = new ScoreBoardGfx(90)
-    scoreBoard.Build(nameCpu, nameMe, args.num_segni)
-    scoreBoard._infoGfx = { x: { type: 'left_anchor', offset: +30 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
-    this._staticScene.AddGfxComponent('scoreBoard', scoreBoard)
+    if (this._screen_mode !== 'small') {
+      const scoreBoard = new ScoreBoardGfx(90)
+      scoreBoard.Build(nameCpu, nameMe, args.num_segni)
+      scoreBoard._infoGfx = { x: { type: 'left_anchor', offset: +30 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas' }
+      this._staticScene.AddGfxComponent('scoreBoard', scoreBoard)
+    }
   }
 
   on_pl_ev_brisc_new_giocata(args) {
@@ -117,20 +120,20 @@ export class BriscolaGfx {
     let cards_me = new CardsPlayerGfx(70, this._deck_info, this._cache)
     if (this._screen_mode === 'small') {
       cards_me.Build(args.carte.length, args.carte, 'compact_small_maxvisible')
-      cards_me._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'bottom_anchor', offset: -10 }, anchor_element: 'canvas', }
+      cards_me._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'bottom_anchor', offset: -10 }, anchor_element: 'canvas' }
     } else {
       cards_me.Build(args.carte.length, args.carte, 'normal')
-      cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
+      cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas' }
     }
     this._staticScene.AddGfxComponent('cardsme', cards_me)
 
     let cards_opp = new CardsPlayerGfx(70, this._deck_info, this._cache)
     if (this._screen_mode === 'small') {
       cards_opp.Build(args.carte.length, [], 'very_compact_small')
-      cards_opp._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
+      cards_opp._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas' }
     } else {
       cards_opp.Build(args.carte.length, [], 'compact')
-      cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
+      cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas' }
     }
 
     this._staticScene.AddGfxComponent('cardsopp', cards_opp)
@@ -139,7 +142,7 @@ export class BriscolaGfx {
 
     if (this._screen_mode === 'small') {
       table.Build(['nord', 'sud'], 'compact_small_maxvisible')
-      table._infoGfx = { x: { type: 'right_anchor', offset: -20 }, y: { type: 'center_anchor_vert', offset: -10 }, anchor_element: 'canvas' }  
+      table._infoGfx = { x: { type: 'right_anchor', offset: -20 }, y: { type: 'center_anchor_vert', offset: -10 }, anchor_element: 'canvas' }
     } else {
       table.Build(['nord', 'sud'], 'normal')
       table._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: -30 }, anchor_element: 'canvas' }
@@ -241,8 +244,10 @@ export class BriscolaGfx {
     let complete_msg = `Il segno è terminato con il punteggio di ${points_best} a ${points_loser}`
 
     if (!args.is_draw) {
-      const score_board = this._staticScene.get_component('scoreBoard')
-      score_board.PlayerWonsSegno(name_winner)
+      if (this._screen_mode !== 'small') {
+        const score_board = this._staticScene.get_component('scoreBoard')
+        score_board.PlayerWonsSegno(name_winner)
+      }
       complete_msg += `. Segno vinto da: ${name_winner}`
     } else {
       complete_msg += `. Segno pareggiato`
