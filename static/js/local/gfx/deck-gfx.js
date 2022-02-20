@@ -85,7 +85,7 @@ export class DeckGfx {
         Helper.ScaleSprite(sprite, nw, nh)
         return
     }
-    throw (new Error(`get space x: mode => ${mode} not recognized`))
+    throw (new Error(`resize_sprite: mode => ${mode} not recognized`))
   }
 
   Render(isDirty) {

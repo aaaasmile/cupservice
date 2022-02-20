@@ -162,13 +162,23 @@ export class BriscolaGfx {
     this._staticScene.AddGfxComponent('table', table)
 
     const deck_taken_opp = new DeckTakenGfx(350, this._cache)
-    deck_taken_opp.Build(this._deck_info.get_numofcards_ondeck(), 'nord')
-    deck_taken_opp._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor_rel', offset: 90 }, anchor_element: `MKR-${this._name_Opp}`, }
+    if (this._screen_mode === 'small') {
+      deck_taken_opp.Build(this._deck_info.get_numofcards_ondeck(), 'nord', 'compact_small')
+      deck_taken_opp._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor_rel', offset: 60 }, anchor_element: `MKR-${this._name_Opp}`, }
+    } else {
+      deck_taken_opp.Build(this._deck_info.get_numofcards_ondeck(), 'nord', 'normal')
+      deck_taken_opp._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor_rel', offset: 90 }, anchor_element: `MKR-${this._name_Opp}`, }
+    }
     this._staticScene.AddGfxComponent('deck_taken_opp', deck_taken_opp)
 
     let deck_taken_me = new DeckTakenGfx(350, this._cache)
-    deck_taken_me.Build(this._deck_info.get_numofcards_ondeck(), 'sud')
-    deck_taken_me._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'top_anchor', offset: -10 }, anchor_element: `MKR-${this._name_Me}`, }
+    if (this._screen_mode === 'small') {
+      deck_taken_me.Build(this._deck_info.get_numofcards_ondeck(), 'sud', 'compact_small')
+      deck_taken_me._infoGfx = { x: { type: 'left_anchor', offset: 0}, y: { type: 'top_anchor', offset: -5 }, anchor_element: `MKR-${this._name_Me}`, }  
+    } else {
+      deck_taken_me.Build(this._deck_info.get_numofcards_ondeck(), 'sud', 'normal')
+      deck_taken_me._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'top_anchor', offset: -10 }, anchor_element: `MKR-${this._name_Me}`, }
+    }
     this._staticScene.AddGfxComponent('deck_taken_me', deck_taken_me)
 
     this.animate_distr_cards(args)
@@ -176,9 +186,7 @@ export class BriscolaGfx {
   }
 
   on_all_ev_new_mano(args) {
-    // TEST code
-    //this._core_state.suspend_proc_gevents('suspend animation for TEST')
-    // TEST end
+
   }
 
   on_all_ev_have_to_play(args) {

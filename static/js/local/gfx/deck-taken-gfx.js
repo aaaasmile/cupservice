@@ -19,9 +19,11 @@ export class DeckTakenGfx {
     this._last_y = 0
     this._show_x = 0
     this._show_y = 0
+    this._mode_display = 'normal'
   }
 
-  Build(max_cards, position) {
+  Build(max_cards, position, mode) {
+    this._mode_display = mode
     this._position = position
     switch (this._position) {
       case 'nord':
@@ -40,13 +42,12 @@ export class DeckTakenGfx {
     }
     this._max_cards = max_cards
     const cdtempty = this._cache.GetTextureFromSymbol('vuoto_traspfull')
-    const sprite = new PIXI.Sprite(cdtempty)
-
+    
     const cdt = this._cache.GetTextureFromSymbol('cope', this._deck_info)
     this._copeTexture = cdt
 
-
-    Helper.ScaleSprite(sprite, 50, 50)
+    const sprite = new PIXI.Sprite(cdtempty)
+    this.resize_sprite(sprite, this._mode_display)
     sprite.rotation = - Math.PI / 2.0
 
     this._deckEmpty = sprite
@@ -61,6 +62,18 @@ export class DeckTakenGfx {
     this._isDirty = false
   }
 
+  resize_sprite(sprite, mode) {
+    switch (mode) {
+      case 'normal':
+        Helper.ScaleSprite(sprite, 50, 50)
+        return sprite
+      case 'compact_small':
+        Helper.ScaleSprite(sprite, 30, 30)
+        return sprite
+    }
+    throw (new Error(`resize_sprite: mode => ${mode} not recognized`))
+  }
+
   take_cards(cards) {
     // cards: ['_Ab', '_Cs']
     console.log('Cards taken are: ', cards)
@@ -72,6 +85,7 @@ export class DeckTakenGfx {
     }
     let x = 0
     const rescale = (this._taken_lbl.length === 0)
+    const offset_x = this.get_offset_x(this._mode_display)
     for (let index = 0; index < cards.length; index++) {
       const card_lbl = cards[index]
       if (this._last_toshow.length <= index) {
@@ -83,19 +97,39 @@ export class DeckTakenGfx {
       let sprite_lastshow = this._last_toshow[index]
       sprite_lastshow.texture = cdt
       if (rescale) {
-        sprite_lastshow = Helper.ScaleSprite(sprite_lastshow, 50, 50)
+        sprite_lastshow = this.resize_sprite(sprite_lastshow, this._mode_display)
       }
 
       sprite_lastshow.position.set(this._show_x + x, this._show_y)
       sprite_lastshow.visible = false
-      x += sprite_lastshow.texture.width / 2 + 15
+      x += sprite_lastshow.width + offset_x
 
       this._last_toshow[index] = sprite_lastshow
       this._taken_lbl.push(card_lbl)
     }
-    if (this._taken_lbl.length / 5 > this._deckSprite.length) {
+    if (this.check_to_add_cope(this._mode_display)) {
       this.add_one_cope()
     }
+  }
+
+  get_offset_x(mode) {
+    switch (mode) {
+      case 'normal':
+        return  15
+      case 'compact_small':
+        return 3
+    }
+    throw (new Error(`check_to_add_cope: mode => ${mode} not recognized`))
+  }
+
+  check_to_add_cope(mode) {
+    switch (mode) {
+      case 'normal':
+        return  (this._taken_lbl.length / 5 > this._deckSprite.length)
+      case 'compact_small':
+        return false
+    }
+    throw (new Error(`check_to_add_cope: mode => ${mode} not recognized`))
   }
 
   add_one_cope() {
@@ -106,7 +140,7 @@ export class DeckTakenGfx {
     }
 
     let sprite = new PIXI.Sprite(this._copeTexture)
-    sprite = Helper.ScaleSprite(sprite, 50, 50)
+    sprite = this.resize_sprite(sprite, this._mode_display)
     sprite.rotation = - Math.PI / 2.0
     sprite.position.set(this._last_x, this._last_y)
 
