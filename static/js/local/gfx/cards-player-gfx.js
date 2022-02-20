@@ -13,6 +13,7 @@ export class CardsPlayerGfx {
     this._emptyTexture = null
     this._copeTexture = null
     this._textureCards = []
+    this._mode_display = 'normal'
   }
 
   get_space_x(texture_w, mode) {
@@ -22,23 +23,34 @@ export class CardsPlayerGfx {
         return nw + 30
       case 'normal':
         return texture_w + 10
+      case 'compact_small_maxvisible':
+        return texture_w + 1 
       case 'compact_small':
         return 15
       case 'compact':
         return 27
+      case 'very_compact_small':
+        return 10
     }
     throw (new Error(`get space x: mode => ${mode} not recognized`))
   }
 
   resize_sprite(sprite, mode) {
+    let nw, nh
     switch (mode) {
       case 'compact':
       case 'normal':
         return sprite
       case 'normal_x_small_y':
       case 'compact_small':
-        const nw = sprite.width - sprite.width / 3
-        const nh = sprite.height - sprite.height / 3
+      case 'compact_small_maxvisible':
+        nw = sprite.width - sprite.width / 3
+        nh = sprite.height - sprite.height / 3
+        Helper.ScaleSprite(sprite, nw, nh)
+        return
+      case 'very_compact_small':
+        nw = sprite.width - sprite.width / 4
+        nh = sprite.height - sprite.height / 4
         Helper.ScaleSprite(sprite, nw, nh)
         return
     }
@@ -88,7 +100,6 @@ export class CardsPlayerGfx {
         sprite.cup_data_lbl = textureCards[index].cup_data_lbl
       }
       sprite.position.set(x, y)
-      Helper.ScaleSprite(sprite, 50, 50) // Test IGSA
       this._sprites.push(sprite)
       this._container.addChild(sprite)
       x += space_x
@@ -130,6 +141,7 @@ export class CardsPlayerGfx {
           if ((spr_src.cup_data_lbl && spr_src.cup_data_lbl === card_lbl) || !spr_src.cup_data_lbl) {
             const cardTexture = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
             let sprite = new PIXI.Sprite(cardTexture)
+            this.resize_sprite(sprite, this._mode_display)
             sprite.x = spr_src.x + this._container.x
             sprite.y = spr_src.y + this._container.y
             this.hide_card(card_lbl)

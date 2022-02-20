@@ -107,7 +107,7 @@ export class BriscolaGfx {
     const deck = new DeckGfx(80, this._cache, this._deck_info)
     if (this._screen_mode === 'small') {
       deck.Build(args.num_card_deck, args.brisc, 'compact_small')
-    }else{
+    } else {
       deck.Build(args.num_card_deck, args.brisc, 'normal')
     }
     deck._infoGfx = { x: { type: 'left_anchor', offset: 20 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
@@ -115,16 +115,23 @@ export class BriscolaGfx {
 
     let cards_me = new CardsPlayerGfx(70, this._deck_info, this._cache)
     if (this._screen_mode === 'small') {
-      cards_me.Build(args.carte.length, args.carte, 'compact_small')
-    }else{
+      cards_me.Build(args.carte.length, args.carte, 'compact_small_maxvisible')
+      cards_me._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
+    } else {
       cards_me.Build(args.carte.length, args.carte, 'normal')
+      cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     }
-    cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('cardsme', cards_me)
 
     let cards_opp = new CardsPlayerGfx(70, this._deck_info, this._cache)
-    cards_opp.Build(args.carte.length, [], 'compact_small')
-    cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
+    if (this._screen_mode === 'small') {
+      cards_opp.Build(args.carte.length, [], 'very_compact_small')
+      cards_opp._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
+    } else {
+      cards_opp.Build(args.carte.length, [], 'compact')
+      cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
+    }
+    
     this._staticScene.AddGfxComponent('cardsopp', cards_opp)
 
     let table = new TableCardsPlayedGfx(60, this._deck_info, this._cache)

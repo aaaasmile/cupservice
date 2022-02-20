@@ -20,13 +20,16 @@ export class DeckGfx {
     for (let index = 0; index < numCardsOnDeck; index++) {
       let sprite = new PIXI.Sprite(deckItemTexture)
       sprite.position.set(x, y)
-      if (mode === "compact_small"){
-        this.resize_sprite(sprite, "compact_small")   
+      if (mode === "compact_small") {
+        this.resize_sprite(sprite, "compact_small")
+        x += 0.5
+        y += 0.5
+      } else {
+        x += 1
+        y += 1
       }
       this._deckSprite.push(sprite)
       this._container.addChild(sprite)
-      x += 1
-      y += 1
     }
     this._last_x = x
     this._last_y = y
@@ -38,9 +41,10 @@ export class DeckGfx {
     if (briscolaTexture) {
       let sprite = new PIXI.Sprite(briscolaTexture)
       let offset_y = 0
-      if (mode === "compact_small"){
-        this.resize_sprite(sprite, "compact_small")   
-      }else if (Helper.ScaleCardSpriteToStdIfNeeded(sprite)) {
+      if (mode === "compact_small") {
+        this.resize_sprite(sprite, "compact_small")
+        offset_y = 15
+      } else if (Helper.ScaleCardSpriteToStdIfNeeded(sprite)) {
         offset_y = 30
       }
       this._briscola = sprite
