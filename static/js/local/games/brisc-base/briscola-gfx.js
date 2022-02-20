@@ -107,10 +107,11 @@ export class BriscolaGfx {
     const deck = new DeckGfx(80, this._cache, this._deck_info)
     if (this._screen_mode === 'small') {
       deck.Build(args.num_card_deck, args.brisc, 'compact_small')
+      deck._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas'}
     } else {
       deck.Build(args.num_card_deck, args.brisc, 'normal')
+      deck._infoGfx = { x: { type: 'left_anchor', offset: 20 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas'}
     }
-    deck._infoGfx = { x: { type: 'left_anchor', offset: 20 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('deck', deck)
 
     let cards_me = new CardsPlayerGfx(70, this._deck_info, this._cache)

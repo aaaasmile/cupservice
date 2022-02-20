@@ -7,46 +7,57 @@ export class DeckGfx {
     this._container = new PIXI.Container()
     this._cache = cache
     this._deck_info = deck_info
+    this._mode_display = 'normal'
+  }
+
+  get_increment(mode) {
+    switch (mode) {
+      case 'normal':
+        return 1
+      case 'compact_small':
+        return 0.2
+    }
+    throw (new Error(`get_increment: mode => ${mode} not recognized`))
+  }
+
+  get_offsety_brisc(mode) {
+    switch (mode) {
+      case 'normal':
+        return 30
+      case 'compact_small':
+        return 5
+    }
+    throw (new Error(`get_increment: mode => ${mode} not recognized`))
   }
 
   Build(numCardsOnDeck, brisc, mode) {
+    this._mode_display = mode
     let deckItemTexture = this._cache.GetTextureFromSymbol('cope')
     let briscolaTexture = this._cache.GetTextureFromCard(brisc, this._deck_info)
 
-    let iniX = 10
-    let intY = 0
-    let x = iniX
-    let y = intY
+    let x = 0
+    let y = 0
+    const incr = this.get_increment(mode)
     for (let index = 0; index < numCardsOnDeck; index++) {
       let sprite = new PIXI.Sprite(deckItemTexture)
+      this.resize_sprite(sprite, mode)
       sprite.position.set(x, y)
-      if (mode === "compact_small") {
-        this.resize_sprite(sprite, "compact_small")
-        x += 0.5
-        y += 0.5
-      } else {
-        x += 1
-        y += 1
-      }
       this._deckSprite.push(sprite)
       this._container.addChild(sprite)
+      x += incr
+      y += incr
     }
     this._last_x = x
     this._last_y = y
     if (numCardsOnDeck > 0) {
-      this._last_x = x - 1
-      this._last_y = y - 1
+      this._last_x = x - incr
+      this._last_y = y - incr
     }
 
     if (briscolaTexture) {
       let sprite = new PIXI.Sprite(briscolaTexture)
-      let offset_y = 0
-      if (mode === "compact_small") {
-        this.resize_sprite(sprite, "compact_small")
-        offset_y = 15
-      } else if (Helper.ScaleCardSpriteToStdIfNeeded(sprite)) {
-        offset_y = 30
-      }
+      this.resize_sprite(sprite, mode)
+      const offset_y = this.get_offsety_brisc(mode)
       this._briscola = sprite
       if (this._deckSprite.length > 0) {
         let last = this._deckSprite[0]
