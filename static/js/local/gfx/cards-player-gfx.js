@@ -66,40 +66,36 @@ export class CardsPlayerGfx {
     let textureCards = []
     let texturePlaceHolder = []
     this._visibleSprite = []
+    
+    const cdtempty = this._cache.GetTextureFromSymbol('vuoto_traspfull', this._deck_info)
+    this._emptyTexture = cdtempty
+    
     cards.forEach(card_lbl => {
       let cdt = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
       textureCards.push(cdt)
       this._visibleSprite.push(false)
+      texturePlaceHolder.push(cdtempty)
     });
-
+    
+    // for a player without visible cards, only place holder textures will be filled
     const cdt = this._cache.GetTextureFromSymbol('cope', this._deck_info)
     this._copeTexture = cdt
     for (let index = textureCards.length; index < this._numCards; index++) {
       texturePlaceHolder.push(cdt)
     }
 
-    const cdtempty = this._cache.GetTextureFromSymbol('vuoto_traspfull', this._deck_info)
-    this._emptyTexture = cdtempty
-    let iniX = 0
-    let iniY = 0
-    let x = iniX
-    let y = iniY
-
     this._container.removeChildren()
     this._sprites = []
+    let x = 0
     const space_x = this.get_space_x(cdtempty.width, mode)
     for (let index = 0; index < this._numCards; index++) {
-      if (texturePlaceHolder.length <= index) {
-        texturePlaceHolder.push(cdtempty)
-      }
-
       const itemTexture = texturePlaceHolder[index];
       let sprite = new PIXI.Sprite(itemTexture)
       this.resize_sprite(sprite, mode)
       if (textureCards.length > index) {
         sprite.cup_data_lbl = textureCards[index].cup_data_lbl
       }
-      sprite.position.set(x, y)
+      sprite.position.set(x, 0)
       this._sprites.push(sprite)
       this._container.addChild(sprite)
       x += space_x
@@ -110,14 +106,11 @@ export class CardsPlayerGfx {
   Render(isDirty) {
     if (this._isDirty || isDirty) {
       if (this._sprites.length > 0) {
-        let iniX = 0
-        let iniY = 0
-        let x = iniX
-        let y = iniY
+        let x = 0
         const space_x = this.get_space_x(this._sprites[0].width, this._mode_display)
         for (let index = 0; index < this._numCards; index++) {
           const sprite = this._sprites[index]
-          sprite.position.set(x, y)
+          sprite.position.set(x, 0)
           x += space_x
         }
       }
@@ -244,7 +237,6 @@ export class CardsPlayerGfx {
   }
 
   hide_card(card_lbl) {
-
     for (let index = 0; index < this._sprites.length; index++) {
       if (!this._visibleSprite[index]) {
         continue
