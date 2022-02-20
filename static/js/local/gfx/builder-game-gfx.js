@@ -1,6 +1,7 @@
 import { StaticSceneGfx } from './static-scene-gfx.js'
 import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js'
 import { BriscolaScopertaGfx } from '../games/brisc-base/scoperta/br-scoperta-gfx.js'
+import store from '../../vue/store/index.js'
 
 export class BuilderGameGfx {
 
@@ -22,17 +23,23 @@ export class BuilderGameGfx {
     stage.addChild(scContainer)
 
     let gfx = null
-    switch (this._game_name) {
-      case 'briscola':
+    const game_items = store.state.pl.game_list.filter(x => x.enabled && x.name === this._game_name)
+    if (game_items.length === 0){
+      throw (new Error(`game gfx not supported ${this._game_name}`))
+    }
+    const gfxClass = game_items[0].gfx
+    // it seems that eval(new $gfxClass(..)) is evil here
+    switch (gfxClass) {
+      case 'BriscolaGfx':
         console.log('Build briscola gfx')
         gfx = new BriscolaGfx(cache, staticSceneGfx, screen_mode)
         break;
-      case 'briscolascoperta':
-        console.log('Build briscola scoperata gfx')
+      case 'BriscolaScopertaGfx':
+        console.log('Build briscola scoperta gfx')
         gfx = new BriscolaScopertaGfx(cache, staticSceneGfx, screen_mode)
         break;
       default:
-        throw (new Error(`game gfx not supported ${this._game_name}`))
+        throw (new Error(`game gfx not supported ${gfxClass}`))
     }
 
     this._core_state = gfx.BuildGameVsCpu()

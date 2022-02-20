@@ -20,8 +20,8 @@ export default {
     namePl2: 'Mario',
     screen_mode: '',
     game_list: [
-      { name: 'briscola', label: 'Briscola', enabled: true },
-      { name: 'briscolascoperta', label: 'Briscola Scoperta', enabled: false },
+      { name: 'briscola', label: 'Briscola', enabled: true, gfx: 'BriscolaGfx' },
+      { name: 'briscolascoperta', label: 'Briscola Scoperta', enabled: false, gfx: 'BriscolaScopertaGfx' },
     ],
     muted: true,
     auto_player_gfx: false,
