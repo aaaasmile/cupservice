@@ -117,7 +117,7 @@ export class BriscolaGfx {
     let cards_me = new CardsPlayerGfx(70, this._deck_info, this._cache)
     if (this._screen_mode === 'small') {
       cards_me.Build(args.carte.length, args.carte, 'compact_small_maxvisible')
-      cards_me._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
+      cards_me._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'bottom_anchor', offset: -10 }, anchor_element: 'canvas', }
     } else {
       cards_me.Build(args.carte.length, args.carte, 'normal')
       cards_me._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas', }
@@ -405,7 +405,7 @@ export class BriscolaGfx {
 
     this._core_state.suspend_proc_gevents('suspend animation new giocata')
 
-    cards_anim[fnix]()
+    cards_anim[0]()
   }
 
   animate_card_played(carte, src_keygfx_comp, marker) {
@@ -440,7 +440,7 @@ export class BriscolaGfx {
 
     this._core_state.suspend_proc_gevents(aniTitle)
 
-    cards_anim[fnix]()
+    cards_anim[0]()
   }
 
   animate_mano_end(carte, src_keygfx_comp) {
@@ -466,7 +466,7 @@ export class BriscolaGfx {
     this._core_state.suspend_proc_gevents('suspend animation mano end')
     console.log('continue the game')
     setTimeout(() => {
-      cards_anim[fnix]()
+      cards_anim[0]()
     }, 600);
   }
 
@@ -498,7 +498,7 @@ export class BriscolaGfx {
     })
 
     this._core_state.suspend_proc_gevents('suspend animation pesca carta')
-    cards_anim[fnix]()
+    cards_anim[0]()
   }
 }
 

@@ -1,3 +1,5 @@
+// Animation is managed by static-scene-gfx. Start component is responsible for providing sprites (set_animation_sprite_start)
+// The stop component set the end_x,end_y and velocity into the sprite to stop the animation (set_animation_sprite_target)
 export default (name, startComp, stopCom, data, fnTerm, fnStart) => {
     let _container = new PIXI.Container()
     let _sprites = []

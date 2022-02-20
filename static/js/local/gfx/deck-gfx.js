@@ -116,6 +116,7 @@ export class DeckGfx {
       case 'distr_card': {
         const copTexture = this._cache.GetTextureFromSymbol('cope')
         const sprite = new PIXI.Sprite(copTexture)
+        this.resize_sprite(sprite, this._mode_display)
         sprite.x = this._last_x + this._container.x
         sprite.y = this._last_y + this._container.y
         return [sprite]
