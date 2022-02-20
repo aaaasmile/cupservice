@@ -125,6 +125,7 @@ export class DeckGfx {
         const card_lbl = data
         const cardTexture = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
         const sprite = new PIXI.Sprite(cardTexture)
+        this.resize_sprite(sprite, this._mode_display)
         sprite.x = this._last_x + this._container.x
         sprite.y = this._last_y + this._container.y
         return [sprite]

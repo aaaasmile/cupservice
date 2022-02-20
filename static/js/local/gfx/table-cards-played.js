@@ -84,6 +84,7 @@ export class TableCardsPlayedGfx {
             if ((spr_src.cup_data_lbl && spr_src.cup_data_lbl === card_lbl) || !spr_src.cup_data_lbl) {
               const cardTexture = this._cache.GetTextureFromCard(card_lbl, this._deck_info)
               let sprite = new PIXI.Sprite(cardTexture)
+              this.resize_sprite(sprite, this._mode_display)
               sprite.x = spr_src.x + this._container.x
               sprite.y = spr_src.y + this._container.y
               this.hide_card(card_lbl)
@@ -139,7 +140,7 @@ export class TableCardsPlayedGfx {
       if (!this._visibleSprite[index]) {
         continue
       }
-    
+
       const sprite = this._sprites[index];
       if ((sprite.cup_data_lbl && sprite.cup_data_lbl === card_lbl) || (!sprite.cup_data_lbl)) {
         sprite.texture = this._emptyTexture
