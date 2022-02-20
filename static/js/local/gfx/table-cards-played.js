@@ -11,29 +11,28 @@ export class TableCardsPlayedGfx {
     this._visibleSprite = []
     this._ani_velocity = 20
     this._emptyTexture = null
+    this._mode_display = ''
   }
 
-  Build(positions, mode) {
-    // mode: 'circular'
+  Build(positions, mode_display) {
     // positions: ['nord','sud']
     this._numCards = positions.length
+    this._mode_display = mode_display
     const cdtempty = this._cache.GetTextureFromSymbol('vuoto_traspfull')
     this._emptyTexture = cdtempty
     this._container.removeChildren()
     this._sprites = []
     for (let index = 0; index < this._numCards; index++) {
       let sprite = new PIXI.Sprite(cdtempty)
-      this.set_sprite_xy(positions[index], mode, sprite)
+      this.resize_sprite(sprite, this._mode_display)
+      this.set_circular_sprite_xy(positions[index], sprite)
       this._sprites.push(sprite)
       this._visibleSprite.push(false)
       this._container.addChild(sprite)
     }
   }
 
-  set_sprite_xy(poslbl, mode, sprite) {
-    if (mode !== 'circular') {
-      throw (new Error(`mode in set_sprite_xy not supported ${mode}`))
-    }
+  set_circular_sprite_xy(poslbl, sprite) {
     switch (poslbl) {
       case 'nord':
         sprite.x -= 15
@@ -46,6 +45,19 @@ export class TableCardsPlayedGfx {
       default:
         throw (new Error(`position not supported ${poslbl}`))
     }
+  }
+
+  resize_sprite(sprite, mode) {
+    switch (mode) {
+      case 'normal':
+        return sprite
+      case 'compact_small_maxvisible':
+        const nw = sprite.width - sprite.width / 3
+        const nh = sprite.height - sprite.height / 3
+        Helper.ScaleSprite(sprite, nw, nh)
+        return
+    }
+    throw (new Error(`get space x: mode => ${mode} not recognized`))
   }
 
   Render(isDirty) {

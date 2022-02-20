@@ -107,10 +107,10 @@ export class BriscolaGfx {
     const deck = new DeckGfx(80, this._cache, this._deck_info)
     if (this._screen_mode === 'small') {
       deck.Build(args.num_card_deck, args.brisc, 'compact_small')
-      deck._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas'}
+      deck._infoGfx = { x: { type: 'left_anchor', offset: 5 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas' }
     } else {
       deck.Build(args.num_card_deck, args.brisc, 'normal')
-      deck._infoGfx = { x: { type: 'left_anchor', offset: 20 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas'}
+      deck._infoGfx = { x: { type: 'left_anchor', offset: 20 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas' }
     }
     this._staticScene.AddGfxComponent('deck', deck)
 
@@ -132,12 +132,19 @@ export class BriscolaGfx {
       cards_opp.Build(args.carte.length, [], 'compact')
       cards_opp._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas', }
     }
-    
+
     this._staticScene.AddGfxComponent('cardsopp', cards_opp)
 
     let table = new TableCardsPlayedGfx(60, this._deck_info, this._cache)
-    table.Build(['nord', 'sud'], 'circular')
-    table._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: -30 }, anchor_element: 'canvas', }
+
+    if (this._screen_mode === 'small') {
+      table.Build(['nord', 'sud'], 'compact_small_maxvisible')
+      table._infoGfx = { x: { type: 'right_anchor', offset: -20 }, y: { type: 'center_anchor_vert', offset: -10 }, anchor_element: 'canvas' }  
+    } else {
+      table.Build(['nord', 'sud'], 'normal')
+      table._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: -30 }, anchor_element: 'canvas' }
+    }
+
     this._staticScene.AddGfxComponent('table', table)
 
     const deck_taken_opp = new DeckTakenGfx(350, this._cache)
