@@ -121,3 +121,13 @@ Sul target si esegue (~/build/cup-service):
 
     git pull --all
     ./publish-cup.sh
+  
+# Problemi con la cache
+Tutti i moduli js unbundled vengono messi nella cache. Se si modifica un modulo che non è main.js, esso non viene aggiornato alla prossima volta che viene scaricata la app.
+Questo problema è descritto su:
+  https://marian-caikovski.medium.com/javascript-modules-and-browser-cache-4050b72ec51c
+  mentre è il codice si trova su
+  https://github.com/marianc000/cachedModules/blob/master/server.js
+  Per mettere le stesse linee in golang senza avere il bundle si può provare con:
+  w.Header().Set("Cache-Control", "stale-while-revalidate=3600")
+  nella funzione handleCupApp()
