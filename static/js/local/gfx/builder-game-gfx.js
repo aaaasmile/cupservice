@@ -1,7 +1,7 @@
 import { StaticSceneGfx } from './static-scene-gfx.js'
 import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js'
 import { BriscolaScopertaGfx } from '../games/brisc-base/scoperta/br-scoperta-gfx.js'
-import store from '../../vue/store/index.js'
+import Store from '../../vue/store/index.js'
 
 export class BuilderGameGfx {
 
@@ -23,8 +23,8 @@ export class BuilderGameGfx {
     stage.addChild(scContainer)
 
     let gfx = null
-    const game_items = store.state.pl.game_list.filter(x => x.enabled && x.name === this._game_name)
-    if (game_items.length === 0){
+    const game_items = Store.state.pl.game_list.filter(x => x.enabled && x.name === this._game_name)
+    if (game_items.length === 0) {
       throw (new Error(`game gfx not supported ${this._game_name}`))
     }
     const gfxClass = game_items[0].gfx
@@ -50,7 +50,7 @@ export class BuilderGameGfx {
   }
 
   Update(delta) {
-    this._staticScene.Render(this._isDirty)
+    this._staticScene.Render(this._isDirty, delta)
     this._staticScene.UpdateAnimations(this._isDirty, delta)
     this._core_state.process_next()
     this._isDirty = false

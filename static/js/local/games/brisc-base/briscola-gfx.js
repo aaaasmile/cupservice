@@ -3,13 +3,14 @@ import { CardsPlayerGfx } from '../../gfx/cards-player-gfx.js'
 import { PlayerMarkerGfx } from '../../gfx/player-marker-gfx.js'
 import { ScoreBoardGfx } from '../../gfx/scoreboard-gfx.js'
 import AniCards from '../../gfx/animation-gfx.js'
-import store from '../../../vue/store/index.js'
+import Store from '../../../vue/store/index.js'
 import { PrepareGameVsCpu } from './core-brisc-base.js'
 import { TableCardsPlayedGfx } from '../../gfx/table-cards-played.js'
 import { DeckTakenGfx } from '../../gfx/deck-taken-gfx.js'
 import { GetMusicManagerInstance } from '../../sound/sound-mgr.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
+import  Fireworks  from '../../gfx/fireworks-gfx.js'
 
 export class BriscolaGfx {
   constructor(cache, static_scene, screen_mode) {
@@ -25,9 +26,9 @@ export class BriscolaGfx {
   }
 
   BuildGameVsCpu() {
-    const opt = store.state.pl.briscola_opt
-    opt.namePl1 = store.state.pl.namePl1
-    opt.namePl2 = store.state.pl.namePl2
+    const opt = Store.state.pl.briscola_opt
+    opt.namePl1 = Store.state.pl.namePl1
+    opt.namePl2 = Store.state.pl.namePl2
     opt.points_to_win = 61
     opt.cards_in_hand = 3
     opt.max_points = 120
@@ -38,7 +39,7 @@ export class BriscolaGfx {
       this._core_caller = core_caller
       this._alg = alg
       this._alg.set_automatic_continuation(false)
-      if (store.state.pl.auto_player_gfx) {
+      if (Store.state.pl.auto_player_gfx) {
         console.log('Want an automatic player on gfx')
         this._alg.set_automatic_playing(true)
       }
@@ -48,7 +49,7 @@ export class BriscolaGfx {
     this._cache.check_deckinfo(this._deck_info)
     this._core_state = b2core._coreStateManager
 
-    store.commit('changeGameState', 'st_match_ongoing')
+    Store.commit('changeGameState', 'st_match_ongoing')
 
     return b2core._coreStateManager
   }
@@ -73,7 +74,7 @@ export class BriscolaGfx {
     this._num_players = args.players.length
     this._name_Opp = nameCpu
     const markerCpu = new PlayerMarkerGfx(100, this._cache)
-    const avatarCpu = store.state.pl.opp_avatar
+    const avatarCpu = Store.state.pl.opp_avatar
     if (this._screen_mode === 'small') {
       markerCpu.Build(nameCpu, avatarCpu, 'compact_small_maxvisible')
       markerCpu._infoGfx = { x: { type: 'left_anchor', offset: 10 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas' }
@@ -85,7 +86,7 @@ export class BriscolaGfx {
     this._staticScene.AddMarker(nameCpu, markerCpu)
 
     const markerMe = new PlayerMarkerGfx(200, this._cache)
-    const avatarMe = store.state.pl.me_avatar
+    const avatarMe = Store.state.pl.me_avatar
     if (this._screen_mode === 'small') {
       markerMe.Build(nameMe, avatarMe, 'compact_small_maxvisible')
       markerMe._infoGfx = { x: { type: 'left_anchor', offset: 10 }, y: { type: 'bottom_anchor', offset: -10 }, anchor_element: 'canvas' }
@@ -180,7 +181,13 @@ export class BriscolaGfx {
     }
     this._staticScene.AddGfxComponent('deck_taken_me', deck_taken_me)
 
-    this.animate_distr_cards(args)
+    // Test fireworks
+    const fireworks = Fireworks(100)
+    console.log('fireworks is ', fireworks, fireworks.z_ord)
+    //fireworks.Build(400)
+    //this.animate_distr_cards(args)
+    this._core_state.suspend_proc_gevents('suspend for test')
+    // end test
 
   }
 
@@ -271,14 +278,14 @@ export class BriscolaGfx {
       complete_msg += `. Segno pareggiato`
     }
 
-    if (store.state.pl.dialog_gfx_no_blocking) {
+    if (Store.state.pl.dialog_gfx_no_blocking) {
       console.log('No dialog to show')
       return
     }
 
     this._block_for_ask_continue_game = () => { console.log('Dialog giocata end was blocking') }
 
-    store.commit('showDialog', {
+    Store.commit('showDialog', {
       title: 'Giocata finita',
       msg: complete_msg,
       fncb: () => {
@@ -316,7 +323,7 @@ export class BriscolaGfx {
       this._block_for_ask_continue_game = () => {
         // showing the same dialog on closing the previous one is not working, so wait a litle
         setTimeout(() => {
-          store.commit('showDialog', {
+          Store.commit('showDialog', {
             title: myTilte,
             msg: complete_msg,
             fncb: () => { this.match_is_finished(args) }
@@ -325,7 +332,7 @@ export class BriscolaGfx {
       }
     } else {
       console.log('Show dialog end game directly')
-      store.commit('showDialog', {
+      Store.commit('showDialog', {
         title: myTilte,
         msg: complete_msg,
         fncb: () => { this.match_is_finished(args) }
@@ -334,8 +341,8 @@ export class BriscolaGfx {
   }
 
   register_newmatch_action() {
-    // use the store to set an action button outside the canvas
-    store.commit('modifyGameActionState', {
+    // use the Store to set an action button outside the canvas
+    Store.commit('modifyGameActionState', {
       id: 3, title: 'Abbandona', enabled: true,
       ask: { val: true, msg: 'Vuoi davvero abbandonare la partita e perdere infamamente?', title: 'Importante' },
       fncb: () => {
@@ -346,19 +353,19 @@ export class BriscolaGfx {
   }
 
   register_newgiocata_action() {
-    store.commit('modifyGameActionState', {
+    Store.commit('modifyGameActionState', {
       id: 1, title: 'Conta', enabled: true,
       fncb: () => {
         console.log('Request a nice control that count cards')
         this._core_state.suspend_proc_gevents('suspend conta')
-        store.commit('showContaDialog', {
+        Store.commit('showContaDialog', {
           deck_cards_lbl: this._alg._card_taken,
           fncb: () => { this._core_state.continue_process_events('after conta') },
           deck_info: this._deck_info,
         })
       }
     })
-    store.commit('modifyGameActionState', {
+    Store.commit('modifyGameActionState', {
       id: 2, title: 'Vai dentro', enabled: true,
       ask: { val: true, msg: 'Vuoi davvero buttare dentro il segno?', title: 'Importante' },
       fncb: () => {
@@ -369,14 +376,14 @@ export class BriscolaGfx {
   }
 
   unregister_giocata_action() {
-    store.commit('modifyGameActionState', { id: 1, enabled: false })
-    store.commit('modifyGameActionState', { id: 2, enabled: false })
+    Store.commit('modifyGameActionState', { id: 1, enabled: false })
+    Store.commit('modifyGameActionState', { id: 2, enabled: false })
   }
 
   unregister_match_action() {
-    store.commit('modifyGameActionState', { id: 1, enabled: false })
-    store.commit('modifyGameActionState', { id: 2, enabled: false })
-    store.commit('modifyGameActionState', { id: 3, enabled: false })
+    Store.commit('modifyGameActionState', { id: 1, enabled: false })
+    Store.commit('modifyGameActionState', { id: 2, enabled: false })
+    Store.commit('modifyGameActionState', { id: 3, enabled: false })
   }
 
   match_is_finished(args) {
@@ -394,9 +401,9 @@ export class BriscolaGfx {
     this._staticScene.clear_all_components()
 
     const markerWinner = new PlayerMarkerGfx(100, this._cache)
-    let avatarWinner = store.state.pl.opp_avatar
+    let avatarWinner = Store.state.pl.opp_avatar
     if (name_winn === this._name_Me) {
-      avatarWinner = store.state.pl.me_avatar
+      avatarWinner = Store.state.pl.me_avatar
     }
     markerWinner.Build(name_winn, avatarWinner, 'normal')
     markerWinner._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'top_anchor', offset: 40 }, anchor_element: 'canvas', }
@@ -410,7 +417,7 @@ export class BriscolaGfx {
     scoreBoard._infoGfx = { x: { type: 'center_anchor_horiz', offset: 0 }, y: { type: 'center_anchor_vert', offset: 0 }, anchor_element: 'canvas', }
     this._staticScene.AddGfxComponent('scoreBoard', scoreBoard)
 
-    store.commit('changeGameState', 'st_waitforstart')
+    Store.commit('changeGameState', 'st_waitforstart')
   }
 
   animate_distr_cards(args) {

@@ -61,11 +61,7 @@ export class ScoreBoardGfx {
       this._text_team1.position.x = offset_x
       this._text_team2.position.x = this._text_team1.x + this._text_team1.width + 30
 
-      const width_text_1 = this._text_team1.width
       const height_text_1 = this._text_team1.height
-      const width_text_2 = this._text_team2.width
-      const height_text_2 = this._text_team2.height
-
       const control_width = this._text_team2.position.x + this._text_team2.width + offset_x
       const control_height = 150
       //total segni
@@ -85,7 +81,7 @@ export class ScoreBoardGfx {
       }
       this._myGraph.lineStyle(1).moveTo(xv0, yv0).lineTo(xv1, yv1);
 
-      //empty points raggi
+      //points line holder
       let off_y = 18
       yv0 = y1 + off_y + 10
       let points_coord = [] // store coordinate for circle
@@ -97,7 +93,8 @@ export class ScoreBoardGfx {
         points_coord.push({ team1: [xs0, ys0], team2: [xs1, ys1] });
         this._myGraph.lineStyle(1).moveTo(xs0, ys0).lineTo(xs1, ys1);
       }
-      // TODO: mostra i punti come cerchio ripieno
+      
+      // filled circle point
       let count_coord = 1
       const w_circle = 7
       const team_1_segni = this._segni[0].segni;

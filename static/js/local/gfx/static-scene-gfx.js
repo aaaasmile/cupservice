@@ -147,7 +147,7 @@ export class StaticSceneGfx {
     });
   }
 
-  Render(isDirty) {
+  Render(isDirty, delta) {
     if (this._isDirty) {
       //console.log('*** rebuild the scene')
       this._container.removeChildren()
@@ -158,7 +158,7 @@ export class StaticSceneGfx {
     this._sorted_list.forEach(element => {
       if (element !== this._component_in_front) {
         let c1 = this._components.get(element)
-        c1.Render(isDirty)
+        c1.Render(isDirty, delta)
         if (this._isDirty) {
           this._container.addChild(c1._container)
           built_comp.push(c1)
@@ -167,7 +167,7 @@ export class StaticSceneGfx {
     });
     if (this._component_in_front) {
       let cf = this._components.get(this._component_in_front)
-      cf.Render(isDirty)
+      cf.Render(isDirty, delta)
       if (this._isDirty) {
         this._container.addChild(c1._container)
         built_comp.push(c1)
