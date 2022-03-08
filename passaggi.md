@@ -90,6 +90,7 @@ Uso un algoritmo minimax ma non funziona un granché bene. Bisogna seguire bene
 quello che calcola e scarta.
 
 ### TODO
+- sto completando il fireworks che ho preso da: https://gitlab.com/FilFar/firework-tutorial-javascript-canvas/-/blob/main/index.html
 - set_game_state dal br-scoperta.alg.spec.js
 - minmax nella soperta
 - Mariazza

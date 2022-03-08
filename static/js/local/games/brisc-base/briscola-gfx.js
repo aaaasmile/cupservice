@@ -181,13 +181,15 @@ export class BriscolaGfx {
     }
     this._staticScene.AddGfxComponent('deck_taken_me', deck_taken_me)
 
-    // Test fireworks
+    // TODO remove this Test fireworks
     const fireworks = Fireworks(100)
-    console.log('fireworks is ', fireworks, fireworks.z_ord)
-    //fireworks.Build(400)
-    //this.animate_distr_cards(args)
-    this._core_state.suspend_proc_gevents('suspend for test')
-    // end test
+    console.warn('*** PLEASE COMPLETE the fireworks ', fireworks, fireworks.z_ord)
+    fireworks.Build()
+    this._staticScene.AddGfxComponent('fireworks', fireworks)
+    this._core_state.suspend_proc_gevents('suspend for test')  
+    
+    //this.animate_distr_cards(args) // remove the comment
+    // TODO remove this end test
 
   }
 
