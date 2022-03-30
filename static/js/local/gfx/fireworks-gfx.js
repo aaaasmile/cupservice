@@ -5,6 +5,7 @@ export default (z_ord) => {
   let g_fireworks = []
   let g_timer = 0
   let g_colorchanger = 0
+  let g_typecount = 1
 
   function random(min, max, round) {
     if (round == 'round') {
@@ -55,6 +56,7 @@ export default (z_ord) => {
   }
 
   function createParticles(type, count, pox, poy, color) {
+    console.log('create particles: ', type, count, pox, poy, color)
     for (var i = 0; i < count; i++) {
       let par = new Particles();
       par.type = type;
@@ -93,7 +95,7 @@ export default (z_ord) => {
     this.ms = ms / 1000;
 
     if (this.s > 2000 / ms) {
-      createParticles(typecount, 30, this.x, this.y, this.color);
+      createParticles(g_typecount, 30, this.x, this.y, this.color);
       this.del = true;
     } else {
       this.speed *= 0.98;
@@ -105,10 +107,15 @@ export default (z_ord) => {
   }
 
   Firework.prototype.draw = function () {
-    g_myGraph.beginPath();
-    g_myGraph.fillStyle = this.color;
+    // g_myGraph.fillStyle = this.color;
+    // g_myGraph.arc(this.x, this.y, 1, 0, 2 * Math.PI);
+    //g_myGraph.beginFill(0xDE3249);
+    // g_myGraph.drawRect(50, 50, 100, 100);
+    //g_myGraph.endFill();
+    g_myGraph.lineStyle(1, 0x3333DD, 1);
     g_myGraph.arc(this.x, this.y, 1, 0, 2 * Math.PI);
-    g_myGraph.fill();
+    //g_myGraph.arc(650, 270, 60, 2 * Math.PI, 3 * Math.PI / 2);
+    
   }
 
   var Particles = function () {
@@ -164,35 +171,30 @@ export default (z_ord) => {
   }
 
   Particles.prototype.draw = function () {
-    g_myGraph.save();
+    //g_myGraph.save();
     g_myGraph.globalAlpha = this.opacity;
     g_myGraph.fillStyle = this.color;
     g_myGraph.strokeStyle = this.color;
 
     if (this.type == 1) {
-      g_myGraph.beginPath();
+      //g_graphics.beginFill(this.color);
       g_myGraph.arc(this.x, this.y, 1.5, 0, 2 * Math.PI);
-      g_myGraph.fill();
+      //g_graphics.endFill();
     } else if (this.type == 2) {
       g_myGraph.translate(this.x, this.y);
       g_myGraph.scale(this.scale, this.scale);
-      g_myGraph.beginPath();
       g_myGraph.fillRect(0, 0, 1, 1);
     } else if (this.type == 3) {
-      g_myGraph.beginPath();
       g_myGraph.moveTo(this.x, this.y);
       g_myGraph.lineTo(this.x - this.vx * 10, this.y - this.vy * 10);
       g_myGraph.stroke();
     } else if (this.type == 4) {
-      g_myGraph.beginPath();
       g_myGraph.arc(this.x, this.y, 1.5, 0, 2 * Math.PI);
-      g_myGraph.fill();
     } else {
       g_myGraph.arc(this.x, this.y, 1, 0, 2 * Math.PI);
-      g_myGraph.fill();
     }
     g_myGraph.closePath();
-    g_myGraph.restore();
+    //g_myGraph.restore();
   }
 
   var Sparkler = function () {
@@ -211,7 +213,6 @@ export default (z_ord) => {
   }
 
   Sparkler.prototype.draw = function () {
-    g_myGraph.mo
     g_myGraph.moveTo(this.x, this.y);
     g_myGraph.lineTo(this.tx, this.ty);
     g_myGraph.lineWidth = 1;
@@ -224,7 +225,7 @@ export default (z_ord) => {
     this._canvas_w = 0
     this._canvas_h = 0
     this._limiterTicker = 0
-    this._timedFirework = 1000
+    this._timedFirework = 120
     this._isDirty = false
     this._started = false
     this._container = new PIXI.Container()
@@ -285,6 +286,11 @@ export default (z_ord) => {
     if (!this._started) {
       return
     }
+    
+    g_myGraph.globalAlpha = 1;
+		g_myGraph.beginFill('rgba(0, 0, 0, 0.15)');
+		g_myGraph.drawRect(0, 0, this._canvas_w, this._canvas_h);
+    g_myGraph.endFill();
 
     if (g_timer > this._limiterTicker) {
       this.createFirework();
@@ -311,7 +317,7 @@ export default (z_ord) => {
       }
     }
 
-    i = sparks.length;
+    i = g_sparks.length;
     while (i--) {
       if (g_sparks[i].limit < 0) {
         g_sparks.splice(i, 1);
