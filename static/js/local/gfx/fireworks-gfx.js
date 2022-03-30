@@ -294,7 +294,7 @@ export default (z_ord) => {
     this.count += 0.1;
     g_myGraph.clear();
     g_myGraph.lineStyle(10, 0xff0000, 1);
-    g_myGraph.beginFill(0xffFF00, 0.3);
+    g_myGraph.beginFill(0xffFF00, 0.3); // color, alpha
     
     g_myGraph.moveTo(-120 + Math.sin(this.count) * 20, -100 + Math.cos(this.count) * 20);
     g_myGraph.lineTo(120 + Math.cos(this.count) * 20, -100 + Math.sin(this.count) * 20);
