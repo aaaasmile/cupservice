@@ -1,10 +1,10 @@
 export default (z_ord) => {
-  const _myGraph = new PIXI.Graphics()
-  let _sparks = []
-  let _particles = []
-  let _fireworks = []
-  let _timer = 0
-  let _colorchanger = 0
+  const g_myGraph = new PIXI.Graphics()
+  let g_sparks = []
+  let g_particles = []
+  let g_fireworks = []
+  let g_timer = 0
+  let g_colorchanger = 0
 
   function random(min, max, round) {
     if (round == 'round') {
@@ -15,10 +15,10 @@ export default (z_ord) => {
   }
 
   function colors() {
-    let num = 1 
-    if (_timer > _colorchanger) { 
-      num = random(0, 7, 'round'); 
-      _colorchanger = _timer + (500); 
+    let num = 1
+    if (g_timer > g_colorchanger) {
+      num = random(0, 7, 'round');
+      g_colorchanger = g_timer + (500);
     }
     switch (num) {
       case 1: return '#ff0000'; break;
@@ -67,7 +67,7 @@ export default (z_ord) => {
       par.vx = Math.cos(angle * Math.PI / 180.0);
       par.vy = Math.sin(angle * Math.PI / 180.0);
 
-      _particles.push(par);
+      g_particles.push(par);
     };
   }
 
@@ -105,10 +105,10 @@ export default (z_ord) => {
   }
 
   Firework.prototype.draw = function () {
-    _myGraph.beginPath();
-    _myGraph.fillStyle = this.color;
-    _myGraph.arc(this.x, this.y, 1, 0, 2 * Math.PI);
-    _myGraph.fill();
+    g_myGraph.beginPath();
+    g_myGraph.fillStyle = this.color;
+    g_myGraph.arc(this.x, this.y, 1, 0, 2 * Math.PI);
+    g_myGraph.fill();
   }
 
   var Particles = function () {
@@ -158,41 +158,41 @@ export default (z_ord) => {
       spark.ty = this.y;
       spark.color = this.color;
       spark.limit = random(4, 10, 'round');
-      _sparks.push(spark);
+      g_sparks.push(spark);
     }
     this.s++;
   }
 
   Particles.prototype.draw = function () {
-    _myGraph.save();
-    _myGraph.globalAlpha = this.opacity;
-    _myGraph.fillStyle = this.color;
-    _myGraph.strokeStyle = this.color;
+    g_myGraph.save();
+    g_myGraph.globalAlpha = this.opacity;
+    g_myGraph.fillStyle = this.color;
+    g_myGraph.strokeStyle = this.color;
 
     if (this.type == 1) {
-      _myGraph.beginPath();
-      _myGraph.arc(this.x, this.y, 1.5, 0, 2 * Math.PI);
-      _myGraph.fill();
+      g_myGraph.beginPath();
+      g_myGraph.arc(this.x, this.y, 1.5, 0, 2 * Math.PI);
+      g_myGraph.fill();
     } else if (this.type == 2) {
-      _myGraph.translate(this.x, this.y);
-      _myGraph.scale(this.scale, this.scale);
-      _myGraph.beginPath();
-      _myGraph.fillRect(0, 0, 1, 1);
+      g_myGraph.translate(this.x, this.y);
+      g_myGraph.scale(this.scale, this.scale);
+      g_myGraph.beginPath();
+      g_myGraph.fillRect(0, 0, 1, 1);
     } else if (this.type == 3) {
-      _myGraph.beginPath();
-      _myGraph.moveTo(this.x, this.y);
-      _myGraph.lineTo(this.x - this.vx * 10, this.y - this.vy * 10);
-      _myGraph.stroke();
+      g_myGraph.beginPath();
+      g_myGraph.moveTo(this.x, this.y);
+      g_myGraph.lineTo(this.x - this.vx * 10, this.y - this.vy * 10);
+      g_myGraph.stroke();
     } else if (this.type == 4) {
-      _myGraph.beginPath();
-      _myGraph.arc(this.x, this.y, 1.5, 0, 2 * Math.PI);
-      _myGraph.fill();
+      g_myGraph.beginPath();
+      g_myGraph.arc(this.x, this.y, 1.5, 0, 2 * Math.PI);
+      g_myGraph.fill();
     } else {
-      _myGraph.arc(this.x, this.y, 1, 0, 2 * Math.PI);
-      _myGraph.fill();
+      g_myGraph.arc(this.x, this.y, 1, 0, 2 * Math.PI);
+      g_myGraph.fill();
     }
-    _myGraph.closePath();
-    _myGraph.restore();
+    g_myGraph.closePath();
+    g_myGraph.restore();
   }
 
   var Sparkler = function () {
@@ -211,37 +211,51 @@ export default (z_ord) => {
   }
 
   Sparkler.prototype.draw = function () {
-    _myGraph.mo
-    _myGraph.moveTo(this.x, this.y);
-    _myGraph.lineTo(this.tx, this.ty);
-    _myGraph.lineWidth = 1;
-    _myGraph.strokeStyle = this.color;
-    _myGraph.stroke();
+    g_myGraph.mo
+    g_myGraph.moveTo(this.x, this.y);
+    g_myGraph.lineTo(this.tx, this.ty);
+    g_myGraph.lineWidth = 1;
+    g_myGraph.strokeStyle = this.color;
+    g_myGraph.stroke();
   }
 
   var CompoGfx = function () {
     this.z_ord = z_ord
+    this._canvas_w = 0
+    this._canvas_h = 0
+    this._limiterTicker = 0
+    this._timedFirework = 1000
     this._isDirty = false
     this._started = false
     this._container = new PIXI.Container()
   }
 
   CompoGfx.prototype.Build = function () {
-    this._container.addChild(_myGraph);
+    this._container.addChild(g_myGraph);
     this._isDirty = false
     return this._container
   }
 
   CompoGfx.prototype.Start = function (canvas_h, canvas_w) {
-    _sparks = []
-    _particles = []
-    _fireworks = []
+    g_sparks = []
+    g_particles = []
+    g_fireworks = []
+
+    this._canvas_w = canvas_w
+    this._canvas_h = canvas_h
+    this._started = true
+    this._isDirty = true
+    this.createFirework()
+  }
+
+  CompoGfx.prototype.createFirework = function () {
+    console.log('create firework')
     let x = 0
     let y = 0; // start points could be customizable (e.g. mouse click on x,y)
     let firework = new Firework();
 
-    firework.x = firework.sx = canvas_w / 2;
-    firework.y = firework.sy = canvas_h;
+    firework.x = firework.sx = this._canvas_w / 2;
+    firework.y = firework.sy = this._canvas_h;
 
     firework.color = colors();
 
@@ -250,8 +264,8 @@ export default (z_ord) => {
       firework.ty = y;
       x = y = 0;
     } else {
-      firework.tx = random(400, canvas_w - 400);
-      firework.ty = random(0, canvas_h / 2);
+      firework.tx = random(400, this._canvas_w - 400);
+      firework.ty = random(0, this._canvas_h / 2);
     }
 
     var angle = getAngle(firework.sx, firework.sy, firework.tx, firework.ty);
@@ -259,10 +273,7 @@ export default (z_ord) => {
     firework.vx = Math.cos(angle * Math.PI / 180.0);
     firework.vy = Math.sin(angle * Math.PI / 180.0);
 
-    _fireworks.push(firework);
-
-    this._started = true
-    this._isDirty = true
+    g_fireworks.push(firework);
   }
 
   CompoGfx.prototype.Render = function (isDirty, delta) {
@@ -271,6 +282,45 @@ export default (z_ord) => {
       console.log('Fireworks is dirty')
     }
     this._isDirty = false
+    if (!this._started) {
+      return
+    }
+
+    if (g_timer > this._limiterTicker) {
+      this.createFirework();
+      this._limiterTicker = g_timer + (this._timedFirework / delta);
+    }
+
+    var i = g_fireworks.length;
+    while (i--) {
+      if (g_fireworks[i].del === true) {
+        g_fireworks.splice(i, 1);
+      } else {
+        g_fireworks[i].update(delta);
+        g_fireworks[i].draw();
+      }
+    }
+
+    i = g_particles.length;
+    while (i--) {
+      if (g_particles[i].opacity == 0) {
+        g_particles.splice(i, 1);
+      } else {
+        g_particles[i].update(delta);
+        g_particles[i].draw();
+      }
+    }
+
+    i = sparks.length;
+    while (i--) {
+      if (g_sparks[i].limit < 0) {
+        g_sparks.splice(i, 1);
+      } else {
+        g_sparks[i].update(delta);
+        g_sparks[i].draw();
+      }
+    }
+    g_timer++;
   }
 
   return new CompoGfx()
