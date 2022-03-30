@@ -1,6 +1,10 @@
 export default (z_ord) => {
   const _myGraph = new PIXI.Graphics()
   let _sparks = []
+  let _particles = []
+  let _fireworks = []
+  let _timer = 0
+  let _colorchanger = 0
 
   function random(min, max, round) {
     if (round == 'round') {
@@ -8,6 +12,103 @@ export default (z_ord) => {
     } else {
       return Math.random() * (max - min) + min;
     }
+  }
+
+  function colors() {
+    let num = 1 
+    if (_timer > _colorchanger) { 
+      num = random(0, 7, 'round'); 
+      _colorchanger = _timer + (500); 
+    }
+    switch (num) {
+      case 1: return '#ff0000'; break;
+      case 2: return '#ffff00'; break;
+      case 3: return '#00ff00'; break;
+      case 4: return '#00ffff'; break;
+      case 5: return '#0000ff'; break;
+      case 6: return '#ff00ff'; break;
+      case 7: return '#ffac00'; break;
+    }
+  }
+
+  function getAngle(posx1, posy1, posx2, posy2) {
+    if (posx1 == posx2) { if (posy1 > posy2) { return 90; } else { return 270; } }
+    if (posy1 == posy2) { if (posy1 > posy2) { return 0; } else { return 180; } }
+
+    var xDist = posx1 - posx2;
+    var yDist = posy1 - posy2;
+
+    if (xDist == yDist) { if (posx1 < posx2) { return 225; } else { return 45; } }
+    if (-xDist == yDist) { if (posx1 < posx2) { return 135; } else { return 315; } }
+
+    if (posx1 < posx2) {
+      return Math.atan2(posy2 - posy1, posx2 - posx1) * (180 / Math.PI) + 180;
+    } else {
+      return Math.atan2(posy2 - posy1, posx2 - posx1) * (180 / Math.PI) + 180;
+    }
+  }
+
+  function distance(px1, py1, px2, py2) {
+    const xdis = px1 - px2;
+    const ydis = py1 - py2;
+    return Math.sqrt((xdis * xdis) + (ydis * ydis));
+  }
+
+  function createParticles(type, count, pox, poy, color) {
+    for (var i = 0; i < count; i++) {
+      let par = new Particles();
+      par.type = type;
+
+      par.color = color;
+      par.x = pox;
+      par.y = poy;
+
+      var angle = random(0, 360);
+      par.vx = Math.cos(angle * Math.PI / 180.0);
+      par.vy = Math.sin(angle * Math.PI / 180.0);
+
+      _particles.push(par);
+    };
+  }
+
+  var Firework = function () {
+    this.x = 0;
+    this.y = 0;
+    this.sx = 0;
+    this.sy = 0;
+    this.tx = 0;
+    this.ty = 0;
+    this.vx = 0;
+    this.vy = 0;
+    this.color = 'rgb(255,255,255)';
+    this.dis = distance(this.sx, this.sy, this.tx, this.ty);
+    this.speed = random(700, 1100);
+    this.gravity = 1.5;
+    this.ms = 0;
+    this.s = 0;
+    this.del = false;
+  }
+
+  Firework.prototype.update = function (ms) {
+    this.ms = ms / 1000;
+
+    if (this.s > 2000 / ms) {
+      createParticles(typecount, 30, this.x, this.y, this.color);
+      this.del = true;
+    } else {
+      this.speed *= 0.98;
+      this.x -= this.vx * this.speed * this.ms;
+      this.y -= this.vy * this.speed * this.ms - this.gravity;
+    }
+
+    this.s++;
+  }
+
+  Firework.prototype.draw = function () {
+    _myGraph.beginPath();
+    _myGraph.fillStyle = this.color;
+    _myGraph.arc(this.x, this.y, 1, 0, 2 * Math.PI);
+    _myGraph.fill();
   }
 
   var Particles = function () {
@@ -121,16 +222,51 @@ export default (z_ord) => {
   var CompoGfx = function () {
     this.z_ord = z_ord
     this._isDirty = false
+    this._started = false
     this._container = new PIXI.Container()
   }
 
   CompoGfx.prototype.Build = function () {
     this._container.addChild(_myGraph);
-    this._isDirty = true
+    this._isDirty = false
     return this._container
   }
 
+  CompoGfx.prototype.Start = function (canvas_h, canvas_w) {
+    _sparks = []
+    _particles = []
+    _fireworks = []
+    let x = 0
+    let y = 0; // start points could be customizable (e.g. mouse click on x,y)
+    let firework = new Firework();
+
+    firework.x = firework.sx = canvas_w / 2;
+    firework.y = firework.sy = canvas_h;
+
+    firework.color = colors();
+
+    if (x != 0 && y != 0) {
+      firework.tx = x;
+      firework.ty = y;
+      x = y = 0;
+    } else {
+      firework.tx = random(400, canvas_w - 400);
+      firework.ty = random(0, canvas_h / 2);
+    }
+
+    var angle = getAngle(firework.sx, firework.sy, firework.tx, firework.ty);
+
+    firework.vx = Math.cos(angle * Math.PI / 180.0);
+    firework.vy = Math.sin(angle * Math.PI / 180.0);
+
+    _fireworks.push(firework);
+
+    this._started = true
+    this._isDirty = true
+  }
+
   CompoGfx.prototype.Render = function (isDirty, delta) {
+    //console.log('Fireworks is Render...') // function called each update (60fps)
     if (this._isDirty || isDirty) {
       console.log('Fireworks is dirty')
     }

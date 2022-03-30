@@ -10,7 +10,7 @@ import { DeckTakenGfx } from '../../gfx/deck-taken-gfx.js'
 import { GetMusicManagerInstance } from '../../sound/sound-mgr.js'
 import { CoreBriscolaBase } from './core-brisc-base.js'
 import { AlgBriscBase } from './alg-brisc-base.js'
-import  Fireworks  from '../../gfx/fireworks-gfx.js'
+import Fireworks from '../../gfx/fireworks-gfx.js'
 
 export class BriscolaGfx {
   constructor(cache, static_scene, screen_mode) {
@@ -186,8 +186,10 @@ export class BriscolaGfx {
     console.warn('*** PLEASE COMPLETE the fireworks ', fireworks, fireworks.z_ord)
     fireworks.Build()
     this._staticScene.AddGfxComponent('fireworks', fireworks)
-    this._core_state.suspend_proc_gevents('suspend for test')  
-    
+    fireworks.Start(this._staticScene._canvas_h, this._staticScene._canvas_w)
+
+    this._core_state.suspend_proc_gevents('suspend for test')
+
     //this.animate_distr_cards(args) // remove the comment
     // TODO remove this end test
 

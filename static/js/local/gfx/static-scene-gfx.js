@@ -8,21 +8,25 @@ export class StaticSceneGfx {
     this._component_in_front = null
     this._components = new Map()
     this._isDirty = false
-    this.canvas_h = 0
-    this.canvas_w = 0
+    this._canvas_h = 0
+    this._canvas_w = 0
     this._animations = []
     this._aniFinalNfy = []
   }
 
   Build(backTexture, viewWidth, viewHeight) {
-    this.canvas_h = viewHeight
-    this.canvas_w = viewWidth
+    this._canvas_h = viewHeight
+    this._canvas_w = viewWidth
     this._backSprite = new PIXI.Sprite(backTexture)
     this._container = new PIXI.Container()
     this._container.addChild(this._backSprite)
     Helper.ScaleSprite(this._backSprite, viewWidth, viewHeight)
 
     return this._container
+  }
+
+  SetFrontComponent(comp_name){
+    this._component_in_front = comp_name
   }
 
   AddMarker(nameMarker, comp) {
@@ -128,7 +132,7 @@ export class StaticSceneGfx {
             const compStopKey = ani.get_stop_comp()
             if (compStopKey) {
               const compStop = this.get_component(compStopKey)
-              compStop.set_animation_sprite_target(ani.name(), sprite, ani.data(), this.canvas_w, this.canvas_h)
+              compStop.set_animation_sprite_target(ani.name(), sprite, ani.data(), this._canvas_w, this._canvas_h)
             } else {
               throw (new Error('Target component is not set'))
             }
@@ -169,8 +173,8 @@ export class StaticSceneGfx {
       let cf = this._components.get(this._component_in_front)
       cf.Render(isDirty, delta)
       if (this._isDirty) {
-        this._container.addChild(c1._container)
-        built_comp.push(c1)
+        this._container.addChild(cf._container)
+        built_comp.push(cf)
       }
     }
 
@@ -193,7 +197,7 @@ export class StaticSceneGfx {
 
   get_anch_comp_info(anchor_element) {
     if (anchor_element === 'canvas') {
-      return [0, 0, this.canvas_w, this.canvas_h]
+      return [0, 0, this._canvas_w, this._canvas_h]
     }
     let c1 = this._components.get(anchor_element)
     if (c1) {
