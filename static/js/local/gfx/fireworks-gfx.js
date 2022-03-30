@@ -225,6 +225,7 @@ export default (z_ord) => {
     this._canvas_w = 0
     this._canvas_h = 0
     this._limiterTicker = 0
+    this.count = 0
     this._timedFirework = 120
     this._isDirty = false
     this._started = false
@@ -244,6 +245,10 @@ export default (z_ord) => {
 
     this._canvas_w = canvas_w
     this._canvas_h = canvas_h
+
+    g_myGraph.x = 100
+    g_myGraph.y = canvas_h / 2;
+
     this._started = true
     this._isDirty = true
     this.createFirework()
@@ -286,47 +291,60 @@ export default (z_ord) => {
     if (!this._started) {
       return
     }
+    this.count += 0.1;
+    g_myGraph.clear();
+    g_myGraph.lineStyle(10, 0xff0000, 1);
+    g_myGraph.beginFill(0xffFF00, 0.3);
     
-    g_myGraph.globalAlpha = 1;
-		g_myGraph.beginFill('rgba(0, 0, 0, 0.15)');
-		g_myGraph.drawRect(0, 0, this._canvas_w, this._canvas_h);
-    g_myGraph.endFill();
+    g_myGraph.moveTo(-120 + Math.sin(this.count) * 20, -100 + Math.cos(this.count) * 20);
+    g_myGraph.lineTo(120 + Math.cos(this.count) * 20, -100 + Math.sin(this.count) * 20);
+    g_myGraph.lineTo(120 + Math.sin(this.count) * 20, 100 + Math.cos(this.count) * 20);
+    g_myGraph.lineTo(-120 + Math.cos(this.count) * 20, 100 + Math.sin(this.count) * 20);
+    g_myGraph.lineTo(-120 + Math.sin(this.count) * 20, -100 + Math.cos(this.count) * 20);
+    g_myGraph.closePath();
 
-    if (g_timer > this._limiterTicker) {
-      this.createFirework();
-      this._limiterTicker = g_timer + (this._timedFirework / delta);
-    }
+    g_myGraph.rotation = this.count * 0.1;
 
-    var i = g_fireworks.length;
-    while (i--) {
-      if (g_fireworks[i].del === true) {
-        g_fireworks.splice(i, 1);
-      } else {
-        g_fireworks[i].update(delta);
-        g_fireworks[i].draw();
-      }
-    }
+    // g_myGraph.globalAlpha = 1;
+		// g_myGraph.beginFill('rgba(0, 0, 0, 0.15)');
+		// g_myGraph.drawRect(0, 0, this._canvas_w, this._canvas_h);
+    // g_myGraph.endFill();
 
-    i = g_particles.length;
-    while (i--) {
-      if (g_particles[i].opacity == 0) {
-        g_particles.splice(i, 1);
-      } else {
-        g_particles[i].update(delta);
-        g_particles[i].draw();
-      }
-    }
+    // if (g_timer > this._limiterTicker) {
+    //   this.createFirework();
+    //   this._limiterTicker = g_timer + (this._timedFirework / delta);
+    // }
 
-    i = g_sparks.length;
-    while (i--) {
-      if (g_sparks[i].limit < 0) {
-        g_sparks.splice(i, 1);
-      } else {
-        g_sparks[i].update(delta);
-        g_sparks[i].draw();
-      }
-    }
-    g_timer++;
+    // var i = g_fireworks.length;
+    // while (i--) {
+    //   if (g_fireworks[i].del === true) {
+    //     g_fireworks.splice(i, 1);
+    //   } else {
+    //     g_fireworks[i].update(delta);
+    //     g_fireworks[i].draw();
+    //   }
+    // }
+
+    // i = g_particles.length;
+    // while (i--) {
+    //   if (g_particles[i].opacity == 0) {
+    //     g_particles.splice(i, 1);
+    //   } else {
+    //     g_particles[i].update(delta);
+    //     g_particles[i].draw();
+    //   }
+    // }
+
+    // i = g_sparks.length;
+    // while (i--) {
+    //   if (g_sparks[i].limit < 0) {
+    //     g_sparks.splice(i, 1);
+    //   } else {
+    //     g_sparks[i].update(delta);
+    //     g_sparks[i].draw();
+    //   }
+    // }
+    // g_timer++;
   }
 
   return new CompoGfx()

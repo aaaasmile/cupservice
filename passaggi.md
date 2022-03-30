@@ -91,6 +91,9 @@ quello che calcola e scarta.
 
 ### TODO
 - sto completando il fireworks che ho preso da: https://gitlab.com/FilFar/firework-tutorial-javascript-canvas/-/blob/main/index.html
+Prendi l'ipirazione da PIXI example: https://pixijs.io/examples/#/graphics/dynamic.js
+anche perchè è abbastanza diverso dall'esempio originale
+
 - set_game_state dal br-scoperta.alg.spec.js
 - minmax nella soperta
 - Mariazza
