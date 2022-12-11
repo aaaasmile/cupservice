@@ -1,4 +1,4 @@
-import Helper from '../shared/helper.js'
+import Helper from '../shared/helper.js?version=100'
 export class DeckGfx {
   constructor(z_ord, cache, deck_info) {
     this._deckSprite = []

@@ -1,5 +1,5 @@
 
-import { CacheTextureImage } from './cache-texture-image.js'
+import { CacheTextureImage } from './cache-texture-image.js?version=100'
 
 const c_nomi_semi = ["basto", "coppe", "denar", "spade"]
 const c_nomi_semi_fr = ["picch", "quadr", "cuori", "fiori"]

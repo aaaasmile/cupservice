@@ -1,5 +1,5 @@
-import * as snd from './sound.js'
-import store from '../../vue/store/index.js'
+import * as snd from './sound.js?version=100'
+import store from '../../vue/store/index.js?version=100'
 
 const _assetMusicPath = "static/assets/sound/"
 export class MusicManager {

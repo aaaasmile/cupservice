@@ -1,8 +1,8 @@
-import { GetMusicManagerInstance } from '../../local/sound/sound-mgr.js'
-import { GetCardLoaderGfx } from '../../local/gfx/card-loader-gfx.js'
-import { BuilderGameGfx } from '../../local/gfx/builder-game-gfx.js'
-import Conta from '../components/conta.js'
-import Options from '../components/optgame.js'
+import { GetMusicManagerInstance } from '../../local/sound/sound-mgr.js?version=100'
+import { GetCardLoaderGfx } from '../../local/gfx/card-loader-gfx.js?version=100'
+import { BuilderGameGfx } from '../../local/gfx/builder-game-gfx.js?version=100'
+import Conta from '../components/conta.js?version=100'
+import Options from '../components/optgame.js?version=100'
 
 export default {
   components: { Conta, Options },

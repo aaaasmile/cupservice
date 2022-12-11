@@ -1,7 +1,7 @@
-import { StaticSceneGfx } from './static-scene-gfx.js'
-import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js'
-import { BriscolaScopertaGfx } from '../games/brisc-base/scoperta/br-scoperta-gfx.js'
-import Store from '../../vue/store/index.js'
+import { StaticSceneGfx } from './static-scene-gfx.js?version=100'
+import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js?version=100'
+import { BriscolaScopertaGfx } from '../games/brisc-base/scoperta/br-scoperta-gfx.js?version=100'
+import Store from '../../vue/store/index.js?version=100'
 
 export class BuilderGameGfx {
 

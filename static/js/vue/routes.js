@@ -1,6 +1,6 @@
-import Dashboard from './views/dashboard.js'
-import InfoSu from './views/infosu.js'
-import Options from './views/mainoptions.js'
+import Dashboard from './views/dashboard.js?version=100'
+import InfoSu from './views/infosu.js?version=100'
+import Options from './views/mainoptions.js?version=100'
 
 export default [
   { path: '/', icon: 'mdi-glass-cocktail', title: 'Bancone', component: Dashboard, },

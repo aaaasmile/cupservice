@@ -1,6 +1,6 @@
-import { ChatType } from './sharedEnums.js';
-import { MessageBuilder } from './MessageBuilder.js';
-import store from '../../vue/store/index.js'
+import { ChatType } from './sharedEnums.js?version=100';
+import { MessageBuilder } from './MessageBuilder.js?version=100';
+import store from '../../vue/store/index.js?version=100'
 
 export default (socketUrl) => {
     const _connection = new WebSocket(socketUrl)

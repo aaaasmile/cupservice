@@ -1,4 +1,4 @@
-import Helper from '../shared/helper.js'
+import Helper from '../shared/helper.js?version=100'
 export class TableCardsPlayedGfx {
   constructor(z_ord, deck_info, cache) {
     this._sprites = []

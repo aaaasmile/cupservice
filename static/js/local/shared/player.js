@@ -1,5 +1,5 @@
-import { ActorStateSubjectSubscriber } from './actor-state-subject-subscriber.js'
-import { CoreCaller } from './core-caller.js'
+import { ActorStateSubjectSubscriber } from './actor-state-subject-subscriber.js?version=100'
+import { CoreCaller } from './core-caller.js?version=100'
 
 //////////////////////////////////////////
 //////////////////////////////// Player

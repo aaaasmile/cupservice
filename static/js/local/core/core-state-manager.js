@@ -1,7 +1,7 @@
 
-import { CoreQueue } from './core-queue.js'
-import { InternalStateProc } from '../shared/internal-state-proc.js'
-import { CoreReactor } from './core-reactor.js'
+import { CoreQueue } from './core-queue.js?version=100'
+import { InternalStateProc } from '../shared/internal-state-proc.js?version=100'
+import { CoreReactor } from './core-reactor.js?version=100'
 
 //////////////////////////////////////////
 //////////////////////////////// CoreStateManager

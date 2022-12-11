@@ -1,5 +1,5 @@
-import routes from '../routes.js'
-import Toast from './toast.js'
+import routes from '../routes.js?version=100'
+import Toast from './toast.js?version=100'
 
 export default {
   components: { Toast },

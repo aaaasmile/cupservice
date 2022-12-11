@@ -1,11 +1,11 @@
-import { CoreDataSupport } from '../../core/core-data-support.js'
-import { DeckInfo } from '../../shared/deck-info.js'
-import { CoreStateStore } from '../../core/core-state-store.js'
-import { CoreStateSubjectSubscriber } from '../../core/core-state-subject-subscriber.js'
-import { RndMgr } from '../../shared/rnd-mgr.js'
-import { CoreStateManager } from '../../core/core-state-manager.js'
-import { TableStateCore } from '../../shared/table-state-core.js'
-import { Player } from '../../shared/player.js'
+import { CoreDataSupport } from '../../core/core-data-support.js?version=100'
+import { DeckInfo } from '../../shared/deck-info.js?version=100'
+import { CoreStateStore } from '../../core/core-state-store.js?version=100'
+import { CoreStateSubjectSubscriber } from '../../core/core-state-subject-subscriber.js?version=100'
+import { RndMgr } from '../../shared/rnd-mgr.js?version=100'
+import { CoreStateManager } from '../../core/core-state-manager.js?version=100'
+import { TableStateCore } from '../../shared/table-state-core.js?version=100'
+import { Player } from '../../shared/player.js?version=100'
 
 //////////////////////////////////////////
 //////////////////////////////// CoreBriscolaBase

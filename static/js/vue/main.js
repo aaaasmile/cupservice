@@ -1,6 +1,6 @@
-import Navbar from './components/navbar.js'
-import store from './store/index.js'
-import routes from './routes.js'
+import Navbar from './components/navbar.js?version=100'
+import store from './store/index.js?version=100'
+import routes from './routes.js?version=100'
 
 
 export const app = new Vue({
@@ -50,7 +50,8 @@ export const app = new Vue({
         <span>I contenuti di questo sito sono perlopiù parole al vento. Copia e Incolla by invido.it.</span>
       </div>
     </v-footer>
-  </v-app>`
+  </v-app>
+`
 })
 
 console.log('Main is here!')

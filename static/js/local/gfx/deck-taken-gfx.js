@@ -1,4 +1,4 @@
-import Helper from '../shared/helper.js'
+import Helper from '../shared/helper.js?version=100'
 
 export class DeckTakenGfx {
   constructor(z_ord, cache) {
