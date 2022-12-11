@@ -1,5 +1,10 @@
 ## cup-service
-Un service della cuperativa in golang e vuetify. Rendering del gioco delle carte in pixi.js.
+Un Web Service del gioco della cuperativa in golang e vuetify. 
+Il rendering del gioco delle carte avviene in pixi.js e javascript.
+Le funzioni attualmente disponibili sono quelle del gioco contro il computer.
+
+## Abilitare\Disabilitare un gioco di carte
+Andare nel player-store.js e settare il flag enabled:true in game_list. 
 
 ## Unit Test
 Ho sviluppato col tempo delle unit test che eseguono il check del core.
@@ -15,7 +20,6 @@ La unit test nel deployment va disattivata in confing.toml
 
 ## Websocket
 Quando mi verrà voglia di implementare un protocollo di rete, websocket sarà la scelta.
-Bare.
 
 ## Gfx
 Dopo diversi esperimenti, compreso quello di usare il DOM per creare la grafica del gioco,
@@ -54,16 +58,17 @@ mentre vue è la v2.6.10. Pixi è invece la  v5.3.5.
 ### Comunicazione Gfx Game BriscolaGfx e dashboard
 I comandi mostrati nella dashboard durante il gioco vengono abilitati dal gfx del gioco,
 vale a dire BriscolaGfx.
-Il comando abbandona viene abilitato durante la notifica on_all_ev_new_match.
-Lo store funziona da bus attraverso la mutazione modifyGameActionState per la registrazione.
-La mutazione callGameActionState viene usata per l'esecuzione.
-
+Il comando "Abbandona" viene abilitato durante la notifica on_all_ev_new_match.
+Lo store ha la funzione di message-bus. Attraverso la mutazione 
+modifyGameActionState si effettua la registrazione di un evento.
+La mutazione callGameActionState viene usata per l'esecuzione del comando.
 
 ## Cosiderazioni su altre possibilità rispetto vuetify&pixi
 Il gioco della Cuperativa è ispirato all'applicazione scritta in Ruby Cuperativa.
 Il porting in Javascript/go non è stato immediato, ma pieno di insidie e trappole.
 Quella che ha frenato di più lo sviluppo è stata la parte grafica. Molto demotivante
-e quindi molto suscettibile alla procrastinazione. Non rimandare a domani quello che puoi fare tra un anno con una nuova libreria. 
+e quindi molto suscettibile alla procrastinazione. 
+Non rimandare a domani quello che puoi fare tra un anno con una nuova libreria. 
 Ritrovarmi a programmare, per esempio, dei menu con dei construtti del genere:
 ```html
 <ul>
@@ -83,7 +88,6 @@ Forse perché non l'hai scritto in uno splendido package.json?
 Pian piano, però, una luce di nuovi tool e metodi appaiono alla fine del tunnel, così che anche dei programmatori del piffero come me, finalmente, riescono a produrre qualcosa di apparentemente presentabile in un'applicazione web.   
 Specialmente quando smettono di editare file json o scrivere delle sigle strane a fianco di infinite ripetute di _div_.
 
-
 ## Briscola scoperta
 TODO:
 Uso un algoritmo minimax ma non funziona un granché bene. Bisogna seguire bene
@@ -100,9 +104,10 @@ anche perchè è abbastanza diverso dall'esempio originale
 - Un problema molto fastidioso sulle update. Il file /static/js/vue/main.js è collegato al buildnr
 che viene incrementato. Solo che tutti gli altri files che sono dipendenti (per esempio card-loader-gfx.js)
 non vengono aggiornati in Chrome. L'unica soluzione trovata fino ad ora è andare CTRL +H e cancellare i dati 
-della storia (immagini e dati).
+della storia (immagini e dati). Sol: uso ?version=100 ed incremento il numero ogni volto che modifico
+il file. [DONE]
 
-## Service
+## Service sul target
 Start del service:
 sudo systemctl start cup-invido
 
@@ -111,6 +116,7 @@ sudo journalctl -f -u cup-invido
 
 Se ci sono dei problemi si può vedere con:
 sudo systemctl status cup-invido.service
+
 
 ## Mobile
 Sul mio iphone ho questa risoluzione di schermo:

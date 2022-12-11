@@ -258,7 +258,7 @@ export default {
         </h3>
         <div v-if="isdesktop"
           ><div class="grey--text" v-show="IsWaitForStart">
-            Premi il pulsante "Gioca" qui sotto per iniziare
+            Premi il pulsante "Gioca" qui sotto per iniziare (scroll laterale)
           </div>
         </div>
         <v-main>
@@ -312,6 +312,5 @@ export default {
       <Conta></Conta>
       <Options></Options>
     </v-col>
-  </v-row>
-`
+  </v-row>`
 }
