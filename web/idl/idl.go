@@ -2,5 +2,5 @@ package idl
 
 var (
 	Appname = "cup-service"
-	Buildnr = "0.9.20221211-05"
+	Buildnr = "00.010.20221211-00"
 )
