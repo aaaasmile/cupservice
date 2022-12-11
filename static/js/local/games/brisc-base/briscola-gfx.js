@@ -180,18 +180,7 @@ export class BriscolaGfx {
       deck_taken_me._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'top_anchor', offset: -10 }, anchor_element: `MKR-${this._name_Me}`, }
     }
     this._staticScene.AddGfxComponent('deck_taken_me', deck_taken_me)
-
-    // TODO remove this Test fireworks
-    const fireworks = Fireworks(100)
-    console.warn('*** PLEASE COMPLETE the fireworks ', fireworks, fireworks.z_ord)
-    fireworks.Build()
-    this._staticScene.AddGfxComponent('fireworks', fireworks)
-    fireworks.Start(this._staticScene._canvas_h, this._staticScene._canvas_w)
-
-    this._core_state.suspend_proc_gevents('suspend for test')
-
-    //this.animate_distr_cards(args) // remove the comment
-    // TODO remove this end test
+    this.animate_distr_cards(args)
 
   }
 
