@@ -1,4 +1,4 @@
-import routes from '../routes.js?version=100'
+import routes from '../routes.js?version=101'
 import Toast from './toast.js?version=100'
 
 export default {
