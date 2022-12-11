@@ -3,6 +3,12 @@ Un Web Service del gioco della cuperativa in golang e vuetify.
 Il rendering del gioco delle carte avviene in pixi.js e javascript.
 Le funzioni attualmente disponibili sono quelle del gioco contro il computer.
 
+## Deployment
+Sul target si esegue (~/build/cup-service):
+
+    git pull --all
+    ./publish-cup.sh
+
 ## Abilitare\Disabilitare un gioco di carte
 Andare nel player-store.js e settare il flag enabled:true in game_list. 
 
@@ -125,12 +131,6 @@ Come si fa a vederla?
 In Chrome si mette chrome://inspect in un nuovo tab. Poi si torna alla app della cuperativa
 e si fa un reload. Ora si torna nel chrome://inspect tab e si vede le info dello schermo. 
 Url che uso: http://192.168.2.254:5571/cup
-
-## Deployment
-Sul target si esegue (~/build/cup-service):
-
-    git pull --all
-    ./publish-cup.sh
   
 # Problemi con la cache
 Tutti i moduli js unbundled vengono messi nella cache. Se si modifica un modulo che non è main.js, esso non viene aggiornato alla prossima volta che viene scaricata la app.
