@@ -1,5 +1,5 @@
 import { StaticSceneGfx } from './static-scene-gfx.js?version=100'
-import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js?version=100'
+import { BriscolaGfx } from '../games/brisc-base/briscola-gfx.js?version=101'
 import { BriscolaScopertaGfx } from '../games/brisc-base/scoperta/br-scoperta-gfx.js?version=100'
 import Store from '../../vue/store/index.js?version=100'
 

@@ -108,7 +108,7 @@ export class BriscolaGfx {
     const gfxversion = new SimpleText(200)
     if (this._screen_mode === 'small') {
       gfxversion.Build(this._version, 'compact_small_maxvisible')
-      gfxversion._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor', offset: -5 }, anchor_element: 'canvas' }
+      gfxversion._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor', offset: -2 }, anchor_element: 'canvas' }
     } else {
       gfxversion.Build(this._version, 'normal')
       gfxversion._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor', offset: -5 }, anchor_element: 'canvas' }
