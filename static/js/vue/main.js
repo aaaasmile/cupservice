@@ -1,7 +1,6 @@
 import Navbar from './components/navbar.js?version=100'
-import store from './store/index.js?version=100'
+import store from './store/index.js?version=101'
 import routes from './routes.js?version=100'
-
 
 export const app = new Vue({
 	el: '#app',

@@ -11,6 +11,7 @@ import { GetMusicManagerInstance } from '../../sound/sound-mgr.js?version=100'
 import { CoreBriscolaBase } from './core-brisc-base.js?version=100'
 import { AlgBriscBase } from './alg-brisc-base.js?version=100'
 import Fireworks from '../../gfx/fireworks-gfx.js?version=100'
+import { SimpleText } from '../../gfx/simple-text.js?version=100'
 
 export class BriscolaGfx {
   constructor(cache, static_scene, screen_mode) {
@@ -23,6 +24,7 @@ export class BriscolaGfx {
     this._name_Opp = ''
     this._block_for_ask_continue_game = null
     this._screen_mode = screen_mode
+    this._version = 'Core: 0.1.0.2'
   }
 
   BuildGameVsCpu() {
@@ -81,7 +83,6 @@ export class BriscolaGfx {
     } else {
       markerCpu.Build(nameCpu, avatarCpu, 'normal')
       markerCpu._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'top_anchor', offset: 20 }, anchor_element: 'canvas' }
-
     }
     this._staticScene.AddMarker(nameCpu, markerCpu)
 
@@ -103,6 +104,16 @@ export class BriscolaGfx {
       scoreBoard._infoGfx = { x: { type: 'left_anchor', offset: +30 }, y: { type: 'top_anchor', offset: 10 }, anchor_element: 'canvas' }
       this._staticScene.AddGfxComponent('scoreBoard', scoreBoard)
     }
+
+    const gfxversion = new SimpleText(200)
+    if (this._screen_mode === 'small') {
+      gfxversion.Build(this._version, 'compact_small_maxvisible')
+      gfxversion._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor', offset: -5 }, anchor_element: 'canvas' }
+    } else {
+      gfxversion.Build(this._version, 'normal')
+      gfxversion._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor', offset: -5 }, anchor_element: 'canvas' }
+    }
+    this._staticScene.AddGfxComponent('version', gfxversion)
   }
 
   on_pl_ev_brisc_new_giocata(args) {
