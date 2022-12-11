@@ -14,9 +14,9 @@
   <script src="./static/js/ext/{{.PixiLibName}}?{{.Buildnr}}"></script>
 
   <!-- vuetify -->
-  <link href="./static/js/ext/fontcss.css" rel="stylesheet">
+  <link href="./static/js/ext/fontcss.css?{{.Buildnr}}" rel="stylesheet">
   <link href="./static/js/ext/vuetify.min.css?{{.Buildnr}}" rel="stylesheet">
-  <link href="./static/js/ext/icon.css" rel="stylesheet">
+  <link href="./static/js/ext/icon.css?{{.Buildnr}}" rel="stylesheet">
   <link href="./static/js/ext/materialdesignicons.min.css" rel="stylesheet">
 
   <!-- vue -->
@@ -37,7 +37,7 @@
   window.myapp = { buildnr: "{{.Buildnr}}" }
 </script>
 <script type="module">
-  import { app } from './static/js/vue/main.js?{{.Buildnr}}'
+  import { app } from './static/js/vue/main.js?version={{.Buildnr}}'
 </script>
 
 </html>

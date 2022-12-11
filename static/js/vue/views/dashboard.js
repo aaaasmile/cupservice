@@ -254,10 +254,11 @@ export default {
           ></v-progress-linear>
         </template>
         <h3>
-          <span v-if="isdesktop">Qui si gioca a:&nbsp;</span> {{ SelGameTitle }}!
+          <span v-if="isdesktop">Qui si gioca a:&nbsp;</span>
+          {{ SelGameTitle }}!
         </h3>
-        <div v-if="isdesktop"
-          ><div class="grey--text" v-show="IsWaitForStart">
+        <div>
+          <div class="grey--text" v-show="IsWaitForStart">
             Premi il pulsante "Gioca" qui sotto per iniziare (scroll laterale)
           </div>
         </div>
@@ -295,7 +296,12 @@ export default {
             </v-tooltip>
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on" icon @click="gameOptions" v-show="IsWaitForStart">
+                <v-btn
+                  v-on="on"
+                  icon
+                  @click="gameOptions"
+                  v-show="IsWaitForStart"
+                >
                   <v-icon>settings</v-icon>
                 </v-btn>
               </template>
