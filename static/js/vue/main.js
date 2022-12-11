@@ -1,5 +1,5 @@
 import Navbar from './components/navbar.js?version=103'
-import store from './store/index.js?version=102'
+import store from './store/index.js?version=103'
 import routes from './routes.js?version=102'
 
 export const app = new Vue({
