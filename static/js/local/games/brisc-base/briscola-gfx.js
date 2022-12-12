@@ -320,12 +320,20 @@ export class BriscolaGfx {
     const match_info = JSON.parse(args.info)
     const winner_name = match_info.winner_name
     const myTilte = 'Partia finita'
-    let complete_msg = `Partita terminata e vinta da ${winner_name}`
+    const complete_msg = `Partita terminata e vinta da ${winner_name}`
+    const is_resign = (match_info.end_reason == 'resign')
+
+    if (is_resign){
+      console.log('going directly in match is finished')
+      this.match_is_finished(args)
+      return
+    }
 
     if (this._block_for_ask_continue_game) {
       this._block_for_ask_continue_game()
       this._block_for_ask_continue_game = () => {
-        // showing the same dialog on closing the previous one is not working, so wait a litle
+        // wait a litle before change the state to match is finished
+        // this happens if another dialogbox is open, or closing, waiting for confirmation
         setTimeout(() => {
           Store.commit('showDialog', {
             title: myTilte,
