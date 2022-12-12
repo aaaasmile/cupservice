@@ -1,4 +1,4 @@
-import Dashboard from './views/dashboard.js?version=102'
+import Dashboard from './views/dashboard.js?version=104'
 import InfoAbout from './views/infoabout.js?version=102'
 import Options from './views/mainoptions.js?version=102'
 
