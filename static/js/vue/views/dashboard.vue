@@ -35,7 +35,7 @@
         </v-main>
         <v-main>
           <v-container>
-            <v-col>
+            <v-col align="center">
               <v-row id="pixi"></v-row>
             </v-col>
           </v-container>
@@ -68,11 +68,6 @@
             </v-tooltip>
           </v-toolbar>
         </v-card-actions>
-        <v-card-text v-if="!isdesktop"
-          ><div class="grey--text" v-show="IsWaitForStart">
-            Premi il pulsante "Gioca" per iniziare
-          </div>
-        </v-card-text>
       </v-card>
       <Conta></Conta>
       <Options></Options>

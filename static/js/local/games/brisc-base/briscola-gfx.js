@@ -24,7 +24,7 @@ export class BriscolaGfx {
     this._name_Opp = ''
     this._block_for_ask_continue_game = null
     this._screen_mode = screen_mode
-    this._version = 'Core: 0.1.0.2'
+    this._version = 'Core: 0.1.0.3'
   }
 
   BuildGameVsCpu() {
@@ -90,7 +90,7 @@ export class BriscolaGfx {
     const avatarMe = Store.state.pl.me_avatar
     if (this._screen_mode === 'small') {
       markerMe.Build(nameMe, avatarMe, 'compact_small_maxvisible')
-      markerMe._infoGfx = { x: { type: 'left_anchor', offset: 10 }, y: { type: 'bottom_anchor', offset: -10 }, anchor_element: 'canvas' }
+      markerMe._infoGfx = { x: { type: 'left_anchor', offset: 10 }, y: { type: 'bottom_anchor', offset: -15 }, anchor_element: 'canvas' }
     } else {
       markerMe.Build(nameMe, avatarMe, 'normal')
       markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas' }
@@ -108,7 +108,7 @@ export class BriscolaGfx {
     const gfxversion = new SimpleText(200)
     if (this._screen_mode === 'small') {
       gfxversion.Build(this._version, 'compact_small_maxvisible')
-      gfxversion._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor', offset: -2 }, anchor_element: 'canvas' }
+      gfxversion._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor', offset: 0 }, anchor_element: 'canvas' }
     } else {
       gfxversion.Build(this._version, 'normal')
       gfxversion._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor', offset: -5 }, anchor_element: 'canvas' }
