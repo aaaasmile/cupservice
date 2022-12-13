@@ -115,8 +115,11 @@
 
       <v-card class="mx-auto my-2" max-width="344">
         <v-card-text>
-          <div>Al bancone</div>
+          <div>Il consiglio del bancone</div>
           <p class="display-1 text--primary">
+            Gioca responsabilmente al &quot;Gioco dei Re&quot;
+          </p>
+          <p class="display-1 text--secondary">
             Ancora alla ricerca di maggiorni informazioni su questo sito?
           </p>
         </v-card-text>

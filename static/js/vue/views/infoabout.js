@@ -1,54 +1,62 @@
 export default {
-    data() {
-        return {
-          loading: false,
-          value: '',
-          num_click: 0,
-          selection: 1,
-        }
-    },
-    computed: {
-        ...Vuex.mapState({
-      
-        })
-    },
-    created() {
-    },
-    mounted() {
-  
+  data() {
+    return {
+      loading: false,
+      value: '',
+      num_click: 0,
+      selection: 1,
+    }
+  },
+  computed: {
+    ...Vuex.mapState({
 
-    },
-    methods: {
-      reserve(){
-        this.num_click += 1
-        console.log('Riserva spazio')
-        this.loading = true
-        const title1 = `Prenotazione fallita di un pelo` 
-        const msg1 = `Spiacenti, al momento non sono disponibili posti prenotabili online per l'orario richiesto. 
+    })
+  },
+  created() {
+  },
+  mounted() {
+
+
+  },
+  methods: {
+    reserve() {
+      this.num_click += 1
+      console.log('Riserva spazio')
+      this.loading = true
+      const title1 = `Prenotazione fallita di un pelo`
+      const msg1 = `Spiacenti, al momento non sono disponibili posti prenotabili online per l'orario richiesto. 
         Nel frattempo, se volete fare una breve partita a carte, su questo sito ne avete un piccola possibilità. `
-        const title2 = `Ti piace cliccare facile eh!?` 
-        const msg2 = `Per la tua tenacia meriteresti un posto al tavolo centrale. Quello dove si sbaritava di più.`
-        let curr_title = title1
-        let curr_msg = msg1
-        if (this.num_click > 5){
-          curr_title = title2
-          curr_msg = msg2
-          this.num_click = 0
-        }
-        setTimeout(() => {
-          this.loading = false
-          this.$store.commit('showDialog', {
-            title: curr_title,
-            msg: curr_msg,
-          })
-        }, 2500)
-      },
-      moreinfo(){
+      const msg1_B = `Spiacenti, e mi dispiace ripetermi, ma al momento non sono disponibili posti prenotabili online per l'orario richiesto. 
+        Nel frattempo, cominciate ad arrampicarmi su per una braga. `
+      const msg1_C = `Il nervosismo sale. Non solo non sono disponibili posti prenotabili online per l'orario richiesto, 
+        ma continuate sempre più ad arrampicarmi per una braga. `
+      const title2 = `Ti piace cliccare facile eh!?`
+      const msg2 = `Per la tua tenacia meriteresti un posto al tavolo centrale. Quello dove si sbaritava di più.`
+      let curr_title = title1
+      let curr_msg = msg1
+      if (this.num_click == 2) {
+        curr_msg = msg1_B
+      } else if (this.num_click == 3) {
+        curr_msg = msg1_C
+      } else if (this.num_click > 3) {
+        curr_title = title2
+        curr_msg = msg2
         this.num_click = 0
-        open("https://invido.it", "_blank")
       }
+      setTimeout(() => {
+        this.loading = false
+        this.$store.commit('showDialog', {
+          title: curr_title,
+          msg: curr_msg,
+        })
+      }, 2500)
     },
-    template: `
+    moreinfo() {
+      this.num_click = 0
+      open("https://invido.it", "_blank")
+    }
+  },
+  template: `
   <v-row justify="center">
     <v-col cols="12" sm="8">
       <v-card :loading="loading" class="mx-auto my-12" max-width="374">
@@ -165,8 +173,11 @@ export default {
 
       <v-card class="mx-auto my-2" max-width="344">
         <v-card-text>
-          <div>Al bancone</div>
+          <div>Il consiglio del bancone</div>
           <p class="display-1 text--primary">
+            Gioca responsabilmente al &quot;Gioco dei Re&quot;
+          </p>
+          <p class="display-1 text--secondary">
             Ancora alla ricerca di maggiorni informazioni su questo sito?
           </p>
         </v-card-text>
