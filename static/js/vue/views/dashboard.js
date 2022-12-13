@@ -1,6 +1,6 @@
 import { GetMusicManagerInstance } from '../../local/sound/sound-mgr.js?version=100'
 import { GetCardLoaderGfx } from '../../local/gfx/card-loader-gfx.js?version=100'
-import { BuilderGameGfx } from '../../local/gfx/builder-game-gfx.js?version=100'
+import { BuilderGameGfx } from '../../local/gfx/builder-game-gfx.js?version=101'
 import Conta from '../components/conta.js?version=100'
 import Options from '../components/optgame.js?version=100'
 
@@ -316,5 +316,6 @@ export default {
       <Conta></Conta>
       <Options></Options>
     </v-col>
-  </v-row>`
+  </v-row>
+`
 }
