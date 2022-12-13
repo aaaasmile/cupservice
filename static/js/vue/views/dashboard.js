@@ -253,22 +253,38 @@ export default {
             indeterminate
           ></v-progress-linear>
         </template>
-        <h3>
-          <span v-if="isdesktop">Qui si gioca a:&nbsp;</span>
-          {{ SelGameTitle }}!
-        </h3>
-        <div>
-          <div class="grey--text" v-show="IsWaitForStart">
-            Premi il pulsante "Gioca" qui sotto per iniziare (scroll laterale)
-          </div>
-        </div>
+        <v-main>
+          <v-container v-show="IsWaitForStart">
+            <v-row>
+              <v-col
+                >Qui si gioca a: <b>{{ SelGameTitle }}!</b></v-col
+              >
+            </v-row>
+            <v-card-actions class="d-flex flex-wrap">
+              <v-btn @click="startGame"> Gioca </v-btn>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on }">
+                  <v-btn
+                    v-on="on"
+                    icon
+                    @click="gameOptions"
+                  >
+                    <v-icon>settings</v-icon>
+                  </v-btn>
+                </template>
+                <span>Opzioni</span>
+              </v-tooltip>
+            </v-card-actions>
+          </v-container>
+        </v-main>
         <v-main>
           <v-container>
-            <v-row id="pixi"></v-row>
+            <v-col align="center">
+              <v-row id="pixi"></v-row>
+            </v-col>
           </v-container>
         </v-main>
         <v-card-actions class="d-flex flex-wrap">
-          <v-btn @click="startGame" v-show="IsWaitForStart"> Gioca </v-btn>
           <v-btn @click="doAction1" v-show="Action1Enabled">
             {{ Action1Title }}
           </v-btn>
@@ -294,26 +310,8 @@ export default {
               </template>
               <span>{{ Muted ? "Unmute" : "Mute" }}</span>
             </v-tooltip>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  v-on="on"
-                  icon
-                  @click="gameOptions"
-                  v-show="IsWaitForStart"
-                >
-                  <v-icon>settings</v-icon>
-                </v-btn>
-              </template>
-              <span>Opzioni</span>
-            </v-tooltip>
           </v-toolbar>
         </v-card-actions>
-        <v-card-text v-if="!isdesktop"
-          ><div class="grey--text" v-show="IsWaitForStart">
-            Premi il pulsante "Gioca" per iniziare
-          </div>
-        </v-card-text>
       </v-card>
       <Conta></Conta>
       <Options></Options>

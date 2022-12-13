@@ -1,6 +1,6 @@
 import Navbar from './components/navbar.js?version=103'
 import store from './store/index.js?version=102'
-import routes from './routes.js?version=102'
+import routes from './routes.js?version=103'
 
 export const app = new Vue({
 	el: '#app',
@@ -19,7 +19,9 @@ export const app = new Vue({
 	},
 	computed: {
 		...Vuex.mapState({
-
+			IsOnGame: state => {
+				return state.ms.match_state === 'st_match_ongoing'
+			},
 		})
 	},
 	beforeCreate() {
@@ -38,11 +40,11 @@ export const app = new Vue({
 	},
 	template: `
   <v-app class="grey lighten-4">
-    <Navbar />
+    <Navbar v-show="!IsOnGame"/>
     <v-main class="mx-4 mb-4" id="reffull">
       <router-view id="refcont"></router-view>
     </v-main>
-    <v-footer>
+    <v-footer v-show="!IsOnGame">
       <div class="caption">
         {{ new Date().getFullYear() }} —
         <span>Buildnr: {{Buildnr}}</span> - 

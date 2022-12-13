@@ -24,7 +24,7 @@ export class BriscolaGfx {
     this._name_Opp = ''
     this._block_for_ask_continue_game = null
     this._screen_mode = screen_mode
-    this._version = 'Core: 0.1.0.2'
+    this._version = 'Core: 0.1.0.3'
   }
 
   BuildGameVsCpu() {
@@ -90,7 +90,7 @@ export class BriscolaGfx {
     const avatarMe = Store.state.pl.me_avatar
     if (this._screen_mode === 'small') {
       markerMe.Build(nameMe, avatarMe, 'compact_small_maxvisible')
-      markerMe._infoGfx = { x: { type: 'left_anchor', offset: 10 }, y: { type: 'bottom_anchor', offset: -10 }, anchor_element: 'canvas' }
+      markerMe._infoGfx = { x: { type: 'left_anchor', offset: 10 }, y: { type: 'bottom_anchor', offset: -15 }, anchor_element: 'canvas' }
     } else {
       markerMe.Build(nameMe, avatarMe, 'normal')
       markerMe._infoGfx = { x: { type: 'right_anchor', offset: -30 }, y: { type: 'bottom_anchor', offset: -30 }, anchor_element: 'canvas' }
@@ -108,7 +108,7 @@ export class BriscolaGfx {
     const gfxversion = new SimpleText(200)
     if (this._screen_mode === 'small') {
       gfxversion.Build(this._version, 'compact_small_maxvisible')
-      gfxversion._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor', offset: -2 }, anchor_element: 'canvas' }
+      gfxversion._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor', offset: 0 }, anchor_element: 'canvas' }
     } else {
       gfxversion.Build(this._version, 'normal')
       gfxversion._infoGfx = { x: { type: 'left_anchor', offset: 0 }, y: { type: 'bottom_anchor', offset: -5 }, anchor_element: 'canvas' }
@@ -320,12 +320,20 @@ export class BriscolaGfx {
     const match_info = JSON.parse(args.info)
     const winner_name = match_info.winner_name
     const myTilte = 'Partia finita'
-    let complete_msg = `Partita terminata e vinta da ${winner_name}`
+    const complete_msg = `Partita terminata e vinta da ${winner_name}`
+    const is_resign = (match_info.end_reason == 'resign')
+
+    if (is_resign){
+      console.log('going directly in match is finished')
+      this.match_is_finished(args)
+      return
+    }
 
     if (this._block_for_ask_continue_game) {
       this._block_for_ask_continue_game()
       this._block_for_ask_continue_game = () => {
-        // showing the same dialog on closing the previous one is not working, so wait a litle
+        // wait a litle before change the state to match is finished
+        // this happens if another dialogbox is open, or closing, waiting for confirmation
         setTimeout(() => {
           Store.commit('showDialog', {
             title: myTilte,
