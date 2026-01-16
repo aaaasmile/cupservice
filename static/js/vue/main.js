@@ -1,6 +1,6 @@
-import Navbar from './components/navbar.js?version=103'
-import store from './store/index.js?version=102'
-import routes from './routes.js?version=103'
+import Navbar from './components/navbar.js?version=104'
+import store from './store/index.js?version=103'
+import routes from './routes.js?version=104'
 
 export const app = new Vue({
 	el: '#app',
@@ -48,11 +48,10 @@ export const app = new Vue({
       <div class="caption">
         {{ new Date().getFullYear() }} —
         <span>Buildnr: {{Buildnr}}</span> - 
-        <span>I contenuti di questo sito sono perlopiù parole al vento. Copia e Incolla by invido.it.</span>
+        <span>I contenuti di questo sito sono perlopiù parole al vento. By IgorRun for <a href="https://invido.it/">invido.it</a>.</span>
       </div>
     </v-footer>
-  </v-app>
-`
+  </v-app>`
 })
 
 console.log('Main is here!')

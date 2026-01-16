@@ -93,7 +93,7 @@ export default {
 
           <div>
             Posto tranquillo nell'amabile
-            <a href="https://invido.it/bredacisoni/index.html" target="_blank"
+            <a href="https://invido.it/pages/breda01/" target="_blank"
               >Breda Cisoni</a
             >, dove viene servito, tra l'altro, un caffè corretto di 
             qualità superiore. Ambiente che offre spazi riservati di calma e relax.
@@ -151,7 +151,7 @@ export default {
             <v-list-item-content>
               <v-list-item-title
                 ><a
-                  href="https://invido.it/Igor-sarzi-sartori.html"
+                  href="https://invido.it/pages/autore/"
                   target="_blank"
                   >Boia Canaia</a
                 ></v-list-item-title
